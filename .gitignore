@@ -1,1 +1,19 @@
+# Project Folders
 .idea/
+/out/
+
+# Unversioned Files
+src/resources/
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Package Files #
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
