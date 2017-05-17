@@ -20,7 +20,7 @@ public class TreeParser {
     protected ArrayList<NamesDmp> listOfNamesDmp = new ArrayList<>();
 
     protected BufferedReader reader;
-    public Tree tree = new Tree(null, null);
+    public Tree tree = new Tree(null);
 
     /*
     parses the names.dmp file
