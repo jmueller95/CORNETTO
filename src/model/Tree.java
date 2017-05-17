@@ -7,11 +7,11 @@ import java.util.HashMap;
  */
 public class Tree {
     TaxonNode root;
-    HashMap<Integer, TaxonNode> idToNodeMap; //TODO: Not sure if name is appropriate, maybe refactor it
+    HashMap<Integer, TaxonNode> treeStructure; //TODO: Not sure if name is appropriate, maybe refactor it
 
-    public Tree(TaxonNode root, HashMap<Integer, TaxonNode> idToNodeMap) {
-        this.root = root;
-        this.idToNodeMap = idToNodeMap;
+    public Tree(TaxonNode root){
+        this.treeStructure = treeStructure;
+        treeStructure.put(root.getTaxonId(), root);
     }
 
     public TaxonNode getRoot() {
@@ -22,12 +22,8 @@ public class Tree {
         this.root = root;
     }
 
-    public HashMap<Integer, TaxonNode> getIdToNodeMap() {
-        return idToNodeMap;
-    }
-
-    public void setIdToNodeMap(HashMap<Integer, TaxonNode> idToNodeMap) {
-        this.idToNodeMap = idToNodeMap;
+    public HashMap<Integer, TaxonNode> getTreeStructure() {
+        return treeStructure;
     }
 
     //TODO
