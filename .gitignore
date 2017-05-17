@@ -1,6 +1,6 @@
 # Project Folders
 .idea/
-/out/
+out/
 
 # Unversioned Files
 src/resources/
