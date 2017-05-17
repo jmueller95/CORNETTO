@@ -7,4 +7,5 @@ import java.util.HashMap;
  */
 public class Sample {
     private HashMap<TaxonNode, Integer> taxa2CountMap;
+    private TaxonNode taxonNode;
 }
