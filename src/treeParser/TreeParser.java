@@ -6,5 +6,5 @@ package treeParser;
 public class TreeParser {
 
     //parse  the names.dmp file
-    
+
 }
