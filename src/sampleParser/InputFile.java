@@ -3,7 +3,6 @@ package sampleParser;
 import model.Sample;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 //It's been quite a while since I last used interfaces, I hope I did it somehow correctly
