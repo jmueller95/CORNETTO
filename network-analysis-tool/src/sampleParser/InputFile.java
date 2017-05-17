@@ -12,4 +12,5 @@ public interface InputFile {
     ArrayList<Sample> parse(String filepath);
     //TODO: What other methods might be useful?
 
+    
 }
