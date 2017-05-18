@@ -12,10 +12,6 @@ import java.util.ArrayList;
  * Created by julian on 15.05.17.
  */
 public class TaxonId2CountCSVParser implements InputFile{
-    //DEBUG
-    public static void main(String[] args) {
-
-    }
 
 
 
