@@ -2,5 +2,7 @@
 <module version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="json-lib-2.4-jdk15" level="application" />
+    <orderEntry type="library" name="json-simple-1.1" level="project" />
   </component>
 </module>
