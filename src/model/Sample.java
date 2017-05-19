@@ -10,7 +10,6 @@ public class Sample {
     private HashMap<String, String> metaData = new HashMap<>();
 
 
-
     //Getters
     public HashMap<TaxonNode, Integer> getTaxa2CountMap() {
         return taxa2CountMap;
