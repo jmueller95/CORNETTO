@@ -33,7 +33,7 @@ public class TaxonId2CountCSVParser implements InputFile{
 
             /*TODO: I need to access the tree here I guess, but don't know yet how that is done
             * Right now, I'll create a dummy node here with all values set to null except taxon id*/
-            TaxonNode taxonNode = new TaxonNode(null,taxonId,null,null,null);
+            TaxonNode taxonNode = new TaxonNode(null,taxonId,null,0,null);
             //int readCount = (int) Double.parseDouble(lineSplit[1]);
             //Add counts to datasets
             for (int i = 1; i <= numberOfDatasets; i++) {
