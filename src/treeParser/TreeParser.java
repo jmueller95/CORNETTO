@@ -5,28 +5,34 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import model.TaxonNode;
-import model.Tree;
-
 /**
  * Created by julian on 15.05.17.
  */
 public class TreeParser {
 
     //set fileNamesDmp to filepath
+
+    //Strings
     private String line = "";
-    protected String fileNamesDmp = "";
-    protected String fileNodesDmp = "";
-    protected static ArrayList<NamesDmp> listOfNamesDmp = new ArrayList<>();
-    protected static ArrayList<NodesDmp> listOfNodesDmp = new ArrayList<>();
+    protected String fileNamesDmp = "", fileNodesDmp = "";
+
+    //ArrayLists
+    protected static ArrayList<NamesDmp> namesDmps = new ArrayList<>();
+    protected static ArrayList<NodesDmp> nodesDmps = new ArrayList<>();
 
     protected BufferedReader reader;
-    public static Tree tree = new Tree(null);
 
-    /*
-    parses the names.dmp file
-    creates the listOfNamesDmp
-    adds ONLY the taxon that have a scientific name
+
+    //System
+    private final void printFileDoesNotExist() { System.err.println("The file does not exist."); }
+
+
+    //Parser methods
+
+    /**
+     * parses the names.dmp file
+     creates the namesDmps
+     adds ONLY the taxon that have a scientific name
      */
     public void readNamesDmpFile() {
         try {
@@ -39,18 +45,19 @@ public class TreeParser {
                     String name = wholeLineWithoutSpaces[1];
                     String rank = wholeLineWithoutSpaces[2];
 
-                    listOfNamesDmp.add(new NamesDmp(id, name, rank));
+                    namesDmps.add(new NamesDmp(id, name, rank));
                 }
 
             }
         } catch (IOException e) {
-            System.err.println("The file does not exist.");
+            printFileDoesNotExist();
         }
     }
 
-    /*
-    parses the nodes.dmp file
-    builds the tree by cross checking with the listOfNamesDmp
+
+    /**
+     * parses the nodes.dmp file
+     builds the tree by cross checking with the namesDmps
      */
     public void readNodesDmpFile() {
         try {
@@ -62,38 +69,25 @@ public class TreeParser {
                 int parentId = Integer.parseInt(wholeLineWithoutSpaces[1]);
                 String rank = wholeLineWithoutSpaces[2];
 
-                listOfNodesDmp.add(new NodesDmp(id, parentId, rank));
+                nodesDmps.add(new NodesDmp(id, parentId, rank));
             }
         } catch (IOException e) {
-            System.err.println("The file does not exist.");
+            printFileDoesNotExist();
         }
     }
 
-    public static void buildTree() {
-        //TODO BUILD TREE
-        //get information from the listOfNames
-        for (int i = 0; i < listOfNodesDmp.size(); i++) {
-            for (int j = 0; j < listOfNamesDmp.size(); j++) {
-                if (listOfNodesDmp.get(i).getId() == listOfNamesDmp.get(j).getId()) {
-                    //if there's no root yet
-                    if (tree.getRoot() == null) {
-                        tree.setRoot(new TaxonNode(listOfNamesDmp.get(j).getName(), listOfNamesDmp.get(i).getId(), listOfNodesDmp.get(i).getRank(), null, new ArrayList<TaxonNode>()));
-                    } else { //there already has to be a root node
-                        //TODO BUILD REST OF THE TREE
-                    }
-                }
-            }
 
-        }
-        //tree.setRoot(new TaxonNode());
-    }
-
-
+    /**
+     * Removes the entire white space from an array.
+     * @param array - String array
+     * @return
+     */
     public static String[] removeBlanksFromArray(String[] array) {
         String[] arrayWithoutBlanks = new String[array.length];
         for (int i = 0; i < array.length; i++) {
             arrayWithoutBlanks[i] = array[i].replaceAll("\\s+", "");
         }
+
         return arrayWithoutBlanks;
     }
 }

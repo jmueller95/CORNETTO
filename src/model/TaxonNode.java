@@ -8,16 +8,17 @@ import java.util.ArrayList;
  */
 public class TaxonNode {
     private String name;
-    private int taxonId;
+    private int taxonId, parentId;
     private String rank; //e.g. "kingdom", "species"
     private TaxonNode parentNode;
     private ArrayList<TaxonNode> childNodeList;
 
-    public TaxonNode(String name, int taxonId, String rank, model.TaxonNode parentNode, ArrayList<TaxonNode> childNodeList) {
+    public TaxonNode(String name, int taxonId, String rank, /*model.TaxonNode parentNode*/ int parentId, ArrayList<TaxonNode> childNodeList) {
         this.name = name;
         this.taxonId = taxonId;
         this.rank = rank;
-        this.parentNode = parentNode;
+        //this.parentNode = parentNode;
+        this.parentId = parentId;
         this.childNodeList = childNodeList;
     }
 
@@ -59,5 +60,9 @@ public class TaxonNode {
 
     public void setChildNodeList(ArrayList<TaxonNode> childNodeList) {
         this.childNodeList = childNodeList;
+    }
+
+    public int getParentId() {
+        return parentId;
     }
 }
