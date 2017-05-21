@@ -36,10 +36,7 @@ public class Tree {
         treeStructure.put(node.getTaxonId(), node);
 
         //Searches the tree for every child of the new added node and adds the found child to the list of child notes.
-
-
-        //It does also register the new node as parent of the found child nodes
-        //But do we even need that? We already have the parentId and we could just use this id to search for the parent in the tree
+        //It does also register the new node object as parent of the found child nodes
 
         for (Map.Entry<Integer, TaxonNode> entry : treeStructure.entrySet()) {
 
@@ -51,6 +48,17 @@ public class Tree {
 
                 node.getChildNodeList().add(foundChild);
 
+            }
+
+            //If the tree already contains the father of the new node, register this parent node object as parent node of the new node
+            //and register the new node object as child of the found parent
+            if ( entry.getValue().getTaxonId() == node.getParentId()) {
+
+                TaxonNode foundParent = entry.getValue();
+
+                node.setParentNode(foundParent);
+
+                foundParent.getChildNodeList().add(node);
             }
         }
 
