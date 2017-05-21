@@ -47,10 +47,22 @@ public class Tree {
                     foundParent.getChildNodeList().add(node);
                 }
             }
-
         }
     }
 
+
+    /**
+     * Links every child of the root and the root node.
+     */
+    private void updateRoot() {
+        for (Map.Entry<Integer, TaxonNode> entry : treeStructure.entrySet()) {
+            if ( entry.getValue().getParentId() == root.getTaxonId() ) {
+                TaxonNode foundChild = entry.getValue();
+                foundChild.setParentNode(root);
+                root.getChildNodeList().add(foundChild);
+            }
+        }
+    }
 
     /**
      * Builds the tree structure based on the parsed information from the NamesDmp and NodesDmp files
@@ -65,11 +77,10 @@ public class Tree {
                     //if there's no root yet
                     addNode(new TaxonNode(listOfNamesDmp.get(j).getName(), listOfNamesDmp.get(i).getId(), listOfNodesDmp.get(i).getRank(),
                             /*null try out new way*/ listOfNodesDmp.get(i).getParentId(), new ArrayList<TaxonNode>()));
-
                 }
             }
-
         }
+        updateRoot();
     }
 
 
