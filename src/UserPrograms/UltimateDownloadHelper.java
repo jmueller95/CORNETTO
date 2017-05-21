@@ -46,7 +46,7 @@ public class UltimateDownloadHelper {
         // The file does only download a file from a given url
         // Maybe one might want to download files automatically ??
 
-        /*try {
+        try {
             if (args[0].endsWith("--help") | args[0].endsWith("-h")) {
                 printHelp();
             }
@@ -60,7 +60,6 @@ public class UltimateDownloadHelper {
         } else {
             String path = args[1];
             downloadFileTo(args[0], args[1]);
-        }*/
-        printHelp();
+        }
     }
 }
