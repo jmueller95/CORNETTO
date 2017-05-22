@@ -94,6 +94,20 @@ public class Tree {
         return treeStructure;
     }
 
+    /**
+     * Returns taxonNode for Node ID
+     * @param nodeID - Node id string parsed from sample files
+     * @return returns taxon Node
+     * @throws IllegalArgumentException - node id not found in tree
+     */
+    public TaxonNode getNodeForID(String nodeID) throws IllegalArgumentException{
+        if (treeStructure.containsKey(nodeID)) {
+            return treeStructure.get(nodeID);
+        } else {
+            throw new IllegalArgumentException("Node id " + nodeID + "was not found in tree");
+        }
+    }
+
 
     //SETTER
 

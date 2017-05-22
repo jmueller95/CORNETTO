@@ -4,6 +4,7 @@ package sampleParser;
 
 import model.Sample;
 import model.TaxonNode;
+import model.Tree;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,6 +22,14 @@ import java.util.HashMap;
  */
 public class BiomParser implements InputFile {
 
+    private ArrayList<Sample> sampleList;
+    private Tree taxonTree;
+
+    public BiomParser(Tree taxonTree) {
+        this.sampleList = new ArrayList<>();
+        this.taxonTree = taxonTree;
+    }
+
     @Override
     public ArrayList<Sample> parse(String filepath) {
 
@@ -36,11 +45,13 @@ public class BiomParser implements InputFile {
             // Detect matrix type
             boolean matrixTypeIsSparse = obj.get("matrix_type").equals("sparse");
             System.out.println("Matrix sparse? : " + matrixTypeIsSparse);
+            int sparseMatrixIndex = 0;
 
             // Loop over all samples in the file (columns)
             for (int col = 0; col < ((JSONArray) obj.get("columns")).size(); col++) {
                 System.out.println("Loading sample " + col);
-                HashMap<TaxonNode, Integer> currentSample = new HashMap<>();
+                HashMap<TaxonNode, Integer> currentTaxCount = new HashMap<>();
+                HashMap<String, String> metaData = new HashMap<>();
 
                 // Access metadata. What is needed? What do we want to include?
                 // TODO
@@ -49,22 +60,35 @@ public class BiomParser implements InputFile {
                 for (int row = 0; row < ((JSONArray) obj.get("rows")).size(); row++) {
                     JSONObject currentRow =  (JSONObject)((JSONArray) obj.get("rows")).get(row);
 
-                    // Extract taxon/sampleID
-                    String id = (String) currentRow.get("id");
-                    //TODO get taxon for this ID from TaxonTree
-
-
                     // Extract observation counts for this taxon
-                    double count = 0;
+                    int count = 0;
                     if (matrixTypeIsSparse) {
-                        System.out.println("Sparse matrix type not supported yet");
+
+                        int rowValue = ((Double)((JSONArray)((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(0)).intValue();
+                        int colValue = ((Double)((JSONArray)((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(1)).intValue();
+                        int countValue = ((Double)((JSONArray)((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(2)).intValue();
+
+                        if (rowValue == row && colValue == col) {
+                            count = countValue;
+                            sparseMatrixIndex++;
+                        }
                     } else {
-                        count = (double)((JSONArray)((JSONArray) obj.get("data")).get(row)).get(0);
+                        // Dense Matrix
+                        count = ((Double)((JSONArray)((JSONArray) obj.get("data")).get(row)).get(col)).intValue();
                     }
-                    // First step: Print to console
-                    System.out.println(id + " " + count);
+
+                    // Extract sampleID and TaxonNode
+                    String id = (String) currentRow.get("id");
+                    try{
+                        // Add observation to sample if taxonomy is found in tree
+                        currentTaxCount.put(taxonTree.getNodeForID(id), count);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+
                 }
 
+                sampleList.add(new Sample(currentTaxCount, metaData));
             }
 
         } catch (Exception e) {
