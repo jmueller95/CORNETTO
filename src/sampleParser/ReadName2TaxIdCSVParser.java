@@ -15,10 +15,10 @@ import java.util.HashMap;
  */
 public class ReadName2TaxIdCSVParser implements InputFile {
     private ArrayList<Sample> sampleList;
-    private TaxonTree taxonTaxonTree;
+    private TaxonTree taxonTree;
 
-    public ReadName2TaxIdCSVParser(TaxonTree taxonTaxonTree) {
-        this.taxonTaxonTree = taxonTaxonTree;
+    public ReadName2TaxIdCSVParser(TaxonTree taxonTree) {
+        this.taxonTree = taxonTree;
         sampleList = new ArrayList<>();
     }
 
@@ -30,7 +30,7 @@ public class ReadName2TaxIdCSVParser implements InputFile {
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException {
         //Get Mapping of IDs to TaxonNodes from the TaxonTree
-        HashMap<Integer, TaxonNode> treeStructure = taxonTaxonTree.getTreeStructure();
+        HashMap<Integer, TaxonNode> treeStructure = taxonTree.getTreeStructure();
 
         //Initialize the object to be returned
         sampleList = new ArrayList<>();

@@ -22,11 +22,11 @@ import java.util.HashMap;
 public class BiomV1Parser implements InputFile {
 
     private ArrayList<Sample> sampleList;
-    private TaxonTree taxonTaxonTree;
+    private TaxonTree taxonTree;
 
-    public BiomV1Parser(TaxonTree taxonTaxonTree) {
+    public BiomV1Parser(TaxonTree taxonTree) {
         this.sampleList = new ArrayList<>();
-        this.taxonTaxonTree = taxonTaxonTree;
+        this.taxonTree = taxonTree;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class BiomV1Parser implements InputFile {
                     String id = (String) currentRow.get("id");
                     try{
                         // Add observation to sample if taxonomy is found in tree
-                        currentTaxCount.put(taxonTaxonTree.getNodeForID(id), count);
+                        currentTaxCount.put(taxonTree.getNodeForID(id), count);
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }

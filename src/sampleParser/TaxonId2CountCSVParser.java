@@ -8,16 +8,17 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by julian on 15.05.17.
  */
 public class TaxonId2CountCSVParser implements InputFile {
     private ArrayList<Sample> sampleList;
-    private TaxonTree taxonTaxonTree;
+    private TaxonTree taxonTree;
 
-    public TaxonId2CountCSVParser(TaxonTree taxonTaxonTree) {
-        this.taxonTaxonTree = taxonTaxonTree;
+    public TaxonId2CountCSVParser(TaxonTree taxonTree) {
+        this.taxonTree = taxonTree;
         this.sampleList = new ArrayList<>();
     }
 
@@ -32,18 +33,20 @@ public class TaxonId2CountCSVParser implements InputFile {
         for (int i = 0; i < numberOfDatasets; i++) {
             sampleList.add(new Sample());
         }
+
+        //Get mapping of IDs to TaxonNodes from the TaxonTree
+        HashMap<Integer, TaxonNode> treeStructure = taxonTree.getTreeStructure();
+
         while (line != null) {
             lineSplit = line.split(",");
-            int taxonId = Integer.parseInt(lineSplit[0]);
+            int currentTaxonId = Integer.parseInt(lineSplit[0]);
 
-            /*TODO: I need to access the tree here I guess, but don't know yet how that is done
-            * Right now, I'll create a dummy node here with all values set to null except taxon id*/
-            TaxonNode taxonNode = new TaxonNode(null, taxonId, null, 0, null);
-            //int readCount = (int) Double.parseDouble(lineSplit[1]);
+            TaxonNode currentTaxonNode = treeStructure.get(currentTaxonId);
+
             //Add counts to datasets
             for (int i = 1; i <= numberOfDatasets; i++) {
                 int currentSampleReadCount = (int) Double.parseDouble(lineSplit[i]);
-                sampleList.get(i - 1).getTaxa2CountMap().put(taxonNode, currentSampleReadCount);
+                sampleList.get(i - 1).getTaxa2CountMap().put(currentTaxonNode, currentSampleReadCount);
             }
             line = reader.readLine();
         }
