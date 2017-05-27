@@ -1,6 +1,7 @@
 package sampleParser;
 
 import model.Sample;
+import model.TaxonTree;
 import org.junit.Before;
 import org.junit.Test;
 import model.TaxonNode;
@@ -14,11 +15,12 @@ import static org.junit.Assert.*;
  * Created by Zeth on 27.05.2017.
  */
 public class ReadName2TaxIdCSVParserTest {
+    TaxonTree taxonTree; //TODO: Parse the tree and get it here!
 
     ReadName2TaxIdCSVParser readName2TaxIdCSVParser;
     @Before
     public void setUp() throws Exception {
-        readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser();
+        readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(taxonTree);
     }
 
     @Test

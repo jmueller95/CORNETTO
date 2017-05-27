@@ -33,16 +33,14 @@ public class TreeParser {
      */
     public void readNamesDmpFile() {
         try {
-            reader = new BufferedReader(new FileReader(fileNodesDmp));
+            reader = new BufferedReader(new FileReader(fileNamesDmp));
             while ((line = reader.readLine()) != null) {
                 String[] wholeLine = line.split("\\|");
                 String[] wholeLineWithoutSpaces = removeBlanksFromArray(wholeLine);
                 if (wholeLineWithoutSpaces[3].equals("scientificname")) {
                     int id = Integer.parseInt(wholeLineWithoutSpaces[0]);
                     String name = wholeLineWithoutSpaces[1];
-                    String rank = wholeLineWithoutSpaces[2];
-
-                    namesDmps.add(new NamesDmp(id, name, rank));
+                    namesDmps.add(new NamesDmp(id, name));
                 }
 
             }

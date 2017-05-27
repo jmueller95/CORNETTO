@@ -2,6 +2,7 @@ package sampleParser;
 
 import model.Sample;
 import model.TaxonNode;
+import model.TaxonTree;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,9 +15,10 @@ import static org.junit.Assert.*;
  */
 public class TaxonId2CountCSVParserTest {
     TaxonId2CountCSVParser csvparser;
+    TaxonTree taxonTree; //TODO: Parse the tree and get it here!
     @Before
     public void setUp() throws Exception {
-        csvparser = new TaxonId2CountCSVParser();
+        csvparser = new TaxonId2CountCSVParser(taxonTree);
 
     }
 

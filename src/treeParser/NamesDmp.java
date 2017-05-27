@@ -6,12 +6,10 @@ package treeParser;
 public class NamesDmp {
     private int id;
     private String name;
-    private String rank;
 
-    public NamesDmp(int id, String name, String rank) {
+    public NamesDmp(int id, String name) {
         this.id = id;
         this.name = name;
-        this.rank = rank;
     }
 
     public int getId() {
@@ -30,11 +28,4 @@ public class NamesDmp {
         this.name = name;
     }
 
-    public String getRank() {
-        return rank;
-    }
-
-    public void setRank(String rank) {
-        this.rank = rank;
-    }
 }
