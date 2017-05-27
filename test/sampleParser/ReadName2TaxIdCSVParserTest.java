@@ -5,6 +5,7 @@ import model.TaxonTree;
 import org.junit.Before;
 import org.junit.Test;
 import model.TaxonNode;
+import treeParser.TreeParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,11 +16,21 @@ import static org.junit.Assert.*;
  * Created by Zeth on 27.05.2017.
  */
 public class ReadName2TaxIdCSVParserTest {
-    TaxonTree taxonTree; //TODO: Parse the tree and get it here!
 
     ReadName2TaxIdCSVParser readName2TaxIdCSVParser;
+    TaxonTree taxonTree;
     @Before
     public void setUp() throws Exception {
+        TreeParser treeParser = new TreeParser();
+        treeParser.setFileNamesDmp("./res/testFiles/treeParser/names_stub.dmp");
+        treeParser.setFileNodesDmp("./res/testFiles/treeParser/nodes_stub.dmp");
+        treeParser.readNodesDmpFile();
+        treeParser.readNamesDmpFile();
+
+        TaxonNode rootNode = new TaxonNode("root", 1, "no rank", 1, new ArrayList<>());
+        taxonTree = new TaxonTree(rootNode);
+        taxonTree.buildTree(treeParser.getNodesDmps(), treeParser.getNamesDmps());
+
         readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(taxonTree);
     }
 
@@ -32,13 +43,18 @@ public class ReadName2TaxIdCSVParserTest {
         assertEquals(0, emptyFileSamples); //does not pass the test, there's always one sample added
     }
 
+
+    //TODO fix these tests
     @Test
     public void testTaxonIdCounts() throws Exception {
         ArrayList<Sample> exampleFileSamples = readName2TaxIdCSVParser.parse
                 ("./res/testFiles/readName2TaxId/example.readName2TaxId.txt");
-        TaxonNode n1 = new TaxonNode("name", 1224, "rank", 0, new ArrayList<>());
         Sample sample1 = exampleFileSamples.get(0);
-        assertEquals(1, (int) sample1.getTaxa2CountMap().get(n1)); //does not pass the test because of a null
+
+        final HashMap<Integer, TaxonNode> treeStructure = taxonTree.getTreeStructure();
+        TaxonNode testNode = treeStructure.get(7);
+
+        assertEquals(1, (int) sample1.getTaxa2CountMap().get(testNode)); //does not pass the test because of a null
         // pointer exception
         TaxonNode n2 = new TaxonNode("name", 469, "rank", 0, new ArrayList<>());
         assertEquals(2, (int) sample1.getTaxa2CountMap().get(n2)); //does not pass the test because of a null pointer
