@@ -50,8 +50,8 @@ public class TaxonTreeTest {
     @Test
     public void testBuildTree() throws Exception {
        TreeParser treeParser = new TreeParser();
-       treeParser.setFileNamesDmp("./res/names_stub.dmp");
-       treeParser.setFileNodesDmp("./res/nodes_stub.dmp");
+       treeParser.setFileNamesDmp("./res/treeParser/names_stub.dmp");
+       treeParser.setFileNodesDmp("./res/treeParser/nodes_stub.dmp");
        treeParser.readNodesDmpFile();
        treeParser.readNamesDmpFile();
        TaxonNode rootNode = new TaxonNode("root", 1, "no rank", 1, new ArrayList<>());

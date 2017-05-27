@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by julian on 15.05.17.
@@ -36,10 +37,10 @@ public class TreeParser {
             reader = new BufferedReader(new FileReader(fileNamesDmp));
             while ((line = reader.readLine()) != null) {
                 String[] wholeLine = line.split("\\|");
-                String[] wholeLineWithoutSpaces = removeBlanksFromArray(wholeLine);
-                if (wholeLineWithoutSpaces[3].equals("scientificname")) {
-                    int id = Integer.parseInt(wholeLineWithoutSpaces[0]);
-                    String name = wholeLineWithoutSpaces[1];
+                String identifier = removeBlanksString(wholeLine[3]);
+                if (identifier.equals("scientificname")) {
+                    int id = Integer.parseInt(removeBlanksString(wholeLine[0]));
+                    String name = wholeLine[1].trim();
                     namesDmps.add(new NamesDmp(id, name));
                 }
 
@@ -74,7 +75,7 @@ public class TreeParser {
      * Removes the entire white space from an array.
      *
      * @param array - String array
-     * @return
+     * @return the array without blanks
      */
     public static String[] removeBlanksFromArray(String[] array) {
         String[] arrayWithoutBlanks = new String[array.length];
@@ -85,9 +86,19 @@ public class TreeParser {
         return arrayWithoutBlanks;
     }
 
+    /**
+     * Removes the entire white space from an array.
+     *
+     * @param stringToRemoveBlanksFrom - String
+     * @return the String without blanks
+     */
+    public static String removeBlanksString(String stringToRemoveBlanksFrom) {
+        String withoutBlanks = stringToRemoveBlanksFrom.replaceAll("\\s+", "");
+
+        return withoutBlanks;
+    }
 
     //Getters
-
     public ArrayList<NamesDmp> getNamesDmps() {
         return namesDmps;
     }
@@ -97,7 +108,6 @@ public class TreeParser {
     }
 
     //Setters, Julian needs these for Testing reasons
-
     public void setFileNamesDmp(String fileNamesDmp) {
         this.fileNamesDmp = fileNamesDmp;
     }
