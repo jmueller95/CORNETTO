@@ -26,13 +26,12 @@ public class TreeParser {
     //System
     private final void printFileDoesNotExist() { System.err.println("The file does not exist."); }
 
-
     //Parser methods
 
     /**
      * parses the names.dmp file
-     creates the namesDmps
-     adds ONLY the taxon that have a scientific name
+     * creates the namesDmps
+     * adds ONLY the Taxon that have a scientific name
      */
     public void readNamesDmpFile() {
         try {
@@ -57,7 +56,7 @@ public class TreeParser {
 
     /**
      * parses the nodes.dmp file
-     builds the tree by cross checking with the namesDmps
+     * builds the tree by cross checking with the namesDmps
      */
     public void readNodesDmpFile() {
         try {

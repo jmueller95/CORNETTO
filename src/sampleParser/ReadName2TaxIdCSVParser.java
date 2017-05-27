@@ -14,6 +14,11 @@ import java.util.Iterator;
  * Created by julian on 15.05.17.
  */
 public class ReadName2TaxIdCSVParser implements InputFile {
+    /**
+     * @param filepath
+     * @return
+     * @throws IOException
+     */
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException {
         /*TODO: I need to access the tree here I guess, but don't know yet how that is done

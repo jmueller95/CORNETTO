@@ -22,6 +22,7 @@ public class Tree {
     //TODO
 
     /**
+     * adds a note to the tree
      * @param node
      */
     public void addNode(TaxonNode node) {

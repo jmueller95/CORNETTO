@@ -16,7 +16,6 @@ import java.util.zip.ZipInputStream;
  */
 public class DownloadNodesAndNameDMPFiles {
     private static final Logger LOGGER = Logger.getLogger(DownloadNodesAndNameDMPFiles.class.getName());
-    private static final String INPUT_ZIP_FILE = ""; //TODO downloadHelper
     private static final String OUTPUT_FOLDER = "./res";
     private final String NCBIURL = "ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip";
     private final String fileName = "NodesAndNamesDmp.zip";
