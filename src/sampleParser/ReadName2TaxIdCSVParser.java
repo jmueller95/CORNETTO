@@ -2,18 +2,26 @@ package sampleParser;
 
 import model.Sample;
 import model.TaxonNode;
+import model.TaxonTree;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by julian on 15.05.17.
  */
 public class ReadName2TaxIdCSVParser implements InputFile {
+    private ArrayList<Sample> sampleList;
+    private TaxonTree taxonTaxonTree;
+
+    public ReadName2TaxIdCSVParser(TaxonTree taxonTaxonTree) {
+        this.taxonTaxonTree = taxonTaxonTree;
+        sampleList = new ArrayList<>();
+    }
+
     /**
      * @param filepath
      * @return
@@ -21,18 +29,11 @@ public class ReadName2TaxIdCSVParser implements InputFile {
      */
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException {
-        /*TODO: I need to access the tree here I guess, but don't know yet how that is done
-          Right now, an empty HashMap "treeStructure" is used
-        */
-        HashMap<Integer, TaxonNode> treeStructure = new HashMap<>(); //This should be a hashmap that maps taxon ids to TaxonNode objects
-        HashMap<TaxonNode, Integer> node2CountMap = new HashMap<>(); //This one maps nodes to their read counts
-        //Initialize all read counts with zero
-        for (TaxonNode node : treeStructure.values()) {
-            node2CountMap.put(node, 0);
-        }
+        //Get Mapping of IDs to TaxonNodes from the TaxonTree
+        HashMap<Integer, TaxonNode> treeStructure = taxonTaxonTree.getTreeStructure();
 
         //Initialize the object to be returned
-        ArrayList<Sample> sampleList = new ArrayList<>();
+        sampleList = new ArrayList<>();
         //This file format can only contain a single sample, so the list will contain only one element
         Sample sample = new Sample();
         sampleList.add(sample);

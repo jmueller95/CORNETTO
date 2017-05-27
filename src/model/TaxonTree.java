@@ -10,11 +10,11 @@ import java.util.Map;
 /**
  * Created by julian on 15.05.17.
  */
-public class Tree {
+public class TaxonTree {
     private TaxonNode root;
     private HashMap<Integer, TaxonNode> treeStructure;
 
-    public Tree(TaxonNode root) {
+    public TaxonTree(TaxonNode root) {
         this.treeStructure = treeStructure;
         treeStructure.put(root.getTaxonId(), root);
     }

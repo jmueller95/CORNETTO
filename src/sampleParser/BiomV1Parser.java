@@ -4,11 +4,10 @@ package sampleParser;
 
 import model.Sample;
 import model.TaxonNode;
-import model.Tree;
+import model.TaxonTree;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,11 +22,11 @@ import java.util.HashMap;
 public class BiomV1Parser implements InputFile {
 
     private ArrayList<Sample> sampleList;
-    private Tree taxonTree;
+    private TaxonTree taxonTaxonTree;
 
-    public BiomV1Parser(Tree taxonTree) {
+    public BiomV1Parser(TaxonTree taxonTaxonTree) {
         this.sampleList = new ArrayList<>();
-        this.taxonTree = taxonTree;
+        this.taxonTaxonTree = taxonTaxonTree;
     }
 
     @Override
@@ -85,7 +84,7 @@ public class BiomV1Parser implements InputFile {
                     String id = (String) currentRow.get("id");
                     try{
                         // Add observation to sample if taxonomy is found in tree
-                        currentTaxCount.put(taxonTree.getNodeForID(id), count);
+                        currentTaxCount.put(taxonTaxonTree.getNodeForID(id), count);
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }
