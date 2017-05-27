@@ -15,8 +15,9 @@ public class TaxonTree {
     private HashMap<Integer, TaxonNode> treeStructure;
 
     public TaxonTree(TaxonNode root) {
-        this.treeStructure = treeStructure;
+        this.treeStructure = new HashMap<>();
         treeStructure.put(root.getTaxonId(), root);
+        setRoot(root);
     }
 
     //TODO
@@ -30,7 +31,6 @@ public class TaxonTree {
             root = node;
         } else {
             treeStructure.put(node.getTaxonId(), node);
-
             //Searches the tree for every child of the new added node and adds the found child to the list of child nodes.
             //It does also register the new node object as parent of the found child nodes
             for (Map.Entry<Integer, TaxonNode> entry : treeStructure.entrySet()) {

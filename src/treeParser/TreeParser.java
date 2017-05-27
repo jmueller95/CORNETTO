@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class TreeParser {
     //Strings
     private String line = "";
-    protected String fileNamesDmp = "", fileNodesDmp = "";
+    protected String fileNamesDmp = "./res/names.dmp", fileNodesDmp = "./res/nodes.dmp";
 
     //ArrayLists
     protected ArrayList<NamesDmp> namesDmps = new ArrayList<>();
@@ -83,5 +83,26 @@ public class TreeParser {
         }
 
         return arrayWithoutBlanks;
+    }
+
+
+    //Getters
+
+    public ArrayList<NamesDmp> getNamesDmps() {
+        return namesDmps;
+    }
+
+    public ArrayList<NodesDmp> getNodesDmps() {
+        return nodesDmps;
+    }
+
+    //Setters, Julian needs these for Testing reasons
+
+    public void setFileNamesDmp(String fileNamesDmp) {
+        this.fileNamesDmp = fileNamesDmp;
+    }
+
+    public void setFileNodesDmp(String fileNodesDmp) {
+        this.fileNodesDmp = fileNodesDmp;
     }
 }

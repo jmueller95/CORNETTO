@@ -1,6 +1,5 @@
 package treeParser;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,14 +8,7 @@ import static org.junit.Assert.*;
  * Created by julian on 27.05.17.
  */
 public class TreeParserTest {
-    TreeParser treeParser = new TreeParser();
-
-    @Before
-    public void setUp() throws Exception {
-        treeParser.fileNamesDmp = "./res/names.dmp";
-        treeParser.fileNodesDmp = "./res/nodes.dmp";
-
-    }
+    private TreeParser treeParser = new TreeParser();
 
     /**
      * Checks if the second entry in the namesDmp list matches: id=2 and name="Bacteria"
