@@ -1,3 +1,0 @@
-This file's only here so that the resources folder is actually generated in the github repo.
-Please put the 'names.dmp' and 'nodes.dmp' files here (without adding them to git!), this way all of us can access them
-without needing to push and pull them all the time.
