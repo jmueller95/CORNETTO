@@ -9,9 +9,6 @@ import java.util.ArrayList;
  * Created by julian on 15.05.17.
  */
 public class TreeParser {
-
-    //set fileNamesDmp to filepath
-
     //Strings
     private String line = "";
     protected String fileNamesDmp = "", fileNodesDmp = "";
@@ -22,9 +19,10 @@ public class TreeParser {
 
     protected BufferedReader reader;
 
-
     //System
-    private final void printFileDoesNotExist() { System.err.println("The file does not exist."); }
+    private final void printFileDoesNotExist() {
+        System.err.println("The file does not exist.");
+    }
 
     //Parser methods
 
@@ -53,7 +51,6 @@ public class TreeParser {
         }
     }
 
-
     /**
      * parses the nodes.dmp file
      * builds the tree by cross checking with the namesDmps
@@ -75,9 +72,9 @@ public class TreeParser {
         }
     }
 
-
     /**
      * Removes the entire white space from an array.
+     *
      * @param array - String array
      * @return
      */

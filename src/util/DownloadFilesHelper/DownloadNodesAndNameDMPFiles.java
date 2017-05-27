@@ -22,12 +22,13 @@ public class DownloadNodesAndNameDMPFiles {
 
     /**
      * downloads the NCBI Zip und unpacks it
+     * saves files to the res folder
      */
-    public void DownloadNamesNodesDMPandUnzip(){
+    public void DownloadNamesNodesDMPandUnzip() {
         //download the zip from NCBI
-        try{
+        try {
             downloadFile(new URL(NCBIURL), OUTPUT_FOLDER);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -53,7 +54,6 @@ public class DownloadNodesAndNameDMPFiles {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -63,8 +63,6 @@ public class DownloadNodesAndNameDMPFiles {
      * @param outputFolder zip file output folder
      */
     public void unZipIt(String zipFile, String outputFolder) {
-
-
         byte[] buffer = new byte[1024];
 
         try {
