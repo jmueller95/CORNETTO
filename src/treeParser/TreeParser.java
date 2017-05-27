@@ -14,8 +14,8 @@ public class TreeParser {
     protected String fileNamesDmp = "", fileNodesDmp = "";
 
     //ArrayLists
-    protected static ArrayList<NamesDmp> namesDmps = new ArrayList<>();
-    protected static ArrayList<NodesDmp> nodesDmps = new ArrayList<>();
+    protected ArrayList<NamesDmp> namesDmps = new ArrayList<>();
+    protected ArrayList<NodesDmp> nodesDmps = new ArrayList<>();
 
     protected BufferedReader reader;
 
