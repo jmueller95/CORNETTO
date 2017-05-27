@@ -44,7 +44,7 @@ public class TaxonTreeTest {
     /**
      * Creates a TaxonTree from the names_stub and the nodes_stub, which contain only the first 100 lines so that
      * computation doesn't take too long.
-     * Applies some basic structure tests then
+     * Tests some basic properties of the built Tree then.
      * @throws Exception
      */
     @Test
@@ -62,7 +62,7 @@ public class TaxonTreeTest {
         //parentNode.name=Azorhizobium
        final HashMap<Integer, TaxonNode> treeStructure = taxonTree.getTreeStructure();
        TaxonNode testNode = treeStructure.get(7);
-       assertEquals("Azorhizobium caulinodans", testNode.getName());
+       assertEquals("Azorhizobium caulinodans", testNode.getName());//TODO: Fix the whitespace error!
        assertEquals("species", testNode.getRank());
        assertEquals(6, testNode.getParentId());
        assertEquals("Azorhizobium", testNode.getParentNode().getName());
