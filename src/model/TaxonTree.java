@@ -86,7 +86,6 @@ public class TaxonTree {
 
 
     //GETTER
-
     public TaxonNode getRoot() {
         return root;
     }
@@ -111,7 +110,6 @@ public class TaxonTree {
 
 
     //SETTER
-
     public void setRoot(TaxonNode root) {
         this.root = root;
     }
