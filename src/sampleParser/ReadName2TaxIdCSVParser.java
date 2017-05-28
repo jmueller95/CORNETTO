@@ -31,12 +31,10 @@ public class ReadName2TaxIdCSVParser implements InputFile {
     public ArrayList<Sample> parse(String filepath) throws IOException {
         //Get Mapping of IDs to TaxonNodes from the TaxonTree
         HashMap<Integer, TaxonNode> treeStructure = taxonTree.getTreeStructure();
-
         //Initialize the object to be returned
         sampleList = new ArrayList<>();
         //This file format can only contain a single sample, so the list will contain only one element
         Sample sample = new Sample();
-        sampleList.add(sample);
         BufferedReader reader = new BufferedReader(new FileReader(filepath));
         String line = reader.readLine();
         String[] lineSplit;
@@ -59,7 +57,10 @@ public class ReadName2TaxIdCSVParser implements InputFile {
             line = reader.readLine();
         }
 
-
+        //Only add sample if it's not empty
+        if(sample.getTaxa2CountMap().size() > 0) {
+            sampleList.add(sample);
+        }
         return sampleList;
     }
 }

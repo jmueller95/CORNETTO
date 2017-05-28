@@ -1,0 +1,15 @@
+2296ef04-d476-48d2-bc35-15d8cd47e272_Basecall_2D_000_2d,7
+5e983960-8410-4d1c-8ced-b9db8e03cdce_Basecall_2D_000_2d,13
+0591b9cd-5822-483b-9391-310537e5d714_Basecall_2D_000_complement,6
+5e809e64-bcd6-4757-b3b0-30bd3beb6101_Basecall_2D_000_2d,13
+0aa67759-ee36-49f4-9cca-83cab156a419_Basecall_2D_000_2d,7
+e02d07c4-42a9-427d-8cf4-87ed875182a3_Basecall_2D_000_2d,1
+7db44850-8131-4858-abc9-7c63efc7c5d3_Basecall_2D_000_2d,2
+1ab8e14a-14e5-4576-b40c-da014fd4ebcc_Basecall_2D_000_2d,14
+f3761929-05fb-4caf-a8b4-c7d7743025e3_Basecall_2D_000_template,9
+2f205b0e-5a31-4164-85b3-1e3612555e2c_Basecall_2D_000_2d,6
+5385156b-70d3-40af-aeac-87d7309a78d3_Basecall_2D_000_2d,6
+c9fbf193-bd94-4464-949e-631ee5c1d316_Basecall_2D_000_2d,19
+07353621-78e7-4dfb-ac7d-2c472398e531_Basecall_2D_000_2d,20
+f20b2222-f2dd-4cf7-a3bb-051d37945edf_Basecall_2D_000_2d,21
+86f0e3f0-10e0-4bb8-8e58-6ee4f5b0d5df_Basecall_2D_000_2d,7

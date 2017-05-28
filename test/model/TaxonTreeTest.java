@@ -50,8 +50,8 @@ public class TaxonTreeTest {
     @Test
     public void testBuildTree() throws Exception {
        TreeParser treeParser = new TreeParser();
-       treeParser.setFileNamesDmp("./res/treeParser/names_stub.dmp");
-       treeParser.setFileNodesDmp("./res/treeParser/nodes_stub.dmp");
+       treeParser.setFileNamesDmp("./res/testFiles/treeParser/names_stub.dmp");
+       treeParser.setFileNodesDmp("./res/testFiles/treeParser/nodes_stub.dmp");
        treeParser.readNodesDmpFile();
        treeParser.readNamesDmpFile();
        TaxonNode rootNode = new TaxonNode("root", 1, "no rank", 1, new ArrayList<>());
@@ -62,7 +62,7 @@ public class TaxonTreeTest {
         //parentNode.name=Azorhizobium
        final HashMap<Integer, TaxonNode> treeStructure = taxonTree.getTreeStructure();
        TaxonNode testNode = treeStructure.get(7);
-       assertEquals("Azorhizobium caulinodans", testNode.getName());//TODO: Fix the whitespace error!
+       assertEquals("Azorhizobium caulinodans", testNode.getName());
        assertEquals("species", testNode.getRank());
        assertEquals(6, testNode.getParentId());
        assertEquals("Azorhizobium", testNode.getParentNode().getName());

@@ -19,6 +19,7 @@ public class ReadName2TaxIdCSVParserTest {
 
     ReadName2TaxIdCSVParser readName2TaxIdCSVParser;
     TaxonTree taxonTree;
+
     @Before
     public void setUp() throws Exception {
         //read required files for the tree
@@ -42,27 +43,19 @@ public class ReadName2TaxIdCSVParserTest {
                 ("./res/testFiles/readName2TaxId/example.readName2TaxId.txt");
         assertEquals(1, exampleFileSamples.size());
         ArrayList<Sample> emptyFileSamples = readName2TaxIdCSVParser.parse("./res/testFiles/readName2TaxId/emptyFile");
-        assertEquals(0, emptyFileSamples); //does not pass the test, there's always one sample added
+        assertEquals(0, emptyFileSamples.size());
     }
 
-
-    //TODO fix these tests
     @Test
     public void testTaxonIdCounts() throws Exception {
         ArrayList<Sample> exampleFileSamples = readName2TaxIdCSVParser.parse
-                ("./res/testFiles/readName2TaxId/example.readName2TaxId.txt");
+                ("./res/testFiles/readName2TaxId/example.readName2TaxId_stub.txt");
         Sample sample1 = exampleFileSamples.get(0);
 
         final HashMap<Integer, TaxonNode> treeStructure = taxonTree.getTreeStructure();
         TaxonNode AzorhizobiumCaulinodansNode = treeStructure.get(7);
 
-        assertEquals(0, (int) sample1.getTaxa2CountMap().get(AzorhizobiumCaulinodansNode)); //does not pass the test
-        // because of a null pointer exception
-        TaxonNode n2 = new TaxonNode("name", 469, "rank", 0, new ArrayList<>());
-        taxonTree.addNode(n2);
-        treeStructure.put(n2.getTaxonId(), n2);
-        assertEquals(2, (int) sample1.getTaxa2CountMap().get(n2)); //does not pass the test because of a null pointer
-        // exception
+        assertEquals(3, (int) sample1.getTaxa2CountMap().get(AzorhizobiumCaulinodansNode));
     }
 
 
