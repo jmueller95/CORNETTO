@@ -28,4 +28,14 @@ public class ApacheMathTest {
     }
 
     //TODO: Test covariance & correlation, try to do some hypothesis testing
+
+    /**
+     * Creates two random double arrays, calculates
+     * @throws Exception
+     */
+    @Test
+    public void testCorrelation() throws Exception {
+        //
+
+    }
 }

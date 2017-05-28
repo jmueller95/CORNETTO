@@ -73,6 +73,10 @@ public class TaxonTree {
      */
     public void buildTree(ArrayList<NodesDmp> listOfNodesDmp, ArrayList<NamesDmp> listOfNamesDmp) {
         for (int i = 0; i < listOfNodesDmp.size(); i++) {
+            /*DEBUG */
+            if(i%100 == 0){
+                System.out.println(i*100/listOfNodesDmp.size() + "% done!");
+            }
             for (int j = 0; j < listOfNamesDmp.size(); j++) {
                 if (listOfNodesDmp.get(i).getId() == listOfNamesDmp.get(j).getId()) {
                     //if there's no root yet
