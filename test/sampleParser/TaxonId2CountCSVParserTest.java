@@ -42,7 +42,7 @@ public class TaxonId2CountCSVParserTest {
 
         @Test
         public void testCountsOfFirstSample() throws Exception{
-            ArrayList<Sample> samples = csvparser.parse("...");
+            ArrayList<Sample> samples = csvparser.parse("./res/testFiles/example.taxonId2Count.txt");
             Sample sample = samples.get(0);
 
 
@@ -53,7 +53,7 @@ public class TaxonId2CountCSVParserTest {
 
     @Test
     public void testCountsOfFirstSample2() throws Exception{
-        ArrayList<Sample> samples = csvparser.parse("...");
+        ArrayList<Sample> samples = csvparser.parse("./res/testFiles/example.taxonId2Count.txt");
         Sample sample = samples.get(0);
         TaxonNode n1 = new TaxonNode("name", 1, "rank", 0, new ArrayList<>());
         TaxonNode n2 = new TaxonNode("name", 356, "rank", 0, new ArrayList<>());
