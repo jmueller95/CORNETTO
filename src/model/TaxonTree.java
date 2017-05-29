@@ -130,7 +130,7 @@ public class TaxonTree {
      * @return returns taxon Node
      * @throws IllegalArgumentException - node id not found in tree
      */
-    public TaxonNode getNodeForID(String nodeID) throws IllegalArgumentException{
+    public TaxonNode getNodeForID(int nodeID) throws IllegalArgumentException{
         if (treeStructure.containsKey(nodeID)) {
             return treeStructure.get(nodeID);
         } else {
