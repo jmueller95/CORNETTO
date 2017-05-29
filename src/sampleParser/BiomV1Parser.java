@@ -25,7 +25,6 @@ public class BiomV1Parser implements InputFile {
     private TaxonTree taxonTree;
 
     public BiomV1Parser(TaxonTree taxonTree) {
-        this.sampleList = new ArrayList<>();
         this.taxonTree = taxonTree;
     }
 
@@ -35,6 +34,8 @@ public class BiomV1Parser implements InputFile {
      * @return list of samples
      */
     public ArrayList<Sample> parse(String filepath) {
+        this.sampleList = new ArrayList<>();
+
 
         File inputFile = new File(filepath);
         System.out.println("File found? " + inputFile.exists());
