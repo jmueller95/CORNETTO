@@ -63,18 +63,18 @@ public class ApacheMathTest {
      */
     @Test
     public void testStatisticalTests() throws Exception {
-        double[] x = new double[10];
+        double[] x = new double[1000];
         for (int i = 0; i < x.length; i++) {
-            x[i] = Math.random()*100;
+            x[i] = Math.random()*100+1;
         }
         System.out.println("Testing array: " + Arrays.toString(x));
         //One-sample t-test
         double mu = new DescriptiveStatistics(x).getMean();
         System.out.println("Mean: " + mu);
-        System.out.println("t-statistic for true mean: " + TestUtils.t(mu, x));
-        System.out.println("p-value for true mean: " + TestUtils.tTest(mu,x));
-        System.out.println("t-statistic for false mean: " + TestUtils.t(mu+10,x));
-        System.out.println("p-value for false mean: " + TestUtils.tTest(mu+10,x));
+        System.out.println("t-statistic for true mean (50): " + TestUtils.t(50, x));
+        System.out.println("p-value for true mean (50): " + TestUtils.tTest(50,x));
+        System.out.println("t-statistic for false mean (75): " + TestUtils.t(75,x));
+        System.out.println("p-value for false mean (75): " + TestUtils.tTest(75,x));
 
 
     }

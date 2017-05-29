@@ -71,11 +71,11 @@ public class TaxonTree {
      * @param listOfNodesDmp - ArrayList of NodesDmp class.
      * @param listOfNamesDmp - ArrayList of NamesDmp class.
      */
-    public void buildTree(ArrayList<NodesDmp> listOfNodesDmp, ArrayList<NamesDmp> listOfNamesDmp) {
+    public void buildTreeOLD(ArrayList<NodesDmp> listOfNodesDmp, ArrayList<NamesDmp> listOfNamesDmp) {
         for (int i = 0; i < listOfNodesDmp.size(); i++) {
             /*DEBUG */
             if(i%100 == 0){
-                System.out.println(i*100/listOfNodesDmp.size() + "% done!");
+                System.out.println(i*100.d/listOfNodesDmp.size() + "% done!");
             }
             for (int j = 0; j < listOfNamesDmp.size(); j++) {
                 if (listOfNodesDmp.get(i).getId() == listOfNamesDmp.get(j).getId()) {
@@ -83,6 +83,32 @@ public class TaxonTree {
                     addNode(new TaxonNode(listOfNamesDmp.get(j).getName(), listOfNamesDmp.get(i).getId(), listOfNodesDmp.get(i).getRank(),
                             /*null try out new way*/ listOfNodesDmp.get(i).getParentId(), new ArrayList<TaxonNode>()));
                 }
+            }
+        }
+        updateRoot();
+    }
+
+    public void buildTree(ArrayList<NodesDmp> listOfNodesDmp, ArrayList<NamesDmp> listOfNamesDmp) {
+        int nodesCounter = 0;
+        int namesCounter = 0;
+        while(nodesCounter<listOfNodesDmp.size() && namesCounter < listOfNamesDmp.size()){
+            /*DEBUG */
+            if(nodesCounter%100 == 0){
+                System.out.println(nodesCounter*100.d/listOfNodesDmp.size() + "% done!");
+            }
+
+            if(listOfNodesDmp.get(nodesCounter).getId() > listOfNamesDmp.get(namesCounter).getId()){
+                namesCounter++;
+                System.out.println(">");
+            }else if(listOfNodesDmp.get(nodesCounter).getId() < listOfNamesDmp.get(namesCounter).getId()){
+                nodesCounter++;
+                System.out.println("<");
+            }else{ //That means they're equal!
+                addNode(new TaxonNode(listOfNamesDmp.get(namesCounter).getName(), listOfNamesDmp.get(namesCounter).getId(),
+                        listOfNodesDmp.get(nodesCounter).getRank(),/*null try out new way*/ listOfNodesDmp.get(nodesCounter).getParentId(),
+                        new ArrayList<TaxonNode>()));
+                namesCounter++;
+                nodesCounter++;
             }
         }
         updateRoot();
