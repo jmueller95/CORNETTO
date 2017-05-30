@@ -28,12 +28,12 @@ public class DownloadNodesAndNameDMPFiles {
         //download the zip from NCBI
         try {
             downloadFile(new URL(NCBIURL), OUTPUT_FOLDER);
+            //unzip file and save it
+            unZipIt("./res" + File.separator + fileName, OUTPUT_FOLDER);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        //unzip file and save it
-        unZipIt("./res" + File.separator + fileName, OUTPUT_FOLDER);
     }
 
     /**
@@ -62,8 +62,12 @@ public class DownloadNodesAndNameDMPFiles {
      * @param zipFile      input zip file
      * @param outputFolder zip file output folder
      */
-    public void unZipIt(String zipFile, String outputFolder) {
+    public void unZipIt(String zipFile, String outputFolder) throws Exception {
         byte[] buffer = new byte[1024];
+
+        if (!zipFile.endsWith("zip")){
+            throw new IllegalArgumentException("file is not a zip file");
+        }
 
         try {
             //create output directory if it doesn't exist yet
