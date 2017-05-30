@@ -6,9 +6,7 @@ import model.TaxonTree;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.Buffer;
-import java.util.ArrayList;
-import java.util.Collection;
+
 
 /**
  * Created by julian on 15.05.17.
@@ -26,7 +24,10 @@ public class TreeParser {
         System.err.println("The file does not exist.");
     }
 
-    //Parser methods
+    /**
+     * @param fileNodesDmp
+     * @param fileNamesDmp parses the two files - makes sure that NodesDmp gets called before NamesDmp!
+     */
     public void parseTree(String fileNodesDmp, String fileNamesDmp) {
         readNodesDmpFile(fileNodesDmp);
         readNamesDmpFile(fileNamesDmp);
@@ -34,21 +35,21 @@ public class TreeParser {
 
 
     /**
-     * parses the nodes.dmp file
-     * builds the tree (without names!)
+     * @param fileNodesDmp parses the nodes.dmp file
+     *                     builds the tree (without names!)
      */
     public void readNodesDmpFile(String fileNodesDmp) {
-        /*DEBUG*/ long startTime = System.currentTimeMillis();
+        /*DEBUG*/
+        long startTime = System.currentTimeMillis();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileNodesDmp));
 
             //First, read and create the root
             String line = reader.readLine();
             String[] lineSplit = line.split("\\|");
-            String[] lineSplitWithoutSpaces = removeBlanksFromArray(lineSplit);
-            int id = Integer.parseInt(lineSplitWithoutSpaces[0]);
-            int parentId = Integer.parseInt(lineSplitWithoutSpaces[1]); //Should also be 1 for the root
-            String rank = lineSplitWithoutSpaces[2];
+            int id = Integer.parseInt(lineSplit[0].trim());
+            int parentId = Integer.parseInt(lineSplit[1].trim()); //Should also be 1 for the root
+            String rank = lineSplit[2].trim();
             TaxonNode currentNode = new TaxonNode(id, rank, parentId);
             taxonTree.setRoot(currentNode);
             taxonTree.getTreeStructure().put(id, currentNode);
@@ -56,10 +57,9 @@ public class TreeParser {
             //Parse the rest of the tree
             while ((line = reader.readLine()) != null) {
                 lineSplit = line.split("\\|");
-                lineSplitWithoutSpaces = removeBlanksFromArray(lineSplit);
-                id = Integer.parseInt(lineSplitWithoutSpaces[0]);
-                parentId = Integer.parseInt(lineSplitWithoutSpaces[1]);
-                rank = lineSplitWithoutSpaces[2];
+                id = Integer.parseInt(lineSplit[0].trim());
+                parentId = Integer.parseInt(lineSplit[1].trim());
+                rank = lineSplit[2].trim();
                 //Check if node already exists (happens if it's the parent of a previously parsed node)
                 if (taxonTree.getTreeStructure().containsKey(id)) {
                     //In this case only update the existing node (it only contains an id and a child list so far)
@@ -80,14 +80,14 @@ public class TreeParser {
                     parentNode = taxonTree.getTreeStructure().get(parentId);
                     parentNode.getChildNodeList().add(currentNode);
                 }
-                taxonTree.getTreeStructure().put(parentId,parentNode);
+                taxonTree.getTreeStructure().put(parentId, parentNode);
                 //Set parentNode as parent of currentNode
                 currentNode.setParentNode(parentNode);
             }
         } catch (IOException e) {
             printFileDoesNotExist();
         }
-        System.out.println("Nodes parsed in " + (System.currentTimeMillis()-startTime)/1000.d + "s");
+        System.out.println("Nodes parsed in " + (System.currentTimeMillis() - startTime) / 1000.d + "s");
     }
 
     /**
@@ -99,46 +99,20 @@ public class TreeParser {
         long startTime = System.currentTimeMillis();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileNamesDmp));
-            String line = "";
+            String line;
             while ((line = reader.readLine()) != null) {
                 String[] lineSplit = line.split("\\|");
-                String identifier = removeBlanksString(lineSplit[3]);
-                if (identifier.equals("scientificname")){
-                    int id = Integer.parseInt(removeBlanksString(lineSplit[0]));
+                String identifier = lineSplit[3].trim();
+                if (identifier.equals("scientific name")) {
+                    int taxonId = Integer.parseInt(lineSplit[0].trim());
                     String name = lineSplit[1].trim();
-                    taxonTree.getTreeStructure().get(id).setName(name);
+                    taxonTree.getTreeStructure().get(taxonId).setName(name);
                 }
             }
         } catch (IOException e) {
             printFileDoesNotExist();
         }
-        System.out.println("Names parsed in " + (System.currentTimeMillis()-startTime)/1000.d + "s");
-    }
-
-    /**
-     * Removes the entire white space from a String array.
-     *
-     * @param array - String array
-     * @return the array without blanks
-     */
-    public static String[] removeBlanksFromArray(String[] array) {
-        String[] arrayWithoutBlanks = new String[array.length];
-        for (int i = 0; i < array.length; i++) {
-            arrayWithoutBlanks[i] = array[i].replaceAll("\\s+", "");
-        }
-
-        return arrayWithoutBlanks;
-    }
-
-    /**
-     * Removes the entire white space from a String.
-     *
-     * @param stringToRemoveBlanksFrom - String
-     * @return the String without blanks
-     */
-    public static String removeBlanksString(String stringToRemoveBlanksFrom) {
-
-        return stringToRemoveBlanksFrom.replaceAll("\\s+", "");
+        System.out.println("Names parsed in " + (System.currentTimeMillis() - startTime) / 1000.d + "s");
     }
 
     public TaxonTree getTaxonTree() {
