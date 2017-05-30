@@ -13,6 +13,9 @@ public class TaxonNode {
     private TaxonNode parentNode;
     private ArrayList<TaxonNode> childNodeList;
 
+    /**
+     * Constructor for everything (probably not used anymore)
+     */
     public TaxonNode(String name, int taxonId, String rank, /*model.TaxonNode parentNode*/ int parentId, ArrayList<TaxonNode> childNodeList) {
         this.name = name;
         this.taxonId = taxonId;
@@ -22,25 +25,43 @@ public class TaxonNode {
         this.childNodeList = childNodeList;
     }
 
-    public String getName() {
-        return name;
+    /**
+     * Constructor for a Node added by the nodes.dmp-parser
+     * Contains taxonId, rank, parentId
+     * Creates an empty child list
+     * Reference to parent is set right after this is called, name is set when names.dmp is parsed
+     */
+    public TaxonNode(int taxonId, String rank, int parentId){
+        this.taxonId = taxonId;
+        this.rank = rank;
+        this.parentId = parentId;
+        this.childNodeList = new ArrayList<>();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Constructor for a parent node that hasn't actually been parsed yet
+     * Only contains id and the first child
+     * Rest is added when the node actually gets parsed
+     */
+    public TaxonNode(int taxonId, TaxonNode child){
+        this.taxonId = taxonId;
+        this.childNodeList = new ArrayList<>();
+        childNodeList.add(child);
+    }
+
+
+    public String getName() {
+        return name;
     }
 
     public int getTaxonId() {
         return taxonId;
     }
 
-    public void setTaxonId(int taxonId) {
-        this.taxonId = taxonId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getRank() {
-        return rank;
-    }
 
     public void setRank(String rank) {
         this.rank = rank;
@@ -58,11 +79,11 @@ public class TaxonNode {
         return childNodeList;
     }
 
-    public void setChildNodeList(ArrayList<TaxonNode> childNodeList) {
-        this.childNodeList = childNodeList;
-    }
-
     public int getParentId() {
         return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 }
