@@ -33,6 +33,14 @@ public class TreeParser {
         readNamesDmpFile(fileNamesDmp);
     }
 
+    /**
+     * Default version of parseTree, uses ./res/nodes.dmp and ./res/names.dmp as paths
+     */
+    public void parseTree(){
+        parseTree("./res/nodes.dmp", "./res/names.dmp");
+
+    }
+
 
     /**
      * @param fileNodesDmp parses the nodes.dmp file
