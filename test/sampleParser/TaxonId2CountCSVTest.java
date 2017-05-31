@@ -34,21 +34,6 @@ public class TaxonId2CountCSVTest {
     }
 
     /**
-     * Parse a file with three samples, checks if length of sample list is three and tests some properties
-     * @throws Exception
-     */
-    @Test
-    public void testMultipleSamples() throws Exception {
-        ArrayList<Sample> samples = csvparser.parse("./res/testFiles/taxonId2Count/multipleSampleExample.taxonId2Count.txt");
-        assertEquals(3,samples.size());
-        TaxonNode testTaxon = taxonTree.getNodeForID(80864);
-        assertEquals(1,samples.get(0).getTaxa2CountMap().get(testTaxon),0);
-        assertEquals(2,samples.get(1).getTaxa2CountMap().get(testTaxon),0);
-        assertEquals(13,samples.get(2).getTaxa2CountMap().get(testTaxon),0);
-
-    }
-
-    /**
      * Tests if the count of the taxon with id 543 actually matches 12
      * and:                                    267888               0
      *
@@ -62,5 +47,21 @@ public class TaxonId2CountCSVTest {
         testTaxon = taxonTree.getNodeForID(267888);
         assertEquals(0, samples.get(0).getTaxa2CountMap().get(testTaxon), 0);
     }
+
+    /**
+     * Parses a file with three samples, checks if length of sample list is three and tests some properties
+     * @throws Exception
+     */
+    @Test
+    public void testMultipleSamples() throws Exception {
+        ArrayList<Sample> samples = csvparser.parse("./res/testFiles/taxonId2Count/multipleSampleExample.taxonId2Count.txt");
+        assertEquals(3,samples.size());
+        TaxonNode testTaxon = taxonTree.getNodeForID(80864);
+        assertEquals(1,samples.get(0).getTaxa2CountMap().get(testTaxon),0);
+        assertEquals(2,samples.get(1).getTaxa2CountMap().get(testTaxon),0);
+        assertEquals(13,samples.get(2).getTaxa2CountMap().get(testTaxon),0);
+
+    }
+
 }
 
