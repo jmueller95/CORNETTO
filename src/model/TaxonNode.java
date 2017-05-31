@@ -14,18 +14,6 @@ public class TaxonNode {
     private ArrayList<TaxonNode> childNodeList;
 
     /**
-     * Constructor for everything (probably not used anymore)
-     */
-    public TaxonNode(String name, int taxonId, String rank, /*model.TaxonNode parentNode*/ int parentId, ArrayList<TaxonNode> childNodeList) {
-        this.name = name;
-        this.taxonId = taxonId;
-        this.rank = rank;
-        //this.parentNode = parentNode;
-        this.parentId = parentId;
-        this.childNodeList = childNodeList;
-    }
-
-    /**
      * Constructor for a Node added by the nodes.dmp-parser
      * Contains taxonId, rank, parentId
      * Creates an empty child list
@@ -62,7 +50,9 @@ public class TaxonNode {
         this.name = name;
     }
 
-
+    public String getRank() {
+        return rank;
+    }
     public void setRank(String rank) {
         this.rank = rank;
     }
