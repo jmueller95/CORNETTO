@@ -17,46 +17,31 @@ import static org.junit.Assert.*;
  */
 public class ReadName2TaxIdCSVParserTest {
 
-    ReadName2TaxIdCSVParser readName2TaxIdCSVParser;
+    ReadName2TaxIdCSVParser csvparser;
     TaxonTree taxonTree;
 
-//    @Before
-//    public void setUp() throws Exception {
-//        //read required files for the tree
-//        TreeParser treeParser = new TreeParser();
-//        treeParser.setFileNamesDmp("./res/testFiles/treeParser/names_stub.dmp");
-//        treeParser.setFileNodesDmp("./res/testFiles/treeParser/nodes_stub.dmp");
-//        treeParser.readNodesDmpFile();
-//        treeParser.readNamesDmpFile();
-//
-//        //create root node and build tree
-//        TaxonNode rootNode = new TaxonNode("root", 1, "no rank", 1, new ArrayList<>());
-//        taxonTree = new TaxonTree(rootNode);
-//        taxonTree.buildTree(treeParser.getNodesDmps(), treeParser.getNamesDmps());
-//
-//        readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(taxonTree);
-//    }
-//
-//    @Test
-//    public void testSampleCounts() throws Exception {
-//        ArrayList<Sample> exampleFileSamples = readName2TaxIdCSVParser.parse
-//                ("./res/testFiles/readName2TaxId/example.readName2TaxId.txt");
-//        assertEquals(1, exampleFileSamples.size());
-//        ArrayList<Sample> emptyFileSamples = readName2TaxIdCSVParser.parse("./res/testFiles/readName2TaxId/emptyFile");
-//        assertEquals(0, emptyFileSamples.size());
-//    }
-//
-//    @Test
-//    public void testTaxonIdCounts() throws Exception {
-//        ArrayList<Sample> exampleFileSamples = readName2TaxIdCSVParser.parse
-//                ("./res/testFiles/readName2TaxId/example.readName2TaxId_stub.txt");
-//        Sample sample1 = exampleFileSamples.get(0);
-//
-//        final HashMap<Integer, TaxonNode> treeStructure = taxonTree.getTreeStructure();
-//        TaxonNode AzorhizobiumCaulinodansNode = treeStructure.get(7);
-//
-//        assertEquals(3, (int) sample1.getTaxa2CountMap().get(AzorhizobiumCaulinodansNode));
-//    }
+    @Before
+    public void setUp() throws Exception {
+        TreeParser treeParser = new TreeParser();
+        treeParser.parseTree();
+        taxonTree = treeParser.getTaxonTree();
+        csvparser = new ReadName2TaxIdCSVParser(taxonTree);
+
+    }
+
+    /**
+     * Parses readName2TaxId file, tests if taxon with id 590 matches count 3 and id 561 matches 48
+     * @throws Exception
+     */
+    @Test
+    public void testCounts() throws Exception {
+        ArrayList<Sample> samples = csvparser.parse("./res/testFiles/readName2TaxId/example.readName2TaxId.txt");
+        TaxonNode testNode = taxonTree.getNodeForID(590);
+        assertEquals(3,samples.get(0).getTaxa2CountMap().get(testNode),0);
+        testNode = taxonTree.getNodeForID(561);
+        assertEquals(48,samples.get(0).getTaxa2CountMap().get(testNode),0);
+
+    }
 
 
 }
