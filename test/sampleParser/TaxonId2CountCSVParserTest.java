@@ -21,8 +21,6 @@ public class TaxonId2CountCSVParserTest {
 
         @Before
         public void setUp() throws Exception {
-          //  TaxonId2CountCSVParser csvparser;
-           // TaxonTree taxonTree; //TODO: Parse the tree and get it here!
 
             csvparser = new TaxonId2CountCSVParser(taxonTree);
 
@@ -50,7 +48,7 @@ public class TaxonId2CountCSVParserTest {
     public void testCountsOfFirstSample() throws Exception{
             ArrayList<Sample> samples = csvparser.parse("./res/testFiles/example.taxonId2Count.txt");
             Sample sample = samples.get(0);
-            TaxonNode n3 = new TaxonNode("name", 286, "rank", 0, new ArrayList<>());
+            TaxonNode n3 = new TaxonNode("name", 1224, "rank", 0, new ArrayList<>());
             assertEquals(1, (int) sample.getTaxa2CountMap().get(n3)); //expected result with id 286 :1
         }
 
