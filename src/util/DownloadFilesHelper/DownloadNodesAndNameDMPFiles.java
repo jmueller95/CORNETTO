@@ -43,6 +43,8 @@ public class DownloadNodesAndNameDMPFiles {
      * @param outputFolder zip file output folder
      */
     public void downloadFile(URL url, String outputFolder) {
+
+
         String fileName = "NodesAndNamesDmp.zip";
         File newFile = new File(outputFolder + File.separator + fileName);
 
