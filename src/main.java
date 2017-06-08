@@ -1,15 +1,7 @@
-import com.sun.javafx.geom.Rectangle;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
+import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.TaxonTree;
 import treeParser.TreeParser;
@@ -23,7 +15,8 @@ import static javafx.application.Application.launch;
  * Created by Zeth on 08.06.2017.
  * launches the main method
  */
-public class main {
+//TODO doubt that it should extend Application later on
+public class main extends Application {
     private static final String NODESDMPSRC = "./res/nodes.dmp";
     private static final String NAMESDMPSRC = "./res/names.dmp";
 
@@ -42,15 +35,11 @@ public class main {
     /*
     only testing the GUI
      */
+    @Override
     public void start(Stage primaryStage) {
         Button btn = new Button();
         btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
+        btn.setOnAction((event) -> System.out.println("Hello World!"));
 
         StackPane root = new StackPane();
         root.getChildren().add(btn);
