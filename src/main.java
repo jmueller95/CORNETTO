@@ -20,6 +20,11 @@ public class main extends Application {
     private static final String NODESDMPSRC = "./res/nodes.dmp";
     private static final String NAMESDMPSRC = "./res/names.dmp";
 
+    /**
+     * the main method
+     * builds the tree and launches the GUI
+     * @param args
+     */
     public static void main(String args[]) {
         //build the tree
         setUpRequiredFiles();
@@ -32,8 +37,9 @@ public class main extends Application {
 
     }
 
-    /*
-    only testing the GUI
+    /**
+     * only testing the GUI
+     * @param primaryStage
      */
     @Override
     public void start(Stage primaryStage) {
@@ -51,13 +57,16 @@ public class main extends Application {
         primaryStage.show();
     }
 
+    /**
+     * checks whether nodes.dmp and names.dmp exist
+     * if not it downloads the files and puts them into the correct place
+     */
     public static void setUpRequiredFiles() {
-
-        //check if required files exist
         File nodesDmp = new File(NODESDMPSRC);
         File namesDmp = new File(NAMESDMPSRC);
 
         //if files do NOT exist or they are a directory
+        //-> download the files
         if (!(nodesDmp.exists() && namesDmp.exists() && !nodesDmp.isDirectory() && !namesDmp.exists())) {
             DownloadNodesAndNameDMPFiles downloadNodesAndNameDMPFiles = new DownloadNodesAndNameDMPFiles();
             downloadNodesAndNameDMPFiles.DownloadNamesNodesDMPandUnzip();
