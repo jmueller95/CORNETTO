@@ -65,7 +65,7 @@ public class DownloadNodesAndNameDMPFiles {
     public void unZipIt(String zipFile, String outputFolder) throws Exception {
         byte[] buffer = new byte[1024];
 
-        if (!zipFile.endsWith("zip")){
+        if (!zipFile.endsWith("zip")) {
             throw new IllegalArgumentException("file is not a zip file");
         }
 
