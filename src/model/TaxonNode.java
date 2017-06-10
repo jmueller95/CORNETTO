@@ -37,6 +37,13 @@ public class TaxonNode {
         childNodeList.add(child);
     }
 
+    /**
+     * Checks whether a node doesn't have any children
+     * @return
+     */
+    public boolean isLeaf(){
+        return childNodeList.isEmpty();
+    }
 
     public String getName() {
         return name;
