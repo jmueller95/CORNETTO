@@ -27,6 +27,7 @@ public class ReadName2TaxIdCSVParser implements InputFile {
      * @return
      * @throws IOException
      */
+    //TODO: Add metadata!?
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException {
         //Get Mapping of IDs to TaxonNodes from the TaxonTree

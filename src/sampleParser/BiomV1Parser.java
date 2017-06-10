@@ -82,7 +82,7 @@ public class BiomV1Parser implements InputFile {
                     }
 
                     // Extract sampleID and TaxonNode
-                    int id = (int) currentRow.get("id");
+                    int id = Integer.parseInt(currentRow.get("id").toString());
                     try{
                         // Add observation to sample if taxonomy is found in tree
                         currentTaxCount.put(taxonTree.getNodeForID(id), count);
@@ -99,7 +99,7 @@ public class BiomV1Parser implements InputFile {
             e.printStackTrace();
         }
 
-        return null;
+        return sampleList;
     }
 
 }

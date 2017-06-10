@@ -24,6 +24,7 @@ public class TaxonId2CountCSVParser implements InputFile {
 
     //So far, every column is read and the corresponding number of sample objects is created.
     //TODO: In the final program, the user should be allowed to choose which columns are read
+    //TODO: Add metadata!?
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filepath));
@@ -50,6 +51,7 @@ public class TaxonId2CountCSVParser implements InputFile {
             }
             line = reader.readLine();
         }
+
 
         return sampleList;
     }
