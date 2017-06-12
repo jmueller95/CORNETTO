@@ -7,8 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -21,7 +19,7 @@ public class DownloadNodesAndNameDMPFiles {
     private static final Logger LOGGER = Logger.getLogger(DownloadNodesAndNameDMPFiles.class.getName());
     private static final String OUTPUT_FOLDER = "./res";
     private final String NCBIURL = "ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip";
-    private final String fileName = "NodesAndNamesDmp.zip";
+    private final String zipFileToDownload = "NodesAndNamesDmp.zip";
     private final ArrayList<String> listOfFilesToUnzip = new ArrayList() {{
         add("names.dmp");
         add("nodes.dmp");
@@ -30,13 +28,16 @@ public class DownloadNodesAndNameDMPFiles {
     /**
      * downloads the NCBI Zip und unpacks it
      * saves files to the res folder
+     * deletes the zip file afterwards
      */
     public void DownloadNamesNodesDMPandUnzip() {
         //download the zip from NCBI
         try {
             downloadFile(new URL(NCBIURL), OUTPUT_FOLDER);
             //unzip file and save it
-            unZipIt("./res" + File.separator + fileName, OUTPUT_FOLDER, listOfFilesToUnzip);
+            unZipIt("./res" + File.separator + zipFileToDownload, OUTPUT_FOLDER, listOfFilesToUnzip);
+            File file = new File("./res" + File.separator + zipFileToDownload);
+            file.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,6 +69,7 @@ public class DownloadNodesAndNameDMPFiles {
      *
      * @param zipFile      input zip file
      * @param outputFolder zip file output folder
+     * @param listOfFilesToUnzip list of files that are to be extracted from the zip
      */
     public void unZipIt(String zipFile, String outputFolder, ArrayList<String> listOfFilesToUnzip) throws Exception {
         byte[] buffer = new byte[1024];
