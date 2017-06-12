@@ -23,7 +23,6 @@ public class Presenter {
     public Presenter(View view, TaxonTree taxonTree) {
         this.view = view;
         this.taxonTree = taxonTree;
-
     }
 
     /**
@@ -43,7 +42,7 @@ public class Presenter {
             view.getFileChooser().setSelectedExtensionFilter(new FileChooser.ExtensionFilter("BiomV2 file", ".biom"));
             String filepath = String.valueOf(view.getFileChooser().showOpenDialog(view.getScene().getWindow()));
             try {
-                ArrayList<Sample> samples = new BiomV2Parser(taxonTree).parse(filepath);
+                ArrayList<Sample> samples = new BiomV2Parser(taxonTree).parse(filepath);//TODO: Where should the samples be stored?
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -62,7 +61,7 @@ public class Presenter {
             view.getMessagesArea().appendText("\nSuccessfully imported ReadName2TaxId CSV file: " + filepath);
         });
 
-        view.getImportId2CountItem().setOnAction((e)->{
+        view.getImportId2CountItem().setOnAction((e) -> {
 
             view.getFileChooser().setTitle("Import a TaxonId2Count CSV file");
             view.getFileChooser().setSelectedExtensionFilter(new FileChooser.ExtensionFilter("CSV file", ".csv", ".txt"));
@@ -75,7 +74,7 @@ public class Presenter {
             view.getMessagesArea().appendText("\nSuccessfully imported TaxonId2Count CSV file: " + filepath);
         });
 
-        view.getExitItem().setOnAction((e)->{
+        view.getExitItem().setOnAction((e) -> {
             Platform.exit();
         });
     }

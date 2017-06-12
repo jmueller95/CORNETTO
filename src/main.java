@@ -2,16 +2,12 @@ import UI.Presenter;
 import UI.View;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.TaxonTree;
 import treeParser.TreeParser;
 import util.DownloadFilesHelper.DownloadNodesAndNameDMPFiles;
 
 import java.io.File;
-
-import static javafx.application.Application.launch;
 
 /**
  * Created by Zeth on 08.06.2017.

@@ -21,6 +21,9 @@ public class View extends GridPane {
     private Pane graphDisplay;
     private TextArea messagesArea;
 
+    /**
+     *creates the required fields for the view
+     */
     public View() {
         menuBar = new MenuBar();
         fileMenu = new Menu("File");
@@ -41,14 +44,19 @@ public class View extends GridPane {
         createLayout();
     }
 
-
+    /**
+     * initializes all fields to their default values
+     */
     private void initFields() {
         messagesArea.setEditable(false);
         messagesArea.setText("Welcome to the Correlation Network Analysis Tool! Please import your samples to begin!");
 
     }
 
-
+    /**
+     * creates the layout of the GUI
+     * sets the screen size of the GUI
+     */
     private void createLayout() {
         //We want the app to take all the height and three quarters of the width of the screen
         double width = Screen.getPrimary().getVisualBounds().getWidth() * 3 / 4;
