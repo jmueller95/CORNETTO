@@ -1,3 +1,5 @@
+import UI.Presenter;
+import UI.View;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,10 +21,12 @@ import static javafx.application.Application.launch;
 public class main extends Application {
     private static final String NODESDMPSRC = "./res/nodes.dmp";
     private static final String NAMESDMPSRC = "./res/names.dmp";
+    private static TaxonTree taxonTree;
 
     /**
      * the main method
      * builds the tree and launches the GUI
+     *
      * @param args
      */
     public static void main(String args[]) {
@@ -30,7 +34,7 @@ public class main extends Application {
         setUpRequiredFiles();
         TreeParser treeParser = new TreeParser();
         treeParser.parseTree(NODESDMPSRC, NAMESDMPSRC);
-        TaxonTree taxonTree = treeParser.getTaxonTree();
+        taxonTree = treeParser.getTaxonTree();
 
         //launch the GUI
         launch(args);
@@ -39,21 +43,17 @@ public class main extends Application {
 
     /**
      * only testing the GUI
+     *
      * @param primaryStage
      */
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction((event) -> System.out.println("Hello World!"));
-
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
-
-        Scene scene = new Scene(root, 300, 250);
-
-        primaryStage.setTitle("Hello World!");
+        View view = new View();
+        Presenter presenter = new Presenter(view, taxonTree);
+        presenter.setupMenuItems();
+        Scene scene = new Scene(view);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Correlation Network Analysis Tool");
         primaryStage.show();
     }
 
@@ -71,9 +71,8 @@ public class main extends Application {
             DownloadNodesAndNameDMPFiles downloadNodesAndNameDMPFiles = new DownloadNodesAndNameDMPFiles();
             downloadNodesAndNameDMPFiles.DownloadNamesNodesDMPandUnzip();
         }
+
     }
-
-
 
 
 }
