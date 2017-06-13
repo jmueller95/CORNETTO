@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -18,18 +19,25 @@ public class DownloadNodesAndNameDMPFiles {
     private static final Logger LOGGER = Logger.getLogger(DownloadNodesAndNameDMPFiles.class.getName());
     private static final String OUTPUT_FOLDER = "./res";
     private final String NCBIURL = "ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip";
-    private final String fileName = "NodesAndNamesDmp.zip";
+    private final String zipFileToDownload = "NodesAndNamesDmp.zip";
+    private final ArrayList<String> listOfFilesToUnzip = new ArrayList() {{
+        add("names.dmp");
+        add("nodes.dmp");
+    }};
 
     /**
      * downloads the NCBI Zip und unpacks it
      * saves files to the res folder
+     * deletes the zip file afterwards
      */
     public void DownloadNamesNodesDMPandUnzip() {
         //download the zip from NCBI
         try {
             downloadFile(new URL(NCBIURL), OUTPUT_FOLDER);
             //unzip file and save it
-            unZipIt("./res" + File.separator + fileName, OUTPUT_FOLDER);
+            unZipIt("./res" + File.separator + zipFileToDownload, OUTPUT_FOLDER, listOfFilesToUnzip);
+            File file = new File("./res" + File.separator + zipFileToDownload);
+            file.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,8 +69,9 @@ public class DownloadNodesAndNameDMPFiles {
      *
      * @param zipFile      input zip file
      * @param outputFolder zip file output folder
+     * @param listOfFilesToUnzip list of files that are to be extracted from the zip
      */
-    public void unZipIt(String zipFile, String outputFolder) throws Exception {
+    public void unZipIt(String zipFile, String outputFolder, ArrayList<String> listOfFilesToUnzip) throws Exception {
         byte[] buffer = new byte[1024];
 
         if (!zipFile.endsWith("zip")) {
@@ -78,31 +87,34 @@ public class DownloadNodesAndNameDMPFiles {
 
             //get zip file content
             ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFile));
-            //get the ziped file list entry
-            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            ZipEntry zipEntry;
 
             //handle all entries
-            while (zipEntry != null) {
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 String fileName = zipEntry.getName();
-                File newFile = new File(outputFolder + File.separator + fileName);
+                //check if the entry is one of the files that need to be unzipped
+                for (String item : listOfFilesToUnzip) {
+                    //we found a file to unzip
+                    if (item.equals(fileName)) {
+                        File newFile = new File(outputFolder + File.separator + fileName);
 
-                LOGGER.log(Level.FINE, "file unzip: " + newFile.getAbsolutePath());
+                        LOGGER.log(Level.FINE, "file unzip: " + newFile.getAbsolutePath());
 
-                //create all non exists folders
-                //else you will hit FileNotFoundException for compressed folder
-                new File(newFile.getParent()).mkdirs();
+                        //create all non exists folders
+                        //else you will hit FileNotFoundException for compressed folder
+                        new File(newFile.getParent()).mkdirs();
 
-                FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+                        FileOutputStream fileOutputStream = new FileOutputStream(newFile);
 
-                int length;
-                while ((length = zipInputStream.read(buffer)) > 0) {
-                    fileOutputStream.write(buffer, 0, length);
+                        int length;
+                        while ((length = zipInputStream.read(buffer)) > 0) {
+                            fileOutputStream.write(buffer, 0, length);
+                        }
+
+                        fileOutputStream.close();
+                    }
                 }
-
-                fileOutputStream.close();
-                zipEntry = zipInputStream.getNextEntry();
             }
-
             zipInputStream.closeEntry();
             zipInputStream.close();
 
