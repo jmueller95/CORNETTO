@@ -1,4 +1,3 @@
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -37,12 +36,11 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/UI/GUI.fxml"));
         Parent content = loader.load();
+        content.getStylesheets().add("/UI/GUIStyle.css");
         primaryStage.setTitle("Network Analysis Tool");
         primaryStage.setScene(new Scene(content, 800, 500));
         primaryStage.show();
     }
-
-
 
 
 }

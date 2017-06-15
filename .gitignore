@@ -4,6 +4,8 @@ out/
 
 # Unversioned Files
 src/resources/
+res/testFiles/treeParser/names.dmp
+res/testFiles/treeParser/nodes.dmp
 
 # Compiled class file
 *.class
