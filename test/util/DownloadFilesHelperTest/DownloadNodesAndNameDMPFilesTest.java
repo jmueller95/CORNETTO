@@ -32,8 +32,15 @@ public class DownloadNodesAndNameDMPFilesTest {
         ArrayList<String> fileList = new ArrayList<>();
         fileList.add("example.readName2TaxId.txt");
         fileList.add("example.taxonId2Count.txt");
-        download.unZipIt("TwoZipFilesTest",  "./res/zipFileTest", fileList);
+        ArrayList<String> emptyList = new ArrayList<>();
+
+        download.unZipIt("./res/testFiles/zipFileTest/TwoZipFilesTest.zip",  "./res/zipFileTest", fileList);
+        assertEquals(2, fileList.size()); //tests if the zip File contains 2 files
+        assertEquals(0, emptyList.size()); //tests if the zip File is empty
+        assertEquals("example.readName2TaxId.txt", fileList.get(0)); //tests if example.readName2TaxId.txt file is the first one
+        assertEquals("example.taxonId2Count.txt", fileList.get(1));
     }
+
 
 
 
