@@ -4,7 +4,7 @@ Changes to JGraphT in each version:
 
 - **version 1.0.1** (under development):
 	- Deleted all previously deprecated methods (cleanup contributed by Joris Kinable and Dimitrios Michail)
-	- Cleanup of main pom.xml; Added `CONTRIBUTING.md` (contributed by John Sichi)
+	- Cleanup of Main pom.xml; Added `CONTRIBUTING.md` (contributed by John Sichi)
 	- Added Checkstyle plugin and rules; they are automatically executed by Travis (contributed by Dimitrios Michail)
 	- Unified graph export name providers using a common interface (contributed by Dimitrios Michail)
 	- Fix `GnmRandomGraphGenerator` bug in computation of maximum number of edges (contributed by Dimitrios Michail)

@@ -1,56 +1,35 @@
-import UI.Presenter;
-import UI.View;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+package UI;
+
+import javafx.fxml.Initializable;
 import model.TaxonTree;
 import treeParser.TreeParser;
 import util.DownloadFilesHelper.DownloadNodesAndNameDMPFiles;
 
 import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
- * Created by Zeth on 08.06.2017.
- * launches the main method
+ * Created by Zeth on 15.06.2017.
  */
-//TODO doubt that it should extend Application later on
-public class main extends Application {
+public class Controller implements Initializable {
     private static final String NODESDMPSRC = "./res/nodes.dmp";
     private static final String NAMESDMPSRC = "./res/names.dmp";
     private static TaxonTree taxonTree;
 
     /**
-     * the main method
-     * builds the tree and launches the GUI
+     * initializes all required files
      *
-     * @param args
+     * @param location
+     * @param resources
      */
-    public static void main(String args[]) {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         //build the tree
         setUpRequiredFiles();
         TreeParser treeParser = new TreeParser();
         treeParser.parseTree(NODESDMPSRC, NAMESDMPSRC);
         taxonTree = treeParser.getTaxonTree();
-
-        //launch the GUI
-        launch(args);
-
-    }
-
-    /**
-     * only testing the GUI
-     *
-     * @param primaryStage
-     */
-    @Override
-    public void start(Stage primaryStage) {
-        View view = new View();
-        Presenter presenter = new Presenter(view, taxonTree);
-        presenter.setupMenuItems();
-        Scene scene = new Scene(view);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Correlation Network Analysis Tool");
-        primaryStage.show();
     }
 
     /**
@@ -69,6 +48,4 @@ public class main extends Application {
         }
 
     }
-
-
 }
