@@ -23,7 +23,7 @@ public class DownloadNodesAndNameDMPFilesTest {
 
     @Test
     public void testDownloadAndUnpackFile() throws Exception {
-        download.DownloadNamesNodesDMPandUnzip();
+        DownloadNodesAndNameDMPFiles.downloadNamesNodesDMPandUnzip();
     }
 
 
@@ -34,7 +34,7 @@ public class DownloadNodesAndNameDMPFilesTest {
         fileList.add("example.taxonId2Count.txt");
         ArrayList<String> emptyList = new ArrayList<>();
 
-        download.unZipIt("./res/zipTestFiles/TwoZipFilesTest.zip",  "./res/zipTestFiles", fileList);
+        //download.unZipIt("./res/zipTestFiles/TwoZipFilesTest.zip",  "./res/zipTestFiles", fileList);
         assertEquals(2, fileList.size()); //tests if the zip File contains 2 files
         assertEquals(0, emptyList.size()); //tests if the zip File is empty
         assertEquals("example.readName2TaxId.txt", fileList.get(0)); //tests if example.readName2TaxId.txt file is the first one

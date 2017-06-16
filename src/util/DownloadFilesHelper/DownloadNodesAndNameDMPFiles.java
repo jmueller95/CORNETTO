@@ -18,9 +18,9 @@ import java.util.zip.ZipInputStream;
 public class DownloadNodesAndNameDMPFiles {
     private static final Logger LOGGER = Logger.getLogger(DownloadNodesAndNameDMPFiles.class.getName());
     private static final String OUTPUT_FOLDER = "./res";
-    private final String NCBIURL = "ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip";
-    private final String zipFileToDownload = "NodesAndNamesDmp.zip";
-    private final ArrayList<String> listOfFilesToUnzip = new ArrayList() {{
+    private static final String NCBI_URL = "ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip";
+    private static final String ZIP_FILE_TO_DOWNLOAD = "NodesAndNamesDmp.zip";
+    private static final ArrayList LIST_OF_FILES_TO_UNZIP = new ArrayList() {{
         add("names.dmp");
         add("nodes.dmp");
     }};
@@ -30,13 +30,13 @@ public class DownloadNodesAndNameDMPFiles {
      * saves files to the res folder
      * deletes the zip file afterwards
      */
-    public void DownloadNamesNodesDMPandUnzip() {
+    public static void downloadNamesNodesDMPandUnzip() {
         //download the zip from NCBI
         try {
-            downloadFile(new URL(NCBIURL), OUTPUT_FOLDER);
+            downloadFile(new URL(NCBI_URL), OUTPUT_FOLDER);
             //unzip file and save it
-            unZipIt("./res" + File.separator + zipFileToDownload, OUTPUT_FOLDER, listOfFilesToUnzip);
-            File file = new File("./res" + File.separator + zipFileToDownload);
+            unZipIt("./res" + File.separator + ZIP_FILE_TO_DOWNLOAD, OUTPUT_FOLDER, LIST_OF_FILES_TO_UNZIP);
+            File file = new File("./res" + File.separator + ZIP_FILE_TO_DOWNLOAD);
             file.delete();
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +50,7 @@ public class DownloadNodesAndNameDMPFiles {
      * @param url          input zip file from url
      * @param outputFolder zip file output folder
      */
-    public void downloadFile(URL url, String outputFolder) {
+    private static void downloadFile(URL url, String outputFolder) {
         String fileName = "NodesAndNamesDmp.zip";
         File newFile = new File(outputFolder + File.separator + fileName);
 
@@ -71,7 +71,7 @@ public class DownloadNodesAndNameDMPFiles {
      * @param outputFolder zip file output folder
      * @param listOfFilesToUnzip list of files that are to be extracted from the zip
      */
-    public void unZipIt(String zipFile, String outputFolder, ArrayList<String> listOfFilesToUnzip) throws Exception {
+    private static void unZipIt(String zipFile, String outputFolder, ArrayList<String> listOfFilesToUnzip) throws Exception {
         byte[] buffer = new byte[1024];
 
         if (!zipFile.endsWith("zip")) {
@@ -123,5 +123,10 @@ public class DownloadNodesAndNameDMPFiles {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+
+        downloadNamesNodesDMPandUnzip();
     }
 }
