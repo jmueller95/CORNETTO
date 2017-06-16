@@ -124,9 +124,4 @@ public class DownloadNodesAndNameDMPFiles {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) {
-
-        downloadNamesNodesDMPandUnzip();
-    }
 }
