@@ -3,14 +3,21 @@ package UI;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
+import model.Sample;
 import model.TaxonTree;
+import sampleParser.ReadName2TaxIdCSVParser;
+import sampleParser.TaxonId2CountCSVParser;
 import treeParser.TreeParser;
 import util.DownloadFilesHelper.DownloadNodesAndNameDMPFiles;
+
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -23,12 +30,17 @@ public class Controller implements Initializable {
 
     private static int id = 1;
 
+    private ArrayList<String> openFiles;
+
     //Elements of the GUI
     @FXML
     private Label leftLabel;
 
     @FXML
     private TreeView<String> treeViewFiles;
+
+    @FXML
+    private TextArea textAreaDetails;
 
     /**
      * initializes all required files
@@ -39,13 +51,15 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //build the tree
-        /*System.out.println("Downloading files...");
+        System.out.println("Downloading files...");
         setUpRequiredFiles();
         System.out.println("Parsing tree...");
         TreeParser treeParser = new TreeParser();
         treeParser.parseTree(NODESDMPSRC, NAMESDMPSRC);
-        taxonTree = treeParser.getTaxonTree();*/
+        taxonTree = treeParser.getTaxonTree();
         initializeTreeView();
+        textAreaDetails.setEditable(false);
+        openFiles = new ArrayList<>();
     }
 
     /**
@@ -85,19 +99,67 @@ public class Controller implements Initializable {
         }
     }
 
+    @FXML
+    /**
+     * Closes the current project and empties the tree view
+     */
+    public void handleCloseProcject() {
+        if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
+            treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
+            textAreaDetails.setText("");
+            openFiles = new ArrayList<>();
+        }
+    }
+
     /**
      * Adds and displays the file name and a placeholder id for the file name in the treeview gui element
+     *
      * @param file
      */
     public void addFileToTreeView(File file) {
 
-        //TODO: Implement check for correct file extension
-        TreeItem<String> newEntity = new TreeItem<>(file.getName());
+        if (file.getName().endsWith(".txt") && !openFiles.contains(file.getName())) {
 
-        TreeItem<String> entityId = new TreeItem<>("Id: " + id++);
+            openFiles.add(file.getName());
 
-        newEntity.getChildren().add(entityId);
-        treeViewFiles.getRoot().getChildren().add(newEntity);
+            TaxonId2CountCSVParser taxonId2CountCSVParser = new TaxonId2CountCSVParser(taxonTree);
+            ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(taxonTree);
+
+            ArrayList<Sample> sampleList = null;
+            try {
+                try {
+                    sampleList = taxonId2CountCSVParser.parse(file.getAbsolutePath());
+                } catch (IllegalArgumentException e) {
+                    sampleList = readName2TaxIdCSVParser.parse(file.getAbsolutePath());
+                }
+            } catch (IOException e) {
+                System.out.println("File not found.");
+            }
+
+            TreeItem<String> newRoot, newRootCount;
+
+            for (Sample sample : sampleList) {
+                newRoot = new TreeItem<>("Id: " + id++);
+                newRootCount = new TreeItem<>("Count: " + sample.getClass().toString());
+                newRoot.getChildren().addAll(newRootCount);
+                treeViewFiles.getRoot().getChildren().add(newRoot);
+            }
+        }
+    }
+
+    @FXML
+    /**
+     * Shows the details of the selected taxon
+     */
+    public void handleTaxonSelected() {
+        TreeItem<String> treeItem;
+        if ((treeItem = treeViewFiles.getSelectionModel().getSelectedItem()) != null) {
+            textAreaDetails.setText("");
+            textAreaDetails.appendText(treeItem.getValue() + "\n");
+            for (TreeItem<String> child : treeItem.getChildren()) {
+                textAreaDetails.appendText(child.getValue() + "\n");
+            }
+        }
     }
 
     /**
