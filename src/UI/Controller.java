@@ -76,7 +76,7 @@ public class Controller implements Initializable {
 
         //if files do NOT exist or they are a directory
         //-> download the files
-        if (!(nodesDmp.exists() && namesDmp.exists() && !nodesDmp.isDirectory() && !namesDmp.exists())) {
+        if (!(nodesDmp.exists() && namesDmp.exists() && !nodesDmp.isDirectory() && !namesDmp.isDirectory())) {
             DownloadNodesAndNameDMPFiles.downloadNamesNodesDMPandUnzip();
         }
     }
