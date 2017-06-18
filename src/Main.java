@@ -1,3 +1,4 @@
+import UI.StartUpAnimation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,6 +29,10 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+        //TODO this is not working yet
+        //should do the animation while setting up files
+        //StartUpAnimation startUpAnimation = new StartUpAnimation();
+        //startUpAnimation.startAnimation(primaryStage);
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/UI/GUI.fxml"));
         Parent content = loader.load();
