@@ -2,10 +2,9 @@ package UI;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.FileChooser;
 import model.Sample;
 import model.TaxonTree;
@@ -14,10 +13,10 @@ import sampleParser.TaxonId2CountCSVParser;
 import treeParser.TreeParser;
 import util.DownloadFilesHelper.DownloadNodesAndNameDMPFiles;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -33,6 +32,11 @@ public class Controller implements Initializable {
     private ArrayList<String> openFiles;
 
     //Elements of the GUI
+
+    //I did not find those in the gluon scenebuilder?
+    private Alert fileNotFoundAlert;
+    private Alert confirmQuitAlert;
+
     @FXML
     private Label leftLabel;
 
@@ -89,21 +93,63 @@ public class Controller implements Initializable {
     /**
      * Opens a file chooser and gives the user the possibility to select a file
      */
-    public void handleOpenFile() {
+    public void openFile() {
         File selectedFile = new FileChooser().showOpenDialog(null);
 
         boolean isFileFound = selectedFile != null;
+        if (!isFileFound){
+            fileNotFoundAlertBox();
+        }
         //leftLabel.setText(isFileFound ? selectedFile.getName() : "No such file found.");
         if (isFileFound) {
             addFileToTreeView(selectedFile);
         }
     }
 
+    /**
+     * creates the file not found alert box
+     */
+    public void fileNotFoundAlertBox(){
+        fileNotFoundAlert = new Alert(Alert.AlertType.ERROR);
+        fileNotFoundAlert.setTitle("File not found");
+        fileNotFoundAlert.setHeaderText("File not found");
+        fileNotFoundAlert.setContentText("Could not find the file you were looking for");
+
+        Exception fileNotFoundException = new FileNotFoundException("Could not find your selected file");
+
+        //create expandable exception
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        fileNotFoundException.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("The exception stacktrace was: ");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+        // Set expandable Exception into the dialog pane.
+        fileNotFoundAlert.getDialogPane().setExpandableContent(expContent);
+
+        fileNotFoundAlert.showAndWait();
+    }
+
     @FXML
     /**
      * Closes the current project and empties the tree view
      */
-    public void handleCloseProcject() {
+    public void closeProject() {
         if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
             treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
             textAreaDetails.setText("");
@@ -117,7 +163,6 @@ public class Controller implements Initializable {
      * @param file
      */
     public void addFileToTreeView(File file) {
-
         if (file.getName().endsWith(".txt") && !openFiles.contains(file.getName())) {
 
             openFiles.add(file.getName());
@@ -151,7 +196,7 @@ public class Controller implements Initializable {
     /**
      * Shows the details of the selected taxon
      */
-    public void handleTaxonSelected() {
+    public void selectTaxon() {
         TreeItem<String> treeItem;
         if ((treeItem = treeViewFiles.getSelectionModel().getSelectedItem()) != null) {
             textAreaDetails.setText("");
@@ -166,8 +211,37 @@ public class Controller implements Initializable {
      * Exits the program
      */
     @FXML
-    public void handleExit() {
-        //TODO: Implement asking the user for saving the progress
-        System.exit(0);
+    public void quit() {
+       confirmQuit();
+    }
+
+    /**
+     * confirmQuit method for handling exiting the program
+     */
+    public void confirmQuit(){
+        confirmQuitAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmQuitAlert.setTitle("Remember to save your files!");
+        confirmQuitAlert.setHeaderText("Quit?");
+        confirmQuitAlert.setContentText("Do you really want to quit?");
+
+        ButtonType continueButton = new ButtonType("Continue");
+        ButtonType quitButton = new ButtonType("Quit");
+        ButtonType saveAndQuitButton = new ButtonType("Save and quit");
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmQuitAlert.getButtonTypes().setAll(continueButton, quitButton, saveAndQuitButton, cancelButton);
+
+        Optional<ButtonType> result = confirmQuitAlert.showAndWait();
+        if (result.get() == continueButton){
+            //continue with the program
+        } else if(result.get() == quitButton) {
+            System.exit(0);
+        } else if (result.get() == saveAndQuitButton){
+            //TODO SAVE AND QUIT
+            ;
+        } else {
+            //user chose cancel or closed the dialog -> continue
+            ;
+        }
     }
 }

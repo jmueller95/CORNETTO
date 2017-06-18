@@ -3,11 +3,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.TaxonTree;
-import treeParser.TreeParser;
-import util.DownloadFilesHelper.DownloadNodesAndNameDMPFiles;
-
-import java.io.File;
 
 /**
  * Created by Zeth on 08.06.2017.
@@ -41,6 +36,5 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(content, 800, 500));
         primaryStage.show();
     }
-
 
 }
