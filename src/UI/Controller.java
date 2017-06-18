@@ -224,24 +224,22 @@ public class Controller implements Initializable {
         confirmQuitAlert.setHeaderText("Quit?");
         confirmQuitAlert.setContentText("Do you really want to quit?");
 
-        ButtonType continueButton = new ButtonType("Continue");
         ButtonType quitButton = new ButtonType("Quit");
         ButtonType saveAndQuitButton = new ButtonType("Save and quit");
         ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        confirmQuitAlert.getButtonTypes().setAll(continueButton, quitButton, saveAndQuitButton, cancelButton);
+        confirmQuitAlert.getButtonTypes().setAll(quitButton, saveAndQuitButton, cancelButton);
 
         Optional<ButtonType> result = confirmQuitAlert.showAndWait();
-        if (result.get() == continueButton){
-            //continue with the program
-        } else if(result.get() == quitButton) {
+        if (result.get() == quitButton){
             System.exit(0);
-        } else if (result.get() == saveAndQuitButton){
+        } else if(result.get() == saveAndQuitButton) {
             //TODO SAVE AND QUIT
             ;
         } else {
-            //user chose cancel or closed the dialog -> continue
-            ;
+            //continue with the program
+            //user must have pressed cancel
         }
+
     }
 }
