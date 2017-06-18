@@ -51,6 +51,16 @@
             <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
+            <Menu mnemonicParsing="false" text="View">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Settings">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+              </items>
+            </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
             <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
@@ -62,30 +72,27 @@
       <items>
         <AnchorPane>
           <children>
-            <Label fx:id="leftLabel" alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Master" textAlignment="CENTER" wrapText="false">
+            <Label fx:id="leftLabel" alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#c58112" wrapText="false">
               <font>
                 <Font size="18.0" fx:id="x1" />
               </font>
-              <textFill>
-                <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
-              </textFill>
             </Label>
-                  <TreeView fx:id="treeViewFiles" layoutX="14.0" layoutY="35.0" onContextMenuRequested="#selectTaxon" onMouseClicked="#selectTaxon" prefHeight="325.0" prefWidth="200.0" AnchorPane.rightAnchor="7.0" />
+                  <TreeView fx:id="treeViewFiles" layoutX="11.0" layoutY="41.0" onContextMenuRequested="#selectTaxon" onMouseClicked="#selectTaxon" prefHeight="516.0" prefWidth="200.0" AnchorPane.rightAnchor="11.0" />
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
           <content>
             <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
               <children>
-                <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="View" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="View" textAlignment="CENTER" textFill="#c58112" wrapText="false" />
               </children>
             </AnchorPane>
           </content>
         </ScrollPane>
         <AnchorPane>
           <children>
-            <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Details" textAlignment="CENTER" textFill="$x2" wrapText="false" />
-                  <TextArea fx:id="textAreaDetails" layoutX="14.0" layoutY="44.0" prefHeight="200.0" prefWidth="200.0" />
+            <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Details" textAlignment="CENTER" textFill="#c58112" wrapText="false" />
+                  <TextArea fx:id="textAreaDetails" layoutX="11.0" layoutY="41.0" prefHeight="516.0" prefWidth="200.0" />
           </children>
         </AnchorPane>
       </items>
