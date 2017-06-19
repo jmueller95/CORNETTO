@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import model.Sample;
 import model.TaxonTree;
@@ -34,8 +35,7 @@ public class Controller implements Initializable {
     //Elements of the GUI
 
     //I did not find those in the gluon scenebuilder?
-    private Alert fileNotFoundAlert;
-    private Alert confirmQuitAlert;
+    private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert;
 
     @FXML
     private Label leftLabel;
@@ -213,6 +213,24 @@ public class Controller implements Initializable {
     @FXML
     public void quit() {
        confirmQuit();
+    }
+
+    @FXML
+    /**
+     * Shows information about the software.
+     */
+    public void showAboutAlert() {
+        String information = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in " +
+                "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in " +
+                "culpa qui officia deserunt mollit anim id est laborum.";
+        Text text = new Text(information);
+        text.setWrappingWidth(500);
+        aboutAlert = new Alert(Alert.AlertType.INFORMATION);
+        aboutAlert.setTitle("About NetWork Analysis Tool");
+        aboutAlert.setHeaderText("What is the Network Analysis Tool?");
+        aboutAlert.getDialogPane().setContent(text);
+        aboutAlert.show();
     }
 
     /**
