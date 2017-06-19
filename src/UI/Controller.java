@@ -35,7 +35,7 @@ public class Controller implements Initializable {
     //Elements of the GUI
 
     //I did not find those in the gluon scenebuilder?
-    private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert;
+    private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert;
 
     @FXML
     private Label leftLabel;
@@ -189,6 +189,8 @@ public class Controller implements Initializable {
                 newRoot.getChildren().addAll(newRootCount);
                 treeViewFiles.getRoot().getChildren().add(newRoot);
             }
+        } else if (file.getName().endsWith(".txt") && openFiles.contains(file.getName())) {
+            showFileAlreadyLoadedAlert();
         }
     }
 
@@ -234,10 +236,21 @@ public class Controller implements Initializable {
     }
 
     /**
+     * Prompts an alert that the selected file is already part of the current project.
+     */
+    private void showFileAlreadyLoadedAlert() {
+        String fileAlreadyLoaded = "The selected file is already in your project.";
+        fileAlreadyLoadedAlert = new Alert(Alert.AlertType.ERROR);
+        fileAlreadyLoadedAlert.setTitle("File not loaded.");
+        fileAlreadyLoadedAlert.setContentText(fileAlreadyLoaded);
+        fileAlreadyLoadedAlert.show();
+    }
+
+    /**
      * confirmQuit method for handling exiting the program
      */
     public void confirmQuit(){
-        confirmQuitAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmQuitAlert = new Alert(Alert.AlertType.NONE);
         confirmQuitAlert.setTitle("Remember to save your files!");
         confirmQuitAlert.setHeaderText("Quit?");
         confirmQuitAlert.setContentText("Do you really want to quit?");
