@@ -2,12 +2,19 @@ package UI;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.Sample;
 import model.TaxonTree;
 import sampleParser.ReadName2TaxIdCSVParser;
@@ -21,6 +28,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import static javafx.stage.Modality.*;
 
 /**
  * Created by Zeth on 15.06.2017.
@@ -280,6 +289,21 @@ public class MainStageController implements Initializable {
         } else {
             //continue with the program
             //user must have pressed cancel
+        }
+    }
+
+    @FXML
+    public void optionsButtonClicked(){
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("UI/optionsGui.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Options");
+            stage.setScene(new Scene(root, 800, 500));
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

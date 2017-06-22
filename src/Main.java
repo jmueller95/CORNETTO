@@ -35,7 +35,7 @@ public class Main extends Application {
         //StartUpAnimation startUpAnimation = new StartUpAnimation();
         //startUpAnimation.startAnimation(primaryStage);
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/UI/Gui.fxml"));
+        loader.setLocation(getClass().getResource("/UI/mainStageGui.fxml"));
         Parent content = loader.load();
         content.getStylesheets().add("/UI/GuiStyle.css");
         primaryStage.setTitle("Network Analysis Tool");
