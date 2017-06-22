@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 /**
  * Created by Zeth on 15.06.2017.
  */
-public class Controller implements Initializable {
+public class MainStageController implements Initializable {
     private static final String NODESDMPSRC = "./res/nodes.dmp";
     private static final String NAMESDMPSRC = "./res/names.dmp";
     private static TaxonTree taxonTree;
@@ -72,7 +72,7 @@ public class Controller implements Initializable {
      * checks whether nodes.dmp and names.dmp exist
      * if not it downloads the files and puts them into the correct place
      */
-    //TODO: Place this method on the outside of the Controller class to keep controller clean
+    //TODO: Place this method on the outside of the MainStageController class to keep controller clean
     public static void setUpRequiredFiles() {
         File nodesDmp = new File(NODESDMPSRC), namesDmp = new File(NAMESDMPSRC);
 
