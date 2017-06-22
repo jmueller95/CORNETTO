@@ -1,5 +1,6 @@
 package UI;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -14,6 +15,7 @@ import sampleParser.TaxonId2CountCSVParser;
 import treeParser.TreeParser;
 import util.DownloadFilesHelper.DownloadNodesAndNameDMPFiles;
 
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -157,6 +159,13 @@ public class Controller implements Initializable {
         }
     }
 
+    @FXML
+    public void exitApplication(ActionEvent event){
+        Platform.exit();
+    }
+
+
+
     /**
      * Adds and displays the file name and a placeholder id for the file name in the treeview gui element
      *
@@ -247,10 +256,11 @@ public class Controller implements Initializable {
     }
 
     /**
-     * confirmQuit method for handling exiting the program
+     * method for the quit button
+     * asks whether to save/quit/continue running the program
      */
     public void confirmQuit(){
-        confirmQuitAlert = new Alert(Alert.AlertType.NONE);
+        confirmQuitAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmQuitAlert.setTitle("Remember to save your files!");
         confirmQuitAlert.setHeaderText("Quit?");
         confirmQuitAlert.setContentText("Do you really want to quit?");
@@ -271,6 +281,5 @@ public class Controller implements Initializable {
             //continue with the program
             //user must have pressed cancel
         }
-
     }
 }

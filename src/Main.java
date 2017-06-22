@@ -1,9 +1,15 @@
+import UI.Controller;
 import UI.StartUpAnimation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+
+import java.util.Optional;
 
 /**
  * Created by Zeth on 08.06.2017.
@@ -40,6 +46,15 @@ public class Main extends Application {
         primaryStage.setTitle("Network Analysis Tool");
         primaryStage.setScene(new Scene(content, 800, 500));
         primaryStage.show();
+    }
+
+    /**
+     * called when X is clicked, shows a confirmation window and asks to quit/save/continue
+     */
+    @Override
+    public void stop(){
+        Controller controller = new Controller();
+        controller.confirmQuit();
     }
 
 }
