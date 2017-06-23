@@ -105,12 +105,11 @@ public class MainStageController implements Initializable {
     @FXML
     /**
      * Opens a file chooser and gives the user the possibility to select a file
-     */
-    public void openFile() {
+     */ public void openFile() {
         File selectedFile = new FileChooser().showOpenDialog(null);
 
         boolean isFileFound = selectedFile != null;
-        if (!isFileFound){
+        if (!isFileFound) {
             fileNotFoundAlertBox();
         }
         //leftLabel.setText(isFileFound ? selectedFile.getName() : "No such file found.");
@@ -122,11 +121,15 @@ public class MainStageController implements Initializable {
     /**
      * creates the file not found alert box
      */
-    public void fileNotFoundAlertBox(){
+    public void fileNotFoundAlertBox() {
         fileNotFoundAlert = new Alert(Alert.AlertType.ERROR);
         fileNotFoundAlert.setTitle("File not found");
         fileNotFoundAlert.setHeaderText("File not found");
         fileNotFoundAlert.setContentText("Could not find the file you were looking for");
+
+        //style the alert
+        DialogPane dialogPane = fileNotFoundAlert.getDialogPane();
+        dialogPane.getStylesheets().add("/UI/alertStyle.css");
 
         Exception fileNotFoundException = new FileNotFoundException("Could not find your selected file");
 
@@ -161,8 +164,7 @@ public class MainStageController implements Initializable {
     @FXML
     /**
      * Closes the current project and empties the tree view
-     */
-    public void closeProject() {
+     */ public void closeProject() {
         if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
             treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
             textAreaDetails.setText("");
@@ -171,10 +173,9 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    public void exitApplication(ActionEvent event){
+    public void exitApplication(ActionEvent event) {
         Platform.exit();
     }
-
 
 
     /**
@@ -217,8 +218,7 @@ public class MainStageController implements Initializable {
     @FXML
     /**
      * Shows the details of the selected taxon
-     */
-    public void selectTaxon() {
+     */ public void selectTaxon() {
         TreeItem<String> treeItem;
         if ((treeItem = treeViewFiles.getSelectionModel().getSelectedItem()) != null) {
             textAreaDetails.setText("");
@@ -234,18 +234,14 @@ public class MainStageController implements Initializable {
      */
     @FXML
     public void quit() {
-       confirmQuit();
+        confirmQuit();
     }
 
     @FXML
     /**
      * Shows information about the software.
-     */
-    public void showAboutAlert() {
-        String information = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in " +
-                "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in " +
-                "culpa qui officia deserunt mollit anim id est laborum.";
+     */ public void showAboutAlert() {
+        String information = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " + "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in " + "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in " + "culpa qui officia deserunt mollit anim id est laborum.";
         Text text = new Text(information);
         text.setWrappingWidth(500);
         aboutAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -270,7 +266,7 @@ public class MainStageController implements Initializable {
      * method for the quit button
      * asks whether to save/quit/continue running the program
      */
-    public void confirmQuit(){
+    public void confirmQuit() {
         confirmQuitAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmQuitAlert.setTitle("Remember to save your files!");
         confirmQuitAlert.setHeaderText("Quit?");
@@ -283,9 +279,9 @@ public class MainStageController implements Initializable {
         confirmQuitAlert.getButtonTypes().setAll(quitButton, saveAndQuitButton, cancelButton);
 
         Optional<ButtonType> result = confirmQuitAlert.showAndWait();
-        if (result.get() == quitButton){
+        if (result.get() == quitButton) {
             System.exit(0);
-        } else if(result.get() == saveAndQuitButton) {
+        } else if (result.get() == saveAndQuitButton) {
             //TODO SAVE AND QUIT
             ;
         } else {
@@ -295,17 +291,16 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    public void optionsButtonClicked(){
-        try{
+    public void optionsButtonClicked() {
+        try {
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(new URL("file:"+new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
+            fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
             Parent root = fxmlLoader.load();
             Stage optionsStage = new Stage();
             optionsStage.setTitle("Options");
             optionsStage.setScene(new Scene(root, 800, 500));
             optionsStage.show();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
