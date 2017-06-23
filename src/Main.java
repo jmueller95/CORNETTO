@@ -5,12 +5,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.net.URL;
+
 
 /**
  * Created by Zeth on 08.06.2017.
  * launches the Main method
  */
-//TODO doubt that it should extend Application later on
 public class Main extends Application {
 
     /**
@@ -35,7 +37,7 @@ public class Main extends Application {
         //StartUpAnimation startUpAnimation = new StartUpAnimation();
         //startUpAnimation.startAnimation(primaryStage);
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/UI/mainStageGui.fxml"));
+        loader.setLocation(new URL("file:"+new File("").getCanonicalPath().concat("/src/UI/mainStageGui.fxml")));
         Parent content = loader.load();
         content.getStylesheets().add("/UI/GuiStyle.css");
         primaryStage.setTitle("Network Analysis Tool");

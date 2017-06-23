@@ -9,7 +9,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -295,14 +297,15 @@ public class MainStageController implements Initializable {
     @FXML
     public void optionsButtonClicked(){
         try{
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("UI/optionsGui.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(new URL("file:"+new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
             Parent root = fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Options");
-            stage.setScene(new Scene(root, 800, 500));
-            stage.show();
+            Stage optionsStage = new Stage();
+            optionsStage.setTitle("Options");
+            optionsStage.setScene(new Scene(root, 800, 500));
+            optionsStage.show();
         }
-        catch (IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
