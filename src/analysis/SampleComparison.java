@@ -86,10 +86,19 @@ public abstract class SampleComparison {
         return sampleCorrelation.getCorrelationPValues();
     }
 
-
+    /**
+     * Filters the taxa contained in two samples. Returns a list of taxa that lie below/above the given
+     * lower/upper correlation thresholds and below the given p-Value threshold
+     * @param sample1
+     * @param sample2
+     * @param lowerCorrelationThreshold
+     * @param upperCorrelationThreshold
+     * @param pValueThreshold
+     * @return
+     */
     public static ArrayList<TaxonNode> filterSamples(Sample sample1, Sample sample2,
-                                                     double minCorrelation, double maxCorrelation,
-                                                     double minPValue, double maxPValue) {
+                                                     double lowerCorrelationThreshold, double upperCorrelationThreshold,
+                                                     double pValueThreshold) {
 
         //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
         ArrayList<TaxonNode> unfilteredTaxonList = new ArrayList<>();
