@@ -28,30 +28,21 @@ public class Sample {
      * @return
      */
     public int getTaxonCountRecursive(TaxonNode taxonNode) {
-        if (getTaxa2CountMap().containsKey(taxonNode)) {
-            if (!taxonNode.isLeaf()) {
-                int childrenSum = getTaxa2CountMap().get(taxonNode);
-                for (TaxonNode child :
-                        taxonNode.getChildNodeList()) {
-                    childrenSum += getTaxonCountRecursive(child);
-                }
-                return childrenSum;
+        int recursiveSum = getTaxa2CountMap().getOrDefault(taxonNode, 0);
+        for (TaxonNode child :
+                taxonNode.getChildNodeList()) {
+            recursiveSum += getTaxonCountRecursive(child);
+        }
+        return recursiveSum;
+    }
 
-            } else {
-                return getTaxa2CountMap().get(taxonNode);
-            }
-        } else {
-            return 0;
+
+        //Getters
+        public HashMap<TaxonNode, Integer> getTaxa2CountMap () {
+            return taxa2CountMap;
+        }
+
+        public HashMap<String, String> getMetaData () {
+            return metaData;
         }
     }
-
-
-    //Getters
-    public HashMap<TaxonNode, Integer> getTaxa2CountMap() {
-        return taxa2CountMap;
-    }
-
-    public HashMap<String, String> getMetaData() {
-        return metaData;
-    }
-}

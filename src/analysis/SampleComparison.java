@@ -24,8 +24,7 @@ public class SampleComparison {
 
     /**
      * Subtracts the count of a given taxon in the secondSample from the corresponding count in the firstSample
-     * Returns -1 if taxonNode can't be found in both of the samples (TODO: Maybe avoid this by intializing every node with count = 0)
-     * TODO: Decide whether only count for this taxon or recursive count is used
+     * Returns -1 if taxonNode can't be found in both of the samples
      */
     public int taxonCountDifference(TaxonNode taxonNode) {
         if (firstSample.getTaxa2CountMap().containsKey(taxonNode) && secondSample.getTaxa2CountMap().containsKey(taxonNode)) {

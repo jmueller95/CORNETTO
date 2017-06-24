@@ -69,7 +69,6 @@ public class SampleTest {
      * Parses the tree, then tests the following situation:
      * The taxon with the id 32 has 33,34 and 35 as children (amongst others).
      * So if we create a sample with these counts:
-     * 32   0
      * 33   13
      * 34   15
      * 35   14
@@ -87,7 +86,6 @@ public class SampleTest {
         TaxonNode node34 = taxonTree.getNodeForID(34);
         TaxonNode node35 = taxonTree.getNodeForID(35);
         Sample sample = new Sample();
-        sample.getTaxa2CountMap().put(node32,0);
         sample.getTaxa2CountMap().put(node33,13);
         sample.getTaxa2CountMap().put(node34,15);
         sample.getTaxa2CountMap().put(node35,14);
