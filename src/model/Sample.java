@@ -22,7 +22,7 @@ public class Sample {
     }
 
     /**
-     * Sums up the counts of taxonNode and the counts of all its children (and their children...)
+     * Sums up the counts of taxonNode and the counts of all its children (and their children and so on...)
      *
      * @param taxonNode
      * @return
