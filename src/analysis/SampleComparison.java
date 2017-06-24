@@ -2,72 +2,109 @@ package analysis;
 
 import model.Sample;
 import model.TaxonNode;
-import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
-import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
- * Class for the comparison of TWO Sample objects.
+ * Class for the comparison of samples
  * Created by julian on 10.06.17.
  */
-public class SampleComparison {
-    private Sample firstSample, secondSample;
-
-    public SampleComparison(Sample firstSample, Sample secondSample) {
-        this.firstSample = firstSample;
-        this.secondSample = secondSample;
-
-    }
+public abstract class SampleComparison {
 
     /**
-     * Subtracts the count of a given taxon in the secondSample from the corresponding count in the firstSample
-     * Returns -1 if taxonNode can't be found in both of the samples
-     */
-    public int taxonCountDifference(TaxonNode taxonNode) {
-        if (firstSample.getTaxa2CountMap().containsKey(taxonNode) && secondSample.getTaxa2CountMap().containsKey(taxonNode)) {
-            int countInFirstSample = firstSample.getTaxonCountRecursive(taxonNode);
-            int countInSecondSample = secondSample.getTaxonCountRecursive(taxonNode);
-            return countInFirstSample - countInSecondSample;
-        } else {
-            System.err.println("Error! Taxon isn't contained in both of the samples! Returning -1...");
-            return -1;
-        }
-    }
-
-
-
-    /**
-     * Accepts a list of taxonNodes and a string that specifies which kind of correlation should be calculated (either
-     * "pearson", "spearman", or "kendall").
-     * Calculates the counts of these nodes in both of the samples and returns the pearson/spearman/kendall
-     * correlation coefficient of these two double arrays.
-     * TODO: Either handle nodes that don't appear in both samples or intialize EVERY node with zero when parsing
+     * Before comparing two samples, one has to make sure that their taxon counts are aligned.
+     * Since they may not contain the same taxa, this can't be assumed in the first place.
+     * This method returns a unification of the taxa2CountMaps of two samples where counts of non-existent taxa
+     * are set to 0.
      *
-     * @param nodesList
-     * @param correlation_type
-     * @return correlation_coefficient
+     * @param sample1
+     * @param sample2
+     * @return
      */
-    public double calculateCorrelation(List<TaxonNode> nodesList, String correlation_type) {
-        double[] countsInFirstSample = new double[nodesList.size()];
-        double[] countsInSecondSample = new double[nodesList.size()];
-        for (int i = 0; i < nodesList.size(); i++) {
-            countsInFirstSample[i] = firstSample.getTaxonCountRecursive(nodesList.get(i));
-            countsInSecondSample[i] = secondSample.getTaxonCountRecursive(nodesList.get(i));
+    public static HashMap<TaxonNode, int[]> getUnifiedTaxa2CountMap(Sample sample1, Sample sample2) {
+        HashMap<TaxonNode, int[]> unifiedTaxa2countMap = new HashMap<>();
+        //First, add all taxa of sample1, try to find them in sample 2 (set count to 0 if they're not there)
+        for (TaxonNode taxonNode : sample1.getTaxa2CountMap().keySet()) {
+            int[] taxonCounts = new int[2];
+            taxonCounts[0] = sample1.getTaxonCountRecursive(taxonNode);
+            taxonCounts[1] = sample2.getTaxonCountRecursive(taxonNode);
+            unifiedTaxa2countMap.put(taxonNode, taxonCounts);
         }
-        double correlation_coefficient = 0;
-        switch (correlation_type) {
-            case "pearson":
-                correlation_coefficient = new PearsonsCorrelation().correlation(countsInFirstSample, countsInSecondSample);
-                break;
-            case "spearman":
-                correlation_coefficient = new SpearmansCorrelation().correlation(countsInFirstSample, countsInSecondSample);
-                break;
-            case "kendall":
-                correlation_coefficient = new KendallsCorrelation().correlation(countsInFirstSample, countsInSecondSample);
+        //Second, add all taxa of sample2 that aren't already in the list
+        for (TaxonNode taxonNode : sample2.getTaxa2CountMap().keySet()) {
+            if (!unifiedTaxa2countMap.containsKey(taxonNode)) {
+                int[] taxonCounts = new int[2];
+                taxonCounts[0] = sample1.getTaxonCountRecursive(taxonNode);
+                taxonCounts[1] = sample2.getTaxonCountRecursive(taxonNode);
+                unifiedTaxa2countMap.put(taxonNode, taxonCounts);
+            }
         }
-        return correlation_coefficient;
+        return unifiedTaxa2countMap;
     }
+
+    /**
+     * Takes two samples and returns the PearsonCorrelation object based on their counts
+     *
+     * @param sample1
+     * @param sample2
+     * @return
+     */
+    public static PearsonsCorrelation getPearsonsCorrelationForSamples(Sample sample1, Sample sample2) {
+        //We need the unified map to make sure the counts are properly aligned
+        HashMap<TaxonNode, int[]> unifiedTaxa2countMap = getUnifiedTaxa2CountMap(sample1, sample2);
+        //Sort the TaxonNodes by id
+        ArrayList<TaxonNode> taxonNodeList = new ArrayList<>(unifiedTaxa2countMap.keySet());
+        taxonNodeList.sort((tn1, tn2) -> {
+            int id1 = tn1.getTaxonId();
+            int id2 = tn2.getTaxonId();
+            return (id1 > id2 ? -1 : (id1 == id2 ? 0 : 1));
+        });
+
+        //The matrix data needs to be double, since PearsonsCorrelation only takes double arrays
+        double[][] taxaCounts = new double[unifiedTaxa2countMap.size()][2];
+        int counter = 0;
+        for (TaxonNode taxonNode : taxonNodeList) {
+            int[] currentCounts = unifiedTaxa2countMap.get(taxonNode);
+            taxaCounts[counter][0] = (double) currentCounts[0];
+            taxaCounts[counter][1] = (double) currentCounts[1];
+            counter++;
+        }
+        //Now we can compute the correlation matrix
+        return new PearsonsCorrelation(taxaCounts);
+    }
+
+    public static RealMatrix getCorrelationMatrixForSamples(Sample sample1, Sample sample2) {
+        PearsonsCorrelation sampleCorrelation = getPearsonsCorrelationForSamples(sample1, sample2);
+        return sampleCorrelation.getCorrelationMatrix();
+    }
+
+    public static RealMatrix getCorrelationPValuesForSamples(Sample sample1, Sample sample2) {
+        PearsonsCorrelation sampleCorrelation = getPearsonsCorrelationForSamples(sample1, sample2);
+        return sampleCorrelation.getCorrelationPValues();
+    }
+
+
+    public static ArrayList<TaxonNode> filterSamples(Sample sample1, Sample sample2,
+                                                     double minCorrelation, double maxCorrelation,
+                                                     double minPValue, double maxPValue) {
+
+        //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
+        ArrayList<TaxonNode> unfilteredTaxonList = new ArrayList<>();
+        unfilteredTaxonList.addAll(getUnifiedTaxa2CountMap(sample1, sample2).keySet());
+        unfilteredTaxonList.sort((tn1, tn2) -> {
+            int id1 = tn1.getTaxonId();
+            int id2 = tn2.getTaxonId();
+            return (id1 > id2 ? -1 : (id1 == id2 ? 0 : 1));
+        });
+        //Calculate correlation and p-value matrices
+        RealMatrix samplesCorrelationMatrix = getCorrelationMatrixForSamples(sample1,sample2);
+        RealMatrix samplesCorrelationPValueMatrix = getCorrelationPValuesForSamples(sample1,sample2);
+        ArrayList<TaxonNode> filteredTaxonList = new ArrayList<>();
+        //TODO: How exactly do we filter? --> How does the matrix look like?
+        return filteredTaxonList;
+    }
+
 }
