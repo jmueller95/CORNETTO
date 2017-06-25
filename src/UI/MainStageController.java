@@ -106,8 +106,25 @@ public class MainStageController implements Initializable {
     /**
      * Opens a file chooser and gives the user the possibility to select a file
      */ public void openFile() {
-        File selectedFile = new FileChooser().showOpenDialog(null);
+        openFileWindow("CSV and BIOM files", "*.csv", "*.biom");
+    }
 
+
+    @FXML
+    /**
+     * opens a file chooser and gives the user the possibility to select a file
+     * file chooser default location is where save states are
+     */ public void openRecentFile() {
+        openFileWindow("CSV and BIOM files", "*.csv", "*.biom");
+    }
+
+    /**
+     * verifies the opened file
+     * should be not null and possible to add to the taxonView
+     *
+     * @param selectedFile
+     */
+    private void verifyOpenedFile(File selectedFile) {
         boolean isFileFound = selectedFile != null;
         if (!isFileFound) {
             fileNotFoundAlertBox();
@@ -116,6 +133,43 @@ public class MainStageController implements Initializable {
         if (isFileFound) {
             addFileToTreeView(selectedFile);
         }
+    }
+
+    /**
+     * creates a openFileWindow
+     * requires extensionFilters
+     *
+     * @param extensionFilterDescription
+     * @param extensionFilterExtensions
+     */
+    private void openFileWindow(String extensionFilterDescription, String... extensionFilterExtensions) {
+        FileChooser fileChooser = new FileChooser();
+
+        //Extention filter
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(extensionFilterDescription, extensionFilterExtensions);
+        fileChooser.getExtensionFilters().add(extensionFilter);
+
+        setDefaultOpenDirectory(fileChooser);
+
+        //Choose the file
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        verifyOpenedFile(selectedFile);
+    }
+
+    /**
+     * sets the default directory for openings files
+     *
+     * @param fileChooser
+     */
+    private void setDefaultOpenDirectory(FileChooser fileChooser) {
+        //Set to user directory or go to default if cannot access
+        String userDirectoryString = System.getProperty("user.home");
+        File userDirectory = new File(userDirectoryString);
+        if (!userDirectory.canRead()) {
+            userDirectory = new File("c:/");
+        }
+        fileChooser.setInitialDirectory(userDirectory);
     }
 
     /**
