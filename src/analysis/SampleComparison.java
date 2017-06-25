@@ -5,7 +5,6 @@ import model.TaxonNode;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -79,6 +78,8 @@ public abstract class SampleComparison {
     public static RealMatrix getCorrelationMatrixForSamples(Sample sample1, Sample sample2) {
         PearsonsCorrelation sampleCorrelation = getPearsonsCorrelationForSamples(sample1, sample2);
         return sampleCorrelation.getCorrelationMatrix();
+        //TODO: This is not the matrix we want - it should be an nXn matrix comparing every taxon to every other taxon (I guess)
+        //Right now, it's a 2x2-matrix.
     }
 
     public static RealMatrix getCorrelationPValuesForSamples(Sample sample1, Sample sample2) {
