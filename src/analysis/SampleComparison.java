@@ -13,133 +13,134 @@ import java.util.*;
  */
 public abstract class SampleComparison {
 
-    /**
-     * Before comparing two samples, one has to make sure that their taxon counts are aligned.
-     * Since they may not contain the same taxa, this can't be assumed in the first place.
-     * This method returns a unification of the taxa2CountMaps of two samples where counts of non-existent taxa
-     * are set to 0.
-     *
-     * @param sample1
-     * @param sample2
-     * @return
-     */
-    public static HashMap<TaxonNode, int[]> getUnifiedTaxa2CountMap(Sample sample1, Sample sample2) {
-        HashMap<TaxonNode, int[]> unifiedTaxa2countMap = new HashMap<>();
-        //First, add all taxa of sample1, try to find them in sample 2 (set count to 0 if they're not there)
-        for (TaxonNode taxonNode : sample1.getTaxa2CountMap().keySet()) {
-            int[] taxonCounts = new int[2];
-            taxonCounts[0] = sample1.getTaxonCountRecursive(taxonNode);
-            taxonCounts[1] = sample2.getTaxonCountRecursive(taxonNode);
-            unifiedTaxa2countMap.put(taxonNode, taxonCounts);
-        }
-        //Second, add all taxa of sample2 that aren't already in the list
-        for (TaxonNode taxonNode : sample2.getTaxa2CountMap().keySet()) {
-            if (!unifiedTaxa2countMap.containsKey(taxonNode)) {
-                int[] taxonCounts = new int[2];
-                taxonCounts[0] = sample1.getTaxonCountRecursive(taxonNode);
-                taxonCounts[1] = sample2.getTaxonCountRecursive(taxonNode);
-                unifiedTaxa2countMap.put(taxonNode, taxonCounts);
-            }
-        }
-        return unifiedTaxa2countMap;
-    }
 
     /**
-     * Takes two samples and returns the PearsonCorrelation object based on their counts
-     *
-     * @param sample1
-     * @param sample2
+     * Returns a list of all taxa contained in at least one of the samples, ordered by id
+     * @param samples
      * @return
      */
-    public static PearsonsCorrelation getPearsonsCorrelationForSamples(Sample sample1, Sample sample2) {
-        //We need the unified map to make sure the counts are properly aligned
-        HashMap<TaxonNode, int[]> unifiedTaxa2countMap = getUnifiedTaxa2CountMap(sample1, sample2);
-        //Sort the TaxonNodes by id
-        ArrayList<TaxonNode> taxonNodeList = new ArrayList<>(unifiedTaxa2countMap.keySet());
-        taxonNodeList.sort((tn1, tn2) -> {
+    public static ArrayList<TaxonNode> getUnifiedTaxonList(List<Sample> samples){
+        ArrayList <TaxonNode> unifiedTaxonList = new ArrayList<>();
+        //Iterate over all samples, add every taxon that isn't there yet
+        for (Sample sample : samples) {
+            for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
+                if(!unifiedTaxonList.contains(taxonNode)){
+                    unifiedTaxonList.add(taxonNode);
+                }
+            }
+        }
+        //Sort the list
+        unifiedTaxonList.sort((tn1, tn2) -> {
             int id1 = tn1.getTaxonId();
             int id2 = tn2.getTaxonId();
             return (id1 > id2 ? 1 : (id1 == id2 ? 0 : -1));
         });
 
+        return unifiedTaxonList;
+    }
+
+
+
+    /**
+     * Takes a list of samples and returns the PearsonCorrelation object based on their counts
+     *
+     * @param samples
+     * @return
+     */
+    public static PearsonsCorrelation getPearsonsCorrelationOfSamples(List<Sample> samples) {
+        //We need the unified map to make sure the counts are properly aligned
+        ArrayList<TaxonNode> taxonNodeList = getUnifiedTaxonList(samples);
+
         //The matrix data needs to be double, since PearsonsCorrelation only takes double arrays
-        double[][] taxaCounts = new double[unifiedTaxa2countMap.size()][2];
-        int counter = 0;
-        for (TaxonNode taxonNode : taxonNodeList) {
-            int[] currentCounts = unifiedTaxa2countMap.get(taxonNode);
-            taxaCounts[counter][0] = (double) currentCounts[0];
-            taxaCounts[counter][1] = (double) currentCounts[1];
-            counter++;
+        double[][] taxaCounts = new double[samples.size()][taxonNodeList.size()];
+        for (int sampleIndex = 0; sampleIndex < samples.size(); sampleIndex++) {
+            double[] currentSampleCounts = new double[taxonNodeList.size()];
+            for (int taxonIndex = 0; taxonIndex < currentSampleCounts.length; taxonIndex++) {
+                currentSampleCounts[taxonIndex] = samples.get(sampleIndex).getTaxa2CountMap().get(taxonNodeList.get(taxonIndex));
+            }
+            taxaCounts[sampleIndex] = currentSampleCounts;
         }
+
         //Now we can compute the correlation matrix
         return new PearsonsCorrelation(taxaCounts);
     }
 
-    public static RealMatrix getCorrelationMatrixForSamples(Sample sample1, Sample sample2) {
-        PearsonsCorrelation sampleCorrelation = getPearsonsCorrelationForSamples(sample1, sample2);
+
+
+    public static RealMatrix getCorrelationMatrixOfSamples(List<Sample> samples) {
+        PearsonsCorrelation sampleCorrelation = getPearsonsCorrelationOfSamples(samples);
         return sampleCorrelation.getCorrelationMatrix();
-        //TODO: This is not the matrix we want - it should be an nXn matrix comparing every taxon to every other taxon (I guess)
         //Right now, it's a 2x2-matrix which I don't understand.
     }
 
-    public static RealMatrix getCorrelationPValuesForSamples(Sample sample1, Sample sample2) {
-        PearsonsCorrelation sampleCorrelation = getPearsonsCorrelationForSamples(sample1, sample2);
+    public static RealMatrix getCorrelationPValuesOfSamples(List<Sample> samples) {
+        PearsonsCorrelation sampleCorrelation = getPearsonsCorrelationOfSamples(samples);
         return sampleCorrelation.getCorrelationPValues();
     }
 
-    public static HashMap<TaxonNode, HashMap<TaxonNode, Double>> getPairwiseCorrelations(Sample sample1, Sample sample2) {
-        HashMap<TaxonNode, int[]> unifiedTaxa2countMap = getUnifiedTaxa2CountMap(sample1, sample2);
-        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
-        HashMap<TaxonNode, HashMap<TaxonNode, Double>> pairwiseCorrelationMap = new HashMap<>();
-
-        for (TaxonNode currentTaxonNode : unifiedTaxa2countMap.keySet()) {
-            HashMap<TaxonNode, Double> currentNodeCorrelationMap = new HashMap<>();
-            for (TaxonNode otherTaxonNode : unifiedTaxa2countMap.keySet()) {
-                double[] currentCounts = new double[2];
-                currentCounts[0] = sample1.getTaxa2CountMap().get(currentTaxonNode);
-                currentCounts[1] = sample2.getTaxa2CountMap().get(currentTaxonNode);
-                double[] otherCounts = new double[2];
-                otherCounts[0] = sample1.getTaxa2CountMap().get(otherTaxonNode);
-                otherCounts[1] = sample2.getTaxa2CountMap().get(otherTaxonNode);
-
-                double currentCorrelation = pearsonsCorrelation.correlation(currentCounts, otherCounts);
-                currentNodeCorrelationMap.put(otherTaxonNode, currentCorrelation);
-            }
-            pairwiseCorrelationMap.put(currentTaxonNode, currentNodeCorrelationMap);
-        }
-
-        return pairwiseCorrelationMap;
-    }
-
     /**
-     * Filters the taxa contained in two samples. Returns a list of taxa that lie below/above the given
-     * lower/upper correlation thresholds and below the given p-Value threshold
-     *
-     * @param sample1
-     * @param sample2
-     * @param lowerCorrelationThreshold
-     * @param upperCorrelationThreshold
-     * @param pValueThreshold
-     * @return
-     */
-    public static ArrayList<TaxonNode> filterSamples(Sample sample1, Sample sample2,
+         * Filters the taxa contained in two samples. Returns a list of taxa that lie below/above the given
+         * lower/upper correlation thresholds and below the given p-Value threshold
+         *
+         * @param samples
+         * @param lowerCorrelationThreshold
+         * @param upperCorrelationThreshold
+         * @param pValueThreshold
+         * @return
+         */
+    public static ArrayList<TaxonNode> filterSamples(List<Sample> samples,
                                                      double lowerCorrelationThreshold, double upperCorrelationThreshold,
                                                      double pValueThreshold) {
 
         //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
-        ArrayList<TaxonNode> unfilteredTaxonList = new ArrayList<>();
-        unfilteredTaxonList.addAll(getUnifiedTaxa2CountMap(sample1, sample2).keySet());
-        unfilteredTaxonList.sort((tn1, tn2) -> {
-            int id1 = tn1.getTaxonId();
-            int id2 = tn2.getTaxonId();
-            return (id1 > id2 ? 1 : (id1 == id2 ? 0 : -1));
-        });
-        //Calculate correlation and p-value matrices
-        RealMatrix samplesCorrelationMatrix = getCorrelationMatrixForSamples(sample1, sample2);
-        RealMatrix samplesCorrelationPValueMatrix = getCorrelationPValuesForSamples(sample1, sample2);
+        ArrayList<TaxonNode> unfilteredTaxonList = getUnifiedTaxonList(samples);
         ArrayList<TaxonNode> filteredTaxonList = new ArrayList<>();
-        //TODO: How exactly do we filter? --> How does the matrix look like?
+
+        //Get correlation matrix and p-value matrix
+        RealMatrix correlationMatrix = getCorrelationMatrixOfSamples(samples);
+        RealMatrix correlationPValues = getCorrelationPValuesOfSamples(samples);
+        //TODO: How exactly do we filter? For now, I simply check the first entry in the array, but in the end...
+        //TODO  ...we should probably use the average or something
+        for (int taxonIndex = 0; taxonIndex < unfilteredTaxonList.size(); taxonIndex++) {
+            if(correlationMatrix.getEntry(taxonIndex,0)<upperCorrelationThreshold &&
+                    correlationMatrix.getEntry(taxonIndex,0)>lowerCorrelationThreshold&&
+                    correlationPValues.getEntry(taxonIndex,0)<pValueThreshold){
+                filteredTaxonList.add(unfilteredTaxonList.get(taxonIndex));
+            }
+        }
         return filteredTaxonList;
     }
+
+
+
+/*
+PROBABLY DEPRECATED - Does the same as "getCorrelationMatrixOfSamples", but returns a hashmap so you know which nodes
+these fancy numbers belong to.
+ */
+//    /**
+//     * @param samples
+//     * @return
+//     */
+//    public static HashMap<TaxonNode, HashMap<TaxonNode, Double>> getPairwiseCorrelations(List<Sample> samples) {
+//        ArrayList<TaxonNode> unifiedTaxonList = getUnifiedTaxonList(samples);
+//        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+//        HashMap<TaxonNode, HashMap<TaxonNode, Double>> pairwiseCorrelationMap = new HashMap<>();
+//
+//        for (TaxonNode currentTaxonNode : unifiedTaxonList) {
+//            HashMap<TaxonNode, Double> currentNodeCorrelationMap = new HashMap<>();
+//            for (TaxonNode otherTaxonNode : unifiedTaxonList) {
+//                double[] currentCounts = new double[samples.size()];
+//                double[] otherCounts = new double[samples.size()];
+//                for (int i = 0; i < currentCounts.length; i++) {
+//                    currentCounts[i] = samples.get(i).getTaxa2CountMap().get(currentTaxonNode);
+//                    otherCounts[i] = samples.get(i).getTaxa2CountMap().get(otherTaxonNode);
+//                }
+//                double currentCorrelation = pearsonsCorrelation.correlation(currentCounts,otherCounts);
+//                currentNodeCorrelationMap.put(otherTaxonNode,currentCorrelation);
+//            }
+//            pairwiseCorrelationMap.put(currentTaxonNode,currentNodeCorrelationMap);
+//        }
+//    return pairwiseCorrelationMap;
+//    }
 
 }

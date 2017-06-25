@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  * Created by julian on 10.06.17.
  */
 public class SampleComparisonTest {
-    private TaxonNode node1, node2, node3, node4;
+    private TaxonNode node1, node2, node3, node4, node5, node6, node7, node8, node9, node10;
 
     @Before
     public void setUp() throws Exception {
@@ -24,37 +24,46 @@ public class SampleComparisonTest {
         node2 = new TaxonNode(2, null, 0);
         node3 = new TaxonNode(3, null, 0);
         node4 = new TaxonNode(4, null, 0);
+        node5 = new TaxonNode(5, null, 0);
+        node6 = new TaxonNode(6, null, 0);
+        node7 = new TaxonNode(7, null, 0);
+        node8 = new TaxonNode(8, null, 0);
+        node9 = new TaxonNode(9, null, 0);
+        node10 = new TaxonNode(10, null, 0);
     }
 
-    /**
-     * Create two samples, the first contains nodes 1,2 and 3, the second 2,3 and 4.
-     * Tests if the unifiedTaxa2CountMap has length 4 and if the counts are put correctly
-     *
-     * @throws Exception
-     */
+
     @Test
-    public void testGetUnifiedTaxa2CountMap() throws Exception {
+    public void testgetUnifiedTaxonList() throws Exception {
         Sample sample1 = new Sample();
-        sample1.getTaxa2CountMap().put(node1, 10);
-        sample1.getTaxa2CountMap().put(node2, 20);
+        sample1.getTaxa2CountMap().put(node1, 0);
+        sample1.getTaxa2CountMap().put(node2, 0);
         sample1.getTaxa2CountMap().put(node3, 0);
         Sample sample2 = new Sample();
-        sample2.getTaxa2CountMap().put(node2, 200);
-        sample2.getTaxa2CountMap().put(node3, 300);
+        sample2.getTaxa2CountMap().put(node2, 0);
+        sample2.getTaxa2CountMap().put(node3, 0);
         sample2.getTaxa2CountMap().put(node4, 0);
+        Sample sample3 = new Sample();
+        sample3.getTaxa2CountMap().put(node5,0);
+        sample3.getTaxa2CountMap().put(node10,0);
+        Sample sample4 = new Sample();
+        sample4.getTaxa2CountMap().put(node9,0);
+        sample4.getTaxa2CountMap().put(node8,0);
+        sample4.getTaxa2CountMap().put(node7,0);
+        sample4.getTaxa2CountMap().put(node6,0);
 
-        HashMap<TaxonNode, int[]> unifiedTaxa2CountMap = SampleComparison.getUnifiedTaxa2CountMap(sample1, sample2);
-        assertEquals(4, unifiedTaxa2CountMap.size());
-        assertEquals(10, unifiedTaxa2CountMap.get(node1)[0]);
-        assertEquals(0, unifiedTaxa2CountMap.get(node1)[1]);
-        assertEquals(20, unifiedTaxa2CountMap.get(node2)[0]);
-        assertEquals(200, unifiedTaxa2CountMap.get(node2)[1]);
-        assertEquals(0, unifiedTaxa2CountMap.get(node3)[0]);
-        assertEquals(300, unifiedTaxa2CountMap.get(node3)[1]);
-        assertEquals(0, unifiedTaxa2CountMap.get(node4)[0]);
-        assertEquals(0, unifiedTaxa2CountMap.get(node4)[1]);
+        ArrayList<Sample> sampleList = new ArrayList<>();
+        sampleList.add(sample1);
+        sampleList.add(sample2);
+        sampleList.add(sample3);
+        sampleList.add(sample4);
+
+        ArrayList<TaxonNode> unifiedTaxonList = SampleComparison.getUnifiedTaxonList(sampleList);
+        //This list should have length 10 and be sorted by Taxon id
+        assertEquals(10,unifiedTaxonList.size());
+        assertEquals(1,unifiedTaxonList.get(0).getTaxonId());
+        assertEquals(10,unifiedTaxonList.get(9).getTaxonId());
     }
-
 
     @Test
     public void testCorrelation() throws Exception {
@@ -68,40 +77,80 @@ public class SampleComparisonTest {
         sample2.getTaxa2CountMap().put(node1, 20);
         sample2.getTaxa2CountMap().put(node2, 40);
         sample2.getTaxa2CountMap().put(node3, 15);
-        sample2.getTaxa2CountMap().put(node4, 20);
+        sample2.getTaxa2CountMap().put(node4, 100);
 
-        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixForSamples(sample1, sample2);
+        Sample sample3 = new Sample();
+        sample3.getTaxa2CountMap().put(node1,5);
+        sample3.getTaxa2CountMap().put(node2,10);
+        sample3.getTaxa2CountMap().put(node3,60);
+        sample3.getTaxa2CountMap().put(node4,100);
+
+        ArrayList<Sample> samples = new ArrayList<>();
+        samples.add(sample1);
+        samples.add(sample2);
+        samples.add(sample3);
+
+        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples);
+        System.out.println("Correlation Matrix:");
         printMatrix(correlationMatrix);
+        System.out.println();
+
+        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples);
+        System.out.println("P-Value matrix:");
+        printMatrix(correlationPValues);
+
 
     }
 
     @Test
-    public void testRealCorrelation() throws Exception {
+    public void testRealExampleCorrelation() throws Exception {
         TreeParser parser = new TreeParser();
         parser.parseTree("./res/nodes.dmp", "./res/names.dmp");
         TaxonId2CountCSVParser csvParser = new TaxonId2CountCSVParser(parser.getTaxonTree());
         ArrayList<Sample> samples = csvParser.parse("./res/testFiles/taxonId2Count/multipleSampleExample.taxonId2Count.txt");
-        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixForSamples(samples.get(0), samples.get(1));
+
+        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples);
+        System.out.println("Correlation Matrix:");
         printMatrix(correlationMatrix);
+        System.out.println();
+
+        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples);
+        System.out.println("P-Value matrix:");
+        printMatrix(correlationPValues);
     }
 
-    @Test
-    public void testPairwiseCorrelation() throws Exception {
-        Sample sample1 = new Sample();
-        sample1.getTaxa2CountMap().put(node1, 10);
-        sample1.getTaxa2CountMap().put(node2, 10);
-        sample1.getTaxa2CountMap().put(node3, 10);
-        sample1.getTaxa2CountMap().put(node4, 10);
+    /*
+TESTS A METHOD THAT IS PROBABLY DEPRECATED
+ */
+//    @Test
+//    public void testPairwiseCorrelation() throws Exception {
+//        Sample sample1 = new Sample();
+//        sample1.getTaxa2CountMap().put(node1, 10);
+//        sample1.getTaxa2CountMap().put(node2, 20);
+//        sample1.getTaxa2CountMap().put(node3, 30);
+//        sample1.getTaxa2CountMap().put(node4, 40);
+//
+//        Sample sample2 = new Sample();
+//        sample2.getTaxa2CountMap().put(node1, 20);
+//        sample2.getTaxa2CountMap().put(node2, 40);
+//        sample2.getTaxa2CountMap().put(node3, 15);
+//        sample2.getTaxa2CountMap().put(node4, 100);
+//
+//        Sample sample3 = new Sample();
+//        sample3.getTaxa2CountMap().put(node1,5);
+//        sample3.getTaxa2CountMap().put(node2,10);
+//        sample3.getTaxa2CountMap().put(node3,60);
+//        sample3.getTaxa2CountMap().put(node4,100);
+//
+//        ArrayList<Sample> sampleList = new ArrayList<>();
+//        sampleList.add(sample1);
+//        sampleList.add(sample2);
+//        sampleList.add(sample3);
+//        HashMap<TaxonNode, HashMap<TaxonNode, Double>> pairwiseCorrelations = SampleComparison.getPairwiseCorrelations(sampleList);
+//        printHashMatrix(pairwiseCorrelations);
+//    }
 
-        Sample sample2 = new Sample();
-        sample2.getTaxa2CountMap().put(node1, 20);
-        sample2.getTaxa2CountMap().put(node2, 5);
-        sample2.getTaxa2CountMap().put(node3, 10);
-        sample2.getTaxa2CountMap().put(node4, 10);
 
-        HashMap<TaxonNode, HashMap<TaxonNode, Double>> pairwiseCorrelations = SampleComparison.getPairwiseCorrelations(sample1, sample2);
-        printHashMatrix(pairwiseCorrelations);
-    }
 
     /**
      * Helper method for printing a matrix
@@ -119,6 +168,11 @@ public class SampleComparisonTest {
         }
     }
 
+    /**
+     * Helper method for printing a "HashMatrix", i.e. a HashMap that contains HashMaps for every node
+     *
+     * @param matrix
+     */
     public void printHashMatrix(HashMap<TaxonNode, HashMap<TaxonNode, Double>> matrix) {
         //Sort the keys
         ArrayList<TaxonNode> taxonNodeList = new ArrayList<>(matrix.keySet());
@@ -137,7 +191,7 @@ public class SampleComparisonTest {
         System.out.println();
         //Print every inner hashmap in order
         for (TaxonNode firstNode : taxonNodeList) {
-            System.out.print(firstNode.getTaxonId()+"\t");
+            System.out.print(firstNode.getTaxonId() + "\t");
             for (TaxonNode secondNode : taxonNodeList) {
                 System.out.printf("%.3f", matrix.get(firstNode).get(secondNode));
                 System.out.print("\t");
