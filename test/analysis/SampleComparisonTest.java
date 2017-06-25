@@ -85,6 +85,24 @@ public class SampleComparisonTest {
         printMatrix(correlationMatrix);
     }
 
+    @Test
+    public void testPairwiseCorrelation() throws Exception {
+        Sample sample1 = new Sample();
+        sample1.getTaxa2CountMap().put(node1, 10);
+        sample1.getTaxa2CountMap().put(node2, 10);
+        sample1.getTaxa2CountMap().put(node3, 10);
+        sample1.getTaxa2CountMap().put(node4, 10);
+
+        Sample sample2 = new Sample();
+        sample2.getTaxa2CountMap().put(node1, 20);
+        sample2.getTaxa2CountMap().put(node2, 5);
+        sample2.getTaxa2CountMap().put(node3, 10);
+        sample2.getTaxa2CountMap().put(node4, 10);
+
+        HashMap<TaxonNode, HashMap<TaxonNode, Double>> pairwiseCorrelations = SampleComparison.getPairwiseCorrelations(sample1, sample2);
+        printHashMatrix(pairwiseCorrelations);
+    }
+
     /**
      * Helper method for printing a matrix
      *
@@ -94,7 +112,34 @@ public class SampleComparisonTest {
         for (int rowIndex = 0; rowIndex < matrix.getRowDimension(); rowIndex++) {
             double[] currentRow = matrix.getRow(rowIndex);
             for (int colIndex = 0; colIndex < matrix.getColumnDimension(); colIndex++) {
-                System.out.printf("%.3f", matrix.getEntry(rowIndex,colIndex));
+                System.out.printf("%.3f", matrix.getEntry(rowIndex, colIndex));
+                System.out.print("\t");
+            }
+            System.out.println();
+        }
+    }
+
+    public void printHashMatrix(HashMap<TaxonNode, HashMap<TaxonNode, Double>> matrix) {
+        //Sort the keys
+        ArrayList<TaxonNode> taxonNodeList = new ArrayList<>(matrix.keySet());
+        taxonNodeList.sort((tn1, tn2) -> {
+            int id1 = tn1.getTaxonId();
+            int id2 = tn2.getTaxonId();
+            return (id1 > id2 ? 1 : (id1 == id2 ? 0 : -1));
+        });
+
+        System.out.print("\t");
+        //Print ids as header
+        for (TaxonNode taxonNode : taxonNodeList) {
+            System.out.printf("%d", taxonNode.getTaxonId());
+            System.out.print("\t\t");
+        }
+        System.out.println();
+        //Print every inner hashmap in order
+        for (TaxonNode firstNode : taxonNodeList) {
+            System.out.print(firstNode.getTaxonId()+"\t");
+            for (TaxonNode secondNode : taxonNodeList) {
+                System.out.printf("%.3f", matrix.get(firstNode).get(secondNode));
                 System.out.print("\t");
             }
             System.out.println();
