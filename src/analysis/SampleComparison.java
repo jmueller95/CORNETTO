@@ -20,6 +20,7 @@ public abstract class SampleComparison {
      * @return
      */
     public static ArrayList<TaxonNode> getUnifiedTaxonList(List<Sample> samples){
+        //TODO: Change to LinkedList!
         ArrayList <TaxonNode> unifiedTaxonList = new ArrayList<>();
         //Iterate over all samples, add every taxon that isn't there yet
         for (Sample sample : samples) {
@@ -66,11 +67,10 @@ public abstract class SampleComparison {
     }
 
 
-
+    //TODO: Only compute Correlation once! So make sampleCorrelation a static field!
     public static RealMatrix getCorrelationMatrixOfSamples(List<Sample> samples) {
         PearsonsCorrelation sampleCorrelation = getPearsonsCorrelationOfSamples(samples);
         return sampleCorrelation.getCorrelationMatrix();
-        //Right now, it's a 2x2-matrix which I don't understand.
     }
 
     public static RealMatrix getCorrelationPValuesOfSamples(List<Sample> samples) {

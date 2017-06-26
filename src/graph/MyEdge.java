@@ -11,7 +11,7 @@ public class MyEdge extends DefaultEdge {
     private MyVertex source;
     private MyVertex target;
     private boolean isHidden = false;
-    //TODO: Attributes
+    //TODO: Attributes as Hashmap! (HashMap<String, Object> attributes)
 
     public MyEdge(MyVertex source, MyVertex target) {
         this.source = source;
