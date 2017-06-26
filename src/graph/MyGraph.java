@@ -1,11 +1,13 @@
 package graph;
 
+import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.graph.SimpleWeightedGraph;
 
 /**
  * Created by julian on 10.06.17.
  */
-public class MyGraph extends SimpleGraph { //TODO: Is SimpleGraph enough or should we use another graph class?
+public class MyGraph extends SimpleWeightedGraph {
 
     /**
      * Since edges are always going to be of type MyEdge, we only need this constructor
@@ -31,5 +33,10 @@ public class MyGraph extends SimpleGraph { //TODO: Is SimpleGraph enough or shou
 
     public SimpleGraph getGraph(){
         return this;
+    }
+
+    @Override
+    public void setEdgeWeight(Object o, double v) {
+
     }
 }
