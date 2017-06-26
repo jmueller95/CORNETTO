@@ -48,7 +48,7 @@ public class BiomV1Parser implements InputFile {
 
             // Detect matrix type
             boolean matrixTypeIsSparse = obj.get("matrix_type").equals("sparse");
-            System.out.println("Matrix sparse? : " + matrixTypeIsSparse);
+            //System.out.println("Matrix sparse? : " + matrixTypeIsSparse);
             int sparseMatrixIndex = 0;
 
             // Loop over all samples in the file (columns)
@@ -58,7 +58,7 @@ public class BiomV1Parser implements InputFile {
                 HashMap<String, String> metaData = new HashMap<>();
 
                 // Access metadata. What is needed? What do we want to include?
-                // TODO
+                //metaData.put("sampleID", (String)((JSONObject)obj.get("columns")).get("id"));
 
                 // Loop over rows (data)
                 for (int row = 0; row < ((JSONArray) obj.get("rows")).size(); row++) {
@@ -87,6 +87,7 @@ public class BiomV1Parser implements InputFile {
                         // Add observation to sample if taxonomy is found in tree
                         currentTaxCount.put(taxonTree.getNodeForID(id), count);
                     } catch (IllegalArgumentException e) {
+                        System.out.println("Taxonomy identifier " + id + " was not found in the tree");
                         System.out.println(e.getMessage());
                     }
 

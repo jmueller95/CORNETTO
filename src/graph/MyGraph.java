@@ -28,4 +28,8 @@ public class MyGraph extends SimpleGraph { //TODO: Is SimpleGraph enough or shou
 
         }
     }
+
+    public SimpleGraph getGraph(){
+        return this;
+    }
 }

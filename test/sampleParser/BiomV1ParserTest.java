@@ -46,12 +46,16 @@ public class BiomV1ParserTest {
 
     @Test
     public void testDenseExample() throws Exception {
+        ArrayList<Sample> samples = biomV1Parser.parse("./res/testFiles/biomFiles/exV1Sparse.biom");
 
 
     }
 
     @Test
     public void testSparseExample() throws Exception {
+        ArrayList<Sample> samples = biomV1Parser.parse("./res/testFiles/biomFiles/exV1Sparse.biom");
+        assertEquals(5, samples.get(0).getTaxa2CountMap().get(taxonTree.getNodeForID(1236)), 0);
+
 
 
     }

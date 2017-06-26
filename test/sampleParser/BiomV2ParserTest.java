@@ -19,7 +19,7 @@ public class BiomV2ParserTest {
     
     @Before
     public void setUp() throws Exception {
-        biomV2Parser = new BiomV2Parser();
+        //biomV2Parser = new BiomV2Parser();
 
     }
 
@@ -28,6 +28,7 @@ public class BiomV2ParserTest {
         File biomV2File = new File ("res/testFiles/biomFiles/exV2.biom");
         // Check if biomFile does exist.
         Assert.assertTrue(biomV2File.exists());
+
     }
 
     @Test
