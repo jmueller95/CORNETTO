@@ -1,16 +1,12 @@
 package sampleParser;
 
-import ch.systemsx.cisd.hdf5.HDF5DataSetInformation;
-import ch.systemsx.cisd.hdf5.HDF5DataTypeInformation;
 import ch.systemsx.cisd.hdf5.HDF5Factory;
 import ch.systemsx.cisd.hdf5.IHDF5SimpleReader;
 import model.Sample;
 import model.TaxonTree;
-import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * File Parser for BIOM V2.0 and V2.1 Files based on the hdf5 format
@@ -25,10 +21,6 @@ public class BiomV2Parser implements InputFile{
         this.taxonTree = taxonTree;
     }
 
-    // Constructor for testing without existing Taxon Tree
-    public BiomV2Parser() {
-    }
-
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException{
         ArrayList<Sample> sampleList = new ArrayList<>();
@@ -38,8 +30,16 @@ public class BiomV2Parser implements InputFile{
         // Get number of Samples in File
         String[] sampleArray = reader.readStringArray("/sample/ids");
         // Loop over Samples
-        for (String sample: sampleArray) {
+        for (String sample:sampleArray) {
+
+            String[] observationArray = reader.readStringArray("/observation/ids");
+            for (String observation:observationArray) {
+
+
+            }
+            Sample newSample = new Sample();
             sampleList.add(new Sample());
+
         }
         return sampleList;
     }

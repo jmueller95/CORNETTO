@@ -97,7 +97,7 @@ public class MainStageController implements Initializable {
     /**
      * Opens a file chooser and gives the user the possibility to select a file
      */ public void openFile() {
-        openFileWindow("CSV and BIOM files", "*.csv", "*.biom");
+        openFileWindow("CSV and BIOM files", "*.csv", "*.biom", "*.txt");
     }
 
 
@@ -106,7 +106,7 @@ public class MainStageController implements Initializable {
      * opens a file chooser and gives the user the possibility to select a file
      * file chooser default location is where save states are
      */ public void openRecentFile() {
-        openFileWindow("CSV and BIOM files", "*.csv", "*.biom");
+        openFileWindow("CSV and BIOM files", "*.csv", "*.biom", "*.txt");
     }
 
     /**
