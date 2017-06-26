@@ -1,8 +1,12 @@
-package graph;
+package view;
 
 import com.jgraph.layout.JGraphFacade;
 import com.jgraph.layout.graph.JGraphSimpleLayout;
+import graph.MyEdge;
+import graph.MyGraph;
+import graph.MyVertex;
 import javafx.scene.Group;
+import javafx.scene.layout.Pane;
 import org.jgraph.JGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
 
@@ -22,12 +26,18 @@ public class MyGraphView extends Group {
 
     public MyGraphView(MyGraph graph) {
         this.graph = graph;
+        this.myVertexViewGroup = new Group();
+        this.myEdgeViewGroup = new Group();
+
         simpleLayout = new JGraphSimpleLayout(JGraphSimpleLayout.TYPE_RANDOM, MAX_X, MAX_Y);
 
         layoutVertices();
         drawEdges();
         drawNodes();
-        addMouseControls();
+        addPaneInteractivity();
+
+        getChildren().add(myEdgeViewGroup);
+        getChildren().add(myVertexViewGroup);
     }
 
     public void layoutVertices() {
@@ -36,23 +46,25 @@ public class MyGraphView extends Group {
     }
 
     public void drawEdges() {
-
         graph.edgeSet().forEach((edge) -> {
-            getChildren().add(new MyEdgeView((MyEdge) edge));
+            myEdgeViewGroup.getChildren().add(new MyEdgeView((MyEdge) edge));
         });
     }
 
 
     public void drawNodes() {
-
         graph.vertexSet().forEach((vertex) -> {
-            getChildren().add(new MyVertexView((MyVertex) vertex));
+            myVertexViewGroup.getChildren().add(new MyVertexView((MyVertex) vertex));
         });
     }
 
-    public void addMouseControls() {
+    public void addPaneInteractivity() {
 
-        // TODO ScrollZoom, Pane Drag and Drop on Nodes and Graph
+
+    }
+
+    public void addNodeInteractivity() {
+
     }
 
     // Originally for Java Swing, maybe we can adapt this to work in FX?
@@ -66,6 +78,7 @@ public class MyGraphView extends Group {
 
     }
 
-
-
+    public Group getMyVertexViewGroup() {
+        return myVertexViewGroup;
+    }
 }

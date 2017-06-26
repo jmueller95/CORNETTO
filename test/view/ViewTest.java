@@ -2,7 +2,6 @@ package view;
 
 import graph.MyEdge;
 import graph.MyGraph;
-import graph.MyGraphView;
 import graph.MyVertex;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -48,10 +47,10 @@ public class ViewTest extends Application{
         setUp();
         primaryStage.setTitle("Graph View Test");
 
-        Pane root = new Pane();
-        MyGraphView myGraphView = new MyGraphView(graph);
 
-        root.getChildren().add(myGraphView);
+        MyGraphView myGraphView = new MyGraphView(graph);
+        ViewPane root = new ViewPane(myGraphView);
+
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
     }
