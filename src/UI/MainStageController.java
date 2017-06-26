@@ -37,13 +37,13 @@ import static javafx.stage.Modality.*;
  * Created by Zeth on 15.06.2017.
  */
 public class MainStageController implements Initializable {
-    private static final String NODESDMPSRC = "./res/nodes.dmp";
-    private static final String NAMESDMPSRC = "./res/names.dmp";
+    public static final String NODESDMPSRC = "./res/nodes.dmp";
+    public static final String NAMESDMPSRC = "./res/names.dmp";
     private static TaxonTree taxonTree;
 
     private static int id = 1;
 
-    private ArrayList<String> openFiles;
+    public ArrayList<String> openFiles;
 
     //Elements of the GUI
 
@@ -57,7 +57,7 @@ public class MainStageController implements Initializable {
     private TreeView<String> treeViewFiles;
 
     @FXML
-    private TextArea textAreaDetails;
+    public TextArea textAreaDetails;
 
     /**
      * initializes all required files
@@ -67,16 +67,7 @@ public class MainStageController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //build the tree
-        System.out.println("Downloading files...");
-        setUpRequiredFiles();
-        System.out.println("Parsing tree...");
-        TreeParser treeParser = new TreeParser();
-        treeParser.parseTree(NODESDMPSRC, NAMESDMPSRC);
-        taxonTree = treeParser.getTaxonTree();
-        initializeTreeView();
-        textAreaDetails.setEditable(false);
-        openFiles = new ArrayList<>();
+
     }
 
     /**
