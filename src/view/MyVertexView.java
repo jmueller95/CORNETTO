@@ -1,5 +1,6 @@
-package graph;
+package view;
 
+import graph.MyVertex;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
