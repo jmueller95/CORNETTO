@@ -4,44 +4,41 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import model.Sample;
 import model.TaxonTree;
+import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
-import treeParser.TreeParser;
 import util.DownloadFilesHelper.DownloadNodesAndNameDMPFiles;
 
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static javafx.stage.Modality.*;
-
-/**
- * Created by Zeth on 15.06.2017.
- */
 public class MainStageController implements Initializable {
-    public static final String NODESDMPSRC = "./res/nodes.dmp";
-    public static final String NAMESDMPSRC = "./res/names.dmp";
+    //The names of variables declared class constants and of ANSI constants should be all uppercase with words separated by underscores ("_"). https://softwareengineering.stackexchange.com/questions/252243/naming-convention-final-fields-not-static
+    public static final String NODES_DMP_SRC = "./res/nodes.dmp";
+    public static final String NAMES_DMP_SRC = "./res/names.dmp";
+
     private static TaxonTree taxonTree;
 
     private static int id = 1;
+
+    private enum FileType {taxonId2Count, readName2TaxonId, biom}
+
+    ;
 
     public ArrayList<String> openFiles;
 
@@ -49,8 +46,9 @@ public class MainStageController implements Initializable {
     //Elements of the GUI
 
     //I did not find those in the gluon scenebuilder?
-    private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert;
+    private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert;
 
+    // FXML elements
     @FXML
     private Label leftLabel;
 
@@ -77,7 +75,7 @@ public class MainStageController implements Initializable {
      */
     //TODO: Place this method on the outside of the MainStageController class to keep controller clean
     public static void setUpRequiredFiles() {
-        File nodesDmp = new File(NODESDMPSRC), namesDmp = new File(NAMESDMPSRC);
+        File nodesDmp = new File(NODES_DMP_SRC), namesDmp = new File(NAMES_DMP_SRC);
 
         //if files do NOT exist or they are a directory
         //-> download the files
@@ -94,20 +92,147 @@ public class MainStageController implements Initializable {
         treeViewFiles.setShowRoot(false);
     }
 
-    @FXML
-    /**
-     * Opens a file chooser and gives the user the possibility to select a file
-     */ public void openFile() {
-        openFileWindow("CSV and BIOM files", "*.csv", "*.biom", "*.txt");
-    }
-
-
+    //FILE methods
     @FXML
     /**
      * opens a file chooser and gives the user the possibility to select a file
      * file chooser default location is where save states are
      */ public void openRecentFile() {
-        openFileWindow("CSV and BIOM files", "*.csv", "*.biom", "*.txt");
+        /*openFileWindow();*/
+    }
+
+    @FXML
+    /**
+     * Closes the current project and empties the tree view
+     */ public void closeProject() {
+        if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
+            treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
+            textAreaDetails.setText("");
+            openFiles = new ArrayList<>();
+        }
+    }
+
+    @FXML
+    public void exitApplication(ActionEvent event) {
+        Platform.exit();
+    }
+
+    @FXML
+    public void openId2CountFiles() {
+        openFiles(FileType.taxonId2Count);
+    }
+
+    @FXML
+    public void openReadName2TaxonIdFiles() {
+        openFiles(FileType.readName2TaxonId);
+    }
+
+    @FXML
+    public void openBiomFiles() {
+        openFiles(FileType.taxonId2Count);
+    }
+
+    /**
+     * Exits the program
+     */
+    @FXML
+    public void quit() {
+        confirmQuit();
+    }
+
+
+    //SPECIALIZED METHODS
+
+    private void openFiles(FileType fileType) {
+        FileChooser fileChooser = new FileChooser();
+
+        setDefaultOpenDirectory(fileChooser);
+
+        //Choose the file
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
+
+        if (selectedFiles != null) {
+            ArrayList<String> namesOfAlreadyLoadedFiles = new ArrayList<>();
+            for (File file : selectedFiles) {
+                String foundFileName = file.getName();
+                if (openFiles.contains(foundFileName)) {
+                    namesOfAlreadyLoadedFiles.add(foundFileName);
+                } else {
+                    switch (fileType) {
+                        case taxonId2Count:
+                            addId2CountFileToTreeView(file);
+                            break;
+                        case readName2TaxonId:
+                            addReadName2TaxonIdFileToTreeView(file);
+                            break;
+                        case biom:
+                            addBiomFileToTreeView(file);
+                            break;
+                        default:
+                            //Will never happen
+                            break;
+                    }
+                    showFileAlreadyLoadedAlert(namesOfAlreadyLoadedFiles);
+                }
+                //Maybe multiple at once?
+                //verifyOpenedFile(selectedFile);
+            }
+
+        }
+    }
+
+    private void addReadName2TaxonIdFileToTreeView(File file) {
+
+        ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(taxonTree);
+
+        ArrayList<Sample> samples = null;
+
+        try {
+            samples = readName2TaxIdCSVParser.parse(file.getAbsolutePath());
+        } catch (IOException e) {
+            showWrongFileAlert();
+            return;
+        }
+
+        addSamplesToTreeView(samples);
+    }
+
+    private void addBiomFileToTreeView(File file) {
+
+        BiomV1Parser biomV1Parser = new BiomV1Parser(taxonTree);
+
+        ArrayList<Sample> samples = null;
+
+        samples = biomV1Parser.parse(file.getAbsolutePath());
+
+        addSamplesToTreeView(samples);
+    }
+
+    private void addId2CountFileToTreeView(File file) {
+
+        TaxonId2CountCSVParser taxonId2CountCSVParser = new TaxonId2CountCSVParser(taxonTree);
+
+        ArrayList<Sample> samples = null;
+
+        try {
+            samples = taxonId2CountCSVParser.parse(file.getAbsolutePath());
+        } catch (IOException e) {
+            showWrongFileAlert();
+            return;
+        }
+
+        addSamplesToTreeView(samples);
+    }
+
+    private void addSamplesToTreeView(ArrayList<Sample> samples) {
+        TreeItem<String> newRoot, newRootCount;
+
+        for (Sample sample : samples) {
+            newRoot = new TreeItem<>("Id: " + id++);
+            newRootCount = new TreeItem<>("Count: " + sample.getClass().toString());
+            newRoot.getChildren().addAll(newRootCount);
+            treeViewFiles.getRoot().getChildren().add(newRoot);
+        }
     }
 
     /**
@@ -123,30 +248,8 @@ public class MainStageController implements Initializable {
         }
         //leftLabel.setText(isFileFound ? selectedFile.getName() : "No such file found.");
         if (isFileFound) {
-            addFileToTreeView(selectedFile);
+            //addFileToTreeView(selectedFile);
         }
-    }
-
-    /**
-     * creates a openFileWindow
-     * requires extensionFilters
-     *
-     * @param extensionFilterDescription
-     * @param extensionFilterExtensions
-     */
-    private void openFileWindow(String extensionFilterDescription, String... extensionFilterExtensions) {
-        FileChooser fileChooser = new FileChooser();
-
-        //Extention filter
-        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(extensionFilterDescription, extensionFilterExtensions);
-        fileChooser.getExtensionFilters().add(extensionFilter);
-
-        setDefaultOpenDirectory(fileChooser);
-
-        //Choose the file
-        File selectedFile = fileChooser.showOpenDialog(null);
-
-        verifyOpenedFile(selectedFile);
     }
 
     /**
@@ -156,6 +259,7 @@ public class MainStageController implements Initializable {
      */
     private void setDefaultOpenDirectory(FileChooser fileChooser) {
         //Set to user directory or go to default if cannot access
+        //TODO: osx?
         String userDirectoryString = System.getProperty("user.home");
         File userDirectory = new File(userDirectoryString);
         if (!userDirectory.canRead()) {
@@ -163,6 +267,22 @@ public class MainStageController implements Initializable {
         }
         fileChooser.setInitialDirectory(userDirectory);
     }
+
+    @FXML
+    /**
+     * Shows the details of the selected taxon
+     */ public void selectTaxon() {
+        TreeItem<String> treeItem;
+        if ((treeItem = treeViewFiles.getSelectionModel().getSelectedItem()) != null) {
+            textAreaDetails.setText("");
+            textAreaDetails.appendText(treeItem.getValue() + "\n");
+            for (TreeItem<String> child : treeItem.getChildren()) {
+                textAreaDetails.appendText(child.getValue() + "\n");
+            }
+        }
+    }
+
+    //ALERTS
 
     /**
      * creates the file not found alert box
@@ -209,82 +329,6 @@ public class MainStageController implements Initializable {
 
     @FXML
     /**
-     * Closes the current project and empties the tree view
-     */ public void closeProject() {
-        if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
-            treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
-            textAreaDetails.setText("");
-            openFiles = new ArrayList<>();
-        }
-    }
-
-    @FXML
-    public void exitApplication(ActionEvent event) {
-        Platform.exit();
-    }
-
-
-    /**
-     * Adds and displays the file name and a placeholder id for the file name in the treeview gui element
-     *
-     * @param file
-     */
-    public void addFileToTreeView(File file) {
-        if (file.getName().endsWith(".txt") && !openFiles.contains(file.getName())) {
-
-            openFiles.add(file.getName());
-
-            TaxonId2CountCSVParser taxonId2CountCSVParser = new TaxonId2CountCSVParser(taxonTree);
-            ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(taxonTree);
-
-            ArrayList<Sample> sampleList = null;
-            try {
-                try {
-                    sampleList = taxonId2CountCSVParser.parse(file.getAbsolutePath());
-                } catch (IllegalArgumentException e) {
-                    sampleList = readName2TaxIdCSVParser.parse(file.getAbsolutePath());
-                }
-            } catch (IOException e) {
-                System.out.println("File not found.");
-            }
-
-            TreeItem<String> newRoot, newRootCount;
-
-            for (Sample sample : sampleList) {
-                newRoot = new TreeItem<>("Id: " + id++);
-                newRootCount = new TreeItem<>("Count: " + sample.getClass().toString());
-                newRoot.getChildren().addAll(newRootCount);
-                treeViewFiles.getRoot().getChildren().add(newRoot);
-            }
-        } else if (file.getName().endsWith(".txt") && openFiles.contains(file.getName())) {
-            showFileAlreadyLoadedAlert();
-        }
-    }
-
-    @FXML
-    /**
-     * Shows the details of the selected taxon
-     */ public void selectTaxon() {
-        TreeItem<String> treeItem;
-        if ((treeItem = treeViewFiles.getSelectionModel().getSelectedItem()) != null) {
-            textAreaDetails.setText("");
-            textAreaDetails.appendText(treeItem.getValue() + "\n");
-            for (TreeItem<String> child : treeItem.getChildren()) {
-                textAreaDetails.appendText(child.getValue() + "\n");
-            }
-        }
-    }
-
-    /**
-     * Exits the program
-     */
-    @FXML
-    public void quit() {
-        confirmQuit();
-    }
-
-    @FXML
-    /**
      * Shows information about the software.
      */ public void showAboutAlert() {
         String information = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " + "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in " + "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in " + "culpa qui officia deserunt mollit anim id est laborum.";
@@ -298,10 +342,27 @@ public class MainStageController implements Initializable {
     }
 
     /**
+     * Prompts an alert if the user tries to load a file that does not match the requirements.
+     */
+    //TODO: If multiple files are wrong, not every file should get its own alert.
+    //Could also refactor and use the fileNotFoundAlert
+    private void showWrongFileAlert() {
+        wrongFileAlert = new Alert(Alert.AlertType.ERROR);
+        wrongFileAlert.setTitle("File not loaded");
+        wrongFileAlert.setHeaderText("Invalid file.");
+        aboutAlert.show();
+    }
+
+    /**
      * Prompts an alert that the selected file is already part of the current project.
      */
-    private void showFileAlreadyLoadedAlert() {
-        String fileAlreadyLoaded = "The selected file is already in your project.";
+    private void showFileAlreadyLoadedAlert(ArrayList<String> fileNames) {
+        String namesOfFileAlreadyLoaded = "";
+
+        for (String name : fileNames) {
+            namesOfFileAlreadyLoaded += name + (fileNames.size() == 1 || fileNames.get(fileNames.size()).equals(name) ? "" : ", ");
+        }
+        String fileAlreadyLoaded = "The files '" + namesOfFileAlreadyLoaded + "' is already loaded in your project.";
         fileAlreadyLoadedAlert = new Alert(Alert.AlertType.ERROR);
         fileAlreadyLoadedAlert.setTitle("File not loaded.");
         fileAlreadyLoadedAlert.setContentText(fileAlreadyLoaded);

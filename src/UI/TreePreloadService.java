@@ -17,8 +17,8 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-import static UI.MainStageController.NAMESDMPSRC;
-import static UI.MainStageController.NODESDMPSRC;
+import static UI.MainStageController.NAMES_DMP_SRC;
+import static UI.MainStageController.NODES_DMP_SRC;
 import static UI.MainStageController.setUpRequiredFiles;
 
 /**
@@ -40,7 +40,7 @@ public class TreePreloadService extends Service<Void> {
                 setUpRequiredFiles();
                 System.out.println("Parsing tree...");
                 TreeParser treeParser = new TreeParser();
-                treeParser.parseTree(NODESDMPSRC, NAMESDMPSRC);
+                treeParser.parseTree(NODES_DMP_SRC, NAMES_DMP_SRC);
                 taxonTree = treeParser.getTaxonTree();
                 mainStageController.initializeTreeView();
                 mainStageController.textAreaDetails.setEditable(false);
