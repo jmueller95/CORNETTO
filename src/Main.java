@@ -54,6 +54,7 @@ public class Main extends Application {
         /**
          * creates the progress bar
          */
+        //TODO fix it saying it failed when it didn't
         JavaFXService service = new JavaFXService();
         service.start(new Stage());
     }
