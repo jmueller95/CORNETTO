@@ -25,13 +25,17 @@ public class ViewTest extends Application{
         MyVertex v1 = new MyVertex("Content"); //Has string as content
         MyVertex v2 = new MyVertex(42.0); //Has double as content
         MyVertex v3 = new MyVertex(new TaxonNode(1234, "rank", 1)); //Has TaxonNode as content
-        MyEdge edge12 = new MyEdge(v1, v2);
-        MyEdge edge23 = new MyEdge(v2, v3);
+        MyVertex v4 = new MyVertex("stuff"); //Has TaxonNode as content
+        MyEdge edge12 = new MyEdge(v1, v2, 50);
+        MyEdge edge23 = new MyEdge(v2, v3, 20);
+        MyEdge edge43 = new MyEdge(v4, v3, 60);
         this.graph.addVertex(v1);
         this.graph.addVertex(v2);
         this.graph.addVertex(v3);
+        this.graph.addVertex(v4);
         this.graph.addEdge(edge12);
         this.graph.addEdge(edge23);
+        this.graph.addEdge(edge43);
 
     }
 

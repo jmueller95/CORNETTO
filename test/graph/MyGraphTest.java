@@ -27,13 +27,16 @@ public class MyGraphTest {
         MyVertex v1 = new MyVertex("Content"); //Has string as content
         MyVertex v2 = new MyVertex(42.0); //Has double as content
         MyVertex v3 = new MyVertex(new TaxonNode(1234, "rank", 1)); //Has TaxonNode as content
-        MyEdge edge12 = new MyEdge(v1, v2);
-        MyEdge edge23 = new MyEdge(v2, v3);
+        MyVertex v4 = new MyVertex("stuff");
+        MyEdge edge12 = new MyEdge(v1, v2, 40);
+        MyEdge edge23 = new MyEdge(v2, v3, 20);
+        MyEdge edge34 = new MyEdge(v3, v4, 50);
         graph.addVertex(v1);
         graph.addVertex(v2);
         graph.addVertex(v3);
         graph.addEdge(edge12);
         graph.addEdge(edge23);
+        graph.addEdge(edge34);
 
         //There should be three vertices and two edges now
         assertEquals(3, graph.vertexSet().size());

@@ -2,6 +2,7 @@ package graph;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
 
 import java.util.HashMap;
@@ -9,15 +10,17 @@ import java.util.HashMap;
 /**
  * Created by julian on 10.06.17.
  */
-public class MyEdge extends DefaultEdge {
+public class MyEdge extends DefaultWeightedEdge {
     private MyVertex source;
     private MyVertex target;
     private boolean isHidden = false;
+    private double weight;
     private HashMap<String, Object> attributesMap;
 
-    public MyEdge(MyVertex source, MyVertex target) {
+    public MyEdge(MyVertex source, MyVertex target, double weight) {
         this.source = source;
         this.target = target;
+        this.weight = weight;
         attributesMap = new HashMap<>();
     }
 

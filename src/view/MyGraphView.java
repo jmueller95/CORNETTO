@@ -13,6 +13,7 @@ import org.jgraph.JGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
 
 import java.awt.*;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -36,7 +37,6 @@ public class MyGraphView extends Group {
 
         organicLayout = new JGraphOrganicLayout(new Rectangle(MAX_X, MAX_Y));
 
-        layoutVertices();
         drawEdges();
         drawNodes();
         getPositionFromLayoutModel();
@@ -46,10 +46,7 @@ public class MyGraphView extends Group {
         getChildren().add(myVertexViewGroup);
     }
 
-    public void layoutVertices() {
-        // TODO Make something useful: for now random
 
-    }
 
     public void drawEdges() {
         graph.edgeSet().forEach((edge) -> {
@@ -59,9 +56,16 @@ public class MyGraphView extends Group {
 
 
     public void drawNodes() {
-        graph.vertexSet().forEach((vertex) -> {
-            myVertexViewGroup.getChildren().add(new MyVertexView((MyVertex) vertex));
-        });
+
+        double[][] locations = getPositionFromLayoutModel();
+        Iterator vertexSet = graph.vertexSet().iterator();
+
+        for (int i = 0; i < graph.vertexSet().size(); i++) {
+            MyVertex thisVertex = (MyVertex)vertexSet.next();
+            thisVertex.xCoordinatesProperty().setValue(locations[i][0]);
+            thisVertex.yCoordinatesProperty().setValue(locations[i][1]);
+            myVertexViewGroup.getChildren().add(new MyVertexView((thisVertex)));
+        }
     }
 
     public void addPaneInteractivity() {
@@ -74,13 +78,12 @@ public class MyGraphView extends Group {
     }
 
     // Originally for Java Swing, maybe we can adapt this to work in FX?
-    public void getPositionFromLayoutModel() {
+    public double[][] getPositionFromLayoutModel() {
         JGraphModelAdapter adapter = new JGraphModelAdapter(graph);
         JGraph jGraph = new JGraph(adapter);
         MyGraphFacade myGraphFacade = new MyGraphFacade(jGraph);
         organicLayout.run(myGraphFacade);
-        double[][] locations =  myGraphFacade.getAllLocations();
-        System.out.println(locations.toString());
+        return  myGraphFacade.getAllLocations();
     }
 
     public Group getMyVertexViewGroup() {

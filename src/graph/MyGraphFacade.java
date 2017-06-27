@@ -3,8 +3,6 @@ package graph;
 import com.jgraph.layout.JGraphFacade;
 import org.jgraph.JGraph;
 
-import java.util.Collection;
-
 /**
  * Created by caspar on 27.06.17.
  */

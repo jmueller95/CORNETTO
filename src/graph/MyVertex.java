@@ -18,9 +18,8 @@ public class MyVertex {
 
     public MyVertex(Object content) {
         this.content = content;
-        // Assign random coordinates //TODO: change this
-        xCoordinates = new SimpleDoubleProperty(Math.random() * 500);
-        yCoordinates = new SimpleDoubleProperty(Math.random() * 500);
+        xCoordinates = new SimpleDoubleProperty(0);
+        yCoordinates = new SimpleDoubleProperty(0);
         vertexLabel = new SimpleStringProperty("initName");
 
     }
