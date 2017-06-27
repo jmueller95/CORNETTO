@@ -1,9 +1,6 @@
 package graph;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 import java.util.HashMap;
 
@@ -22,8 +19,8 @@ public class MyVertex {
     public MyVertex(Object content) {
         this.content = content;
         // Assign random coordinates //TODO: change this
-        xCoordinates = new SimpleDoubleProperty(Math.random()*500);
-        yCoordinates = new SimpleDoubleProperty(Math.random()*500);
+        xCoordinates = new SimpleDoubleProperty(Math.random() * 500);
+        yCoordinates = new SimpleDoubleProperty(Math.random() * 500);
         vertexLabel = new SimpleStringProperty("initName");
 
     }
@@ -60,4 +57,6 @@ public class MyVertex {
     public HashMap<String, Object> getAttributesMap() {
         return attributesMap;
     }
+
+
 }
