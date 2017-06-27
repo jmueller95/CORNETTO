@@ -29,45 +29,20 @@ public class JavaFXService extends Application {
 
         myService = new TreePreloadService();
 
-        myService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent t) {
-                labelSucceeded.setText("OnSucceeded");
-            }
-        });
+        myService.setOnSucceeded(t -> labelSucceeded.setText("OnSucceeded"));
 
-        myService.setOnRunning(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent t) {
-                labelSucceeded.setText("OnRunning");
-            }
-        });
+        myService.setOnRunning(t -> labelSucceeded.setText("OnRunning"));
 
-        myService.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent t) {
-                labelSucceeded.setText("OnFailed");
-            }
-        });
+        myService.setOnFailed(t -> labelSucceeded.setText("OnFailed"));
 
         progressBar.progressProperty().bind(myService.progressProperty());
         labelCount.textProperty().bind(myService.messageProperty());
 
         Button btnStart = new Button("Start Service");
-        btnStart.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                myService.start();
-            }
-        });
+        btnStart.setOnAction(t -> myService.start());
 
         Button btnReadTaskState = new Button("Read Service State");
-        btnReadTaskState.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                labelState.setText(myService.getState().toString());
-            }
-        });
+        btnReadTaskState.setOnAction(t -> labelState.setText(myService.getState().toString()));
 
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(5, 5, 5, 5));
@@ -85,7 +60,7 @@ public class JavaFXService extends Application {
 
         Scene scene = new Scene(root, 300, 250);
 
-        primaryStage.setTitle("java-buddy.blogspot.com");
+        primaryStage.setTitle("Test GUI");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

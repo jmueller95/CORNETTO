@@ -1,4 +1,5 @@
 import UI.MainStageController;
+import UI.TreePreloadService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -43,6 +44,8 @@ public class Main extends Application {
         primaryStage.setTitle("Network Analysis Tool");
         primaryStage.setScene(new Scene(content, 900, 700));
         primaryStage.show();
+        TreePreloadService treePreloadService = new TreePreloadService();
+        treePreloadService.start();
     }
 
     /**
