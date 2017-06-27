@@ -17,16 +17,22 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
             <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open…" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Load from...">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#openId2CountFiles" text="taxonId2Count" />
+                        <MenuItem mnemonicParsing="false" onAction="#openReadName2TaxonIdFiles" text="readName2TaxId" />
+                        <MenuItem mnemonicParsing="false" text="biom" />
+                     </items>
+                  </Menu>
             <Menu mnemonicParsing="false" onAction="#openRecentFile" text="Open Recent" />
-            <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#closeProject" text="Close" />
             <MenuItem mnemonicParsing="false" text="Save" />
             <MenuItem mnemonicParsing="false" text="Save As…" />
