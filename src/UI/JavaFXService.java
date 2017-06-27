@@ -1,9 +1,6 @@
 package UI;
 
 import javafx.application.Application;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -38,7 +35,7 @@ public class JavaFXService extends Application {
         progressBar.progressProperty().bind(myService.progressProperty());
         labelCount.textProperty().bind(myService.messageProperty());
 
-        Button btnStart = new Button("Start Service");
+        Button btnStart = new Button("Start parsing the tree");
         btnStart.setOnAction(t -> myService.start());
 
         Button btnReadTaskState = new Button("Read Service State");
@@ -60,12 +57,9 @@ public class JavaFXService extends Application {
 
         Scene scene = new Scene(root, 300, 250);
 
-        primaryStage.setTitle("Test GUI");
+        primaryStage.setTitle("Parse the tree");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

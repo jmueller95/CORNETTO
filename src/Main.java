@@ -1,9 +1,11 @@
+import UI.JavaFXService;
 import UI.MainStageController;
 import UI.TreePreloadService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -44,8 +46,16 @@ public class Main extends Application {
         primaryStage.setTitle("Network Analysis Tool");
         primaryStage.setScene(new Scene(content, 900, 700));
         primaryStage.show();
-        TreePreloadService treePreloadService = new TreePreloadService();
-        treePreloadService.start();
+        /**
+         * //USE THIS IF YOU WANT NO PROGRESS BAR AND NO QUESTIONS ASKED
+         */
+        //TreePreloadService treePreloadService = new TreePreloadService();
+        //treePreloadService.start();
+        /**
+         * creates the progress bar
+         */
+        JavaFXService service = new JavaFXService();
+        service.start(new Stage());
     }
 
     /**

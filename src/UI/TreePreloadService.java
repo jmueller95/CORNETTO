@@ -2,8 +2,18 @@ package UI;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import model.TaxonTree;
 import treeParser.TreeParser;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
@@ -16,6 +26,7 @@ import static UI.MainStageController.setUpRequiredFiles;
  */
 public class TreePreloadService extends Service<Void> {
     public static TaxonTree taxonTree;
+
     @Override
     protected Task<Void> createTask() {
         return new Task<Void>() {
@@ -35,6 +46,34 @@ public class TreePreloadService extends Service<Void> {
                 mainStageController.textAreaDetails.setEditable(false);
                 mainStageController.openFiles = new ArrayList<>();
 
+//                //build GUI for showing the progress
+//                Group root = new Group();
+//                Stage downloadingFilesStage = new Stage();
+//                downloadingFilesStage.setTitle("Parsing tree...");
+//                downloadingFilesStage.setScene(new Scene(root, 330, 120, Color.WHITE));
+//                downloadingFilesStage.show();
+//
+//                BorderPane mainPane = new BorderPane();
+//                root.getChildren().add(mainPane);
+//
+//                final Label label = new Label("Parsing Tree...");
+//                final ProgressBar progressBar = new ProgressBar(0);
+//
+//                final HBox hb = new HBox();
+//                hb.setSpacing(5);
+//                hb.setAlignment(Pos.CENTER);
+//                hb.getChildren().addAll(label, progressBar);
+//                mainPane.setTop(hb);
+//
+//                final HBox hb2 = new HBox();
+//                hb2.setSpacing(5);
+//                hb2.setAlignment(Pos.CENTER);
+//                mainPane.setBottom(hb2);
+//
+//                //setup progress bar
+//                progressBar.setProgress(0);
+//                progressBar.progressProperty().bind(progressBar.progressProperty());
+
                 for (int i = 1; i <= maxPercentage; i++) {
                     if (isCancelled()) {
                         break;
@@ -45,10 +84,28 @@ public class TreePreloadService extends Service<Void> {
 
                     Thread.sleep(100);
                 }
+
                 return null;
             }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                updateMessage("Done!");
+            }
+
+            @Override
+            protected void cancelled() {
+                super.cancelled();
+                updateMessage("Cancelled!");
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                updateMessage("Failed!");
+            }
         };
+
     }
 }
-
-
