@@ -1,6 +1,7 @@
 package graph;
 
 import model.TaxonNode;
+import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
@@ -31,6 +32,7 @@ public class MyGraph extends SimpleWeightedGraph {
     public void addEdge(MyEdge edge) {
         try {
             super.addEdge(edge.getSource(), edge.getTarget(), edge);
+            super.setEdgeWeight(edge, edge.getWeight());
         } catch (IllegalArgumentException e) {
             System.err.println("Can't add edge:" + edge + ".\nMake sure the vertices have been added to the graph.");
 
@@ -40,17 +42,16 @@ public class MyGraph extends SimpleWeightedGraph {
     public SimpleGraph getGraph(){
         return this;
     }
-
-    @Override
-    public void setEdgeWeight(Object o, double v) {
-
-    }
-
     public HashMap<TaxonNode, MyVertex> getTaxonNodeToVertexMap() {
         return taxonNodeToVertexMap;
     }
 
     public HashMap<Integer, HashMap<Integer, MyEdge>> getNodeIdsToEdgesMap() {
         return nodeIdsToEdgesMap;
+    }
+
+    @Override
+    public void setEdgeWeight(Object o, double v) {
+
     }
 }

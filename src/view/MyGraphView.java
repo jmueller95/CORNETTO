@@ -2,6 +2,7 @@ package view;
 
 import com.jgraph.layout.JGraphFacade;
 import com.jgraph.layout.graph.JGraphSimpleLayout;
+import com.jgraph.layout.graph.JGraphSpringLayout;
 import com.jgraph.layout.organic.JGraphOrganicLayout;
 import graph.MyEdge;
 import graph.MyGraph;
@@ -29,6 +30,8 @@ public class MyGraphView extends Group {
     private Group myEdgeViewGroup;
     private MyGraph graph;
     JGraphOrganicLayout organicLayout;
+    //JGraphSpringLayout springLayout;
+    //JGraphSimpleLayout simpleLayout;
 
     public MyGraphView(MyGraph graph) {
         this.graph = graph;
@@ -36,10 +39,12 @@ public class MyGraphView extends Group {
         this.myEdgeViewGroup = new Group();
 
         organicLayout = new JGraphOrganicLayout(new Rectangle(MAX_X, MAX_Y));
+        //springLayout = new JGraphSpringLayout(1000);
+        //simpleLayout = new JGraphSimpleLayout(2, 1000, 800);
 
-        drawEdges();
+
         drawNodes();
-        getPositionFromLayoutModel();
+        drawEdges();
         addPaneInteractivity();
 
         getChildren().add(myEdgeViewGroup);

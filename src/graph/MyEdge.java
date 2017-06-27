@@ -24,6 +24,9 @@ public class MyEdge extends DefaultWeightedEdge {
         attributesMap = new HashMap<>();
     }
 
+    public MyEdge() {
+        super();
+    }
 
     public void hideEdge(){
         this.isHidden = true;
@@ -47,6 +50,13 @@ public class MyEdge extends DefaultWeightedEdge {
     public String toString() {
         return "(" + source.getContent() + " : " + target.getContent() + ")";
     }
+
+    @Override
+    protected double getWeight() {
+        return weight;
+    }
+
+
 
     public HashMap<String, Object> getAttributesMap() {
         return attributesMap;
