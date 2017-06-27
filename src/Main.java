@@ -42,7 +42,7 @@ public class Main extends Application {
         Parent content = loader.load();
         content.getStylesheets().add("/UI/GuiStyle.css");
         primaryStage.setTitle("Network Analysis Tool");
-        primaryStage.setScene(new Scene(content, 1000, 700));
+        primaryStage.setScene(new Scene(content, 900, 700));
         primaryStage.show();
         TreePreloadService treePreloadService = new TreePreloadService();
         treePreloadService.start();
