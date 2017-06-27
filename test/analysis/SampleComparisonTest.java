@@ -58,7 +58,7 @@ public class SampleComparisonTest {
         sampleList.add(sample3);
         sampleList.add(sample4);
 
-        ArrayList<TaxonNode> unifiedTaxonList = SampleComparison.getUnifiedTaxonList(sampleList);
+        LinkedList<TaxonNode> unifiedTaxonList = SampleComparison.getUnifiedTaxonList(sampleList);
         //This list should have length 10 and be sorted by Taxon id
         assertEquals(10,unifiedTaxonList.size());
         assertEquals(1,unifiedTaxonList.get(0).getTaxonId());

@@ -1,19 +1,25 @@
 package graph;
 
-import org.jgrapht.WeightedGraph;
+import model.TaxonNode;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
+
+import java.util.HashMap;
 
 /**
  * Created by julian on 10.06.17.
  */
 public class MyGraph extends SimpleWeightedGraph {
+    private HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap;
+    private HashMap<Integer, HashMap<Integer, MyEdge>> nodeIdsToEdgesMap;
 
     /**
      * Since edges are always going to be of type MyEdge, we only need this constructor
      */
     public MyGraph() {
         super(MyEdge.class);
+        taxonNodeToVertexMap = new HashMap<>();
+        nodeIdsToEdgesMap = new HashMap<>();
 
     }
 
@@ -38,5 +44,13 @@ public class MyGraph extends SimpleWeightedGraph {
     @Override
     public void setEdgeWeight(Object o, double v) {
 
+    }
+
+    public HashMap<TaxonNode, MyVertex> getTaxonNodeToVertexMap() {
+        return taxonNodeToVertexMap;
+    }
+
+    public HashMap<Integer, HashMap<Integer, MyEdge>> getNodeIdsToEdgesMap() {
+        return nodeIdsToEdgesMap;
     }
 }
