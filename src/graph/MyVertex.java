@@ -5,6 +5,8 @@ import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
+import java.util.HashMap;
+
 /**
  * Created by julian on 10.06.17.
  */
@@ -15,6 +17,7 @@ public class MyVertex {
     private DoubleProperty xCoordinates;
     private DoubleProperty yCoordinates;
     private Property<String> vertexLabel;
+    private HashMap<String, Object> attributesMap;
 
     public MyVertex(Object content) {
         this.content = content;
@@ -52,5 +55,9 @@ public class MyVertex {
 
     public Object getContent() {
         return content;
+    }
+
+    public HashMap<String, Object> getAttributesMap() {
+        return attributesMap;
     }
 }
