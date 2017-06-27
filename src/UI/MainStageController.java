@@ -46,6 +46,7 @@ public class MainStageController implements Initializable {
     private ArrayList<String> openFiles;
 
     //Elements of the GUI
+    //Elements of the GUI
 
     //I did not find those in the gluon scenebuilder?
     private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert;

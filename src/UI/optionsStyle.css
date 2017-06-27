@@ -1,18 +1,23 @@
+.background {
+    -fx-background-color: #766C6C;
+}
+
 .menu-bar {
-    -fx-background-color: #ba481a, linear-gradient(to bottom, #fa712a 0%, #d97524 100%);
-    -fx-background-insets: 0, 0 0 1 0;
+    -fx-background-color:  linear-gradient(to bottom, #766C6C 100%, #d97524 0%);
+    -fx-background-insets:  0 0 1 0;
+    -fx-font-size: 14px;
+
 }
 
 .menu-bar .menu .label {
-    -fx-text-fill: #2d3e4c;
+    -fx-text-fill: #000000;
 }
 
 .split-pane > .split-pane-divider {
-    -fx-background-color: linear-gradient(to right, #ecf4fa 0%, #ced4d9 100%);
+    -fx-background-color: linear-gradient(#F9D900 100%, #F9D900 100%);
     -fx-padding: 0 3 0 3;
 }
 
 .scroll-pane {
-    -fx-background-insets: 0, 0;
-    -fx-padding: 0;
+    -fx-background-color: #766C6C;
 }
