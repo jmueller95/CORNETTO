@@ -58,6 +58,9 @@ public class MainStageController implements Initializable {
     @FXML
     public TextArea textAreaDetails;
 
+    @FXML
+    public ProgressBar progressBar;
+
     /**
      * initializes all required files
      *
@@ -66,7 +69,8 @@ public class MainStageController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        TreePreloadService treePreloadService = new TreePreloadService();
+        treePreloadService.start();
     }
 
     /**

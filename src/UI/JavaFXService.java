@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 
 /**
  * Created by Zeth on 26.06.2017.
+ *
+ * LIKELY DEPRECATED
  */
 public class JavaFXService extends Application {
     TreePreloadService myService;

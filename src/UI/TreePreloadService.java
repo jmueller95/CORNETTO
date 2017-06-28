@@ -26,6 +26,8 @@ import static UI.MainStageController.setUpRequiredFiles;
  */
 public class TreePreloadService extends Service<Void> {
     public static TaxonTree taxonTree;
+    private MainStageController mainStageController = new MainStageController();
+    private ProgressBar bar = mainStageController.progressBar;
 
     @Override
     protected Task<Void> createTask() {
@@ -33,7 +35,6 @@ public class TreePreloadService extends Service<Void> {
             @Override
             protected Void call() throws Exception {
                 int maxPercentage = 100;
-                MainStageController mainStageController = new MainStageController();
 
                 //build the tree
                 System.out.println("Downloading files...");
@@ -46,33 +47,7 @@ public class TreePreloadService extends Service<Void> {
                 mainStageController.textAreaDetails.setEditable(false);
                 mainStageController.openFiles = new ArrayList<>();
 
-//                //build GUI for showing the progress
-//                Group root = new Group();
-//                Stage downloadingFilesStage = new Stage();
-//                downloadingFilesStage.setTitle("Parsing tree...");
-//                downloadingFilesStage.setScene(new Scene(root, 330, 120, Color.WHITE));
-//                downloadingFilesStage.show();
-//
-//                BorderPane mainPane = new BorderPane();
-//                root.getChildren().add(mainPane);
-//
-//                final Label label = new Label("Parsing Tree...");
-//                final ProgressBar progressBar = new ProgressBar(0);
-//
-//                final HBox hb = new HBox();
-//                hb.setSpacing(5);
-//                hb.setAlignment(Pos.CENTER);
-//                hb.getChildren().addAll(label, progressBar);
-//                mainPane.setTop(hb);
-//
-//                final HBox hb2 = new HBox();
-//                hb2.setSpacing(5);
-//                hb2.setAlignment(Pos.CENTER);
-//                mainPane.setBottom(hb2);
-//
-//                //setup progress bar
-//                progressBar.setProgress(0);
-//                progressBar.progressProperty().bind(progressBar.progressProperty());
+                bar.progressProperty().bind(this.progressProperty());
 
                 for (int i = 1; i <= maxPercentage; i++) {
                     if (isCancelled()) {
