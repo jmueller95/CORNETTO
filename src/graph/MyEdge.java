@@ -17,10 +17,9 @@ public class MyEdge extends DefaultWeightedEdge {
     private double weight;
     private HashMap<String, Object> attributesMap;
 
-    public MyEdge(MyVertex source, MyVertex target, double weight) {
+    public MyEdge(MyVertex source, MyVertex target) {
         this.source = source;
         this.target = target;
-        this.weight = weight;
         attributesMap = new HashMap<>();
     }
 
@@ -52,11 +51,9 @@ public class MyEdge extends DefaultWeightedEdge {
     }
 
     @Override
-    protected double getWeight() {
-        return weight;
+    public double getWeight() {
+        return super.getWeight();
     }
-
-
 
     public HashMap<String, Object> getAttributesMap() {
         return attributesMap;

@@ -119,9 +119,12 @@ public class ViewPane extends StackPane{
         setOnMouseReleased((me -> {
 
             // TODO selection not working yet, need to implement selection model
+            System.out.println("==========================");
             myGraphView.getMyVertexViewGroup().getChildren().forEach(node -> {
-                System.out.println("Layout bounds: " + selectRectangle.getLayoutBounds().toString());
-                System.out.println(node.toString() + " intersects: "  + node.intersects(selectRectangle.getLayoutBounds()));
+
+                System.out.println("------------------------");
+                System.out.println(node.toString() + " intersects: "  + node.getBoundsInParent().intersects(selectRectangle.getBoundsInParent()));
+                System.out.println(node.toString() + " intersects: "  + selectRectangle.getLayoutBounds().intersects(node.getLayoutBounds()));
                 System.out.println(node.toString() + " is contained: " + selectRectangle.getLayoutBounds().contains(node.getLayoutBounds()));
             });
 

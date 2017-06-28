@@ -22,11 +22,12 @@ public class MyEdgeView extends Group {
 
     public MyEdgeView(MyEdge myEdge) {
         this.myEdge = myEdge;
+        lineThickness = myEdge.getWeight();
         edgeShape = new Line();
-        edgeShape.startXProperty().bind(((MyVertex)myEdge.getSource()).xCoordinatesProperty());
-        edgeShape.startYProperty().bind(((MyVertex)myEdge.getSource()).yCoordinatesProperty());
-        edgeShape.endXProperty().bind(((MyVertex)myEdge.getTarget()).xCoordinatesProperty());
-        edgeShape.endYProperty().bind(((MyVertex)myEdge.getTarget()).yCoordinatesProperty());
+        edgeShape.startXProperty().bind((myEdge.getSource()).xCoordinatesProperty());
+        edgeShape.startYProperty().bind((myEdge.getSource()).yCoordinatesProperty());
+        edgeShape.endXProperty().bind((myEdge.getTarget()).xCoordinatesProperty());
+        edgeShape.endYProperty().bind((myEdge.getTarget()).yCoordinatesProperty());
 
 
         edgeShape.setStrokeWidth(lineThickness);

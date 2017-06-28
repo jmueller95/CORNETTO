@@ -29,10 +29,11 @@ public class MyGraph extends SimpleWeightedGraph {
         return super.addVertex(o);
     }
 
-    public void addEdge(MyEdge edge) {
+
+    public void addMyEdge(MyEdge edge, double weight) {
         try {
             super.addEdge(edge.getSource(), edge.getTarget(), edge);
-            super.setEdgeWeight(edge, edge.getWeight());
+            super.setEdgeWeight(edge, weight);
         } catch (IllegalArgumentException e) {
             System.err.println("Can't add edge:" + edge + ".\nMake sure the vertices have been added to the graph.");
 
@@ -42,6 +43,7 @@ public class MyGraph extends SimpleWeightedGraph {
     public SimpleGraph getGraph(){
         return this;
     }
+
     public HashMap<TaxonNode, MyVertex> getTaxonNodeToVertexMap() {
         return taxonNodeToVertexMap;
     }
@@ -50,8 +52,4 @@ public class MyGraph extends SimpleWeightedGraph {
         return nodeIdsToEdgesMap;
     }
 
-    @Override
-    public void setEdgeWeight(Object o, double v) {
-
-    }
 }

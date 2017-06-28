@@ -28,15 +28,15 @@ public class MyGraphTest {
         MyVertex v2 = new MyVertex(42.0); //Has double as content
         MyVertex v3 = new MyVertex(new TaxonNode(1234, "rank", 1)); //Has TaxonNode as content
         MyVertex v4 = new MyVertex("stuff");
-        MyEdge edge12 = new MyEdge(v1, v2, 40);
-        MyEdge edge23 = new MyEdge(v2, v3, 20);
-        MyEdge edge34 = new MyEdge(v3, v4, 50);
+        MyEdge edge12 = new MyEdge(v1, v2);
+        MyEdge edge23 = new MyEdge(v2, v3);
+        MyEdge edge34 = new MyEdge(v3, v4);
         graph.addVertex(v1);
         graph.addVertex(v2);
         graph.addVertex(v3);
-        graph.addEdge(edge12);
-        graph.addEdge(edge23);
-        graph.addEdge(edge34);
+        graph.addEdge(edge12, 10);
+        graph.addEdge(edge23, 20);
+        graph.addEdge(edge34, 20);
 
         //There should be three vertices and two edges now
         assertEquals(3, graph.vertexSet().size());
