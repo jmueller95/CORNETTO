@@ -32,7 +32,6 @@ public class SampleComparisonTest {
         node10 = new TaxonNode(10, null, 0);
     }
 
-
     @Test
     public void testgetUnifiedTaxonList() throws Exception {
         Sample sample1 = new Sample();
@@ -119,37 +118,14 @@ public class SampleComparisonTest {
         printMatrix(correlationPValues);
     }
 
-    /*
-TESTS A METHOD THAT IS PROBABLY DEPRECATED
- */
-//    @Test
-//    public void testPairwiseCorrelation() throws Exception {
-//        Sample sample1 = new Sample();
-//        sample1.getTaxa2CountMap().put(node1, 10);
-//        sample1.getTaxa2CountMap().put(node2, 20);
-//        sample1.getTaxa2CountMap().put(node3, 30);
-//        sample1.getTaxa2CountMap().put(node4, 40);
-//
-//        Sample sample2 = new Sample();
-//        sample2.getTaxa2CountMap().put(node1, 20);
-//        sample2.getTaxa2CountMap().put(node2, 40);
-//        sample2.getTaxa2CountMap().put(node3, 15);
-//        sample2.getTaxa2CountMap().put(node4, 100);
-//
-//        Sample sample3 = new Sample();
-//        sample3.getTaxa2CountMap().put(node1,5);
-//        sample3.getTaxa2CountMap().put(node2,10);
-//        sample3.getTaxa2CountMap().put(node3,60);
-//        sample3.getTaxa2CountMap().put(node4,100);
-//
-//        ArrayList<Sample> sampleList = new ArrayList<>();
-//        sampleList.add(sample1);
-//        sampleList.add(sample2);
-//        sampleList.add(sample3);
-//        HashMap<TaxonNode, HashMap<TaxonNode, Double>> pairwiseCorrelations = SampleComparison.getPairwiseCorrelations(sampleList);
-//        printHashMatrix(pairwiseCorrelations);
-//    }
-
+    /**
+     * TODO: Implement tests!
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testFilterSamples() throws Exception {
+    }
 
 
     /**

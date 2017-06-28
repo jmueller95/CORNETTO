@@ -90,15 +90,13 @@ public abstract class SampleComparison {
      * lower/upper correlation thresholds and below the given p-Value threshold
      * TODO: Add overloaded methods with default parameters:
      * lowerCorrelationThreshold = 1, upperCorrelationThreshold = -1, pValueThreshold = 1
-     * TODO: This method should maybe become void now!
      * @param samples
      * @param graph
      * @param lowerCorrelationThreshold
      * @param upperCorrelationThreshold
      * @param pValueThreshold
-     * @return
      */
-    public static LinkedList<TaxonNode> filterSamples(List<Sample> samples, MyGraph graph,
+    public static void filterSamples(List<Sample> samples, MyGraph graph,
                                                       double lowerCorrelationThreshold, double upperCorrelationThreshold,
                                                       double pValueThreshold) {
 
@@ -131,8 +129,23 @@ public abstract class SampleComparison {
                 }
             }
         }
-        LinkedList<TaxonNode> filteredTaxonList = new LinkedList<>();
-        return filteredTaxonList;
+
+        //Check if node should be hidden
+    }
+
+    /*
+    The following 3 methods are basically overloaded filters with default params for 2 of the three doubles
+     */
+    public void filterSamplesByPValue(List<Sample> samples, MyGraph graph, double pValueThreshold){
+        filterSamples(samples,graph,1,-1,pValueThreshold);
+    }
+
+    public void filterSamplesByMinimalCorrelation(List<Sample> samples, MyGraph graph, double upperCorrelationThreshold){
+        filterSamples(samples,graph,1,upperCorrelationThreshold,1);
+    }
+
+    public void filterSamplesByMaximalCorrelation(List<Sample> samples, MyGraph graph, double lowerCorrelationThreshold){
+        filterSamples(samples,graph,lowerCorrelationThreshold,-1,1);
     }
 
 
