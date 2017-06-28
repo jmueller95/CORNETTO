@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 /**
  * Created by julian on 10.06.17.
+ * //TODO: A vertex should have a list of edges, and if all of them are hidden, it should hide as well!
  */
 public class MyVertex {
     private Object content; //TODO: Change this e.g. to TaxonNode
@@ -21,6 +22,7 @@ public class MyVertex {
         xCoordinates = new SimpleDoubleProperty(0);
         yCoordinates = new SimpleDoubleProperty(0);
         vertexLabel = new SimpleStringProperty("initName");
+        attributesMap = new HashMap<>();
 
     }
 
