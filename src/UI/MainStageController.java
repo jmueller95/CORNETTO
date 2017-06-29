@@ -1,5 +1,6 @@
 package UI;
 
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Sample;
 import model.TaxonTree;
@@ -26,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import static Main.Main.getPrimaryStage;
 
 public class MainStageController implements Initializable {
     //The names of variables declared class constants and of ANSI constants should be all uppercase with words separated by underscores ("_"). https://softwareengineering.stackexchange.com/questions/252243/naming-convention-final-fields-not-static
@@ -387,17 +391,17 @@ public class MainStageController implements Initializable {
         ButtonType saveAndQuitButton = new ButtonType("Save and quit");
         ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
+        confirmQuitAlert.initModality(Modality.APPLICATION_MODAL);
+        confirmQuitAlert.initOwner(getPrimaryStage());
         confirmQuitAlert.getButtonTypes().setAll(quitButton, saveAndQuitButton, cancelButton);
 
         Optional<ButtonType> result = confirmQuitAlert.showAndWait();
         if (result.get() == quitButton) {
-            System.exit(0);
+            Platform.exit();
         } else if (result.get() == saveAndQuitButton) {
-            //TODO SAVE AND QUIT
-            ;
+            confirmQuitAlert.close();
         } else {
-            //continue with the program
-            //user must have pressed cancel
+            confirmQuitAlert.close();
         }
     }
 

@@ -1,11 +1,10 @@
-import UI.JavaFXService;
+package Main;
+
 import UI.MainStageController;
-import UI.TreePreloadService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -17,6 +16,7 @@ import java.net.URL;
  * launches the Main method
  */
 public class Main extends Application {
+    private static Stage pStage;
 
     /**
      * the Main method
@@ -35,6 +35,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+        pStage = primaryStage;
         //TODO this is not working yet
         //should do the animation while setting up files
         //StartUpAnimation startUpAnimation = new StartUpAnimation();
@@ -55,6 +56,14 @@ public class Main extends Application {
     public void stop(){
         MainStageController mainStageController = new MainStageController();
         mainStageController.confirmQuit();
+    }
+
+    public static Stage getPrimaryStage() {
+        return pStage;
+    }
+
+    private void setPrimaryStage(Stage pStage) {
+        this.pStage = pStage;
     }
 
 }
