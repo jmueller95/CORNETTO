@@ -2,10 +2,13 @@ package Main;
 
 import UI.MainStageController;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.net.URL;
@@ -45,17 +48,18 @@ public class Main extends Application {
         Parent content = loader.load();
         content.getStylesheets().add("/UI/GuiStyle.css");
         primaryStage.setTitle("Network Analysis Tool");
+        setXEvent(primaryStage);
         primaryStage.setScene(new Scene(content, 900, 700));
         primaryStage.show();
     }
 
     /**
-     * called when X is clicked, shows a confirmation window and asks to quit/save/continue
-     */
+     * called when platform.exit is invoked
+     *
+     * */
     @Override
     public void stop(){
-        MainStageController mainStageController = new MainStageController();
-        mainStageController.confirmQuit();
+        Platform.exit();
     }
 
     public static Stage getPrimaryStage() {
@@ -64,6 +68,13 @@ public class Main extends Application {
 
     private void setPrimaryStage(Stage pStage) {
         this.pStage = pStage;
+    }
+
+    private static void setXEvent(Stage primaryStage){
+        primaryStage.setOnCloseRequest(event -> {
+            MainStageController mainStageController = new MainStageController();
+            mainStageController.confirmQuit();
+        });
     }
 
 }

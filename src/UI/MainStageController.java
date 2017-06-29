@@ -400,8 +400,12 @@ public class MainStageController implements Initializable {
             Platform.exit();
         } else if (result.get() == saveAndQuitButton) {
             confirmQuitAlert.close();
+            //Stage stage = getPrimaryStage();
+            //stage.show();
         } else {
             confirmQuitAlert.close();
+            //Stage stage = getPrimaryStage();
+            //stage.show();
         }
     }
 
