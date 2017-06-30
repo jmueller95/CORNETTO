@@ -144,6 +144,7 @@ public class MainStageController implements Initializable {
 
     /**
      * Exits the program
+     * quitButton
      */
     @FXML
     public void quit() {
@@ -192,7 +193,6 @@ public class MainStageController implements Initializable {
     }
 
     private void addReadName2TaxonIdFileToTreeView(File file) {
-
         ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(taxonTree);
 
         ArrayList<Sample> samples = null;
@@ -208,10 +208,9 @@ public class MainStageController implements Initializable {
     }
 
     private void addBiomFileToTreeView(File file) {
-
         BiomV1Parser biomV1Parser = new BiomV1Parser(taxonTree);
 
-        ArrayList<Sample> samples = null;
+        ArrayList<Sample> samples;
 
         samples = biomV1Parser.parse(file.getAbsolutePath());
 
@@ -219,10 +218,9 @@ public class MainStageController implements Initializable {
     }
 
     private void addId2CountFileToTreeView(File file) {
-
         TaxonId2CountCSVParser taxonId2CountCSVParser = new TaxonId2CountCSVParser(taxonTree);
 
-        ArrayList<Sample> samples = null;
+        ArrayList<Sample> samples;
 
         try {
             samples = taxonId2CountCSVParser.parse(file.getAbsolutePath());
@@ -280,6 +278,7 @@ public class MainStageController implements Initializable {
 
     @FXML
     /**
+     *
      * Shows the details of the selected taxon
      */ public void selectTaxon() {
         TreeItem<String> treeItem;
@@ -297,7 +296,7 @@ public class MainStageController implements Initializable {
     /**
      * creates the file not found alert box
      */
-    public void fileNotFoundAlertBox() {
+    private void fileNotFoundAlertBox() {
         fileNotFoundAlert = new Alert(Alert.AlertType.ERROR);
         fileNotFoundAlert.setTitle("File not found");
         fileNotFoundAlert.setHeaderText("File not found");
@@ -339,9 +338,11 @@ public class MainStageController implements Initializable {
 
     @FXML
     /**
+     *
      * Shows information about the software.
-     */ public void showAboutAlert() {
-        String information = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " + "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in " + "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in " + "culpa qui officia deserunt mollit anim id est laborum.";
+     */ private void showAboutAlert() {
+        String information = String.format("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." +
+                " Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
         Text text = new Text(information);
         text.setWrappingWidth(500);
         aboutAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -367,10 +368,10 @@ public class MainStageController implements Initializable {
      * Prompts an alert that the selected file is already part of the current project.
      */
     private void showFileAlreadyLoadedAlert(ArrayList<String> fileNames) {
-        String namesOfFileAlreadyLoaded = "";
+        StringBuilder namesOfFileAlreadyLoaded = new StringBuilder();
 
         for (String name : fileNames) {
-            namesOfFileAlreadyLoaded += name + (fileNames.size() == 1 || fileNames.get(fileNames.size()).equals(name) ? "" : ", ");
+            namesOfFileAlreadyLoaded.append(name).append(fileNames.size() == 1 || fileNames.get(fileNames.size()).equals(name) ? "" : ", ");
         }
         String fileAlreadyLoaded = "The files '" + namesOfFileAlreadyLoaded + "' is already loaded in your project.";
         fileAlreadyLoadedAlert = new Alert(Alert.AlertType.ERROR);
@@ -381,9 +382,10 @@ public class MainStageController implements Initializable {
 
     /**
      * method for the quit button
+     * opens an alert box
      * asks whether to save/quit/continue running the program
      */
-    public void confirmQuit() {
+    private void confirmQuit() {
         confirmQuitAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmQuitAlert.setTitle("Remember to save your files!");
         confirmQuitAlert.setHeaderText("Quit?");
@@ -403,17 +405,17 @@ public class MainStageController implements Initializable {
             Platform.exit();
         } else if (result.get() == saveAndQuitButton) {
             confirmQuitAlert.close();
-//            Stage stage = getPrimaryStage();
-//            stage.show();
         } else {
             confirmQuitAlert.close();
-            //Stage stage = getPrimaryStage();
-            //stage.show();
         }
     }
 
     @FXML
-    public void optionsButtonClicked() {
+    /**
+     * runs when the optionsButton is clicked
+     * opens the Options stage
+     */
+    private void optionsButtonClicked() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
@@ -427,6 +429,11 @@ public class MainStageController implements Initializable {
         }
     }
 
+    /**
+     * handler for Window Events
+     * opens an alert which asks whether to quit or not
+     * use when setting handlers of the X button
+     */
     public EventHandler<WindowEvent> confirmCloseEventHandler = (WindowEvent event) -> {
         confirmQuitAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmQuitAlert.setTitle("Remember to save your files!");

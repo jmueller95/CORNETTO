@@ -23,6 +23,8 @@ import static UI.MainStageController.setUpRequiredFiles;
 
 /**
  * Created by Zeth on 26.06.2017.
+ *
+ * service which preloads the tree
  */
 public class TreePreloadService extends Service<Void> {
     public static TaxonTree taxonTree;

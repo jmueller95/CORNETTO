@@ -3,20 +3,13 @@ package Main;
 import UI.MainStageController;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Optional;
 
 
 /**
@@ -29,7 +22,7 @@ public class Main extends Application {
     /**
      * the Main method
      *
-     * @param args
+     * @param args just the starting point - no files or other run parameters!
      */
     public static void main(String args[]) {
         //launch the GUI
@@ -39,7 +32,7 @@ public class Main extends Application {
     /**
      * loads the fxml file and builds the scene
      *
-     * @param primaryStage
+     * @param primaryStage the main window and starting point of our GUI
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -71,13 +64,14 @@ public class Main extends Application {
         return pStage;
     }
 
-    private void setPrimaryStage(Stage pStage) {
-        this.pStage = pStage;
-    }
-
-    private static void setXEvent(Stage primaryStage){
+    /**
+     * sets the X close button to prompting an alert box
+     *
+     * @param stage the stage which the X event should change be set
+     */
+    private static void setXEvent(Stage stage){
         MainStageController mainStageController = new MainStageController();
-        primaryStage.setOnCloseRequest(mainStageController.confirmCloseEventHandler);
+        stage.setOnCloseRequest(mainStageController.confirmCloseEventHandler);
     }
 
 
