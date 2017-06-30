@@ -2,6 +2,7 @@ package UI;
 
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Sample;
 import model.TaxonTree;
 import sampleParser.BiomV1Parser;
@@ -396,12 +398,13 @@ public class MainStageController implements Initializable {
         confirmQuitAlert.getButtonTypes().setAll(quitButton, saveAndQuitButton, cancelButton);
 
         Optional<ButtonType> result = confirmQuitAlert.showAndWait();
+
         if (result.get() == quitButton) {
             Platform.exit();
         } else if (result.get() == saveAndQuitButton) {
             confirmQuitAlert.close();
-            //Stage stage = getPrimaryStage();
-            //stage.show();
+//            Stage stage = getPrimaryStage();
+//            stage.show();
         } else {
             confirmQuitAlert.close();
             //Stage stage = getPrimaryStage();
@@ -423,4 +426,29 @@ public class MainStageController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    public EventHandler<WindowEvent> confirmCloseEventHandler = (WindowEvent event) -> {
+        confirmQuitAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmQuitAlert.setTitle("Remember to save your files!");
+        confirmQuitAlert.setHeaderText("Quit?");
+        confirmQuitAlert.setContentText("Do you really want to quit?");
+
+        ButtonType quitButton = new ButtonType("Quit");
+        ButtonType saveAndQuitButton = new ButtonType("Save and quit");
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmQuitAlert.initModality(Modality.APPLICATION_MODAL);
+        confirmQuitAlert.initOwner(getPrimaryStage());
+        confirmQuitAlert.getButtonTypes().setAll(quitButton, saveAndQuitButton, cancelButton);
+
+        Optional<ButtonType> result = confirmQuitAlert.showAndWait();
+
+        if (result.get() == quitButton) {
+            Platform.exit();
+        } else if (result.get() == saveAndQuitButton) {
+            event.consume();
+        } else {
+            event.consume();
+        }
+    };
 }
