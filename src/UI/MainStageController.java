@@ -341,8 +341,7 @@ public class MainStageController implements Initializable {
      *
      * Shows information about the software.
      */ private void showAboutAlert() {
-        String information = String.format("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." +
-                " Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
+        String information = String.format("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." + " Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
         Text text = new Text(information);
         text.setWrappingWidth(500);
         aboutAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -414,8 +413,7 @@ public class MainStageController implements Initializable {
     /**
      * runs when the optionsButton is clicked
      * opens the Options stage
-     */
-    private void optionsButtonClicked() {
+     */ private void optionsButtonClicked() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
@@ -453,7 +451,7 @@ public class MainStageController implements Initializable {
         if (result.get() == quitButton) {
             Platform.exit();
         } else if (result.get() == saveAndQuitButton) {
-            event.consume();
+            Platform.exit();
         } else {
             event.consume();
         }

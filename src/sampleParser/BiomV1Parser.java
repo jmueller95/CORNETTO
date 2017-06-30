@@ -30,11 +30,12 @@ public class BiomV1Parser implements InputFile {
 
     @Override
     /**
+     *
      * @param filepath the file to parse
      * @return list of samples
      */
     public ArrayList<Sample> parse(String filepath) {
-        this.sampleList = new ArrayList<>();
+        sampleList = new ArrayList<>();
 
 
         File inputFile = new File(filepath);

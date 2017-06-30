@@ -52,7 +52,7 @@ public abstract class SampleComparison {
      * @param samples
      * @return
      */
-    public static void createPearsonsCorrelationOfSamples(List<Sample> samples) {
+    private static void createPearsonsCorrelationOfSamples(List<Sample> samples) {
         //We need the unified map to make sure the counts are properly aligned
         LinkedList<TaxonNode> taxonNodeList = getUnifiedTaxonList(samples);
 
@@ -96,9 +96,7 @@ public abstract class SampleComparison {
      * @param upperCorrelationThreshold
      * @param pValueThreshold
      */
-    public static void filterSamples(List<Sample> samples, MyGraph graph,
-                                                      double lowerCorrelationThreshold, double upperCorrelationThreshold,
-                                                      double pValueThreshold) {
+    private static void filterSamples(List<Sample> samples, MyGraph graph, double lowerCorrelationThreshold, double upperCorrelationThreshold, double pValueThreshold) {
 
         //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
         LinkedList<TaxonNode> unfilteredTaxonList = getUnifiedTaxonList(samples);

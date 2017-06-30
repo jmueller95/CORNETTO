@@ -9,6 +9,8 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -37,18 +39,14 @@
             <MenuItem mnemonicParsing="false" onAction="#closeProject" text="Close" />
             <MenuItem mnemonicParsing="false" text="Save" />
             <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Preferences…" />
+            <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Settings" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="buttonExit" mnemonicParsing="false" onAction="#quit" text="Quit" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
           <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Cut" />
             <MenuItem mnemonicParsing="false" text="Copy" />
             <MenuItem mnemonicParsing="false" text="Paste" />
@@ -58,19 +56,15 @@
             <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
-            <Menu mnemonicParsing="false" text="View">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
+            <Menu mnemonicParsing="false" text="View" />
             <Menu mnemonicParsing="false" text="Settings">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Open Settings" />
+               </items>
             </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#showAboutAlert" text="About MyHelloApp" />
+            <MenuItem mnemonicParsing="false" onAction="#showAboutAlert" text="About Network Analysis Tool" />
           </items>
         </Menu>
       </menus>
@@ -88,13 +82,22 @@
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
-          <content>
-            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
-              <children>
-                <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="View" textAlignment="CENTER" textFill="#c58112" wrapText="false" />
-              </children>
-            </AnchorPane>
-          </content>
+               <content>
+                  <TabPane prefHeight="548.0" prefWidth="433.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Main View">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                      <Tab text="Analysis ">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </content>
         </ScrollPane>
         <AnchorPane>
           <children>

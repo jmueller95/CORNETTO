@@ -46,7 +46,7 @@ public class TreeParser {
      * @param fileNodesDmp parses the nodes.dmp file
      *                     builds the tree (without names!)
      */
-    public void readNodesDmpFile(String fileNodesDmp) {
+    private void readNodesDmpFile(String fileNodesDmp) {
         /*DEBUG*/
         long startTime = System.currentTimeMillis();
         try {
@@ -103,7 +103,7 @@ public class TreeParser {
      * adds names to the EXISTING tree
      * thus, readNodes always has to be called before readNames!
      */
-    public void readNamesDmpFile(String fileNamesDmp) {
+    private void readNamesDmpFile(String fileNamesDmp) {
         long startTime = System.currentTimeMillis();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileNamesDmp));
