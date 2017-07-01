@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 import UI.MainStageController;
 import javafx.application.Application;

@@ -21,7 +21,7 @@ import model.TaxonTree;
 import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
-import util.DownloadFilesHelper.DownloadNodesAndNameDMPFiles;
+import util.DownloadNodesAndNameDMPFiles;
 
 import java.awt.event.ActionEvent;
 import java.io.*;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static Main.Main.getPrimaryStage;
+import static main.Main.getPrimaryStage;
 
 public class MainStageController implements Initializable {
     //The names of variables declared class constants and of ANSI constants should be all uppercase with words separated by underscores ("_"). https://softwareengineering.stackexchange.com/questions/252243/naming-convention-final-fields-not-static

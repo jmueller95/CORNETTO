@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.text.Font?>
+<?import javafx.collections.*?>
 
+<?import java.lang.String?>
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.OptionsController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
@@ -43,31 +43,69 @@
             <items>
                 <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
                     <content>
-                        <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
+                        <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="890.0">
                      <children>
-                        <ToggleButton layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Dark/Bright Mode" />
+                        <TabPane layoutX="3.0" layoutY="68.0" prefHeight="495.0" prefWidth="881.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="General">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="107.0" prefWidth="881.0" />
+                              </content>
+                            </Tab>
+                            <Tab text="Files">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Button layoutX="-24.0" layoutY="-2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="235.0" text="Change default load files location" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                              <Tab text="Analysis">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <ToggleButton layoutX="-10.0" layoutY="2.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="234.0" text="Hide Unconnected Nodes on Startup" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                              <Tab text="Fonts &amp; Colors">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <ToggleButton layoutX="-21.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="235.0" text="Dark/Bright Mode" />
+                                          <ChoiceBox fx:id="fontChoiceBox" layoutX="214.0" layoutY="-1.0"
+                                                     prefHeight="30.0" prefWidth="180.0" value="default font">
+                                              <items>
+                                                  <FXCollections fx:factory="observableArrayList">
+                                                      <String fx:value="default font" />
+                                                      <String fx:value="font 2" />
+                                                      <String fx:value="font 3" />
+                                                  </FXCollections>
+                                              </items>
+                                          </ChoiceBox>
+                                          <ChoiceBox layoutX="394.0" layoutY="-1.0" prefHeight="30.0"
+                                                     prefWidth="180.0" value="red Nodes">
+                                              <items>
+                                                  <FXCollections fx:factory="observableArrayList">
+                                                      <String fx:value="red Nodes" />
+                                                      <String fx:value="blue Nodes" />
+                                                      <String fx:value="green Nodes" />
+                                                  </FXCollections>
+                                              </items>
+                                          </ChoiceBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                          </tabs>
+                        </TabPane>
                      </children></AnchorPane>
                     </content>
                 </ScrollPane>
             </items>
         </SplitPane>
-        <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
-            <children>
-                <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
-                    <font>
-                        <Font size="11.0" fx:id="x3" />
-                    </font>
-                    <textFill>
-                        <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
-                    </textFill>
-                </Label>
-                <Pane HBox.hgrow="ALWAYS" />
-                <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
-            </children>
-            <padding>
-                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-            </padding>
-        </HBox>
     </children>
     <stylesheets>
         <URL value="@optionsStyle.css" />

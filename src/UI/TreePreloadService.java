@@ -45,9 +45,6 @@ public class TreePreloadService extends Service<Void> {
                 TreeParser treeParser = new TreeParser();
                 treeParser.parseTree(NODES_DMP_SRC, NAMES_DMP_SRC);
                 taxonTree = treeParser.getTaxonTree();
-                mainStageController.initializeTreeView();
-                mainStageController.textAreaDetails.setEditable(false);
-                mainStageController.openFiles = new ArrayList<>();
 
                 bar.progressProperty().bind(this.progressProperty());
 
