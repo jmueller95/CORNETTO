@@ -85,68 +85,6 @@ public abstract class SampleComparison {
         return sampleCorrelation.getCorrelationPValues();
     }
 
-    /**
-     * Filters the taxa contained in the list of samples. Returns a list of taxa that lie below/above the given
-     * lower/upper correlation thresholds and below the given p-Value threshold
-     * TODO: Add overloaded methods with default parameters:
-     * lowerCorrelationThreshold = 1, upperCorrelationThreshold = -1, pValueThreshold = 1
-     * @param samples
-     * @param graph
-     * @param lowerCorrelationThreshold
-     * @param upperCorrelationThreshold
-     * @param pValueThreshold
-     */
-    private static void filterSamples(List<Sample> samples, MyGraph graph, double lowerCorrelationThreshold, double upperCorrelationThreshold, double pValueThreshold) {
-
-        //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
-        LinkedList<TaxonNode> unfilteredTaxonList = getUnifiedTaxonList(samples);
-
-        //Get correlation matrix and p-value matrix
-        RealMatrix correlationMatrix = getCorrelationMatrixOfSamples(samples);
-        RealMatrix correlationPValues = getCorrelationPValuesOfSamples(samples);
-
-        //We have to modify the graph, so we need to access the vertices
-        HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap = graph.getTaxonNodeToVertexMap();
-
-        //Compare every node with every other node
-        for (int i = 0; i < unfilteredTaxonList.size(); i++) {
-            for (int j = 0; j < unfilteredTaxonList.size(); j++) {
-                //Access MyEdge object via the Hashmap (we need the node ids for this)
-                int idOfFirstNode = unfilteredTaxonList.get(i).getTaxonId();
-                int idOfSecondNode = unfilteredTaxonList.get(j).getTaxonId();
-                MyEdge currentEdge = graph.getNodeIdsToEdgesMap().get(idOfFirstNode).get(idOfSecondNode);
-                //Test if edge between the nodes should be hidden
-                if (correlationMatrix.getEntry(i, j) < upperCorrelationThreshold ||
-                        correlationMatrix.getEntry(i, j) > lowerCorrelationThreshold ||
-                        correlationPValues.getEntry(i, j) > pValueThreshold) {
-                    //Hide it
-                    currentEdge.hideEdge();
-                }else{
-                    //Show it
-                    currentEdge.showEdge();
-                }
-            }
-        }
-
-        //Check if node should be hidden
-    }
-
-    /*
-    The following 3 methods are basically overloaded filters with default params for 2 of the three doubles
-     */
-    public void filterSamplesByPValue(List<Sample> samples, MyGraph graph, double pValueThreshold){
-        filterSamples(samples,graph,1,-1,pValueThreshold);
-    }
-
-    public void filterSamplesByMinimalCorrelation(List<Sample> samples, MyGraph graph, double upperCorrelationThreshold){
-        filterSamples(samples,graph,1,upperCorrelationThreshold,1);
-    }
-
-    public void filterSamplesByMaximalCorrelation(List<Sample> samples, MyGraph graph, double lowerCorrelationThreshold){
-        filterSamples(samples,graph,lowerCorrelationThreshold,-1,1);
-    }
-
-
 
 /*
 PROBABLY DEPRECATED - Does the same as "getCorrelationMatrixOfSamples", but returns a hashmap so you know which nodes

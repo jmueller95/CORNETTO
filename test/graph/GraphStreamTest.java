@@ -1,6 +1,6 @@
 package graph;
 
-import org.graphstream.*;
+import org.graphstream.graph.*;
 /**
  * Created by julian on 01.07.17.
  */
