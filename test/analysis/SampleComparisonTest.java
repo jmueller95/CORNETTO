@@ -119,16 +119,6 @@ public class SampleComparisonTest {
     }
 
     /**
-     * TODO: Implement tests!
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testFilterSamples() throws Exception {
-    }
-
-
-    /**
      * Helper method for printing a matrix
      *
      * @param matrix

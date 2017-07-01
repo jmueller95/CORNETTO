@@ -52,6 +52,15 @@ public class TaxonTree {
         }
     }
 
+    public TaxonNode getAncestorOfNode(TaxonNode taxonNode, String rank) {
+        int currentNodeId = taxonNode.getTaxonId();
+        TaxonNode currentNode = getNodeForID(currentNodeId);
+        while(currentNode != root && !currentNode.getRank().equals(rank)){
+            currentNodeId = currentNode.getParentId();
+            currentNode = getNodeForID(currentNodeId);
+        }
+        return getNodeForID(currentNodeId);
+    }
 
     //SETTER
     public void setRoot(TaxonNode root) {
