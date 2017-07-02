@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
@@ -20,7 +21,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
   <children>
     <MenuBar prefHeight="40.0" prefWidth="900.0" VBox.vgrow="NEVER">
       <menus>
@@ -88,6 +89,7 @@
               </font>
             </Label>
                   <TreeView fx:id="treeViewFiles" layoutX="11.0" layoutY="41.0" onContextMenuRequested="#selectTaxon" onMouseClicked="#selectTaxon" prefHeight="516.0" prefWidth="200.0" AnchorPane.rightAnchor="11.0" />
+                  <RadioButton fx:id="collapseAllButton" layoutX="83.0" layoutY="16.0" mnemonicParsing="false" onAction="#collapseAll" text="Collapse all" />
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">

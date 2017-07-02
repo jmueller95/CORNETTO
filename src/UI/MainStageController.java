@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Sample;
+import model.TaxonNode;
 import model.TaxonTree;
 import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
@@ -37,13 +38,9 @@ public class MainStageController implements Initializable {
     public static final String NODES_DMP_SRC = "./res/nodes.dmp";
     public static final String NAMES_DMP_SRC = "./res/names.dmp";
 
-    private static TaxonTree taxonTree;
-
-    private static int id = 1;
-
     private enum FileType {taxonId2Count, readName2TaxonId, biom}
 
-    public ArrayList<String> openFiles;
+    private ArrayList<String> openFiles;
 
     // alerts
     private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert;
@@ -56,10 +53,13 @@ public class MainStageController implements Initializable {
     private TreeView<String> treeViewFiles;
 
     @FXML
-    public TextArea textAreaDetails;
+    private TextArea textAreaDetails;
 
     @FXML
     public ProgressBar progressBar;
+
+    @FXML
+    private RadioButton collapseAllButton;
 
     /**
      * initializes all required files
@@ -72,6 +72,8 @@ public class MainStageController implements Initializable {
         TreePreloadService treePreloadService = new TreePreloadService();
         treePreloadService.start();
         initializeTreeView();
+        textAreaDetails.setEditable(false);
+        collapseAllButton.setSelected(false);
     }
 
     /**
@@ -129,8 +131,7 @@ public class MainStageController implements Initializable {
 
     @FXML
     public void openReadName2TaxonIdFiles() {
-        //openFiles(FileType.readName2TaxonId);
-        openFile_refactored();
+        openFiles(FileType.readName2TaxonId);
     }
 
     @FXML
@@ -152,10 +153,22 @@ public class MainStageController implements Initializable {
 
     private void openFiles(FileType fileType) {
         FileChooser fileChooser = new FileChooser();
+        String fileChooserTitle = "Load from ";
 
         setDefaultOpenDirectory(fileChooser);
+        switch (fileType) {
+            case taxonId2Count:
+                fileChooser.setTitle(fileChooserTitle + "taxonId2Count file");
+                break;
+            case readName2TaxonId:
+                fileChooser.setTitle(fileChooserTitle + "readName2TaxonId file");
+                break;
+            case biom:
+                fileChooser.setTitle(fileChooserTitle + "biom file");
+                break;
+        }
 
-        //Choose the file
+        //Choose the file / files
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
 
         if (selectedFiles != null) {
@@ -179,25 +192,18 @@ public class MainStageController implements Initializable {
                             //Will never happen
                             break;
                     }
-                    showFileAlreadyLoadedAlert(namesOfAlreadyLoadedFiles);
                 }
                 //Maybe multiple at once?
                 //verifyOpenedFile(selectedFile);
             }
-
+            if (namesOfAlreadyLoadedFiles.size() != 0) {
+                showFileAlreadyLoadedAlert(namesOfAlreadyLoadedFiles);
+            }
         }
     }
 
-    private void openFile_refactored() {
-        FileChooser fileChooser = new FileChooser();
-
-        File selectedFile = fileChooser.showOpenDialog(null);
-        System.out.println(selectedFile.getAbsolutePath());
-        addReadName2TaxonIdFileToTreeView(selectedFile);
-    }
-
     private void addReadName2TaxonIdFileToTreeView(File file) {
-        ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(taxonTree);
+        ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(TreePreloadService.taxonTree);
 
         ArrayList<Sample> samples;
 
@@ -208,21 +214,21 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        addSamplesToTreeView(samples);
+        addSamplesToTreeView(samples, file.getName());
     }
 
     private void addBiomFileToTreeView(File file) {
-        BiomV1Parser biomV1Parser = new BiomV1Parser(taxonTree);
+        BiomV1Parser biomV1Parser = new BiomV1Parser(TreePreloadService.taxonTree);
 
         ArrayList<Sample> samples;
 
         samples = biomV1Parser.parse(file.getAbsolutePath());
 
-        addSamplesToTreeView(samples);
+        addSamplesToTreeView(samples, file.getName());
     }
 
     private void addId2CountFileToTreeView(File file) {
-        TaxonId2CountCSVParser taxonId2CountCSVParser = new TaxonId2CountCSVParser(taxonTree);
+        TaxonId2CountCSVParser taxonId2CountCSVParser = new TaxonId2CountCSVParser(TreePreloadService.taxonTree);
 
         ArrayList<Sample> samples;
 
@@ -233,17 +239,31 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        addSamplesToTreeView(samples);
+        addSamplesToTreeView(samples, file.getName());
     }
 
-    private void addSamplesToTreeView(ArrayList<Sample> samples) {
-        TreeItem<String> newRoot, newRootCount;
+    /**
+     * Adds the given file/s to the tree view and displays them.
+     *
+     * @param samples  A list of samples that are contained in the loaded file
+     * @param fileName The name of the loaded file
+     */
+    private void addSamplesToTreeView(ArrayList<Sample> samples, String fileName) {
+        TreeItem<String> newSample, newRoot, newRootID;
+
+        int count = 0, samplesLength = samples.size();
 
         for (Sample sample : samples) {
-            newRoot = new TreeItem<>("Id: " + id++);
-            newRootCount = new TreeItem<>("Count: " + sample.getClass().toString());
-            newRoot.getChildren().addAll(newRootCount);
-            treeViewFiles.getRoot().getChildren().add(newRoot);
+            newSample = new TreeItem<>(fileName);
+            for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
+                String[] name = taxonNode.getName().split(".");
+                newRoot = new TreeItem<>(name.length == 0 ? taxonNode.getName() : name[0]);
+                newSample.getChildren().add(newRoot);
+
+                newRootID = new TreeItem<>("" + taxonNode.getTaxonId());
+                newRoot.getChildren().add(newRootID);
+            }
+            treeViewFiles.getRoot().getChildren().add(newSample);
         }
     }
 
@@ -285,12 +305,41 @@ public class MainStageController implements Initializable {
      *
      * Shows the details of the selected taxon
      */ public void selectTaxon() {
-        TreeItem<String> treeItem;
-        if ((treeItem = treeViewFiles.getSelectionModel().getSelectedItem()) != null) {
+        TreeItem<String> treeItem = treeViewFiles.getSelectionModel().getSelectedItem();
+
+        if (treeItem != null) {
             textAreaDetails.setText("");
-            textAreaDetails.appendText(treeItem.getValue() + "\n");
-            for (TreeItem<String> child : treeItem.getChildren()) {
-                textAreaDetails.appendText(child.getValue() + "\n");
+            if (!treeItem.isLeaf()) {
+                for (TreeItem<String> child : treeItem.getChildren()) {
+                    textAreaDetails.appendText(child.getValue() + "\n");
+                }
+            } else {
+                textAreaDetails.appendText(treeItem.getValue() + "\n");
+            }
+        }
+    }
+
+    @FXML
+    /**
+     * Collapses all nodes in the treeview element
+     */
+    public void collapseAll() {
+        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
+            collapseAllButton.disarm();
+            collapseAllButton.setSelected(false);
+        } else {
+            if (collapseAllButton.isSelected()) {
+                for (TreeItem<String> treeItem : treeViewFiles.getRoot().getChildren()) {
+                    treeItem.setExpanded(false);
+                }
+                collapseAllButton.disarm();
+                collapseAllButton.setSelected(false);
+            } else {
+                for (TreeItem<String> treeItem : treeViewFiles.getRoot().getChildren()) {
+                    treeItem.setExpanded(true);
+                }
+                collapseAllButton.setSelected(true);
+                collapseAllButton.arm();
             }
         }
     }

@@ -41,6 +41,7 @@ public class TreePreloadService extends Service<Void> {
                 //build the tree
                 System.out.println("Downloading files...");
                 setUpRequiredFiles();
+
                 System.out.println("Parsing tree...");
                 TreeParser treeParser = new TreeParser();
                 treeParser.parseTree(NODES_DMP_SRC, NAMES_DMP_SRC);
