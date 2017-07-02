@@ -2,7 +2,6 @@ package graph;
 
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.junit.Test;
 
 
