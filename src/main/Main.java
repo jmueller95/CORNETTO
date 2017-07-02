@@ -18,6 +18,7 @@ import java.net.URL;
  */
 public class Main extends Application {
     private static Stage pStage;
+    private static Parent content;
 
     /**
      * the Main method
@@ -43,7 +44,7 @@ public class Main extends Application {
         //startUpAnimation.startAnimation(primaryStage);
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(new URL("file:"+new File("").getCanonicalPath().concat("/src/UI/mainStageGui.fxml")));
-        Parent content = loader.load();
+        content = loader.load();
         content.getStylesheets().add("/UI/GuiStyle.css");
         primaryStage.setTitle("Network Analysis Tool");
         setXEvent(primaryStage);
@@ -62,6 +63,14 @@ public class Main extends Application {
 
     public static Stage getPrimaryStage() {
         return pStage;
+    }
+
+    public static Parent getContent() {
+        return content;
+    }
+
+    public static void setContent(Parent content) {
+        Main.content = content;
     }
 
     /**

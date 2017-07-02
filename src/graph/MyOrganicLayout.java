@@ -9,8 +9,6 @@ import java.awt.geom.Point2D;
  */
 public class MyOrganicLayout extends JGraphOrganicLayout {
 
-
-
     @Override
     protected double getEdgeLength(int i) {
         if (isOptimizeEdgeLength) {

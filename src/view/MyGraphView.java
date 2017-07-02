@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class MyGraphView extends Group {
 
-    // TODO bind size to window size or sonething
+    // TODO bind size to window size or something
     static final int MAX_X = 1000;
     static final int MAX_Y = 800;
 
@@ -50,7 +50,6 @@ public class MyGraphView extends Group {
         getChildren().add(myEdgeViewGroup);
         getChildren().add(myVertexViewGroup);
     }
-
 
 
     public void drawEdges() {

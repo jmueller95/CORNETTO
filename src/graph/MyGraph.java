@@ -4,7 +4,6 @@ import analysis.SampleComparison;
 import model.Sample;
 import model.TaxonNode;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 

@@ -34,7 +34,6 @@ import java.util.ResourceBundle;
 import static main.Main.getPrimaryStage;
 
 public class MainStageController implements Initializable {
-    //The names of variables declared class constants and of ANSI constants should be all uppercase with words separated by underscores ("_"). https://softwareengineering.stackexchange.com/questions/252243/naming-convention-final-fields-not-static
     public static final String NODES_DMP_SRC = "./res/nodes.dmp";
     public static final String NAMES_DMP_SRC = "./res/names.dmp";
 
@@ -44,14 +43,9 @@ public class MainStageController implements Initializable {
 
     private enum FileType {taxonId2Count, readName2TaxonId, biom}
 
-    ;
-
     public ArrayList<String> openFiles;
 
-    //Elements of the GUI
-    //Elements of the GUI
-
-    //I did not find those in the gluon scenebuilder?
+    // alerts
     private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert;
 
     // FXML elements
@@ -195,7 +189,7 @@ public class MainStageController implements Initializable {
     private void addReadName2TaxonIdFileToTreeView(File file) {
         ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(taxonTree);
 
-        ArrayList<Sample> samples = null;
+        ArrayList<Sample> samples;
 
         try {
             samples = readName2TaxIdCSVParser.parse(file.getAbsolutePath());

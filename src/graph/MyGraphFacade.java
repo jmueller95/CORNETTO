@@ -8,7 +8,6 @@ import org.jgraph.JGraph;
  */
 public class MyGraphFacade extends JGraphFacade {
 
-
     public MyGraphFacade(JGraph jGraph) {
         super(jGraph);
 
