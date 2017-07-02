@@ -74,7 +74,7 @@
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <ToggleButton layoutX="-21.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="235.0" text="Dark/Bright Mode" />
+                                          <ToggleButton layoutX="-21.0" layoutY="-1.0" mnemonicParsing="false" onAction="#changeDarkLightMode" prefHeight="30.0" prefWidth="235.0" text="Dark/Bright Mode" />
                                           <ChoiceBox fx:id="fontChoiceBox" layoutX="214.0" layoutY="-1.0" prefHeight="30.0" prefWidth="180.0" value="default font">
                                               <items>
                                                   <FXCollections fx:factory="observableArrayList">

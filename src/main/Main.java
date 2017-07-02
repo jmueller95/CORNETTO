@@ -45,7 +45,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(new URL("file:"+new File("").getCanonicalPath().concat("/src/UI/mainStageGui.fxml")));
         content = loader.load();
-        content.getStylesheets().add("/UI/GuiStyle.css");
+        content.getStylesheets().add("/UI/darkGuiStyle.css");
         primaryStage.setTitle("Network Analysis Tool");
         setXEvent(primaryStage);
         primaryStage.setScene(new Scene(content, 900, 700));

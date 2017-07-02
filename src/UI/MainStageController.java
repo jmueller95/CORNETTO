@@ -412,6 +412,7 @@ public class MainStageController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
             Parent root = fxmlLoader.load();
+            root.getStylesheets().add("/UI/optionsStyle.css/");
             Stage optionsStage = new Stage();
             optionsStage.setTitle("Options");
             optionsStage.setScene(new Scene(root, 800, 500));
