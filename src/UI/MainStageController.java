@@ -71,6 +71,7 @@ public class MainStageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         TreePreloadService treePreloadService = new TreePreloadService();
         treePreloadService.start();
+        initializeTreeView();
     }
 
     /**
@@ -128,7 +129,8 @@ public class MainStageController implements Initializable {
 
     @FXML
     public void openReadName2TaxonIdFiles() {
-        openFiles(FileType.readName2TaxonId);
+        //openFiles(FileType.readName2TaxonId);
+        openFile_refactored();
     }
 
     @FXML
@@ -160,7 +162,7 @@ public class MainStageController implements Initializable {
             ArrayList<String> namesOfAlreadyLoadedFiles = new ArrayList<>();
             for (File file : selectedFiles) {
                 String foundFileName = file.getName();
-                if (openFiles.contains(foundFileName)) {
+                if (openFiles != null && openFiles.contains(foundFileName)) {
                     namesOfAlreadyLoadedFiles.add(foundFileName);
                 } else {
                     switch (fileType) {
@@ -184,6 +186,14 @@ public class MainStageController implements Initializable {
             }
 
         }
+    }
+
+    private void openFile_refactored() {
+        FileChooser fileChooser = new FileChooser();
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+        System.out.println(selectedFile.getAbsolutePath());
+        addReadName2TaxonIdFileToTreeView(selectedFile);
     }
 
     private void addReadName2TaxonIdFileToTreeView(File file) {
