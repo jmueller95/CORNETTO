@@ -1,5 +1,5 @@
 .menu-bar {
-    -fx-background-color: linear-gradient(to bottom, #272422 0%, #766C6C 100%);
+    -fx-background-color: linear-gradient(to bottom, #766C6C 0%, #766C6C 100%);
     -fx-background-insets:0 0 1 0;
 }
 .split-pane {-fx-background-color: #766C6C;}
