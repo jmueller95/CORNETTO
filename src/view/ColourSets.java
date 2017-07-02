@@ -39,7 +39,7 @@ public class ColourSets {
         List set4 = new ArrayList();
         set4.add(Color.GRAY);
         set4.add(Color.GOLD);
-        set4.add(Color.AQUA)
+        set4.add(Color.AQUA);
         return set4;
     }
 
