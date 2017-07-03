@@ -71,8 +71,8 @@ public class MainStageController implements Initializable {
         TreePreloadService treePreloadService = new TreePreloadService();
         treePreloadService.start();
         initializeTreeView();
-        textAreaDetails.setEditable(false);
-        collapseAllButton.setSelected(false);
+        initializeTextAreaDetails();
+        initializeCollapseAllButton();
     }
 
     /**
@@ -88,14 +88,6 @@ public class MainStageController implements Initializable {
         if (!(nodesDmp.exists() && namesDmp.exists() && !nodesDmp.isDirectory() && !namesDmp.isDirectory())) {
             DownloadNodesAndNameDMPFiles.downloadNamesNodesDMPandUnzip();
         }
-    }
-
-    /**
-     * Initializes the tree view on left pane
-     */
-    public void initializeTreeView() {
-        treeViewFiles.setRoot(new TreeItem<>("root"));
-        treeViewFiles.setShowRoot(false);
     }
 
     //FILE methods
@@ -316,6 +308,30 @@ public class MainStageController implements Initializable {
                 collapseAllButton.arm();
             }
         }
+    }
+
+    //INITIALIZATIONS
+
+    /**
+     * Initializes the tree view on left pane
+     */
+    private void initializeTreeView() {
+        treeViewFiles.setRoot(new TreeItem<>("root"));
+        treeViewFiles.setShowRoot(false);
+    }
+
+    /**
+     * Initializes the text area on the right pane
+     */
+    private void initializeTextAreaDetails() {
+        textAreaDetails.setEditable(false);
+    }
+
+    /**
+     * Initializes the collapse all button on the left pane
+     */
+    private void initializeCollapseAllButton() {
+        collapseAllButton.setSelected(false);
     }
 
     //ALERTS
