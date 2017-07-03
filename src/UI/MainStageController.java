@@ -16,14 +16,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.LoadedData;
 import model.Sample;
 import model.TaxonNode;
-import model.TaxonTree;
 import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.DownloadNodesAndNameDMPFiles;
-
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
@@ -214,7 +213,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        addSamplesToTreeView(samples, file.getName());
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles);
     }
 
     private void addBiomFileToTreeView(File file) {
@@ -224,7 +223,7 @@ public class MainStageController implements Initializable {
 
         samples = biomV1Parser.parse(file.getAbsolutePath());
 
-        addSamplesToTreeView(samples, file.getName());
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles);
     }
 
     private void addId2CountFileToTreeView(File file) {
@@ -239,32 +238,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        addSamplesToTreeView(samples, file.getName());
-    }
-
-    /**
-     * Adds the given file/s to the tree view and displays them.
-     *
-     * @param samples  A list of samples that are contained in the loaded file
-     * @param fileName The name of the loaded file
-     */
-    private void addSamplesToTreeView(ArrayList<Sample> samples, String fileName) {
-        TreeItem<String> newSample, newRoot, newRootID;
-
-        int count = 0, samplesLength = samples.size();
-
-        for (Sample sample : samples) {
-            newSample = new TreeItem<>(fileName);
-            for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
-                String[] name = taxonNode.getName().split(".");
-                newRoot = new TreeItem<>(name.length == 0 ? taxonNode.getName() : name[0]);
-                newSample.getChildren().add(newRoot);
-
-                newRootID = new TreeItem<>("" + taxonNode.getTaxonId());
-                newRoot.getChildren().add(newRootID);
-            }
-            treeViewFiles.getRoot().getChildren().add(newSample);
-        }
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles);
     }
 
     /**
