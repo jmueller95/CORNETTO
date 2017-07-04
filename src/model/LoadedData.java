@@ -59,9 +59,9 @@ public class LoadedData {
             HashMap<TaxonNode, Integer> filteredTaxa = new HashMap<>();
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
                 int foundCount = sample.getTaxonCountRecursive(taxonNode);
-                System.out.println("Found value: " + foundCount);
+                //System.out.println("Found value: " + foundCount);
                 if (foundCount <= maxCount) {
-                    System.out.println("Didn't throw that away");
+                    //System.out.println("Didn't throw that away");
                     filteredTaxa.put(taxonNode, foundCount);
                 }
             }
