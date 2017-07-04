@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.LoadedData;
 import model.Sample;
-import model.TaxonNode;
 import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
@@ -60,6 +59,12 @@ public class MainStageController implements Initializable {
     @FXML
     private RadioButton collapseAllButton;
 
+    //Filter items
+    @FXML
+    private Slider maxCountSlider;
+
+    @FXML private Text maxCountText;
+
     /**
      * initializes all required files
      *
@@ -73,6 +78,7 @@ public class MainStageController implements Initializable {
         initializeTreeView();
         initializeTextAreaDetails();
         initializeCollapseAllButton();
+        initializeMaxCountSlider();
     }
 
     /**
@@ -104,9 +110,9 @@ public class MainStageController implements Initializable {
      * Closes the current project and empties the tree view
      */ public void closeProject() {
         if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
-            treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
+            LoadedData.closeProject(treeViewFiles);
             textAreaDetails.setText("");
-            openFiles = new ArrayList<>();
+            maxCountSlider.setDisable(true);
         }
     }
 
@@ -206,6 +212,7 @@ public class MainStageController implements Initializable {
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
+        activateFilterOptions();
     }
 
     private void addBiomFileToTreeView(File file) {
@@ -216,6 +223,7 @@ public class MainStageController implements Initializable {
         samples = biomV1Parser.parse(file.getAbsolutePath());
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
+        activateFilterOptions();
     }
 
     private void addId2CountFileToTreeView(File file) {
@@ -231,6 +239,7 @@ public class MainStageController implements Initializable {
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
+        activateFilterOptions();
     }
 
     /**
@@ -310,6 +319,30 @@ public class MainStageController implements Initializable {
         }
     }
 
+    @FXML
+    public void applyMaxCountFilter() {
+        LoadedData.filterTaxaAfterCount(treeViewFiles, (int) maxCountSlider.getValue());
+        System.out.println("Found value: " + (int) maxCountSlider.getValue());
+        for (TreeItem<String> treeItem : treeViewFiles.getRoot().getChildren()) {
+            treeItem.setExpanded(true);
+        }
+    }
+
+    /**
+     * Activates the filter options after a file is loaded
+     */
+    private void activateFilterOptions() {
+        //MaxCountSlider
+        initializeMaxCountSlider();
+    }
+
+    /**
+     * Updates the maxCountText element
+     */
+    public void updateMaxCountText() {
+        maxCountText.setText("Max count: " + (int) maxCountSlider.getValue());
+    }
+
     //INITIALIZATIONS
 
     /**
@@ -334,6 +367,24 @@ public class MainStageController implements Initializable {
         collapseAllButton.setSelected(false);
     }
 
+    /**
+     * Initializes the maxCount slider on the middle pane
+     */
+    private void initializeMaxCountSlider() {
+        maxCountSlider.setMajorTickUnit(1);
+        maxCountSlider.setMinorTickCount(1);
+        maxCountSlider.setSnapToTicks(true);
+        if(treeViewFiles.getRoot().getChildren().isEmpty()) {
+            maxCountSlider.setDisable(true);
+            maxCountText.setText("Max count: ");
+        } else {
+            maxCountSlider.setDisable(false);
+            maxCountSlider.setMin(LoadedData.getMinCount() == 0 ? 1 : LoadedData.getMinCount());
+            maxCountSlider.setMax(LoadedData.getMaxCount());
+            maxCountText.setText("Max count: " + maxCountSlider.getMax());
+        }
+        maxCountSlider.setValue(maxCountSlider.getMax());
+    }
     //ALERTS
 
     /**
