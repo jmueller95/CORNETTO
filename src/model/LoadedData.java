@@ -4,6 +4,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * <h1>Class that stores data parsed from the loaded files</h1>
@@ -21,29 +22,51 @@ public class LoadedData {
 
     private static ArrayList<Sample> samples, openFiles;
 
-    public static void addSamplesToDatabase(ArrayList<Sample> samples, TreeView<String> treeViewFiles) {
-        LoadedData.samples = samples;
-        updateTreeView(treeViewFiles);
+    public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles) {
+        samples = loadedSamples;
+        updateTreeView(treeViewFiles, samples);
     }
 
     /**
-     *
-     * @param treeViewFiles
+     * Empties the openFiles ArrayList and updates the tree view fxml element
+     * <p>
+     * <b>Note: </b> Project must be saved / alert for saving must be prompted beforehand.
+     * <b>Every progress / filtering is lost after this point!</b>
+     * @param treeViewFiles Tree view fxml element to display the loaded samples
      */
-    public static void closeProject(TreeView<String> treeViewFiles) {
+    public static void closeProject(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples) {
         samples.clear();
-        updateTreeView(treeViewFiles);
+        updateTreeView(treeViewFiles, samples);
+    }
+
+    /**
+     * Example method to filter the displayed samples after ID
+     * @param treeViewFiles
+     * @param maxID
+     */
+    //TODO: Introduce a useful filter value
+    public static void sortTaxaAfterID(TreeView<String> treeViewFiles, int maxID) {
+        ArrayList<Sample> sortedSamples = new ArrayList<>();
+
+        for (Sample sample : samples) {
+            HashMap<TaxonNode, Integer> filteredTaxa = new HashMap<>();
+            for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
+                if (taxonNode.getTaxonId() <= maxID) {
+                    filteredTaxa.put(taxonNode, taxonNode.getTaxonId());
+                }
+            }
+            sample.setTaxa2CountMap(filteredTaxa);
+        }
+        updateTreeView(treeViewFiles, sortedSamples);
     }
 
     /**
      * <h1>Update the visible samples / taxa listing</h1>
      * Overwrites the treeView fxml element in the mainStageController with all elements of the samples ArrayList
-     * @param treeViewFiles
+     * @param treeViewFiles Tree view fxml element to display the loaded samples
      */
-    private static void updateTreeView(TreeView<String> treeViewFiles) {
+    private static void updateTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples) {
         TreeItem<String> newSample, newRoot, newRootID;
-
-        int count = 0, samplesLength = samples.size();
 
         for (Sample sample : samples) {
             newSample = new TreeItem<>("name");

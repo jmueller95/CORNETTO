@@ -55,4 +55,9 @@ public class Sample {
         public HashMap<String, String> getMetaData () {
             return metaData;
         }
+
+        //Setters
+        public void setTaxa2CountMap(HashMap<TaxonNode, Integer> taxa2CountMap) {
+            this.taxa2CountMap = taxa2CountMap;
+        }
     }
