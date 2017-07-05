@@ -20,6 +20,8 @@ public class ViewTest extends Application{
 
     @Before
     public void setUp() throws Exception {
+
+
         //Create new sample Graph
         MyVertex v1 = new MyVertex("Content"); //Has string as content
         MyVertex v2 = new MyVertex(42.0); //Has double as content

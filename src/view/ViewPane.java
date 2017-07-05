@@ -27,6 +27,7 @@ public class ViewPane extends StackPane{
     private double downY;
     private Rectangle selectRectangle;
     private Pane topPane;
+    private Pane bottomPane;
     private MyGraphView myGraphView;
 
     private Property<Transform> viewTransformProperty;
@@ -36,9 +37,15 @@ public class ViewPane extends StackPane{
         topPane = new Pane();
         topPane.setPickOnBounds(false);
 
+
         this.myGraphView = myGraphView;
+        myGraphView.setStyle("-fx-background-color: #a9e200");
+        topPane.setStyle("-fx-background-color:  lightblue;");
+
+
+
         //myGraphView.getTransforms().addAll(translate, scale);
-        getChildren().addAll(myGraphView, topPane);
+        getChildren().addAll(topPane, myGraphView);
 
         setupTransforms();
         initRectangle();
@@ -141,8 +148,10 @@ public class ViewPane extends StackPane{
 
             double scaleFactor = (se.getDeltaY() > 0) ? ZOOM_FACTOR : 1/ ZOOM_FACTOR;
 
-            double pivotX = (myGraphView.getBoundsInParent().getMaxX() - myGraphView.getBoundsInParent().getWidth()/2);
-            double pivotY = (myGraphView.getBoundsInParent().getMaxY() - myGraphView.getBoundsInParent().getHeight()/2);
+            //double pivotX = (myGraphView.getBoundsInParent().getMaxX() - myGraphView.getBoundsInParent().getWidth()/2);
+            //double pivotY = (myGraphView.getBoundsInParent().getMaxY() - myGraphView.getBoundsInParent().getHeight()/2);
+            double pivotX = se.getSceneX();
+            double pivotY = se.getSceneY();
 
             Scale scale = new Scale(scaleFactor, scaleFactor, pivotX, pivotY);
             viewTransformProperty.setValue(scale.createConcatenation(viewTransformProperty.getValue()));

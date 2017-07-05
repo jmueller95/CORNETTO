@@ -21,7 +21,7 @@ public class MyEdgeView extends Group {
 
     public MyEdgeView(MyEdge myEdge) {
         this.myEdge = myEdge;
-        lineThickness = myEdge.getWeight();
+        //lineThickness = myEdge.getWeight();
         edgeShape = new Line();
         edgeShape.startXProperty().bind((myEdge.getSource()).xCoordinatesProperty());
         edgeShape.startYProperty().bind((myEdge.getSource()).yCoordinatesProperty());

@@ -1,10 +1,13 @@
 package view;
 
 
+import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
+import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.scene.Group;
+import javafx.scene.layout.Pane;
 
 
 import java.awt.*;
@@ -22,6 +25,9 @@ public class MyGraphView extends Group {
     private Group myVertexViewGroup;
     private Group myEdgeViewGroup;
     private MyGraph<MyVertex, MyEdge> graph;
+
+    private SpringLayout2 springLayout;
+
     //JGraphOrganicLayout organicLayout;
     //JGraphSpringLayout springLayout;
     //JGraphSimpleLayout simpleLayout;
@@ -30,6 +36,9 @@ public class MyGraphView extends Group {
         this.graph = graph;
         this.myVertexViewGroup = new Group();
         this.myEdgeViewGroup = new Group();
+        this.springLayout = new SpringLayout2(graph);
+        springLayout.setSize(new Dimension(500, 500));
+
 
         //organicLayout = new JGraphOrganicLayout(new Rectangle(MAX_X, MAX_Y));
         //springLayout = new JGraphSpringLayout(1000);
@@ -38,6 +47,7 @@ public class MyGraphView extends Group {
 
         drawNodes();
         drawEdges();
+        setPositions();
         addPaneInteractivity();
 
         getChildren().add(myEdgeViewGroup);
@@ -47,14 +57,25 @@ public class MyGraphView extends Group {
 
     public void drawEdges() {
         graph.getEdges().forEach((edge) -> {
-            myEdgeViewGroup.getChildren().add(new MyEdgeView((MyEdge) edge));
+            myEdgeViewGroup.getChildren().add(new MyEdgeView(edge));
         });
     }
 
 
     public void drawNodes() {
+        graph.getVertices().forEach((node) -> {
+            myVertexViewGroup.getChildren().add(new MyVertexView(node));
+        });
+    }
 
-
+    public void setPositions() {
+        springLayout.initialize();
+        springLayout.step();
+        springLayout.step();
+        graph.getVertices().forEach((node) -> {
+            node.xCoordinatesProperty().setValue(springLayout.getX(node));
+            node.yCoordinatesProperty().setValue(springLayout.getY(node));
+        });
     }
 
     public void addPaneInteractivity() {
