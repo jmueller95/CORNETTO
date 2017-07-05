@@ -3,10 +3,12 @@ package sampleParser;
 import ch.systemsx.cisd.hdf5.HDF5Factory;
 import ch.systemsx.cisd.hdf5.IHDF5SimpleReader;
 import model.Sample;
+import model.TaxonNode;
 import model.TaxonTree;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * File Parser for BIOM V2.0 and V2.1 Files based on the hdf5 format
@@ -28,19 +30,35 @@ public class BiomV2Parser implements InputFile{
         IHDF5SimpleReader reader = HDF5Factory.openForReading(filepath);
 
         // Get number of Samples in File
-        String[] sampleArray = reader.readStringArray("/sample/ids");
+        String[] sampleIds = reader.readStringArray("/sample/ids");
+        int[] observationIds = reader.readIntArray("/observation/ids");
+        int[] indptr = reader.readIntArray("sample/matrx/indptr");
+        int[] indices = reader.readIntArray("sample/matrix/indices");
+        int[] data = reader.readIntArray("sample/matrx/data");
+
         // Loop over Samples
-        for (String sample:sampleArray) {
+        for (int i = 0; i < sampleIds.length ; i++) {
 
-            String[] observationArray = reader.readStringArray("/observation/ids");
-            for (String observation:observationArray) {
-
-
-            }
+            // Create new Sample
             Sample newSample = new Sample();
-            sampleList.add(new Sample());
+            newSample.setSampleId(sampleIds[i]);
 
+            // Add counts to this sample
+            for (int j = indptr[i]; j < indptr[i+1]; j++) {
+                TaxonNode node = taxonTree.getNodeForID(observationIds[indices[j]]);
+                newSample.getTaxa2CountMap().put(node, data[j]);
+            }
+
+            // Loop over Metadata-Entries
+            for (String metaKey: reader.getGroupMembers("/sample/metadata")) {
+                System.out.println(metaKey);
+                String metaValue = reader.readStringArray("/sample/metadata/" + metaKey)[i];
+                newSample.getMetaData().put(metaKey, metaValue);
+            }
+
+            sampleList.add(newSample);
         }
+
         return sampleList;
     }
 }

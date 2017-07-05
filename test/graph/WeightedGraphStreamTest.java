@@ -1,18 +1,15 @@
 package graph;
 
-
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Test;
 
-
 /**
- * There are great tutorials for this API here: http://graphstream-project.org/doc/Tutorials/
- * Created by julian on 01.07.17.
+ * Created by caspar on 02.07.17.
  */
-public class GraphStreamTest {
+public class WeightedGraphStreamTest {
     Graph testGraph;
 
     @Test
