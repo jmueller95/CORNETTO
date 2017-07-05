@@ -1,13 +1,13 @@
 package graph;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-
 import java.util.HashMap;
 
 /**
  * Created by julian on 10.06.17.
+ *
  */
-public class MyEdge extends DefaultWeightedEdge {
+public class MyEdge{
+
     private MyVertex source;
     private MyVertex target;
     private boolean isHidden = false;
@@ -20,9 +20,6 @@ public class MyEdge extends DefaultWeightedEdge {
         attributesMap = new HashMap<>();
     }
 
-    public MyEdge() {
-        super();
-    }
 
     public void hideEdge(){
         this.isHidden = true;
@@ -32,24 +29,16 @@ public class MyEdge extends DefaultWeightedEdge {
         this.isHidden = false;
     }
 
-    @Override
     public MyVertex getSource() {
         return source;
     }
 
-    @Override
     public MyVertex getTarget() {
         return target;
     }
 
-    @Override
-    public String toString() {
-        return "(" + source.getContent() + " : " + target.getContent() + ")";
-    }
-
-    @Override
     public double getWeight() {
-        return super.getWeight();
+        return weight;
     }
 
     public HashMap<String, Object> getAttributesMap() {

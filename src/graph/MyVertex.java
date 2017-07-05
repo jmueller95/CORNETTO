@@ -1,6 +1,7 @@
 package graph;
 
 import javafx.beans.property.*;
+import model.TaxonNode;
 
 import java.util.HashMap;
 
@@ -9,7 +10,7 @@ import java.util.HashMap;
  * //TODO: A vertex should have a list of edges, and if all of them are hidden, it should hide as well!
  */
 public class MyVertex {
-    private Object content; //TODO: Change this e.g. to TaxonNode
+    private TaxonNode taxonNode;
     private boolean isHidden = false;
 
     private DoubleProperty xCoordinates;
@@ -18,7 +19,6 @@ public class MyVertex {
     private HashMap<String, Object> attributesMap;
 
     public MyVertex(Object content) {
-        this.content = content;
         xCoordinates = new SimpleDoubleProperty(0);
         yCoordinates = new SimpleDoubleProperty(0);
         vertexLabel = new SimpleStringProperty("initName");
@@ -49,10 +49,6 @@ public class MyVertex {
 
     public boolean isHidden() {
         return isHidden;
-    }
-
-    public Object getContent() {
-        return content;
     }
 
     public HashMap<String, Object> getAttributesMap() {

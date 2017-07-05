@@ -5,6 +5,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/res" type="java-test-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -15,5 +16,7 @@
     <orderEntry type="library" name="gs-algo-1.3" level="project" />
     <orderEntry type="library" name="gs-core-1.3" level="project" />
     <orderEntry type="library" name="gs-ui-1.3" level="project" />
+    <orderEntry type="library" name="jung2-2_0_1" level="project" />
+    <orderEntry type="library" name="jung-algorithms-2.1.1" level="project" />
   </component>
 </module>

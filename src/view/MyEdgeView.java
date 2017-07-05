@@ -8,7 +8,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Line;
-import org.jgraph.graph.Edge;
 
 /**
  * Created by caspar on 19.06.17.

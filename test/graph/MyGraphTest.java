@@ -1,6 +1,9 @@
 package graph;
 
 import analysis.SampleComparison;
+import edu.uci.ics.jung.graph.*;
+import edu.uci.ics.jung.graph.util.EdgeType;
+import edu.uci.ics.jung.graph.util.Pair;
 import model.Sample;
 import model.TaxonNode;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -8,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -16,12 +20,12 @@ import static org.junit.Assert.*;
  * Created by julian on 10.06.17.
  */
 public class MyGraphTest {
-    private MyGraph graph;
 
+    MyGraph<MyVertex, MyEdge> g;
 
     @Before
     public void setUp() throws Exception {
-        graph = new MyGraph();
+        g = new MyGraph<MyVertex, MyEdge>();
     }
 
     /**
@@ -38,20 +42,20 @@ public class MyGraphTest {
         MyEdge edge12 = new MyEdge(v1, v2);
         MyEdge edge23 = new MyEdge(v2, v3);
         MyEdge edge34 = new MyEdge(v3, v4);
-        graph.addVertex(v1);
-        graph.addVertex(v2);
-        graph.addVertex(v3);
-        graph.addEdge(edge12, 10);
-        graph.addEdge(edge23, 20);
-        graph.addEdge(edge34, 20);
+        g.addVertex(v1);
+        g.addVertex(v2);
+        g.addVertex(v3);
+        g.addEdge(edge12, v1, v2);
+        g.addEdge(edge23, v2, v3);
+        g.addEdge(edge34, v3, v4);
 
         //There should be three vertices and two edges now
-        assertEquals(3, graph.vertexSet().size());
-        assertEquals(2, graph.edgeSet().size());
+        assertEquals(3, g.getVertices().size());
+        assertEquals(2, g.getEdges().size());
 
         //v1 and v2 should be connected, but NOT v1 and v3
-        assertTrue(graph.containsEdge(v1, v2));
-        assertFalse(graph.containsEdge(v1, v3));
+        assertTrue(g.containsEdge(edge12));
+        assertFalse(g.containsEdge(new MyEdge(v1, v3)));
     }
 
     @Test
@@ -90,10 +94,10 @@ public class MyGraphTest {
         MyVertex vertex4 = new MyVertex(node4);
 
         //TODO: This needs to be done automatically when initializing the graph!
-        graph.getTaxonNodeToVertexMap().put(node1,vertex1);
-        graph.getTaxonNodeToVertexMap().put(node2,vertex2);
-        graph.getTaxonNodeToVertexMap().put(node3,vertex3);
-        graph.getTaxonNodeToVertexMap().put(node4,vertex4);
+        g.getTaxonNodeToVertexMap().put(node1,vertex1);
+        g.getTaxonNodeToVertexMap().put(node2,vertex2);
+        g.getTaxonNodeToVertexMap().put(node3,vertex3);
+        g.getTaxonNodeToVertexMap().put(node4,vertex4);
         HashMap<Integer, MyEdge> edgesOfNode1 = new HashMap<>();
         HashMap<Integer, MyEdge> edgesOfNode2 = new HashMap<>();
         HashMap<Integer, MyEdge> edgesOfNode3 = new HashMap<>();
@@ -113,7 +117,7 @@ public class MyGraphTest {
         printMatrix(correlationPValues);
 
 
-        graph.filterSamplesByPValue(samples, 0);
+        g.filterSamplesByPValue(samples, 0);
         /**
          * This is the p-Value matrix of the dataset:
          0,000	0,000	0,242	0,879
@@ -123,6 +127,28 @@ public class MyGraphTest {
          * So vertices 3 and 4 should be hidden now, and vertices 1 and 2 should only have one edge remaining
          */
         assertTrue(vertex3.isHidden()&&vertex4.isHidden());
+
+                /*MyVertex v1 = new MyVertex("Content"); //Has string as content
+        MyVertex v2 = new MyVertex(42.0); //Has double as content
+        MyVertex v3 = new MyVertex(new TaxonNode(1234, "rank", 1)); //Has TaxonNode as content
+        MyVertex v4 = new MyVertex("stuff");
+        MyEdge edge12 = new MyEdge(v1, v2);
+        MyEdge edge23 = new MyEdge(v2, v3);
+        MyEdge edge34 = new MyEdge(v3, v4);
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addEdge(edge12, 10);
+        graph.addEdge(edge23, 20);
+        graph.addEdge(edge34, 20);
+
+        //There should be three vertices and two edges now
+        assertEquals(3, graph.vertexSet().size());
+        assertEquals(2, graph.edgeSet().size());
+
+        //v1 and v2 should be connected, but NOT v1 and v3
+        assertTrue(graph.containsEdge(v1, v2));
+        assertFalse(graph.containsEdge(v1, v3)); */
 
     }
 

@@ -15,7 +15,7 @@ import org.junit.Test;
  */
 public class ViewTest extends Application{
 
-    private MyGraph graph = new MyGraph();
+    private MyGraph<MyVertex, MyEdge> graph = new MyGraph<MyVertex, MyEdge>();
 
 
     @Before
@@ -32,9 +32,9 @@ public class ViewTest extends Application{
         this.graph.addVertex(v2);
         this.graph.addVertex(v3);
         this.graph.addVertex(v4);
-        this.graph.addMyEdge(edge12, 10);
-        this.graph.addMyEdge(edge23, 30);
-        this.graph.addMyEdge(edge24, 60);
+        this.graph.addEdge(edge12, v1, v2);
+        this.graph.addEdge(edge23, v2, v3);
+        this.graph.addEdge(edge24, v2, v4);
 
 
     }
