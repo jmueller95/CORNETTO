@@ -99,7 +99,7 @@
         </AnchorPane>
         <ScrollPane prefHeight="572.0" prefWidth="443.0">
                <content>
-                  <TabPane prefHeight="566.0" prefWidth="100000.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane prefHeight="566.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                       <Tab text="Main View">
                         <content>
