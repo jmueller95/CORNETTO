@@ -23,9 +23,12 @@ public class LoadedData {
 
     private static ArrayList<Sample> samples, openFiles;
 
-
     public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles) {
-        samples = loadedSamples;
+        if (samples == null) {
+            samples = loadedSamples;
+        } else {
+            samples.addAll(loadedSamples);
+        }
         updateTreeView(treeViewFiles, samples);
     }
 
