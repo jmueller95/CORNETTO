@@ -41,7 +41,20 @@ public class BiomV2ParserTest {
     public void checkSampleNumber() throws Exception {
         // Check if correct Number of samples has been found
         ArrayList<Sample> sampleList = biomV2Parser.parse("./res/testFiles/biomFiles/exampleV2.biom");
-        Assert.assertEquals(6, sampleList.size());
+        Assert.assertEquals(1, sampleList.size());
+    }
+
+    @Test
+    public void checkSampleValue() throws Exception {
+        // Check if value of sample is correct
+        ArrayList<Sample> sampleList = biomV2Parser.parse("./res/testFiles/biomFiles/exampleV2.biom");
+        Assert.assertEquals(1, (int) sampleList.get(0).getTaxa2CountMap().get(taxonTree.getNodeForID(1224)));
+        Assert.assertEquals(2, (int) sampleList.get(0).getTaxa2CountMap().get(taxonTree.getNodeForID(469)));
+    }
+
+    @Test
+    public void checkMetaData() throws Exception {
+        ArrayList<Sample> sampleList = biomV2Parser.parse("./res/testFiles/biomFiles/exampleV2.biom");
     }
 
 }

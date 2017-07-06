@@ -31,10 +31,10 @@ public class BiomV2Parser implements InputFile{
 
         // Get number of Samples in File
         String[] sampleIds = reader.readStringArray("/sample/ids");
-        int[] observationIds = reader.readIntArray("/observation/ids");
-        int[] indptr = reader.readIntArray("sample/matrx/indptr");
-        int[] indices = reader.readIntArray("sample/matrix/indices");
-        int[] data = reader.readIntArray("sample/matrx/data");
+        String[] observationIds = reader.readStringArray("/observation/ids");
+        int[] indptr = reader.readIntArray("/sample/matrix/indptr");
+        int[] indices = reader.readIntArray("/sample/matrix/indices");
+        float[] data = reader.readFloatArray("/sample/matrix/data");
 
         // Loop over Samples
         for (int i = 0; i < sampleIds.length ; i++) {
@@ -45,8 +45,8 @@ public class BiomV2Parser implements InputFile{
 
             // Add counts to this sample
             for (int j = indptr[i]; j < indptr[i+1]; j++) {
-                TaxonNode node = taxonTree.getNodeForID(observationIds[indices[j]]);
-                newSample.getTaxa2CountMap().put(node, data[j]);
+                TaxonNode node = taxonTree.getNodeForID(Integer.parseInt(observationIds[indices[j]]));
+                newSample.getTaxa2CountMap().put(node, Math.round(data[j]));
             }
 
             // Loop over Metadata-Entries
