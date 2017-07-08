@@ -113,6 +113,7 @@ public class MainStageController implements Initializable {
             LoadedData.closeProject(treeViewFiles);
             textAreaDetails.setText("");
             maxCountSlider.setDisable(true);
+            maxCountText.setText("Max count: ");
         }
     }
 

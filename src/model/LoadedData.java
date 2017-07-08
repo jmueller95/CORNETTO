@@ -11,6 +11,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * <h1>Class that stores data parsed from the loaded files</h1>
@@ -38,7 +39,6 @@ public class LoadedData {
         }
         updateTreeView(treeViewFiles, samples);
     }
-
 
     /**
      * Builds a fully connected graph of all taxa contained in the sample list.
@@ -142,6 +142,33 @@ public class LoadedData {
                 newRoot.getChildren().addAll(newRootID, newRootCount);
             }
             treeViewFiles.getRoot().getChildren().add(newSample);
+        }
+    }
+
+
+    private void updateTreeViewFromGraph(TreeView<String> treeViewItems) {
+        treeViewItems.setRoot(new TreeItem<>("root"));
+
+        TreeItem<String> newSample, newRoot, newRootID, newRootCount;
+
+        int count = 0;
+        Set<TaxonNode> allTaxa = taxonGraph.getTaxonNodeToVertexMap().keySet();
+        for (TaxonNode taxonNode : allTaxa) {
+
+            boolean isVertexHidden = taxonGraph.getTaxonNodeToVertexMap().get(taxonNode).isHidden();
+            if (!isVertexHidden) {
+                newSample = new TreeItem<>("sample " + ++count);
+                for (TaxonNode foundTaxonNode : allTaxa) {
+                    String[] name = taxonNode.getName().split(".");
+                    newRoot = new TreeItem<>("name: " + (name.length == 0 ? taxonNode.getName() : name[0]));
+                    newSample.getChildren().add(newRoot);
+
+                    newRootID = new TreeItem<>("id: " + taxonNode.getTaxonId());
+                    newRootCount = new TreeItem<>("count: " + "NOT YET IMPLEMENTED");//sample.getTaxonCountRecursive(taxonNode));
+
+                    newRoot.getChildren().addAll(newRootID, newRootCount);
+                }
+            }
         }
     }
 
