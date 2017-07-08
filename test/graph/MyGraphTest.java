@@ -35,10 +35,10 @@ public class MyGraphTest {
      */
     @Test
     public void testGraphProperties() throws Exception {
-        MyVertex v1 = new MyVertex("Content"); //Has string as content
-        MyVertex v2 = new MyVertex(42.0); //Has double as content
-        MyVertex v3 = new MyVertex(new TaxonNode(1234, "rank", 1)); //Has TaxonNode as content
-        MyVertex v4 = new MyVertex("stuff");
+        MyVertex v1 = new MyVertex(new TaxonNode(1,"rank", 1));
+        MyVertex v2 = new MyVertex(new TaxonNode(2, "rank", 1));
+        MyVertex v3 = new MyVertex(new TaxonNode(3, "rank", 1));
+        MyVertex v4 = new MyVertex(new TaxonNode(4, "rank", 1));
         MyEdge edge12 = new MyEdge(v1, v2);
         MyEdge edge23 = new MyEdge(v2, v3);
         MyEdge edge34 = new MyEdge(v3, v4);
