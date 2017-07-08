@@ -25,7 +25,7 @@ public class MyGraphTest {
 
     @Before
     public void setUp() throws Exception {
-        g = new MyGraph<MyVertex, MyEdge>();
+        g = new MyGraph<>();
     }
 
     /**

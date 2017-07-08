@@ -1,10 +1,16 @@
 package model;
 
+import analysis.SampleComparison;
+import graph.MyEdge;
+import graph.MyGraph;
+import graph.MyVertex;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * <h1>Class that stores data parsed from the loaded files</h1>
@@ -22,6 +28,7 @@ import java.util.HashMap;
 public class LoadedData {
 
     private static ArrayList<Sample> samples, openFiles;
+    private static MyGraph<MyVertex, MyEdge> taxonGraph;
 
     public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles) {
         if (samples == null) {
@@ -31,6 +38,39 @@ public class LoadedData {
         }
         updateTreeView(treeViewFiles, samples);
     }
+
+
+    /**
+     * Builds a fully connected graph of all taxa contained in the sample list.
+     * This method must be called AFTER analysis is performed, since it needs the correlations and p-values
+     */
+    public static void createGraph(){
+        LinkedList<TaxonNode> nodeList = SampleComparison.getUnifiedTaxonList(samples);
+        taxonGraph = new MyGraph<>();
+
+        //Create a vertex for each taxonNode
+        for (TaxonNode taxonNode : nodeList) {
+            taxonGraph.addVertex(new MyVertex(taxonNode));
+        }
+
+        //Connect every pair of vertices with a MyEdge, set correlation and pValue of the edge
+        final HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap = taxonGraph.getTaxonNodeToVertexMap();
+        final RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
+        final RealMatrix pValueMatrix = AnalysisData.getpValueMatrix();
+        for (int i = 0; i < nodeList.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                MyVertex sourceVertex = taxonNodeToVertexMap.get(nodeList.get(i));
+                MyVertex targetVertex = taxonNodeToVertexMap.get(nodeList.get(j));
+                MyEdge edge = new MyEdge(sourceVertex, targetVertex);
+                edge.setCorrelation(correlationMatrix.getEntry(i,j));
+                edge.setPValue(pValueMatrix.getEntry(i,j));
+                taxonGraph.addEdge(edge, sourceVertex, targetVertex);
+            }
+        }
+
+    }
+
+
 
     /**
      * Empties the openFiles ArrayList and updates the tree view fxml element

@@ -18,7 +18,8 @@ public class MyVertex {
     private Property<String> vertexLabel;
     private HashMap<String, Object> attributesMap;
 
-    public MyVertex(Object content) {
+    public MyVertex(TaxonNode taxonNode) {
+        this.taxonNode = taxonNode;
         xCoordinates = new SimpleDoubleProperty(0);
         yCoordinates = new SimpleDoubleProperty(0);
         vertexLabel = new SimpleStringProperty("initName");
@@ -55,5 +56,7 @@ public class MyVertex {
         return attributesMap;
     }
 
-
+    public TaxonNode getTaxonNode() {
+        return taxonNode;
+    }
 }

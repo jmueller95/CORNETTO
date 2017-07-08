@@ -136,6 +136,7 @@ public class MainStageController implements Initializable {
         openFiles(FileType.taxonId2Count);
     }
 
+
     /**
      * Exits the program
      * quitButton
