@@ -39,10 +39,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         pStage = primaryStage;
-        //TODO this is not working yet
-        //should do the animation while setting up files
-        //StartUpAnimation startUpAnimation = new StartUpAnimation();
-        //startUpAnimation.startAnimation(primaryStage);
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(new URL("file:"+new File("").getCanonicalPath().concat("/src/UI/mainStageGui.fxml")));
         content = loader.load();

@@ -28,7 +28,7 @@
 
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
   <children>
-    <MenuBar prefHeight="40.0" prefWidth="900.0" VBox.vgrow="NEVER">
+    <MenuBar VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
@@ -93,17 +93,17 @@
                 <Font size="18.0" fx:id="x1" />
               </font>
             </Label>
-                  <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="57.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onContextMenuRequested="#selectTaxon" onMouseClicked="#selectTaxon" prefHeight="488.0" prefWidth="230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                  <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="57.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onContextMenuRequested="#selectTaxon" onMouseClicked="#selectTaxon" prefHeight="500.0" prefWidth="230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
                   <RadioButton fx:id="collapseAllButton" layoutX="88.0" layoutY="6.0" mnemonicParsing="false" onAction="#collapseAll" text="Collapse all" />
           </children>
         </AnchorPane>
-        <ScrollPane prefHeight="572.0" prefWidth="443.0">
+        <ScrollPane>
                <content>
                   <TabPane prefHeight="566.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                       <Tab text="Main View">
                         <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="493.0" prefWidth="432.0" />
+                          <AnchorPane minHeight="0.0" minWidth="0.0" />
                         </content>
                       </Tab>
                       <Tab text="Filter">
@@ -154,7 +154,7 @@
       <children>
         <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS">
                <children>
-                  <ProgressBar layoutX="10.0" layoutY="-1.0" prefHeight="18.0" prefWidth="818.0" progress="0.0" />
+                  <ProgressBar layoutX="10.0" layoutY="-1.0" progress="0.0" />
                </children></Pane>
         <Label maxWidth="-1.0" text="Running" HBox.hgrow="NEVER">
                <font>
