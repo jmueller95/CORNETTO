@@ -46,7 +46,7 @@ public class Main extends Application {
         primaryStage.setTitle("Network Analysis Tool");
         setXEvent(primaryStage);
         primaryStage.setScene(new Scene(content, 900, 700));
-//        primaryStage.getIcons().add(new Image("images/science-icon.png"));
+        primaryStage.getIcons().add(new Image("images/science-icon.png"));
         primaryStage.show();
     }
 

@@ -51,7 +51,10 @@ public class LoadedData {
 
         //Create a vertex for each taxonNode
         for (TaxonNode taxonNode : nodeList) {
-            taxonGraph.addVertex(new MyVertex(taxonNode));
+            MyVertex vertex = new MyVertex(taxonNode);
+            taxonGraph.addVertex(vertex);
+            //Add mapping of node to vertex to hashmap
+            taxonGraph.getTaxonNodeToVertexMap().put(taxonNode, vertex);
         }
 
         //Connect every pair of vertices with a MyEdge, set correlation and pValue of the edge
@@ -59,6 +62,8 @@ public class LoadedData {
         final RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
         final RealMatrix pValueMatrix = AnalysisData.getPValueMatrix();
         for (int i = 0; i < nodeList.size(); i++) {
+            //Create Hashmap for this index (TODO: For now, only edges (i,j) where i>j are present in the map!)
+            HashMap<Integer, MyEdge> currentEdgeMap = new HashMap<>();
             for (int j = 0; j < i; j++) {
                 MyVertex sourceVertex = taxonNodeToVertexMap.get(nodeList.get(i));
                 MyVertex targetVertex = taxonNodeToVertexMap.get(nodeList.get(j));
@@ -66,7 +71,10 @@ public class LoadedData {
                 edge.setCorrelation(correlationMatrix.getEntry(i,j));
                 edge.setPValue(pValueMatrix.getEntry(i,j));
                 taxonGraph.addEdge(edge, sourceVertex, targetVertex);
+                currentEdgeMap.put(j, edge);
             }
+            //Add Hashmap to map of maps
+            taxonGraph.getNodeIdsToEdgesMap().put(i,currentEdgeMap);
         }
 
     }
