@@ -13,7 +13,7 @@ public class AnalysisData {
      * Receives a list of samples, calculates correlationMatrix and pValueMatrix for it
      * @param samples
      */
-    public void performAnalysis(ArrayList<Sample> samples){
+    public static void performCorrelationAnalysis(ArrayList<Sample> samples){
         correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples);
         pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples(samples);
     }
@@ -26,11 +26,11 @@ public class AnalysisData {
         AnalysisData.correlationMatrix = correlationMatrix;
     }
 
-    public static RealMatrix getpValueMatrix() {
+    public static RealMatrix getPValueMatrix() {
         return pValueMatrix;
     }
 
-    public static void setpValueMatrix(RealMatrix pValueMatrix) {
+    public static void setPValueMatrix(RealMatrix pValueMatrix) {
         AnalysisData.pValueMatrix = pValueMatrix;
     }
 }

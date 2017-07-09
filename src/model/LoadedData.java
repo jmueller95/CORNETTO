@@ -28,7 +28,8 @@ import java.util.Set;
  */
 public class LoadedData {
 
-    private static ArrayList<Sample> samples, openFiles;
+    private static ArrayList<Sample> samples;
+    private static ArrayList<String> openFiles;
     private static MyGraph<MyVertex, MyEdge> taxonGraph;
 
     public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles) {
@@ -56,7 +57,7 @@ public class LoadedData {
         //Connect every pair of vertices with a MyEdge, set correlation and pValue of the edge
         final HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap = taxonGraph.getTaxonNodeToVertexMap();
         final RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
-        final RealMatrix pValueMatrix = AnalysisData.getpValueMatrix();
+        final RealMatrix pValueMatrix = AnalysisData.getPValueMatrix();
         for (int i = 0; i < nodeList.size(); i++) {
             for (int j = 0; j < i; j++) {
                 MyVertex sourceVertex = taxonNodeToVertexMap.get(nodeList.get(i));
@@ -228,6 +229,10 @@ public class LoadedData {
             }
         }
         return minCount;
+    }
+
+    public static MyGraph<MyVertex, MyEdge> getTaxonGraph() {
+        return taxonGraph;
     }
 
     // SETTERS

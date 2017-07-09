@@ -16,6 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
 import sampleParser.BiomV1Parser;
@@ -94,6 +95,18 @@ public class MainStageController implements Initializable {
         if (!(nodesDmp.exists() && namesDmp.exists() && !nodesDmp.isDirectory() && !namesDmp.isDirectory())) {
             DownloadNodesAndNameDMPFiles.downloadNamesNodesDMPandUnzip();
         }
+    }
+
+    /**
+     * Should be called when the user clicks a button to analyze the loaded samples and display the graphview
+     * Creates correlation data, creates the internal graph, applies default filter, displays the graph
+     */
+    public static void startAnalysis(){
+        AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
+        LoadedData.createGraph();
+        //Default values: 0.5<correlation<1, pValue<0.1
+        LoadedData.getTaxonGraph().filterTaxa(LoadedData.getSamples(), 1,0.5,0.1);
+        //TODO: Create GraphView
     }
 
     //FILE methods
