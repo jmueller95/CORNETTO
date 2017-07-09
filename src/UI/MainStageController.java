@@ -334,15 +334,6 @@ public class MainStageController implements Initializable {
         }
     }
 
-    @FXML
-    public void applyMaxCountFilter() {
-        LoadedData.filterTaxaAfterCount(treeViewFiles, (int) maxCountSlider.getValue());
-        //System.out.println("Found value: " + (int) maxCountSlider.getValue());
-        for (TreeItem<String> treeItem : treeViewFiles.getRoot().getChildren()) {
-            treeItem.setExpanded(true);
-        }
-    }
-
     /**
      * Activates the filter options after a file is loaded
      */
@@ -481,6 +472,7 @@ public class MainStageController implements Initializable {
         for (String name : fileNames) {
             namesOfFileAlreadyLoaded.append(name).append(fileNames.size() == 1 || fileNames.get(fileNames.size()).equals(name) ? "" : ", ");
         }
+
         String fileAlreadyLoaded = "The files '" + namesOfFileAlreadyLoaded + "' is already loaded in your project.";
         fileAlreadyLoadedAlert = new Alert(Alert.AlertType.ERROR);
         fileAlreadyLoadedAlert.setTitle("File not loaded.");
