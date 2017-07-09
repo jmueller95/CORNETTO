@@ -26,7 +26,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -115,7 +115,7 @@
                                           <Font name="System Bold" size="13.0" />
                                        </font>
                                     </Text>
-                                    <Slider fx:id="maxCountSlider" layoutX="24.0" layoutY="81.0" onMouseDragged="#updateMaxCountText" onMouseReleased="#applyMaxCountFilter" />
+                                    <Slider fx:id="maxCountSlider" layoutX="24.0" layoutY="81.0" />
                                     <Text fx:id="maxCountText" layoutX="24.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max count: " />
                                  </children>
                               </AnchorPane>
