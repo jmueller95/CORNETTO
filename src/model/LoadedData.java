@@ -11,7 +11,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * <h1>Class that stores data parsed from the loaded files</h1>
@@ -38,7 +38,7 @@ public class LoadedData {
         } else {
             samples.addAll(loadedSamples);
         }
-        updateTreeView(treeViewFiles, samples);
+        initializeTreeView(treeViewFiles, samples);
     }
 
     /**
@@ -72,7 +72,6 @@ public class LoadedData {
     }
 
 
-
     /**
      * Empties the openFiles ArrayList and updates the tree view fxml element
      * <p>
@@ -91,39 +90,12 @@ public class LoadedData {
     }
 
     /**
-     * Example method to filter the displayed samples after ID
-     *
-     * @param treeViewFiles
-     * @param maxCount
-     */
-    //TODO: Introduce a useful filter value
-    public static void filterTaxaAfterCount(TreeView<String> treeViewFiles, int maxCount) {
-        ArrayList<Sample> filteredSamples = new ArrayList<>();
-        for (Sample sample : samples) {
-            HashMap<TaxonNode, Integer> filteredTaxa = new HashMap<>();
-            for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
-                int foundCount = sample.getTaxonCountRecursive(taxonNode);
-                //System.out.println("Found value: " + foundCount);
-                if (foundCount <= maxCount) {
-                    //System.out.println("Didn't throw that away");
-                    filteredTaxa.put(taxonNode, foundCount);
-                }
-            }
-            sample.setTaxa2CountMap(filteredTaxa);
-            if (!filteredSamples.isEmpty()) {
-                filteredSamples.add(sample);
-            }
-        }
-        updateTreeView(treeViewFiles, filteredSamples);
-    }
-
-    /**
-     * <h1>Update the visible samples / taxa listing</h1>
+     * <h1>Initializes the visible samples / taxa listing</h1>
      * Overwrites the treeView fxml element in the mainStageController with all elements of the samples ArrayList
      *
      * @param treeViewFiles Tree view fxml element to display the loaded samples
      */
-    private static void updateTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples) {
+    private static void initializeTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples) {
         treeViewFiles.setRoot(new TreeItem<>("root"));
 
         TreeItem<String> newSample, newRoot, newRootID, newRootCount;
@@ -146,29 +118,29 @@ public class LoadedData {
         }
     }
 
-
-    private void updateTreeViewFromGraph(TreeView<String> treeViewItems) {
+    /**
+     * <h1>Updates the treeView with the data from the graph view.</h1>
+     * Displays every
+     * @param treeViewItems
+     */
+    private static void updateTreeViewFromGraphForVertexes(TreeView<String> treeViewItems) {
         treeViewItems.setRoot(new TreeItem<>("root"));
 
-        TreeItem<String> newSample, newRoot, newRootID, newRootCount;
+        TreeItem<String> newRoot, newRootID, newRootCount;
 
         int count = 0;
-        Set<TaxonNode> allTaxa = taxonGraph.getTaxonNodeToVertexMap().keySet();
-        for (TaxonNode taxonNode : allTaxa) {
+        for(Map.Entry<TaxonNode, MyVertex> entry : taxonGraph.getTaxonNodeToVertexMap().entrySet()) {
+            TaxonNode foundTaxon = entry.getKey();
+            MyVertex foundVertex = entry.getValue();
+            if (!foundVertex.isHidden()) {
+                String[] name = foundTaxon.getName().split(".");
+                newRoot = new TreeItem<>("name: " + (name.length == 0 ? foundTaxon.getName() : name[0]));
 
-            boolean isVertexHidden = taxonGraph.getTaxonNodeToVertexMap().get(taxonNode).isHidden();
-            if (!isVertexHidden) {
-                newSample = new TreeItem<>("sample " + ++count);
-                for (TaxonNode foundTaxonNode : allTaxa) {
-                    String[] name = taxonNode.getName().split(".");
-                    newRoot = new TreeItem<>("name: " + (name.length == 0 ? taxonNode.getName() : name[0]));
-                    newSample.getChildren().add(newRoot);
+                newRootID = new TreeItem<>("id: " + foundTaxon.getTaxonId());
+                newRootCount = new TreeItem<>("count: " + "NOT YET IMPLEMENTED");//sample.getTaxonCountRecursive(taxonNode));
 
-                    newRootID = new TreeItem<>("id: " + taxonNode.getTaxonId());
-                    newRootCount = new TreeItem<>("count: " + "NOT YET IMPLEMENTED");//sample.getTaxonCountRecursive(taxonNode));
-
-                    newRoot.getChildren().addAll(newRootID, newRootCount);
-                }
+                treeViewItems.getRoot().getChildren().add(newRoot);
+                newRoot.getChildren().addAll(newRootID, newRootCount);
             }
         }
     }
