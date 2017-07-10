@@ -62,7 +62,8 @@ public class LoadedData {
         final RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
         final RealMatrix pValueMatrix = AnalysisData.getPValueMatrix();
         for (int i = 0; i < nodeList.size(); i++) {
-            //Create Hashmap for this index (TODO: For now, only edges (i,j) where i>j are present in the map!)
+            //Create Hashmap for this index
+            // TODO: For now, every edge is only accessible in one direction, so we always need to check both...
             HashMap<Integer, MyEdge> currentEdgeMap = new HashMap<>();
             for (int j = 0; j < i; j++) {
                 MyVertex sourceVertex = taxonNodeToVertexMap.get(nodeList.get(i));
@@ -71,10 +72,10 @@ public class LoadedData {
                 edge.setCorrelation(correlationMatrix.getEntry(i,j));
                 edge.setPValue(pValueMatrix.getEntry(i,j));
                 taxonGraph.addEdge(edge, sourceVertex, targetVertex);
-                currentEdgeMap.put(j, edge);
+                currentEdgeMap.put(nodeList.get(j).getTaxonId(), edge);
             }
             //Add Hashmap to map of maps
-            taxonGraph.getNodeIdsToEdgesMap().put(i,currentEdgeMap);
+            taxonGraph.getNodeIdsToEdgesMap().put(nodeList.get(i).getTaxonId(),currentEdgeMap);
         }
 
     }
