@@ -1,8 +1,5 @@
 package analysis;
 
-import graph.MyEdge;
-import graph.MyGraph;
-import graph.MyVertex;
 import model.Sample;
 import model.TaxonNode;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -12,7 +9,6 @@ import java.util.*;
 
 /**
  * Class for the comparison of samples
- * TODO: Consider splitting this class up, its cohesion is becoming quite low
  * Created by julian on 10.06.17.
  */
 public abstract class SampleComparison {

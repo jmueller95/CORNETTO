@@ -44,8 +44,9 @@ public class LoadedData {
     /**
      * Builds a fully connected graph of all taxa contained in the sample list.
      * This method must be called AFTER analysis is performed, since it needs the correlations and p-values
+     * TODO: Test this, and especially test if the hashmaps are added correctly!
      */
-    public static void createGraph(){
+    public static void createGraph() {
         LinkedList<TaxonNode> nodeList = SampleComparison.getUnifiedTaxonList(samples);
         taxonGraph = new MyGraph<>();
 
@@ -62,20 +63,27 @@ public class LoadedData {
         final RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
         final RealMatrix pValueMatrix = AnalysisData.getPValueMatrix();
         for (int i = 0; i < nodeList.size(); i++) {
-            //Create Hashmap for this index
-            // TODO: For now, every edge is only accessible in one direction, so we always need to check both...
-            HashMap<Integer, MyEdge> currentEdgeMap = new HashMap<>();
+            //Create Hashmap for this index, or access it if it's already there
+            HashMap<Integer, MyEdge> currentEdgeMap =
+                    taxonGraph.getNodeIdsToEdgesMap().getOrDefault(nodeList.get(i).getTaxonId(), new HashMap<>());
             for (int j = 0; j < i; j++) {
                 MyVertex sourceVertex = taxonNodeToVertexMap.get(nodeList.get(i));
                 MyVertex targetVertex = taxonNodeToVertexMap.get(nodeList.get(j));
                 MyEdge edge = new MyEdge(sourceVertex, targetVertex);
-                edge.setCorrelation(correlationMatrix.getEntry(i,j));
-                edge.setPValue(pValueMatrix.getEntry(i,j));
+                edge.setCorrelation(correlationMatrix.getEntry(i, j));
+                edge.setPValue(pValueMatrix.getEntry(i, j));
                 taxonGraph.addEdge(edge, sourceVertex, targetVertex);
                 currentEdgeMap.put(nodeList.get(j).getTaxonId(), edge);
+                //Get j's hashmap or create it
+                HashMap<Integer, MyEdge> secondNodeEdgeMap =
+                        taxonGraph.getNodeIdsToEdgesMap().getOrDefault(nodeList.get(j).getTaxonId(), new HashMap<>());
+                //Add edge in other direction
+                secondNodeEdgeMap.put(nodeList.get(i).getTaxonId(), edge);
+                //Add j's hashmap, if it's not contained yet
+                taxonGraph.getNodeIdsToEdgesMap().putIfAbsent(nodeList.get(j).getTaxonId(), secondNodeEdgeMap);
             }
-            //Add Hashmap to map of maps
-            taxonGraph.getNodeIdsToEdgesMap().put(nodeList.get(i).getTaxonId(),currentEdgeMap);
+            //Add Hashmap to map of maps, if it's not contained yet
+            taxonGraph.getNodeIdsToEdgesMap().putIfAbsent(nodeList.get(i).getTaxonId(), currentEdgeMap);
         }
 
     }
@@ -130,6 +138,7 @@ public class LoadedData {
     /**
      * <h1>Updates the treeView with the data from the graph view.</h1>
      * Displays every
+     *
      * @param treeViewItems
      */
     private static void updateTreeViewFromGraphForVertexes(TreeView<String> treeViewItems) {
@@ -138,7 +147,7 @@ public class LoadedData {
         TreeItem<String> newRoot, newRootID, newRootCount;
 
         int count = 0;
-        for(Map.Entry<TaxonNode, MyVertex> entry : taxonGraph.getTaxonNodeToVertexMap().entrySet()) {
+        for (Map.Entry<TaxonNode, MyVertex> entry : taxonGraph.getTaxonNodeToVertexMap().entrySet()) {
             TaxonNode foundTaxon = entry.getKey();
             MyVertex foundVertex = entry.getValue();
             if (!foundVertex.isHidden()) {
