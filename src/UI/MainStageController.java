@@ -389,14 +389,10 @@ public class MainStageController implements Initializable {
         maxCountSlider.setSnapToTicks(true);
         if(treeViewFiles.getRoot().getChildren().isEmpty()) {
             maxCountSlider.setDisable(true);
-            maxCountText.setText("Max count: ");
         } else {
             maxCountSlider.setDisable(false);
-            maxCountSlider.setMin(LoadedData.getMinCount() == 0 ? 1 : LoadedData.getMinCount());
-            maxCountSlider.setMax(LoadedData.getMaxCount());
-            maxCountText.setText("Max count: " + maxCountSlider.getMax());
         }
-        maxCountSlider.setValue(maxCountSlider.getMax());
+        //maxCountSlider.setValue(maxCountSlider.getMax());
     }
     //ALERTS
 

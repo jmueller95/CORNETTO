@@ -135,90 +135,9 @@ public class LoadedData {
         }
     }
 
-    /**
-     * <h1>Updates the treeView with the data from the graph view.</h1>
-     * Displays every
-     *
-     * @param treeViewItems
-     */
-    private static void updateTreeViewFromGraphForVertexes(TreeView<String> treeViewItems) {
-        treeViewItems.setRoot(new TreeItem<>("root"));
-
-        TreeItem<String> newRoot, newRootID, newRootCount;
-
-        int count = 0;
-        for (Map.Entry<TaxonNode, MyVertex> entry : taxonGraph.getTaxonNodeToVertexMap().entrySet()) {
-            TaxonNode foundTaxon = entry.getKey();
-            MyVertex foundVertex = entry.getValue();
-            if (!foundVertex.isHidden()) {
-                String[] name = foundTaxon.getName().split(".");
-                newRoot = new TreeItem<>("name: " + (name.length == 0 ? foundTaxon.getName() : name[0]));
-
-                newRootID = new TreeItem<>("id: " + foundTaxon.getTaxonId());
-                newRootCount = new TreeItem<>("count: " + "NOT YET IMPLEMENTED");//sample.getTaxonCountRecursive(taxonNode));
-
-                treeViewItems.getRoot().getChildren().add(newRoot);
-                newRoot.getChildren().addAll(newRootID, newRootCount);
-            }
-        }
-    }
-
     // GETTERS
     public static ArrayList<Sample> getSamples() {
         return samples;
-    }
-
-    //TODO: Abstract the methods below to avoid repetition
-    public static int getMaxId() {
-        int maxId = 0;
-        for (Sample sample : samples) {
-            for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
-                int foundTaxonId = taxonNode.getTaxonId();
-                if (foundTaxonId > maxId) {
-                    maxId = foundTaxonId;
-                }
-            }
-        }
-        return maxId;
-    }
-
-    public static int getMinId() {
-        int minId = 0;
-        for (Sample sample : samples) {
-            for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
-                int foundTaxonId = taxonNode.getTaxonId();
-                if (foundTaxonId < minId) {
-                    minId = foundTaxonId;
-                }
-            }
-        }
-        return minId;
-    }
-
-    public static int getMaxCount() {
-        int maxCount = 0;
-        for (Sample sample : samples) {
-            for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
-                int foundTaxonCount = sample.getTaxonCountRecursive(taxonNode);
-                if (foundTaxonCount > maxCount) {
-                    maxCount = foundTaxonCount;
-                }
-            }
-        }
-        return maxCount;
-    }
-
-    public static int getMinCount() {
-        int minCount = 0;
-        for (Sample sample : samples) {
-            for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
-                int foundTaxonCount = sample.getTaxonCountRecursive(taxonNode);
-                if (foundTaxonCount < minCount) {
-                    minCount = foundTaxonCount;
-                }
-            }
-        }
-        return minCount;
     }
 
     public static MyGraph<MyVertex, MyEdge> getTaxonGraph() {
