@@ -41,6 +41,8 @@ public class MainStageController implements Initializable {
 
     private ArrayList<String> openFiles;
 
+    public static boolean isDefaultDirectoryLocation = true;
+    public static String defaultLocation = "";
     // alerts
     private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert;
 
@@ -167,7 +169,12 @@ public class MainStageController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         String fileChooserTitle = "Load from ";
 
-        setDefaultOpenDirectory(fileChooser);
+        if(isDefaultDirectoryLocation){
+            setDefaultOpenDirectory(fileChooser);
+        } else {
+            fileChooser.setInitialDirectory(new File(defaultLocation));
+        }
+
         switch (fileType) {
             case taxonId2Count:
                 fileChooser.setTitle(fileChooserTitle + "taxonId2Count file");
@@ -514,6 +521,7 @@ public class MainStageController implements Initializable {
     /**
      * runs when the optionsButton is clicked
      * opens the Options stage
+     *
      */ private void optionsButtonClicked() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();

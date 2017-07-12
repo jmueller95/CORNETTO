@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.OptionsController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.OptionsController">
     <children>
         <MenuBar prefHeight="6.0" prefWidth="900.0" VBox.vgrow="NEVER">
             <menus>
@@ -56,7 +56,7 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Button layoutX="-24.0" layoutY="-2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="235.0" text="Change default load files location" />
+                                          <Button layoutX="-24.0" layoutY="-2.0" mnemonicParsing="false" onAction="#setNewDefaultOpenDirectory" prefHeight="25.0" prefWidth="235.0" text="Change default load files location" />
                                        </children>
                                     </AnchorPane>
                               </content>
