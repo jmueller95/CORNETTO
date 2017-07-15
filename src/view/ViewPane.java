@@ -97,13 +97,11 @@ public class ViewPane extends StackPane{
 
             MyVertexView vertexView = (MyVertexView) o;
 
+            // Register translation of vertexVIew before starting Drag operation
             o.setOnMousePressed( me -> {
                 initTransX = vertexView.translateXProperty().get();
                 initTransY = vertexView.translateYProperty().get();
-
             });
-            //double initTransX = vertexView.translateXProperty().get();
-            //double initTransY = vertexView.translateYProperty().get();
 
 
             // Left Mouse Drag: Move Node
@@ -111,25 +109,33 @@ public class ViewPane extends StackPane{
 
                 if (me.getButton() == MouseButton.PRIMARY) {
 
-                    System.out.print("MX: " + me.getSceneX() + " | " +  initTransX + " | " + viewTransformProperty.getValue().getTx() );
-                    System.out.println(" |||  MY: " + me.getSceneY() + " | " +  initTransY + " | " + viewTransformProperty.getValue().getTy() );
+                    // Diagnostic output:
+                    //System.out.print("MX: " + me.getSceneX() + " | " +  initTransX + " | " + viewTransformProperty.getValue().getTx() );
+                    //System.out.println(" |||  MY: " + me.getSceneY() + " | " +  initTransY + " | " + viewTransformProperty.getValue().getTy() );
 
-                    double deltaX = me.getSceneX() - initTransX - 2*viewTransformProperty.getValue().getTx();
-                    double deltaY = me.getSceneY() - initTransY - 2*viewTransformProperty.getValue().getTy();
+                    // Node translation takes into account: previous vertex translation (due to automatic layout), total pane Translation
+                    double deltaX = (me.getSceneX()  - 2*viewTransformProperty.getValue().getTx());
+                    double deltaY = (me.getSceneY()  - 2*viewTransformProperty.getValue().getTy());
 
-
-                    vertexView.translateXProperty().set(pressedX + deltaX);
-                    vertexView.translateYProperty().set(pressedY + deltaY);
-
-
+                    // Translation value is divided by the initial scaling factor of the whole pane
+                    vertexView.translateXProperty().set(((pressedX + deltaX) / viewTransformProperty.getValue().getMxx()) - initTransX);
+                    vertexView.translateYProperty().set(((pressedY + deltaY) / viewTransformProperty.getValue().getMyy()) - initTransY);
 
                     me.consume();
+
+                    // Ugly Hack: Toggle node selection because it will be toggled again by setOnMouseClicked
+                    // TODO: Improve this (Event Handlers?) but for now it works.
+                    myGraphView.getSelectionModel().toggleSelect(vertexView.getMyVertex());
 
                 }
             });
 
+            // Select vertex on normal click without drag
             o.setOnMouseClicked( me -> {
-                if (me.getButton() == MouseButton.PRIMARY) {
+
+                if (me.getButton() == MouseButton.PRIMARY ) {
+
+                    System.out.println(me.isDragDetect());
                     myGraphView.getSelectionModel().toggleSelect(vertexView.getMyVertex());
                     me.consume();
                 }

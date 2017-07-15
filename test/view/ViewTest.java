@@ -65,7 +65,7 @@ public class ViewTest extends Application{
         primaryStage.show();
 
         // Open Scenic VIew Diagnostics Tool
-        ScenicView.show(root);
+        //ScenicView.show(root);
     }
 }
 
