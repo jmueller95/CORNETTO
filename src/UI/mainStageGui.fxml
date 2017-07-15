@@ -70,7 +70,10 @@
                   <MenuItem mnemonicParsing="false" text="Create Screenshot" />
           </items>
         </Menu>
-            <Menu mnemonicParsing="false" text="View" />
+            <Menu mnemonicParsing="false" text="View">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#toggleMainView" text="Toggle Main View" />
+               </items></Menu>
             <Menu mnemonicParsing="false" text="Settings">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Open Settings" />
@@ -142,7 +145,7 @@
                   </TabPane>
                </content>
         </ScrollPane>
-        <AnchorPane maxWidth="220.0" minWidth="0.0">
+        <AnchorPane fx:id="rightPane" maxWidth="220.0" minWidth="0.0">
           <children>
             <Label alignment="CENTER" font="$x1" layoutX="9.0" layoutY="4.0" style="&#10;" text="Details" textAlignment="CENTER" textFill="#c58112" wrapText="false" />
                   <TextArea fx:id="textAreaDetails" layoutX="11.0" layoutY="57.0" prefHeight="488.0" prefWidth="221.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
