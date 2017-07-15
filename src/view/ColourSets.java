@@ -10,7 +10,6 @@ import java.util.List;
  */
 public class ColourSets {
 
-
     public List getSet1() {
         List set1 = new ArrayList();
         set1.add(Color.BEIGE);

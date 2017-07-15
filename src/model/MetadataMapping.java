@@ -1,12 +1,9 @@
 package model;
 
-import scala.util.parsing.combinator.testing.Str;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
+
 
 
 /**
@@ -14,9 +11,7 @@ import java.util.Hashtable;
  */
 public class MetadataMapping {
 
-
     private static ArrayList<String> metaDataObject = new ArrayList<>();
-
 
     public  static ArrayList<String> MetadataParser(String filepath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filepath));
@@ -27,7 +22,6 @@ public class MetadataMapping {
 
 
       while(line != null ) {
-
           for (int j = 1; j <= columns; j++) {
 
               //HashMap<String,String> metadataObjectSet = new HashMap<>();
@@ -40,15 +34,12 @@ public class MetadataMapping {
               line = reader.readLine();
           }
 
-
       }
-      //return metaDataObject;
         return metaDataObject;
 }
 
      public static void main(String[] args) throws IOException {
        ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFileTest");
-       //HashMap<String,String> show =  MetadataParser("./res/testFiles/metadataFileTest");
        System.out.println(show);
     }
 

@@ -18,8 +18,9 @@ import javafx.scene.transform.Translate;
 /**
  * Created by caspar on 26.06.17.
  */
-public class ViewPane extends StackPane{
+public class ViewPane extends StackPane {
 
+    //constants
     private final static double ZOOM_FACTOR = 1.1;
 
     private double pressedX;
@@ -36,7 +37,6 @@ public class ViewPane extends StackPane{
     private Property<Transform> viewTransformProperty;
 
     ViewPane(MyGraphView graphView) {
-
         topPane = new Pane();
         topPane.setPickOnBounds(false);
 
@@ -71,7 +71,7 @@ public class ViewPane extends StackPane{
     }
 
     private void initRectangle() {
-        selectRectangle = new Rectangle(0,0, 0, 0);
+        selectRectangle = new Rectangle(0, 0, 0, 0);
         selectRectangle.setFill(Color.TRANSPARENT);
         selectRectangle.setStroke(Color.DARKSLATEGREY);
         selectRectangle.getStrokeDashArray().addAll(3.0, 7.0, 3.0, 7.0);
@@ -88,8 +88,6 @@ public class ViewPane extends StackPane{
 
             pressedX = me.getSceneX();
             pressedY = me.getSceneY();
-
-
         });
 
         // Mouse clicked on elements of the VertexViewGroup:
@@ -98,14 +96,14 @@ public class ViewPane extends StackPane{
             MyVertexView vertexView = (MyVertexView) o;
 
             // Register translation of vertexVIew before starting Drag operation
-            o.setOnMousePressed( me -> {
+            o.setOnMousePressed(me -> {
                 initTransX = vertexView.translateXProperty().get();
                 initTransY = vertexView.translateYProperty().get();
             });
 
 
             // Left Mouse Drag: Move Node
-            o.setOnMouseDragged( me -> {
+            o.setOnMouseDragged(me -> {
 
                 if (me.getButton() == MouseButton.PRIMARY) {
 
@@ -114,8 +112,8 @@ public class ViewPane extends StackPane{
                     //System.out.println(" |||  MY: " + me.getSceneY() + " | " +  initTransY + " | " + viewTransformProperty.getValue().getTy() );
 
                     // Node translation takes into account: previous vertex translation (due to automatic layout), total pane Translation
-                    double deltaX = (me.getSceneX()  - 2*viewTransformProperty.getValue().getTx());
-                    double deltaY = (me.getSceneY()  - 2*viewTransformProperty.getValue().getTy());
+                    double deltaX = (me.getSceneX() - 2 * viewTransformProperty.getValue().getTx());
+                    double deltaY = (me.getSceneY() - 2 * viewTransformProperty.getValue().getTy());
 
                     // Translation value is divided by the initial scaling factor of the whole pane
                     vertexView.translateXProperty().set(((pressedX + deltaX) / viewTransformProperty.getValue().getMxx()) - initTransX);
@@ -131,9 +129,9 @@ public class ViewPane extends StackPane{
             });
 
             // Select vertex on normal click without drag
-            o.setOnMouseClicked( me -> {
+            o.setOnMouseClicked(me -> {
 
-                if (me.getButton() == MouseButton.PRIMARY ) {
+                if (me.getButton() == MouseButton.PRIMARY) {
 
                     System.out.println(me.isDragDetect());
                     myGraphView.getSelectionModel().toggleSelect(vertexView.getMyVertex());
@@ -209,7 +207,7 @@ public class ViewPane extends StackPane{
         // Set on Mouse Wheel scroll
         setOnScroll((se -> {
 
-            double scaleFactor = (se.getDeltaY() > 0) ? ZOOM_FACTOR : 1/ ZOOM_FACTOR;
+            double scaleFactor = (se.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
 
             //double pivotX = (myGraphView.getBoundsInParent().getMaxX() - myGraphView.getBoundsInParent().getWidth()/2);
             //double pivotY = (myGraphView.getBoundsInParent().getMaxY() - myGraphView.getBoundsInParent().getHeight()/2);
@@ -221,5 +219,6 @@ public class ViewPane extends StackPane{
         }));
 
         // TODO (?) Scroll with alt + / alt - or cmd + mouse?
+        //if we have time! it's a very useful feature
     }
 }

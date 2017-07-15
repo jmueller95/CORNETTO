@@ -13,7 +13,7 @@ import org.junit.Test;
 /**
  * Created by caspar on 25.06.17.
  */
-public class ViewTest extends Application{
+public class ViewTest extends Application {
 
     private MyGraph<MyVertex, MyEdge> graph = new MyGraph<MyVertex, MyEdge>();
 
@@ -21,11 +21,8 @@ public class ViewTest extends Application{
     @Before
     public void setUp() throws Exception {
 
-
-
-
         //Create new sample Graph
-        MyVertex v1 = new MyVertex(new TaxonNode(1,"rank", 1));
+        MyVertex v1 = new MyVertex(new TaxonNode(1, "rank", 1));
         MyVertex v2 = new MyVertex(new TaxonNode(2, "rank", 1));
         MyVertex v3 = new MyVertex(new TaxonNode(3, "rank", 1));
         MyVertex v4 = new MyVertex(new TaxonNode(4, "rank", 1));
@@ -40,11 +37,10 @@ public class ViewTest extends Application{
         this.graph.addEdge(edge23, v2, v3);
         this.graph.addEdge(edge24, v2, v4);
 
-
     }
 
     @Test
-    public void testView () throws InterruptedException{
+    public void testView() throws InterruptedException {
         launch();
 
     }
@@ -57,8 +53,6 @@ public class ViewTest extends Application{
 
         MyGraphView myGraphView = new MyGraphView(graph);
         ViewPane root = new ViewPane(myGraphView);
-
-
 
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
