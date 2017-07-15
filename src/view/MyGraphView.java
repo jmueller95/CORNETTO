@@ -90,31 +90,26 @@ public class MyGraphView extends Group {
     }
 
     public void addSelectionListener() {
-        selectionModel.getSelectedItems().addListener(new ListChangeListener() {
-            @Override
-            public void onChanged(Change c) {
-                while (c.next()) {
-                    if (c.wasAdded()) {
+        selectionModel.getSelectedItems().addListener((ListChangeListener) c -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
 
-                        for (Object o: c.getAddedSubList()) {
-                            MyVertex vertex = (MyVertex) o;
-                            vertex.isSelectedProperty().setValue(true);
-                        }
-
-                        for (Object o: c.getRemoved()) {
-                            MyVertex vertex = (MyVertex) o;
-                            vertex.isSelectedProperty().setValue(false);
-                        }
-
+                    for (Object o: c.getAddedSubList()) {
+                        MyVertex vertex = (MyVertex) o;
+                        vertex.isSelectedProperty().setValue(true);
                     }
+
+                    for (Object o: c.getRemoved()) {
+                        MyVertex vertex = (MyVertex) o;
+                        vertex.isSelectedProperty().setValue(false);
+                    }
+
                 }
             }
         });
     }
 
-    public void addNodeInteractivity() {
 
-    }
 
 
 

@@ -14,5 +14,6 @@
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="lib (2)" level="project" />
     <orderEntry type="library" name="commons-math3-3.6" level="project" />
+    <orderEntry type="library" name="ScenicView" level="project" />
   </component>
 </module>

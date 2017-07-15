@@ -2,13 +2,9 @@ package view;
 
 import com.sun.javafx.geom.transform.Affine3D;
 import com.sun.javafx.geom.transform.BaseTransform;
-import graph.MyGraph;
-import graph.MyVertex;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.EventDispatchChain;
-import javafx.scene.Group;
-import javafx.scene.control.MultipleSelectionModel;
+import javafx.geometry.Bounds;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -17,7 +13,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
-import model.VertexSelectionModel;
 
 
 /**
@@ -27,16 +22,14 @@ public class ViewPane extends StackPane{
 
     private final static double ZOOM_FACTOR = 1.1;
 
-    private double downX;
-    private double downY;
+    private double pressedX;
+    private double pressedY;
     private Rectangle selectRectangle;
     private Pane topPane;
     private Pane bottomPane;
     private MyGraphView myGraphView;
 
     private Property<Transform> viewTransformProperty;
-
-
 
     ViewPane(MyGraphView graphView) {
 
@@ -48,16 +41,13 @@ public class ViewPane extends StackPane{
         bottomPane.getChildren().add(myGraphView);
 
         //myGraphView.getTransforms().addAll(translate, scale);
-        getChildren().addAll(topPane, bottomPane);
+        getChildren().addAll(bottomPane, topPane);
 
         setupTransforms();
         initRectangle();
         addMouseInteractions();
 
-
     }
-
-
 
     private void setupTransforms() {
         viewTransformProperty = new SimpleObjectProperty<>(new Transform() {
@@ -85,56 +75,85 @@ public class ViewPane extends StackPane{
     }
 
 
+    /**
+     *
+     */
     private void addMouseInteractions() {
-        // Register Location of Mouse button click
+        // Register Location of Mouse button click for all Events
         setOnMousePressed((me) -> {
 
-            downX = me.getSceneX();
-            downY = me.getSceneY();
+            pressedX = me.getSceneX();
+            pressedY = me.getSceneY();
 
         });
 
         // Mouse clicked on elements of the VertexViewGroup:
-        myGraphView.setOnMouseClicked((me) ->{
+        myGraphView.getMyVertexViewGroup().getChildren().forEach(o -> {
 
-            // Target is node? --> Toggle select
-            System.out.println(me.getPickResult());
+            MyVertexView vertexView = (MyVertexView) o;
+            double initTransX = vertexView.translateXProperty().get();
+            double initTransY = vertexView.translateYProperty().get();
 
-            // Target is edge? --> Toggle select both ends
+
+            // Left Mouse Drag: Move Node
+            o.setOnMouseDragged( me -> {
+                if (me.getButton() == MouseButton.PRIMARY) {
+
+                    double deltaX = me.getSceneX() - initTransX;
+                    double deltaY = me.getSceneY() - initTransY;
+
+                    vertexView.translateXProperty().set(pressedX + deltaX);
+                    vertexView.translateYProperty().set(pressedY + deltaY);
+
+                    //pressedX = me.getSceneX();
+                    //pressedY = me.getSceneY();
+
+                    me.consume();
+
+                }
+            });
+
+            o.setOnMouseClicked( me -> {
+                if (me.getButton() == MouseButton.PRIMARY) {
+                    myGraphView.getSelectionModel().toggleSelect(vertexView.getMyVertex());
+                    me.consume();
+                }
+            });
+
         });
+
 
         bottomPane.setOnMouseDragged((me) -> {
 
-            double deltaX = me.getSceneX() - downX;
-            double deltaY = me.getSceneY() - downY;
+            double deltaX = me.getSceneX() - pressedX;
+            double deltaY = me.getSceneY() - pressedY;
 
             // Drag Graph with right Mouse Click
             if (me.getButton() == MouseButton.SECONDARY) {
 
                 Translate translate = new Translate(deltaX, deltaY);
                 viewTransformProperty.setValue(translate.createConcatenation(viewTransformProperty.getValue()));
-                downX = me.getSceneX();
-                downY = me.getSceneY();
+                pressedX = me.getSceneX();
+                pressedY = me.getSceneY();
 
             }
-
 
             // Create selection rectangle with left MouseClick
             // Only create selection when mouse event target is NOT on a node
             if (me.getTarget().equals(bottomPane) && me.getButton() == MouseButton.PRIMARY) {
                 if (deltaX > 0) {
-                    selectRectangle.setX(downX);
+                    selectRectangle.setX(pressedX);
                     selectRectangle.setWidth(deltaX);
                 } else {
-                    selectRectangle.setX(downX + deltaX);
+                    selectRectangle.setX(pressedX + deltaX);
                     selectRectangle.setWidth(-deltaX);
                 }
 
                 if (deltaY > 0) {
-                    selectRectangle.setY(downY);
+                    selectRectangle.setY(pressedY);
                     selectRectangle.setHeight(deltaY);
                 } else {
-                    selectRectangle.setY(downY + deltaY);
+                    selectRectangle.setY(pressedY + deltaY);
                     selectRectangle.setHeight(-deltaY);
                 }
             }
@@ -147,6 +166,10 @@ public class ViewPane extends StackPane{
             myGraphView.getMyVertexViewGroup().getChildren().forEach(node -> {
                 // Check if rectangle intersects node
                 MyVertexView vertexView = (MyVertexView) node;
+
+                Bounds nodeBounds = vertexView.getBoundsInParent();
+                //System.out.println(nodeBounds);
+                //System.out.println(bottomPane.localToScene(nodeBounds));
                 if (vertexView.getBoundsInParent().intersects(selectRectangle.getBoundsInParent())) {
                     System.out.println("Selection intersects node: " + vertexView);
                     // Add the nodes of all selected vertexViews to selection Model
@@ -178,5 +201,4 @@ public class ViewPane extends StackPane{
 
         // TODO (?) Scroll with alt + / alt - or cmd + mouse?
     }
-
 }
