@@ -32,25 +32,21 @@ public class ViewPane extends StackPane{
 
     private Property<Transform> viewTransformProperty;
 
-    public ViewPane(MyGraphView myGraphView) {
+    public ViewPane(MyGraphView graphView) {
 
         topPane = new Pane();
         topPane.setPickOnBounds(false);
 
-
-        this.myGraphView = myGraphView;
-        myGraphView.setStyle("-fx-background-color: #a9e200");
-        topPane.setStyle("-fx-background-color:  lightblue;");
-
-
+        bottomPane = new Pane();
+        this.myGraphView = graphView;
+        bottomPane.getChildren().add(myGraphView);
 
         //myGraphView.getTransforms().addAll(translate, scale);
-        getChildren().addAll(topPane, myGraphView);
+        getChildren().addAll(topPane, bottomPane);
 
         setupTransforms();
         initRectangle();
         addMouseInteractions();
-
 
     }
 
@@ -126,7 +122,7 @@ public class ViewPane extends StackPane{
         setOnMouseReleased((me -> {
 
             // TODO selection not working yet, need to implement selection model
-            System.out.println("==========================");
+            /*System.out.println("==========================");
             myGraphView.getMyVertexViewGroup().getChildren().forEach(node -> {
 
                 System.out.println("------------------------");
@@ -135,7 +131,7 @@ public class ViewPane extends StackPane{
                 System.out.println(node.toString() + " is contained: " + selectRectangle.getLayoutBounds().contains(node.getLayoutBounds()));
             });
 
-            // Make rectangle invisible again
+            */// Make rectangle invisible again
             selectRectangle.setHeight(0);
             selectRectangle.setWidth(0);
             selectRectangle.setY(0);

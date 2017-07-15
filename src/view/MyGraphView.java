@@ -1,6 +1,7 @@
 package view;
 
 
+import com.google.common.base.Function;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import graph.MyEdge;
@@ -27,6 +28,9 @@ public class MyGraphView extends Group {
     private MyGraph<MyVertex, MyEdge> graph;
 
     private SpringLayout2 springLayout;
+
+    // Todo: Assign this function
+    protected Function<MyEdge, Integer> myEdgeLengthFunction;
 
     //JGraphOrganicLayout organicLayout;
     //JGraphSpringLayout springLayout;
