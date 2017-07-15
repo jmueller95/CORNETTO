@@ -3,9 +3,12 @@ package view;
 import com.sun.javafx.geom.transform.Affine3D;
 import com.sun.javafx.geom.transform.BaseTransform;
 import graph.MyGraph;
+import graph.MyVertex;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.EventDispatchChain;
 import javafx.scene.Group;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -14,6 +17,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
+import model.VertexSelectionModel;
 
 
 /**
@@ -21,7 +25,7 @@ import javafx.scene.transform.Translate;
  */
 public class ViewPane extends StackPane{
 
-    final static double ZOOM_FACTOR = 1.1;
+    private final static double ZOOM_FACTOR = 1.1;
 
     private double downX;
     private double downY;
@@ -32,7 +36,9 @@ public class ViewPane extends StackPane{
 
     private Property<Transform> viewTransformProperty;
 
-    public ViewPane(MyGraphView graphView) {
+
+
+    ViewPane(MyGraphView graphView) {
 
         topPane = new Pane();
         topPane.setPickOnBounds(false);
@@ -48,7 +54,10 @@ public class ViewPane extends StackPane{
         initRectangle();
         addMouseInteractions();
 
+
     }
+
+
 
     private void setupTransforms() {
         viewTransformProperty = new SimpleObjectProperty<>(new Transform() {
@@ -79,12 +88,23 @@ public class ViewPane extends StackPane{
     private void addMouseInteractions() {
         // Register Location of Mouse button click
         setOnMousePressed((me) -> {
+
             downX = me.getSceneX();
             downY = me.getSceneY();
+
         });
 
+        // Mouse clicked on elements of the VertexViewGroup:
+        myGraphView.setOnMouseClicked((me) ->{
 
-        setOnMouseDragged((me) -> {
+            // Target is node? --> Toggle select
+            System.out.println(me.getPickResult());
+
+            // Target is edge? --> Toggle select both ends
+        });
+
+        bottomPane.setOnMouseDragged((me) -> {
+
             double deltaX = me.getSceneX() - downX;
             double deltaY = me.getSceneY() - downY;
 
@@ -98,8 +118,10 @@ public class ViewPane extends StackPane{
 
             }
 
+
             // Create selection rectangle with left MouseClick
-            if (me.getButton() == MouseButton.PRIMARY) {
+            // Only create selection when mouse event target is NOT on a node
+            if (me.getTarget().equals(bottomPane) && me.getButton() == MouseButton.PRIMARY) {
                 if (deltaX > 0) {
                     selectRectangle.setX(downX);
                     selectRectangle.setWidth(deltaX);
@@ -121,17 +143,18 @@ public class ViewPane extends StackPane{
         //Select Elements in Rectangle when Right Mouse is released
         setOnMouseReleased((me -> {
 
-            // TODO selection not working yet, need to implement selection model
-            /*System.out.println("==========================");
+            // TODO selection only working when node has not been moved before
             myGraphView.getMyVertexViewGroup().getChildren().forEach(node -> {
-
-                System.out.println("------------------------");
-                System.out.println(node.toString() + " intersects: "  + node.getBoundsInParent().intersects(selectRectangle.getBoundsInParent()));
-                System.out.println(node.toString() + " intersects: "  + selectRectangle.getLayoutBounds().intersects(node.getLayoutBounds()));
-                System.out.println(node.toString() + " is contained: " + selectRectangle.getLayoutBounds().contains(node.getLayoutBounds()));
+                // Check if rectangle intersects node
+                MyVertexView vertexView = (MyVertexView) node;
+                if (vertexView.getBoundsInParent().intersects(selectRectangle.getBoundsInParent())) {
+                    System.out.println("Selection intersects node: " + vertexView);
+                    // Add the nodes of all selected vertexViews to selection Model
+                    myGraphView.getSelectionModel().select(vertexView.getMyVertex());
+                }
             });
 
-            */// Make rectangle invisible again
+            // Make rectangle invisible after selection end
             selectRectangle.setHeight(0);
             selectRectangle.setWidth(0);
             selectRectangle.setY(0);

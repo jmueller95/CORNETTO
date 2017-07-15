@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class MyVertex {
     private TaxonNode taxonNode;
     private boolean isHidden = false;
+    private BooleanProperty isSelected = new SimpleBooleanProperty(false);
 
     private DoubleProperty xCoordinates;
     private DoubleProperty yCoordinates;
@@ -40,6 +41,10 @@ public class MyVertex {
         return yCoordinates;
     }
 
+    public BooleanProperty isSelectedProperty() {
+        return isSelected;
+    }
+
     public void hideVertex() {
         this.isHidden = true;
     }
@@ -51,6 +56,7 @@ public class MyVertex {
     public boolean isHidden() {
         return isHidden;
     }
+
 
     public HashMap<String, Object> getAttributesMap() {
         return attributesMap;

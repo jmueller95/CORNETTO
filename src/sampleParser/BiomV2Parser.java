@@ -18,7 +18,10 @@ public class BiomV2Parser implements InputFile{
 
     private TaxonTree taxonTree;
 
-    // Normal Constructor with TaxonTree
+    /**
+     * Constructor for creating a new Parser.
+     * @param taxonTree must always be provided to map taxonIDs to tree nodes
+     */
     public BiomV2Parser(TaxonTree taxonTree) {
         this.taxonTree = taxonTree;
     }

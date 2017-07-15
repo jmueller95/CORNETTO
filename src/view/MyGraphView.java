@@ -7,8 +7,11 @@ import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
+import javafx.collections.ListChangeListener;
 import javafx.scene.Group;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.layout.Pane;
+import model.VertexSelectionModel;
 
 
 import java.awt.*;
@@ -26,8 +29,9 @@ public class MyGraphView extends Group {
     private Group myVertexViewGroup;
     private Group myEdgeViewGroup;
     private MyGraph<MyVertex, MyEdge> graph;
-
     private SpringLayout2 springLayout;
+
+    private VertexSelectionModel selectionModel;
 
     // Todo: Assign this function
     protected Function<MyEdge, Integer> myEdgeLengthFunction;
@@ -43,7 +47,6 @@ public class MyGraphView extends Group {
         this.springLayout = new SpringLayout2(graph);
         springLayout.setSize(new Dimension(500, 500));
 
-
         //organicLayout = new JGraphOrganicLayout(new Rectangle(MAX_X, MAX_Y));
         //springLayout = new JGraphSpringLayout(1000);
         //simpleLayout = new JGraphSimpleLayout(2, 1000, 800);
@@ -52,10 +55,14 @@ public class MyGraphView extends Group {
         drawNodes();
         drawEdges();
         setPositions();
-        addPaneInteractivity();
+
 
         getChildren().add(myEdgeViewGroup);
         getChildren().add(myVertexViewGroup);
+
+        // Add all Vertex to the selection Model and add Listener
+        selectionModel = new VertexSelectionModel(graph.getVertices().toArray());
+        addSelectionListener();
     }
 
 
@@ -82,9 +89,27 @@ public class MyGraphView extends Group {
         });
     }
 
-    public void addPaneInteractivity() {
+    public void addSelectionListener() {
+        selectionModel.getSelectedItems().addListener(new ListChangeListener() {
+            @Override
+            public void onChanged(Change c) {
+                while (c.next()) {
+                    if (c.wasAdded()) {
 
+                        for (Object o: c.getAddedSubList()) {
+                            MyVertex vertex = (MyVertex) o;
+                            vertex.isSelectedProperty().setValue(true);
+                        }
 
+                        for (Object o: c.getRemoved()) {
+                            MyVertex vertex = (MyVertex) o;
+                            vertex.isSelectedProperty().setValue(false);
+                        }
+
+                    }
+                }
+            }
+        });
     }
 
     public void addNodeInteractivity() {
@@ -95,5 +120,13 @@ public class MyGraphView extends Group {
 
     public Group getMyVertexViewGroup() {
         return myVertexViewGroup;
+    }
+
+    public MyGraph<MyVertex, MyEdge> getGraph() {
+        return graph;
+    }
+
+    public VertexSelectionModel getSelectionModel() {
+        return selectionModel;
     }
 }
