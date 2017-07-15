@@ -24,6 +24,10 @@ public class ViewPane extends StackPane{
 
     private double pressedX;
     private double pressedY;
+    private double initTransX;
+    private double initTransY;
+
+
     private Rectangle selectRectangle;
     private Pane topPane;
     private Pane bottomPane;
@@ -85,28 +89,39 @@ public class ViewPane extends StackPane{
             pressedX = me.getSceneX();
             pressedY = me.getSceneY();
 
+
         });
 
         // Mouse clicked on elements of the VertexViewGroup:
         myGraphView.getMyVertexViewGroup().getChildren().forEach(o -> {
 
             MyVertexView vertexView = (MyVertexView) o;
-            double initTransX = vertexView.translateXProperty().get();
-            double initTransY = vertexView.translateYProperty().get();
+
+            o.setOnMousePressed( me -> {
+                initTransX = vertexView.translateXProperty().get();
+                initTransY = vertexView.translateYProperty().get();
+
+            });
+            //double initTransX = vertexView.translateXProperty().get();
+            //double initTransY = vertexView.translateYProperty().get();
 
 
             // Left Mouse Drag: Move Node
             o.setOnMouseDragged( me -> {
+
                 if (me.getButton() == MouseButton.PRIMARY) {
 
-                    double deltaX = me.getSceneX() - initTransX;
-                    double deltaY = me.getSceneY() - initTransY;
+                    System.out.print("MX: " + me.getSceneX() + " | " +  initTransX + " | " + viewTransformProperty.getValue().getTx() );
+                    System.out.println(" |||  MY: " + me.getSceneY() + " | " +  initTransY + " | " + viewTransformProperty.getValue().getTy() );
+
+                    double deltaX = me.getSceneX() - initTransX - 2*viewTransformProperty.getValue().getTx();
+                    double deltaY = me.getSceneY() - initTransY - 2*viewTransformProperty.getValue().getTy();
+
 
                     vertexView.translateXProperty().set(pressedX + deltaX);
                     vertexView.translateYProperty().set(pressedY + deltaY);
 
-                    //pressedX = me.getSceneX();
-                    //pressedY = me.getSceneY();
+
 
                     me.consume();
 
