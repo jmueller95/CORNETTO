@@ -93,12 +93,12 @@ public class MyGraphView extends Group {
         selectionModel.getSelectedItems().addListener((ListChangeListener) c -> {
             while (c.next()) {
                 if (c.wasAdded()) {
-
-                    for (Object o: c.getAddedSubList()) {
+                    for (Object o : c.getAddedSubList()) {
                         MyVertex vertex = (MyVertex) o;
                         vertex.isSelectedProperty().setValue(true);
                     }
-
+                }
+                if (c.wasRemoved()){
                     for (Object o: c.getRemoved()) {
                         MyVertex vertex = (MyVertex) o;
                         vertex.isSelectedProperty().setValue(false);

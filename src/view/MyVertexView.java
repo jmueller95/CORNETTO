@@ -50,8 +50,10 @@ public class MyVertexView extends Group {
         myVertex.isSelectedProperty().addListener(((observable, oldValue, newValue) -> {
             if (newValue) {
                 vertexShape.setFill(selectedFillColor);
+                System.out.println("node selected");
             } else {
                 vertexShape.setFill(fillColor);
+                System.out.println("node unselected");
             }
         }));
     }
