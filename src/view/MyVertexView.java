@@ -33,7 +33,7 @@ public class MyVertexView extends Group {
 
         translateXProperty().bindBidirectional(myVertex.xCoordinatesProperty());
         translateYProperty().bindBidirectional(myVertex.yCoordinatesProperty());
-        addMouseEvent();
+        //addMouseEvent();
         addSelectionMarker();
 
         getChildren().add(vertexShape);
