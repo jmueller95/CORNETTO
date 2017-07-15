@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 import model.TaxonNode;
 import org.junit.Before;
 import org.junit.Test;
-import org.scenicview.ScenicView;
 
 /**
  * Created by caspar on 25.06.17.

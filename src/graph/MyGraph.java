@@ -224,7 +224,7 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
 
     /**
      * TODO: Where can we move this?
-     * Filters the taxa contained in the list of samples. Returns a list of taxa that lie below/above the given
+     * Filters the taxa contained in the castListToGeneric of samples. Returns a castListToGeneric of taxa that lie below/above the given
      * lower/upper correlation thresholds and below the given p-Value threshold
      *
      * @param samples

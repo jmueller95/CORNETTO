@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 /**
  * Created by julian on 10.06.17.
- * //TODO: A vertex should have a list of edges, and if all of them are hidden, it should hide as well!
+ * //TODO: A vertex should have a castListToGeneric of edges, and if all of them are hidden, it should hide as well!
  */
 public class MyVertex {
     private TaxonNode taxonNode;
