@@ -1,53 +1,46 @@
 package model;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+
+
 
 /**
  * Created by NantiaL on 02.07.2017.
  */
 public class MetadataMapping {
 
+    private static ArrayList<String> metaDataObject = new ArrayList<>();
 
-    Sample SampleID = new Sample();
-    Sample MetadataMap = new Sample();
-    private ArrayList<Sample> sampleList;
-
-
-    //Getters
-
-    public Sample getMetadataMap() {
-        return MetadataMap;
-    }
-
-    //empty constructor
-    public MetadataMapping() {
-        this.SampleID = new Sample();
-        this.MetadataMap = new Sample();
-    }
-
-    // Constructor with data
-    public MetadataMapping(Sample SampleID, String header, String barcodeSequence) {
-        this.SampleID = SampleID;
-        this.MetadataMap = MetadataMap;
-    }
-
-    public ArrayList<Sample> MetadataParser(String filepath) throws IOException {
+    public  static ArrayList<String> MetadataParser(String filepath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filepath));
         String line = reader.readLine();
-        String[] split = line.split(" ");
-        int id = split.length - 1; //shows that the first column is the sample ID
+        String[] arr = line.split("\t"); // the fields are tab separated
+        int columns = arr.length-4; //number of files' columns
+        //HashMap<HashSet,String> metaDataObject = new HashMap();
 
 
-      //  int numberOfData = split.length - 1;
-      //  HashMap<String, String> map = getMetadataMap().getMetaData();
+      while(line != null ) {
+          for (int j = 1; j <= columns; j++) {
 
+              //HashMap<String,String> metadataObjectSet = new HashMap<>();
+              //metadataObjectSet.put(arr[3],arr[4]); //includes its "treatment"
+              metaDataObject.add(arr[3]); //includes its "treatment"
+              metaDataObject.add(arr[4]); //includes its "dob"
 
+              arr = line.split("\t");
+              j++;
+              line = reader.readLine();
+          }
 
-        return sampleList;
+      }
+        return metaDataObject;
+}
+
+     public static void main(String[] args) throws IOException {
+       ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFileTest");
+       System.out.println(show);
     }
 
 }

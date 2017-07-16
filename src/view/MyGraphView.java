@@ -51,11 +51,9 @@ public class MyGraphView extends Group {
         //springLayout = new JGraphSpringLayout(1000);
         //simpleLayout = new JGraphSimpleLayout(2, 1000, 800);
 
-
         drawNodes();
         drawEdges();
         setPositions();
-
 
         getChildren().add(myEdgeViewGroup);
         getChildren().add(myVertexViewGroup);
@@ -98,8 +96,8 @@ public class MyGraphView extends Group {
                         vertex.isSelectedProperty().setValue(true);
                     }
                 }
-                if (c.wasRemoved()){
-                    for (Object o: c.getRemoved()) {
+                if (c.wasRemoved()) {
+                    for (Object o : c.getRemoved()) {
                         MyVertex vertex = (MyVertex) o;
                         vertex.isSelectedProperty().setValue(false);
                     }
@@ -108,9 +106,6 @@ public class MyGraphView extends Group {
             }
         });
     }
-
-
-
 
 
     public Group getMyVertexViewGroup() {

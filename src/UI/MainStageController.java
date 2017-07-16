@@ -12,11 +12,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import jdk.internal.org.objectweb.asm.commons.AnalyzerAdapter;
 import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
@@ -24,6 +26,8 @@ import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.DownloadNodesAndNameDMPFiles;
+import view.MyGraphView;
+
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
@@ -38,18 +42,21 @@ public class MainStageController implements Initializable {
     public static final String NODES_DMP_SRC = "./res/nodes.dmp";
     public static final String NAMES_DMP_SRC = "./res/names.dmp";
 
+    private static final int MAX_WIDTH_OF_SIDEPANES = 220;
+
     private enum FileType {taxonId2Count, readName2TaxonId, biom}
 
     private ArrayList<String> openFiles;
 
-    public static boolean isDefaultDirectoryLocation = true;
+    public static boolean isDefaultDirectoryLocation = true, isMainViewMaximized = false;
     public static String defaultLocation = "";
+
     // alerts
     private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert;
 
     // FXML elements
     @FXML
-    private AnchorPane leftPane;
+    private AnchorPane leftPane, rightPane;
 
     @FXML
     private Label leftLabel;
@@ -70,7 +77,11 @@ public class MainStageController implements Initializable {
     @FXML
     private Slider maxCountSlider;
 
-    @FXML private Text maxCountText;
+    @FXML
+    private Text maxCountText;
+
+    @FXML
+    private AnchorPane mainViewPane;
 
     /**
      * initializes all required files
@@ -107,12 +118,21 @@ public class MainStageController implements Initializable {
      * Should be called when the user clicks a button to analyze the loaded samples and display the graphview
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
-    public static void startAnalysis(){
-        AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
-        LoadedData.createGraph();
-        //Default values: 0.5<correlation<1, pValue<0.1
-        LoadedData.getTaxonGraph().filterTaxa(LoadedData.getSamples(), 1,0.5,0.1);
-        //TODO: Create GraphView
+    public void startAnalysis() {
+        if(AnalysisData.getLevel_of_analysis()!=null){
+
+            AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
+            LoadedData.createGraph();
+            //Default values: 0.5<correlation<1, pValue<0.1
+            LoadedData.getTaxonGraph().filterTaxa(
+                    LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
+        }else{
+            //TODO: Disable "start Analysis"-Button before analysis level is selected
+            System.err.println("Please select a level of analysis!");
+        }
+        MyGraphView graphView = new MyGraphView(LoadedData.getTaxonGraph());
+        mainViewPane.getChildren().add(graphView);
+
     }
 
     //FILE methods
@@ -133,6 +153,7 @@ public class MainStageController implements Initializable {
             textAreaDetails.setText("");
             maxCountSlider.setDisable(true);
             maxCountText.setText("Max count: ");
+            System.out.println("Preferred size: " + leftPane.getPrefWidth());
         }
     }
 
@@ -166,6 +187,23 @@ public class MainStageController implements Initializable {
         confirmQuit();
     }
 
+    @FXML
+    public void toggleMainView() {
+        if (!isMainViewMaximized) {
+            setPanesWidth(0);
+            isMainViewMaximized = true;
+        } else {
+            setPanesWidth(MAX_WIDTH_OF_SIDEPANES);
+            isMainViewMaximized = false;
+        }
+    }
+
+    private void setPanesWidth(int width) {
+        leftPane.setMaxWidth(width);
+        rightPane.setMaxWidth(width);
+        leftPane.setMinWidth(width);
+        rightPane.setMinWidth(width);
+    }
 
     //SPECIALIZED METHODS
 
@@ -173,7 +211,7 @@ public class MainStageController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         String fileChooserTitle = "Load from ";
 
-        if(isDefaultDirectoryLocation){
+        if (isDefaultDirectoryLocation) {
             setDefaultOpenDirectory(fileChooser);
         } else {
             fileChooser.setInitialDirectory(new File(defaultLocation));
@@ -391,13 +429,14 @@ public class MainStageController implements Initializable {
         maxCountSlider.setMajorTickUnit(1);
         maxCountSlider.setMinorTickCount(1);
         maxCountSlider.setSnapToTicks(true);
-        if(treeViewFiles.getRoot().getChildren().isEmpty()) {
+        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
             maxCountSlider.setDisable(true);
         } else {
             maxCountSlider.setDisable(false);
         }
         //maxCountSlider.setValue(maxCountSlider.getMax());
     }
+
     //ALERTS
 
     /**

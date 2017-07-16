@@ -9,7 +9,7 @@ public class Sample {
 
     private HashMap<TaxonNode, Integer> taxa2CountMap;
     private static HashMap<String, String> metaDataMap;
-    private   static String sampleId;
+    private  static String sampleId;
 
 
     // Empty constructor needed in CSV Parsers
@@ -47,7 +47,7 @@ public class Sample {
             return taxa2CountMap;
         }
 
-        public HashMap<String, String> getMetaData () {
+        public static HashMap<String, String> getMetaData () {
             return metaDataMap;
         }
 

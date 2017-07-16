@@ -27,6 +27,7 @@ public class TaxonId2CountCSVParser implements InputFile {
     //TODO: Add metadata!?
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException {
+        sampleList = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(filepath));
         String line = reader.readLine();
         String[] lineSplit = line.split(",");
@@ -43,11 +44,14 @@ public class TaxonId2CountCSVParser implements InputFile {
             int currentTaxonId = Integer.parseInt(lineSplit[0]);
 
             TaxonNode currentTaxonNode = treeStructure.get(currentTaxonId);
-
-            //Add counts to datasets
-            for (int i = 1; i <= numberOfDatasets; i++) {
-                int currentSampleReadCount = (int) Double.parseDouble(lineSplit[i]);
-                sampleList.get(i - 1).getTaxa2CountMap().put(currentTaxonNode, currentSampleReadCount);
+            if (currentTaxonNode == null) {
+                System.out.println("Couldn't find node:" + currentTaxonId);
+            } else {
+                //Add counts to datasets
+                for (int i = 1; i <= numberOfDatasets; i++) {
+                    int currentSampleReadCount = (int) Double.parseDouble(lineSplit[i]);
+                    sampleList.get(i - 1).getTaxa2CountMap().put(currentTaxonNode, currentSampleReadCount);
+                }
             }
             line = reader.readLine();
         }
