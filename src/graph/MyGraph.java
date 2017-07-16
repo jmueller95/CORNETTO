@@ -232,17 +232,17 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
      * @param upperCorrelationThreshold
      * @param pValueThreshold
      */
-    public void filterTaxa(List<Sample> samples, double lowerCorrelationThreshold, double upperCorrelationThreshold, double pValueThreshold) {
+    public void filterTaxa(List<Sample> samples, double lowerCorrelationThreshold, double upperCorrelationThreshold, double pValueThreshold, String rank) {
         //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
-        LinkedList<TaxonNode> unfilteredTaxonList = SampleComparison.getUnifiedTaxonList(samples);
+        LinkedList<TaxonNode> unfilteredTaxonList = SampleComparison.getUnifiedTaxonList(samples, rank);
 
         //Counts the visible edges of each node - is initially set to n-1 for every node, decremented when edge is hidden
         int[] visibleEdgeCounts = new int[unfilteredTaxonList.size()];
         Arrays.fill(visibleEdgeCounts, unfilteredTaxonList.size() - 1);
 
         //Get correlation matrix and p-value matrix
-        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples);
-        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples);
+        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, rank);
+        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples, rank);
 
         //Compare every node with every other node
         for (int i = 0; i < unfilteredTaxonList.size(); i++) {
@@ -276,16 +276,16 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
     /*
   The following 3 methods are basically overloaded filters with default params for 2 of the three doubles
    */
-    public void filterSamplesByPValue(List<Sample> samples, double pValueThreshold) {
-        filterTaxa(samples, 1, -1, pValueThreshold);
+    public void filterSamplesByPValue(List<Sample> samples, double pValueThreshold, String rank) {
+        filterTaxa(samples, 1, -1, pValueThreshold, rank);
     }
 
-    public void filterSamplesByMinimalCorrelation(List<Sample> samples, double upperCorrelationThreshold) {
-        filterTaxa(samples, 1, upperCorrelationThreshold, 1);
+    public void filterSamplesByMinimalCorrelation(List<Sample> samples, double upperCorrelationThreshold, String rank) {
+        filterTaxa(samples, 1, upperCorrelationThreshold, 1, rank);
     }
 
-    public void filterSamplesByMaximalCorrelation(List<Sample> samples, double lowerCorrelationThreshold) {
-        filterTaxa(samples, lowerCorrelationThreshold, -1, 1);
+    public void filterSamplesByMaximalCorrelation(List<Sample> samples, double lowerCorrelationThreshold, String rank) {
+        filterTaxa(samples, lowerCorrelationThreshold, -1, 1, rank);
     }
 
     public HashMap<TaxonNode, MyVertex> getTaxonNodeToVertexMap() {

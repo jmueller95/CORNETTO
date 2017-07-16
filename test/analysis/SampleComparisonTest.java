@@ -16,104 +16,47 @@ import static org.junit.Assert.*;
  * Created by julian on 10.06.17.
  */
 public class SampleComparisonTest {
-    private TaxonNode node1, node2, node3, node4, node5, node6, node7, node8, node9, node10;
-
-    @Before
-    public void setUp() throws Exception {
-        node1 = new TaxonNode(1, null, 0);
-        node2 = new TaxonNode(2, null, 0);
-        node3 = new TaxonNode(3, null, 0);
-        node4 = new TaxonNode(4, null, 0);
-        node5 = new TaxonNode(5, null, 0);
-        node6 = new TaxonNode(6, null, 0);
-        node7 = new TaxonNode(7, null, 0);
-        node8 = new TaxonNode(8, null, 0);
-        node9 = new TaxonNode(9, null, 0);
-        node10 = new TaxonNode(10, null, 0);
-    }
 
     @Test
     public void testgetUnifiedTaxonList() throws Exception {
-        Sample sample1 = new Sample();
-        sample1.getTaxa2CountMap().put(node1, 0);
-        sample1.getTaxa2CountMap().put(node2, 0);
-        sample1.getTaxa2CountMap().put(node3, 0);
-        Sample sample2 = new Sample();
-        sample2.getTaxa2CountMap().put(node2, 0);
-        sample2.getTaxa2CountMap().put(node3, 0);
-        sample2.getTaxa2CountMap().put(node4, 0);
-        Sample sample3 = new Sample();
-        sample3.getTaxa2CountMap().put(node5,0);
-        sample3.getTaxa2CountMap().put(node10,0);
-        Sample sample4 = new Sample();
-        sample4.getTaxa2CountMap().put(node9,0);
-        sample4.getTaxa2CountMap().put(node8,0);
-        sample4.getTaxa2CountMap().put(node7,0);
-        sample4.getTaxa2CountMap().put(node6,0);
+        TreeParser parser = new TreeParser();
+        parser.parseTree("./res/nodes.dmp", "./res/names.dmp");
+        TaxonId2CountCSVParser csvParser = new TaxonId2CountCSVParser(parser.getTaxonTree());
+        ArrayList<Sample> samples = csvParser.parse("./res/testFiles/megan_examples/core1_activelayer_day2-ID2Count.txt");
 
-        ArrayList<Sample> sampleList = new ArrayList<>();
-        sampleList.add(sample1);
-        sampleList.add(sample2);
-        sampleList.add(sample3);
-        sampleList.add(sample4);
+        LinkedList<TaxonNode> unifiedTaxonList = SampleComparison.getUnifiedTaxonList(samples, "phylum");
+        //There is only one "phylum" in the sample (Proteobacteria), so the list should have the size 1 now
+        assertEquals(1, unifiedTaxonList.size());
 
-        LinkedList<TaxonNode> unifiedTaxonList = SampleComparison.getUnifiedTaxonList(sampleList);
-        //This list should have length 10 and be sorted by Taxon id
-        assertEquals(10,unifiedTaxonList.size());
-        assertEquals(1,unifiedTaxonList.get(0).getTaxonId());
-        assertEquals(10,unifiedTaxonList.get(9).getTaxonId());
+        unifiedTaxonList = SampleComparison.getUnifiedTaxonList(samples, "notAValidRank");
+        //Now it should have the size 0
+        assertEquals(0, unifiedTaxonList.size());
+
+        unifiedTaxonList = SampleComparison.getUnifiedTaxonList(samples, "class");
+        //There are seven classes in this phylum:
+        // Gammaproteobacteria, Alphaproteobacteria, Betaproteobacteria, Deltaproteobacteria,
+//                Epsilonproteobacteria, Zetaproteobacteria, Acidithiobacillia
+        assertEquals(7, unifiedTaxonList.size());
+
     }
 
     @Test
     public void testCorrelation() throws Exception {
-        Sample sample1 = new Sample();
-        sample1.getTaxa2CountMap().put(node1, 10);
-        sample1.getTaxa2CountMap().put(node2, 20);
-        sample1.getTaxa2CountMap().put(node3, 30);
-        sample1.getTaxa2CountMap().put(node4, 40);
-
-        Sample sample2 = new Sample();
-        sample2.getTaxa2CountMap().put(node1, 20);
-        sample2.getTaxa2CountMap().put(node2, 40);
-        sample2.getTaxa2CountMap().put(node3, 15);
-        sample2.getTaxa2CountMap().put(node4, 100);
-
-        Sample sample3 = new Sample();
-        sample3.getTaxa2CountMap().put(node1,5);
-        sample3.getTaxa2CountMap().put(node2,10);
-        sample3.getTaxa2CountMap().put(node3,60);
-        sample3.getTaxa2CountMap().put(node4,100);
-
-        ArrayList<Sample> samples = new ArrayList<>();
-        samples.add(sample1);
-        samples.add(sample2);
-        samples.add(sample3);
-
-        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples);
-        System.out.println("Correlation Matrix:");
-        printMatrix(correlationMatrix);
-        System.out.println();
-
-        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples);
-        System.out.println("P-Value matrix:");
-        printMatrix(correlationPValues);
-
-
-    }
-
-    @Test
-    public void testRealExampleCorrelation() throws Exception {
         TreeParser parser = new TreeParser();
         parser.parseTree("./res/nodes.dmp", "./res/names.dmp");
         TaxonId2CountCSVParser csvParser = new TaxonId2CountCSVParser(parser.getTaxonTree());
-        ArrayList<Sample> samples = csvParser.parse("./res/testFiles/taxonId2Count/multipleSampleExample.taxonId2Count.txt");
+        ArrayList<Sample> samples = new ArrayList<>();
+        samples.addAll(csvParser.parse("./res/testFiles/megan_examples/core1_activelayer_day2-ID2Count.txt"));
+        samples.addAll(csvParser.parse("./res/testFiles/megan_examples/core1_activelayer_day7-ID2Count.txt"));
+        samples.addAll(csvParser.parse("./res/testFiles/megan_examples/core1_activelayer_frozen-ID2Count.txt"));
 
-        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples);
+
+        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, "class");
         System.out.println("Correlation Matrix:");
         printMatrix(correlationMatrix);
         System.out.println();
 
-        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples);
+        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples, "class");
         System.out.println("P-Value matrix:");
         printMatrix(correlationPValues);
     }

@@ -16,17 +16,17 @@ public abstract class SampleComparison {
 
 
     /**
-     * Returns a list of all taxa contained in at least one of the samples, ordered by id
+     * Returns a list of all taxa with the given rank contained in at least one of the samples, sorted by id
      *
      * @param samples
      * @return
      */
-    public static LinkedList<TaxonNode> getUnifiedTaxonList(List<Sample> samples) {
+    public static LinkedList<TaxonNode> getUnifiedTaxonList(List<Sample> samples, String rank) {
         LinkedList<TaxonNode> unifiedTaxonList = new LinkedList<>();
-        //Iterate over all samples, add every taxon that isn't there yet
+        //Iterate over all samples, add every taxon that has the wanted rank and isn't there yet
         for (Sample sample : samples) {
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
-                if (!unifiedTaxonList.contains(taxonNode)) {
+                if (taxonNode.getRank().equals(rank) && !unifiedTaxonList.contains(taxonNode)) {
                     unifiedTaxonList.add(taxonNode);
                 }
             }
@@ -43,21 +43,21 @@ public abstract class SampleComparison {
 
 
     /**
-     * Takes a list of samples and returns the PearsonCorrelation object based on their counts
+     * Takes a list of samples and returns the PearsonCorrelation object based on their counts on the given rank
      *
      * @param samples
      * @return
      */
-    private static void createPearsonsCorrelationOfSamples(List<Sample> samples) {
+    private static void createPearsonsCorrelationOfSamples(List<Sample> samples, String rank) {
         //We need the unified map to make sure the counts are properly aligned
-        LinkedList<TaxonNode> taxonNodeList = getUnifiedTaxonList(samples);
+        LinkedList<TaxonNode> taxonNodeList = getUnifiedTaxonList(samples, rank);
 
         //The matrix data needs to be double, since PearsonsCorrelation only takes double arrays
         double[][] taxaCounts = new double[samples.size()][taxonNodeList.size()];
         for (int sampleIndex = 0; sampleIndex < samples.size(); sampleIndex++) {
             double[] currentSampleCounts = new double[taxonNodeList.size()];
             for (int taxonIndex = 0; taxonIndex < currentSampleCounts.length; taxonIndex++) {
-                currentSampleCounts[taxonIndex] = samples.get(sampleIndex).getTaxa2CountMap().get(taxonNodeList.get(taxonIndex));
+                currentSampleCounts[taxonIndex] = samples.get(sampleIndex).getTaxonCountRecursive(taxonNodeList.get(taxonIndex));
             }
             taxaCounts[sampleIndex] = currentSampleCounts;
         }
@@ -67,16 +67,16 @@ public abstract class SampleComparison {
     }
 
 
-    public static RealMatrix getCorrelationMatrixOfSamples(List<Sample> samples) {
+    public static RealMatrix getCorrelationMatrixOfSamples(List<Sample> samples, String rank) {
         if (sampleCorrelation == null) {
-            createPearsonsCorrelationOfSamples(samples);
+            createPearsonsCorrelationOfSamples(samples, rank);
         }
         return sampleCorrelation.getCorrelationMatrix();
     }
 
-    public static RealMatrix getCorrelationPValuesOfSamples(List<Sample> samples) {
+    public static RealMatrix getCorrelationPValuesOfSamples(List<Sample> samples, String rank) {
         if (sampleCorrelation == null) {
-            createPearsonsCorrelationOfSamples(samples);
+            createPearsonsCorrelationOfSamples(samples, rank);
         }
         return sampleCorrelation.getCorrelationPValues();
     }
