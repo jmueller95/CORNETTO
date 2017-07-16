@@ -128,17 +128,14 @@ public class MainStageController implements Initializable {
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
     public void startAnalysis() {
-        if(AnalysisData.getLevel_of_analysis()!=null){
+        startAnalysisButton.setDisable(true);
 
-            AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
-            LoadedData.createGraph();
-            //Default values: 0.5<correlation<1, pValue<0.1
-            LoadedData.getTaxonGraph().filterTaxa(
-                    LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
-        }else{
-            //TODO: Disable "start Analysis"-Button before analysis level is selected
-            System.err.println("Please select a level of analysis!");
-        }
+        AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
+        LoadedData.createGraph();
+        //Default values: 0.5<correlation<1, pValue<0.1
+        LoadedData.getTaxonGraph().filterTaxa(
+                LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
+        System.out.println("Taxa filtered after " + AnalysisData.getLevel_of_analysis());
         MyGraphView graphView = new MyGraphView(LoadedData.getTaxonGraph());
         mainViewPane.getChildren().add(graphView);
 
@@ -207,14 +204,61 @@ public class MainStageController implements Initializable {
         }
     }
 
+    //Methods
+    @FXML
+    private void selectDomain() {
+        selectRank("Domain");
+    }
+
+    @FXML
+    private void selectKingdom() {
+        selectRank("Kingdom");
+    }
+
+    @FXML
+    private void selectPhylum() {
+        selectRank("Phylum");
+    }
+
+    @FXML
+    private void selectClass() {
+        selectRank("Class");
+    }
+
+    @FXML
+    private void selectOrder() {
+        selectRank("Order");
+    }
+
+    @FXML
+    private void selectFamily() {
+        selectRank("Family");
+    }
+
+    @FXML
+    private void selectGenus() {
+        selectRank("Genus");
+    }
+
+    @FXML
+    private void selectSpecies() {
+        selectRank("Species");
+    }
+
+    @FXML
+    private void selectRank(String rank) {
+        AnalysisData.setLevel_of_analysis(rank);
+        startAnalysisButton.setDisable(false);
+    }
+
+    //SPECIALIZED METHODS
+
     private void setPanesWidth(int width) {
         leftPane.setMaxWidth(width);
         rightPane.setMaxWidth(width);
         leftPane.setMinWidth(width);
         rightPane.setMinWidth(width);
     }
-
-    //SPECIALIZED METHODS
 
     private void openFiles(FileType fileType) {
         FileChooser fileChooser = new FileChooser();
@@ -365,7 +409,7 @@ public class MainStageController implements Initializable {
                     textAreaDetails.appendText(child.getValue() + "\n");
                 }
             } else {*/
-                textAreaDetails.appendText(treeItem.getValue() + "\n");
+            textAreaDetails.appendText(treeItem.getValue() + "\n");
             //}
         }
     }
@@ -432,7 +476,6 @@ public class MainStageController implements Initializable {
      * Activates the buttons on the right pane
      */
     private void activateButtonsOnTheRightPane() {
-        startAnalysisButton.setDisable(false);
         rankSelectionButton.setDisable(false);
     }
 
