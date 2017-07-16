@@ -3,19 +3,16 @@ package view;
 
 import com.google.common.base.Function;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Group;
-import javafx.scene.control.MultipleSelectionModel;
-import javafx.scene.layout.Pane;
 import model.VertexSelectionModel;
 
 
+import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.Iterator;
 
 /**
  * Created by caspar on 19.06.17.
@@ -23,8 +20,8 @@ import java.util.Iterator;
 public class MyGraphView extends Group {
 
     // TODO bind size to window size or something
-    static final int MAX_X = 1000;
-    static final int MAX_Y = 800;
+    private int width = 1000;
+    private int height =  800;
 
     private Group myVertexViewGroup;
     private Group myEdgeViewGroup;
@@ -33,27 +30,31 @@ public class MyGraphView extends Group {
 
     private VertexSelectionModel selectionModel;
 
-    // Todo: Assign this function
     protected Function<MyEdge, Integer> myEdgeLengthFunction;
 
-    //JGraphOrganicLayout organicLayout;
-    //JGraphSpringLayout springLayout;
-    //JGraphSimpleLayout simpleLayout;
 
     public MyGraphView(MyGraph<MyVertex, MyEdge> graph) {
         this.graph = graph;
         this.myVertexViewGroup = new Group();
         this.myEdgeViewGroup = new Group();
-        this.springLayout = new SpringLayout2(graph);
-        springLayout.setSize(new Dimension(500, 500));
 
-        //organicLayout = new JGraphOrganicLayout(new Rectangle(MAX_X, MAX_Y));
-        //springLayout = new JGraphSpringLayout(1000);
-        //simpleLayout = new JGraphSimpleLayout(2, 1000, 800);
+        this.myEdgeLengthFunction = new Function<MyEdge, Integer>() {
+            @Nullable
+            @Override
+            public Integer apply(@Nullable MyEdge myEdge) {
+                Double weight = myEdge.getWeight();
+                Integer intWeight = weight.intValue();
+                return intWeight;
+            }
+        };
+
+        this.springLayout = new SpringLayout2(graph, myEdgeLengthFunction);
+        springLayout.setSize(new Dimension(width, height));
+
 
         drawNodes();
         drawEdges();
-        setPositions();
+        startLayout();
 
         getChildren().add(myEdgeViewGroup);
         getChildren().add(myVertexViewGroup);
@@ -61,6 +62,13 @@ public class MyGraphView extends Group {
         // Add all Vertex to the selection Model and add Listener
         selectionModel = new VertexSelectionModel(graph.getVertices().toArray());
         addSelectionListener();
+
+    }
+
+    public void updateDimensions() {
+        width = (int)getBoundsInParent().getWidth();
+        height = (int)getBoundsInParent().getHeight();
+
     }
 
 
@@ -77,14 +85,27 @@ public class MyGraphView extends Group {
         });
     }
 
-    public void setPositions() {
+    public void startLayout() {
+        updateDimensions();
         springLayout.initialize();
-        springLayout.step();
+        graph.getVertices().forEach((node) -> {
+            node.xCoordinatesProperty().setValue(springLayout.getX(node));
+            node.yCoordinatesProperty().setValue(springLayout.getY(node));
+        });
+    }
+
+    public void makeStep() {
         springLayout.step();
         graph.getVertices().forEach((node) -> {
             node.xCoordinatesProperty().setValue(springLayout.getX(node));
             node.yCoordinatesProperty().setValue(springLayout.getY(node));
         });
+
+    }
+
+    public void updateNodePosition(MyVertex vertex) {
+        updateDimensions();
+        springLayout.setLocation(vertex, vertex.getXCoordinates(), vertex.getYCoordinates());
     }
 
     public void addSelectionListener() {

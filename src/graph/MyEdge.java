@@ -21,6 +21,13 @@ public class MyEdge {
         attributesMap = new HashMap<>();
     }
 
+    public MyEdge(MyVertex source, MyVertex target, double weight) {
+        this.source = source;
+        this.target = target;
+        attributesMap = new HashMap<>();
+        this.weight = weight;
+    }
+
 
     public void hideEdge() {
         this.isHidden = true;

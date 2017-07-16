@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import model.TaxonNode;
 import org.junit.Before;
 import org.junit.Test;
+import org.scenicview.ScenicView;
 
 /**
  * Created by caspar on 25.06.17.
@@ -26,9 +27,9 @@ public class ViewTest extends Application {
         MyVertex v2 = new MyVertex(new TaxonNode(2, "rank", 1));
         MyVertex v3 = new MyVertex(new TaxonNode(3, "rank", 1));
         MyVertex v4 = new MyVertex(new TaxonNode(4, "rank", 1));
-        MyEdge edge12 = new MyEdge(v1, v2);
-        MyEdge edge23 = new MyEdge(v2, v3);
-        MyEdge edge24 = new MyEdge(v4, v2);
+        MyEdge edge12 = new MyEdge(v1, v2, 100);
+        MyEdge edge23 = new MyEdge(v2, v3, 200);
+        MyEdge edge24 = new MyEdge(v4, v2, 303);
         this.graph.addVertex(v1);
         this.graph.addVertex(v2);
         this.graph.addVertex(v3);
@@ -58,7 +59,7 @@ public class ViewTest extends Application {
         primaryStage.show();
 
         // Open Scenic VIew Diagnostics Tool
-        //ScenicView.show(root);
+        // ScenicView.show(root);
     }
 }
 

@@ -29,8 +29,12 @@ public class MyVertex {
     }
 
 
-    public double getxCoordinates() {
+    public double getXCoordinates() {
         return xCoordinates.get();
+    }
+
+    public double getYCoordinates() {
+        return yCoordinates.get();
     }
 
     public DoubleProperty xCoordinatesProperty() {
