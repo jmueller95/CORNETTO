@@ -94,29 +94,21 @@ public class MainStageController implements Initializable {
     private AnchorPane mainViewPane;
 
     /**
-     * initializes all required files
+     * Initializes every needed service
      *
      * @param location
      * @param resources
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        TreePreloadService treePreloadService = new TreePreloadService();
-        treePreloadService.start();
+        startTreePreloadService();
         initializeTreeView();
         initializeTextAreaDetails();
         initializeCollapseAllButton();
         initializeMaxCountSlider();
         initializeButtonsOnTheRightPane();
-        rankSelectionToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-            AnalysisData.setLevel_of_analysis(newValue.getUserData().toString());
-            System.out.println(AnalysisData.getLevel_of_analysis());
-            startAnalysisButton.setDisable(false);
-        });
-
-
+        initializeRankSelectionToggleGroup();
     }
-
 
     /**
      * checks whether nodes.dmp and names.dmp exist
@@ -170,7 +162,6 @@ public class MainStageController implements Initializable {
             textAreaDetails.setText("");
             maxCountSlider.setDisable(true);
             maxCountText.setText("Max count: ");
-            System.out.println("Preferred size: " + leftPane.getPrefWidth());
         }
     }
 
@@ -421,6 +412,13 @@ public class MainStageController implements Initializable {
     //INITIALIZATIONS
 
     /**
+     * Starts the tree preload service
+     */
+    private void startTreePreloadService() {
+        new TreePreloadService().start();
+    }
+
+    /**
      * Initializes the tree view on left pane
      */
     private void initializeTreeView() {
@@ -484,6 +482,17 @@ public class MainStageController implements Initializable {
      */
     private void initializeSplitMenuButton() {
         rankSelectionButton.setDisable(true);
+    }
+
+    /**
+     * Initializes the rank selection toggle group and adds a listener to the rank selection
+     */
+    private void initializeRankSelectionToggleGroup() {
+        rankSelectionToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            AnalysisData.setLevel_of_analysis(newValue.getUserData().toString());
+            System.out.println(AnalysisData.getLevel_of_analysis());
+            startAnalysisButton.setDisable(false);
+        });
     }
 
     //ALERTS
