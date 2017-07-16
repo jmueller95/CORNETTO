@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 
@@ -40,7 +41,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         pStage = primaryStage;
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(new URL("file:"+new File("").getCanonicalPath().concat("/src/UI/mainStageGui.fxml")));
+        loader.setLocation(Main.class.getClassLoader().getResource("UI/mainStageGui.fxml"));
         content = loader.load();
         content.getStylesheets().add("/UI/darkGuiStyle.css");
         primaryStage.setTitle("Network Analysis Tool");
@@ -52,10 +53,9 @@ public class Main extends Application {
 
     /**
      * called when platform.exit is invoked
-     *
-     * */
+     */
     @Override
-    public void stop(){
+    public void stop() {
         Platform.exit();
     }
 
@@ -76,7 +76,7 @@ public class Main extends Application {
      *
      * @param stage the stage which the X event should change be set
      */
-    private static void setXEvent(Stage stage){
+    private static void setXEvent(Stage stage) {
         MainStageController mainStageController = new MainStageController();
         stage.setOnCloseRequest(mainStageController.confirmCloseEventHandler);
     }
