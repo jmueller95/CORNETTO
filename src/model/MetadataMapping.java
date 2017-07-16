@@ -45,7 +45,7 @@ public class MetadataMapping {
         // ArrayList<String> show =  MetadataParser("./res/metadataFileTestwithSameID");
 
          //if each IDs exist only once
-         ArrayList<String> show =  MetadataParser("./res/metadataFileTest");
+         ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFileTest");
 
     }
 
