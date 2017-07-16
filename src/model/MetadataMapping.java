@@ -1,9 +1,11 @@
 package model;
 
 
+import com.sun.media.jfxmedia.MetadataParser;
+import scala.util.regexp.Base;
+
 import java.io.*;
 import java.util.ArrayList;
-
 
 
 /**
@@ -13,25 +15,25 @@ public class MetadataMapping {
 
     private static ArrayList<String> metaDataObject = new ArrayList<>();
 
-    public  static ArrayList<String> MetadataParser(String filepath) throws IOException {
+    public static  ArrayList<String>  MetadataParser(String filepath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filepath));
         String line = reader.readLine();
         String[] arr = line.split("\t"); // the fields are tab separated
-        int columns = arr.length-4; //number of files' columns
+        int columns = arr.length; //number of files' columns
         //HashMap<HashSet,String> metaDataObject = new HashMap();
 
 
       while(line != null ) {
-          for (int j = 1; j <= columns; j++) {
+          for (int j = 1; j < columns; j++) {
 
               //HashMap<String,String> metadataObjectSet = new HashMap<>();
-              //metadataObjectSet.put(arr[3],arr[4]); //includes its "treatment"
-              metaDataObject.add(arr[3]); //includes its "treatment"
-              metaDataObject.add(arr[4]); //includes its "dob"
+              metaDataObject.add(arr[3] ); //includes its "treatment"
+              metaDataObject.add(arr[4] + "\t\t"); //includes its "dob"
 
               arr = line.split("\t");
               j++;
               line = reader.readLine();
+              System.out.println("" + metaDataObject);
           }
 
       }
@@ -39,8 +41,12 @@ public class MetadataMapping {
 }
 
      public static void main(String[] args) throws IOException {
-       ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFileTest");
-       System.out.println(show);
+        //if the same ID twice exists, then throw an error
+        // ArrayList<String> show =  MetadataParser("./res/metadataFileTestwithSameID");
+
+         //if each IDs exist only once
+         ArrayList<String> show =  MetadataParser("./res/metadataFileTest");
+
     }
 
 }
