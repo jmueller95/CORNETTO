@@ -35,8 +35,12 @@ public class AnalysisData {
         AnalysisData.pValueMatrix = pValueMatrix;
     }
 
+    //Getter
     public static String getLevel_of_analysis() {
         return level_of_analysis;
     }
+
+    //Setter
+    public static void setLevel_of_analysis(String level_of_analysis) { AnalysisData.level_of_analysis = level_of_analysis; }
 
 }

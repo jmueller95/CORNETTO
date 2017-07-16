@@ -70,8 +70,18 @@ public class MainStageController implements Initializable {
     @FXML
     public ProgressBar progressBar;
 
+    //Buttons
     @FXML
     private RadioButton collapseAllButton;
+
+    @FXML
+    private Button startAnalysisButton;
+
+    @FXML
+    private MenuButton rankSelectionButton;
+
+    @FXML
+    private ToggleGroup rankSelectionToggleGroup;
 
     //Filter items
     @FXML
@@ -97,7 +107,16 @@ public class MainStageController implements Initializable {
         initializeTextAreaDetails();
         initializeCollapseAllButton();
         initializeMaxCountSlider();
+        initializeButtonsOnTheRightPane();
+        rankSelectionToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            AnalysisData.setLevel_of_analysis(newValue.getUserData().toString());
+            System.out.println(AnalysisData.getLevel_of_analysis());
+            startAnalysisButton.setDisable(false);
+        });
+
+
     }
+
 
     /**
      * checks whether nodes.dmp and names.dmp exist
@@ -114,22 +133,20 @@ public class MainStageController implements Initializable {
         }
     }
 
+    @FXML
     /**
      * Should be called when the user clicks a button to analyze the loaded samples and display the graphview
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
     public void startAnalysis() {
-        if(AnalysisData.getLevel_of_analysis()!=null){
-
-            AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
-            LoadedData.createGraph();
-            //Default values: 0.5<correlation<1, pValue<0.1
-            LoadedData.getTaxonGraph().filterTaxa(
-                    LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
-        }else{
-            //TODO: Disable "start Analysis"-Button before analysis level is selected
-            System.err.println("Please select a level of analysis!");
-        }
+        startAnalysisButton.setDisable(true);
+        System.out.println("Performing analysis at level: " + AnalysisData.getLevel_of_analysis());
+        AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
+        LoadedData.createGraph();
+        //Default values: 0.5<correlation<1, pValue<0.1
+        LoadedData.getTaxonGraph().filterTaxa(
+                LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
+        System.out.println("Taxa filtered after " + AnalysisData.getLevel_of_analysis());
         MyGraphView graphView = new MyGraphView(LoadedData.getTaxonGraph());
         mainViewPane.getChildren().add(graphView);
 
@@ -198,14 +215,14 @@ public class MainStageController implements Initializable {
         }
     }
 
+    //SPECIALIZED METHODS
+
     private void setPanesWidth(int width) {
         leftPane.setMaxWidth(width);
         rightPane.setMaxWidth(width);
         leftPane.setMinWidth(width);
         rightPane.setMinWidth(width);
     }
-
-    //SPECIALIZED METHODS
 
     private void openFiles(FileType fileType) {
         FileChooser fileChooser = new FileChooser();
@@ -277,6 +294,7 @@ public class MainStageController implements Initializable {
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
         activateFilterOptions();
+        activateButtonsOnTheRightPane();
     }
 
     private void addBiomFileToTreeView(File file) {
@@ -288,6 +306,7 @@ public class MainStageController implements Initializable {
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
         activateFilterOptions();
+        activateButtonsOnTheRightPane();
     }
 
     private void addId2CountFileToTreeView(File file) {
@@ -304,6 +323,7 @@ public class MainStageController implements Initializable {
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
         activateFilterOptions();
+        activateButtonsOnTheRightPane();
     }
 
     /**
@@ -348,13 +368,13 @@ public class MainStageController implements Initializable {
 
         if (treeItem != null) {
             textAreaDetails.setText("");
-            if (!treeItem.isLeaf()) {
+            /*if (!treeItem.isLeaf()) {
                 for (TreeItem<String> child : treeItem.getChildren()) {
                     textAreaDetails.appendText(child.getValue() + "\n");
                 }
-            } else {
-                textAreaDetails.appendText(treeItem.getValue() + "\n");
-            }
+            } else {*/
+            textAreaDetails.appendText(treeItem.getValue() + "\n");
+            //}
         }
     }
 
@@ -409,6 +429,21 @@ public class MainStageController implements Initializable {
     }
 
     /**
+     * Summarizes the initialization of the buttons on the right pane
+     */
+    private void initializeButtonsOnTheRightPane() {
+        initializeStartAnalysisButton();
+        initializeSplitMenuButton();
+    }
+
+    /**
+     * Activates the buttons on the right pane
+     */
+    private void activateButtonsOnTheRightPane() {
+        rankSelectionButton.setDisable(false);
+    }
+
+    /**
      * Initializes the text area on the right pane
      */
     private void initializeTextAreaDetails() {
@@ -435,6 +470,20 @@ public class MainStageController implements Initializable {
             maxCountSlider.setDisable(false);
         }
         //maxCountSlider.setValue(maxCountSlider.getMax());
+    }
+
+    /**
+     * Initializes the start analysis button on the right pane
+     */
+    private void initializeStartAnalysisButton() {
+        startAnalysisButton.setDisable(true);
+    }
+
+    /**
+     * Initializes the split menu button on the right pane
+     */
+    private void initializeSplitMenuButton() {
+        rankSelectionButton.setDisable(true);
     }
 
     //ALERTS
