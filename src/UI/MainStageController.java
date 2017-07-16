@@ -18,6 +18,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import jdk.internal.org.objectweb.asm.commons.AnalyzerAdapter;
 import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
@@ -25,6 +26,7 @@ import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.DownloadNodesAndNameDMPFiles;
+import view.MyGraphView;
 
 import java.awt.event.ActionEvent;
 import java.io.*;
@@ -78,6 +80,9 @@ public class MainStageController implements Initializable {
     @FXML
     private Text maxCountText;
 
+    @FXML
+    private AnchorPane mainViewPane;
+
     /**
      * initializes all required files
      *
@@ -113,7 +118,7 @@ public class MainStageController implements Initializable {
      * Should be called when the user clicks a button to analyze the loaded samples and display the graphview
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
-    public static void startAnalysis() {
+    public void startAnalysis() {
         if(AnalysisData.getLevel_of_analysis()!=null){
 
             AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
@@ -125,7 +130,9 @@ public class MainStageController implements Initializable {
             //TODO: Disable "start Analysis"-Button before analysis level is selected
             System.err.println("Please select a level of analysis!");
         }
-        //TODO: Create GraphView
+        MyGraphView graphView = new MyGraphView(LoadedData.getTaxonGraph());
+        mainViewPane.getChildren().add(graphView);
+
     }
 
     //FILE methods
