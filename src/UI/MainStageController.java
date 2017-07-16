@@ -70,8 +70,15 @@ public class MainStageController implements Initializable {
     @FXML
     public ProgressBar progressBar;
 
+    //Buttons
     @FXML
     private RadioButton collapseAllButton;
+
+    @FXML
+    private Button startAnalysisButton;
+
+    @FXML
+    private SplitMenuButton rankSelectionButton;
 
     //Filter items
     @FXML
@@ -97,6 +104,7 @@ public class MainStageController implements Initializable {
         initializeTextAreaDetails();
         initializeCollapseAllButton();
         initializeMaxCountSlider();
+        initializeButtonsOnTheRightPane();
     }
 
     /**
@@ -114,6 +122,7 @@ public class MainStageController implements Initializable {
         }
     }
 
+    @FXML
     /**
      * Should be called when the user clicks a button to analyze the loaded samples and display the graphview
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
@@ -277,6 +286,7 @@ public class MainStageController implements Initializable {
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
         activateFilterOptions();
+        activateButtonsOnTheRightPane();
     }
 
     private void addBiomFileToTreeView(File file) {
@@ -288,6 +298,7 @@ public class MainStageController implements Initializable {
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
         activateFilterOptions();
+        activateButtonsOnTheRightPane();
     }
 
     private void addId2CountFileToTreeView(File file) {
@@ -304,6 +315,7 @@ public class MainStageController implements Initializable {
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
         activateFilterOptions();
+        activateButtonsOnTheRightPane();
     }
 
     /**
@@ -348,13 +360,13 @@ public class MainStageController implements Initializable {
 
         if (treeItem != null) {
             textAreaDetails.setText("");
-            if (!treeItem.isLeaf()) {
+            /*if (!treeItem.isLeaf()) {
                 for (TreeItem<String> child : treeItem.getChildren()) {
                     textAreaDetails.appendText(child.getValue() + "\n");
                 }
-            } else {
+            } else {*/
                 textAreaDetails.appendText(treeItem.getValue() + "\n");
-            }
+            //}
         }
     }
 
@@ -409,6 +421,22 @@ public class MainStageController implements Initializable {
     }
 
     /**
+     * Summarizes the initialization of the buttons on the right pane
+     */
+    private void initializeButtonsOnTheRightPane() {
+        initializeStartAnalysisButton();
+        initializeSplitMenuButton();
+    }
+
+    /**
+     * Activates the buttons on the right pane
+     */
+    private void activateButtonsOnTheRightPane() {
+        startAnalysisButton.setDisable(false);
+        rankSelectionButton.setDisable(false);
+    }
+
+    /**
      * Initializes the text area on the right pane
      */
     private void initializeTextAreaDetails() {
@@ -435,6 +463,20 @@ public class MainStageController implements Initializable {
             maxCountSlider.setDisable(false);
         }
         //maxCountSlider.setValue(maxCountSlider.getMax());
+    }
+
+    /**
+     * Initializes the start analysis button on the right pane
+     */
+    private void initializeStartAnalysisButton() {
+        startAnalysisButton.setDisable(true);
+    }
+
+    /**
+     * Initializes the split menu button on the right pane
+     */
+    private void initializeSplitMenuButton() {
+        rankSelectionButton.setDisable(true);
     }
 
     //ALERTS
