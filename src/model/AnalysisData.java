@@ -38,4 +38,5 @@ public class AnalysisData {
     public static String getLevel_of_analysis() {
         return level_of_analysis;
     }
+
 }
