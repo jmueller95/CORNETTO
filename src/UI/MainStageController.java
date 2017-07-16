@@ -25,6 +25,7 @@ import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.DownloadNodesAndNameDMPFiles;
+
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
@@ -74,7 +75,8 @@ public class MainStageController implements Initializable {
     @FXML
     private Slider maxCountSlider;
 
-    @FXML private Text maxCountText;
+    @FXML
+    private Text maxCountText;
 
     /**
      * initializes all required files
@@ -111,11 +113,18 @@ public class MainStageController implements Initializable {
      * Should be called when the user clicks a button to analyze the loaded samples and display the graphview
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
-    public static void startAnalysis(){
-        AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
-        LoadedData.createGraph();
-        //Default values: 0.5<correlation<1, pValue<0.1
-        LoadedData.getTaxonGraph().filterTaxa(LoadedData.getSamples(), 1,0.5,0.1);
+    public static void startAnalysis() {
+        if(AnalysisData.getLevel_of_analysis()!=null){
+
+            AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
+            LoadedData.createGraph();
+            //Default values: 0.5<correlation<1, pValue<0.1
+            LoadedData.getTaxonGraph().filterTaxa(
+                    LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
+        }else{
+            //TODO: Disable "start Analysis"-Button before analysis level is selected
+            System.err.println("Please select a level of analysis!");
+        }
         //TODO: Create GraphView
     }
 
@@ -195,7 +204,7 @@ public class MainStageController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         String fileChooserTitle = "Load from ";
 
-        if(isDefaultDirectoryLocation){
+        if (isDefaultDirectoryLocation) {
             setDefaultOpenDirectory(fileChooser);
         } else {
             fileChooser.setInitialDirectory(new File(defaultLocation));
@@ -413,7 +422,7 @@ public class MainStageController implements Initializable {
         maxCountSlider.setMajorTickUnit(1);
         maxCountSlider.setMinorTickCount(1);
         maxCountSlider.setSnapToTicks(true);
-        if(treeViewFiles.getRoot().getChildren().isEmpty()) {
+        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
             maxCountSlider.setDisable(true);
         } else {
             maxCountSlider.setDisable(false);

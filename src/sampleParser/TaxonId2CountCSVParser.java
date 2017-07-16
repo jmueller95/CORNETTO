@@ -27,6 +27,7 @@ public class TaxonId2CountCSVParser implements InputFile {
     //TODO: Add metadata!?
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException {
+        sampleList = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(filepath));
         String line = reader.readLine();
         String[] lineSplit = line.split(",");

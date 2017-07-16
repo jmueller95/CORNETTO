@@ -47,7 +47,7 @@ public class LoadedData {
      * TODO: Test this, and especially test if the hashmaps are added correctly!
      */
     public static void createGraph() {
-        LinkedList<TaxonNode> nodeList = SampleComparison.getUnifiedTaxonList(samples);
+        LinkedList<TaxonNode> nodeList = SampleComparison.getUnifiedTaxonList(samples, AnalysisData.getLevel_of_analysis());
         taxonGraph = new MyGraph<>();
 
         //Create a vertex for each taxonNode
