@@ -45,21 +45,25 @@ public class ReadName2TaxIdCSVParser implements InputFile {
             currentTaxonId = Integer.parseInt(lineSplit[1]);
             //Get the TaxonNode for this sample
             TaxonNode currentTaxonNode = treeStructure.get(currentTaxonId);
-            //Check if this taxon is already in the sample
-            HashMap<TaxonNode, Integer> taxa2CountMap = sample.getTaxa2CountMap();
-            if (taxa2CountMap.containsKey(currentTaxonNode)) {
-                //Increment the count of this taxon in the sample by one
-                taxa2CountMap.put(currentTaxonNode, taxa2CountMap.get(currentTaxonNode) + 1);
-            } else {
-                //Else add the taxon to the sample and set its count to one
-                taxa2CountMap.put(currentTaxonNode, 1);
-            }
 
+            if (currentTaxonNode == null) {
+                System.out.println("Couldn't find node:" + currentTaxonId);
+            } else {
+                //Check if this taxon is already in the sample
+                HashMap<TaxonNode, Integer> taxa2CountMap = sample.getTaxa2CountMap();
+                if (taxa2CountMap.containsKey(currentTaxonNode)) {
+                    //Increment the count of this taxon in the sample by one
+                    taxa2CountMap.put(currentTaxonNode, taxa2CountMap.get(currentTaxonNode) + 1);
+                } else {
+                    //Else add the taxon to the sample and set its count to one
+                    taxa2CountMap.put(currentTaxonNode, 1);
+                }
+            }
             line = reader.readLine();
         }
 
         //Only add sample if it's not empty
-        if(sample.getTaxa2CountMap().size() > 0) {
+        if (sample.getTaxa2CountMap().size() > 0) {
             sampleList.add(sample);
         }
         return sampleList;

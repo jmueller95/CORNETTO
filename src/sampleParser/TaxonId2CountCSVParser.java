@@ -43,11 +43,14 @@ public class TaxonId2CountCSVParser implements InputFile {
             int currentTaxonId = Integer.parseInt(lineSplit[0]);
 
             TaxonNode currentTaxonNode = treeStructure.get(currentTaxonId);
-
-            //Add counts to datasets
-            for (int i = 1; i <= numberOfDatasets; i++) {
-                int currentSampleReadCount = (int) Double.parseDouble(lineSplit[i]);
-                sampleList.get(i - 1).getTaxa2CountMap().put(currentTaxonNode, currentSampleReadCount);
+            if (currentTaxonNode == null) {
+                System.out.println("Couldn't find node:" + currentTaxonId);
+            } else {
+                //Add counts to datasets
+                for (int i = 1; i <= numberOfDatasets; i++) {
+                    int currentSampleReadCount = (int) Double.parseDouble(lineSplit[i]);
+                    sampleList.get(i - 1).getTaxa2CountMap().put(currentTaxonNode, currentSampleReadCount);
+                }
             }
             line = reader.readLine();
         }
