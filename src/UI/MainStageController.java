@@ -78,7 +78,10 @@ public class MainStageController implements Initializable {
     private Button startAnalysisButton;
 
     @FXML
-    private SplitMenuButton rankSelectionButton;
+    private MenuButton rankSelectionButton;
+
+    @FXML
+    private ToggleGroup rankSelectionToggleGroup;
 
     //Filter items
     @FXML
@@ -105,7 +108,15 @@ public class MainStageController implements Initializable {
         initializeCollapseAllButton();
         initializeMaxCountSlider();
         initializeButtonsOnTheRightPane();
+        rankSelectionToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            AnalysisData.setLevel_of_analysis(newValue.getUserData().toString());
+            System.out.println(AnalysisData.getLevel_of_analysis());
+            startAnalysisButton.setDisable(false);
+        });
+
+
     }
+
 
     /**
      * checks whether nodes.dmp and names.dmp exist
@@ -129,7 +140,7 @@ public class MainStageController implements Initializable {
      */
     public void startAnalysis() {
         startAnalysisButton.setDisable(true);
-
+        System.out.println("Performing analysis at level: " + AnalysisData.getLevel_of_analysis());
         AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
         LoadedData.createGraph();
         //Default values: 0.5<correlation<1, pValue<0.1
@@ -202,53 +213,6 @@ public class MainStageController implements Initializable {
             setPanesWidth(MAX_WIDTH_OF_SIDEPANES);
             isMainViewMaximized = false;
         }
-    }
-
-    //Methods
-    @FXML
-    private void selectDomain() {
-        selectRank("Domain");
-    }
-
-    @FXML
-    private void selectKingdom() {
-        selectRank("Kingdom");
-    }
-
-    @FXML
-    private void selectPhylum() {
-        selectRank("Phylum");
-    }
-
-    @FXML
-    private void selectClass() {
-        selectRank("Class");
-    }
-
-    @FXML
-    private void selectOrder() {
-        selectRank("Order");
-    }
-
-    @FXML
-    private void selectFamily() {
-        selectRank("Family");
-    }
-
-    @FXML
-    private void selectGenus() {
-        selectRank("Genus");
-    }
-
-    @FXML
-    private void selectSpecies() {
-        selectRank("Species");
-    }
-
-    @FXML
-    private void selectRank(String rank) {
-        AnalysisData.setLevel_of_analysis(rank);
-        startAnalysisButton.setDisable(false);
     }
 
     //SPECIALIZED METHODS

@@ -28,6 +28,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ToggleGroup?>
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
@@ -155,18 +158,21 @@
                   <Button fx:id="startAnalysisButton" mnemonicParsing="false" onAction="#startAnalysis" text="Start Analysis" AnchorPane.bottomAnchor="240.0" AnchorPane.leftAnchor="12.0" />
                   <Separator layoutY="299.0" prefWidth="200.0" AnchorPane.bottomAnchor="227.0" AnchorPane.leftAnchor="11.0" />
                   <Text layoutX="14.0" layoutY="321.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Properties" AnchorPane.bottomAnchor="205.0" AnchorPane.leftAnchor="14.0" />
-                  <SplitMenuButton fx:id="rankSelectionButton" layoutX="14.0" layoutY="332.0" mnemonicParsing="false" text="Rank" AnchorPane.bottomAnchor="171.0" AnchorPane.leftAnchor="14.0">
+              <fx:define>
+                  <ToggleGroup fx:id="rankSelectionToggleGroup"/>
+              </fx:define>
+              <MenuButton fx:id="rankSelectionButton" layoutX="14.0" layoutY="332.0" mnemonicParsing="false" text="Rank" AnchorPane.bottomAnchor="171.0" AnchorPane.leftAnchor="14.0">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#selectDomain" text="Domain" />
-                      <MenuItem mnemonicParsing="false" onAction="#selectKingdom" text="Kingdom" />
-                        <MenuItem mnemonicParsing="false" onAction="#selectPhylum" text="Phylum" />
-                        <MenuItem mnemonicParsing="false" onAction="#selectClass" text="Class" />
-                        <MenuItem mnemonicParsing="false" onAction="#selectOrder" text="Order" />
-                        <MenuItem mnemonicParsing="false" onAction="#selectFamily" text="Family" />
-                        <MenuItem mnemonicParsing="false" onAction="#selectGenus" text="Genus" />
-                        <MenuItem mnemonicParsing="false" onAction="#selectSpecies" text="Species" />
+                      <RadioMenuItem mnemonicParsing="false" text="Domain" toggleGroup="$rankSelectionToggleGroup" userData="domain" />
+                      <RadioMenuItem mnemonicParsing="false" text="Kingdom" toggleGroup="$rankSelectionToggleGroup" userData="kingdom" />
+                        <RadioMenuItem mnemonicParsing="false" text="Phylum" toggleGroup="$rankSelectionToggleGroup" userData="phylum"/>
+                        <RadioMenuItem mnemonicParsing="false" text="Class" toggleGroup="$rankSelectionToggleGroup" userData="class"/>
+                        <RadioMenuItem mnemonicParsing="false" text="Order" toggleGroup="$rankSelectionToggleGroup" userData="order"/>
+                        <RadioMenuItem mnemonicParsing="false" text="Family" toggleGroup="$rankSelectionToggleGroup" userData="family"/>
+                        <RadioMenuItem mnemonicParsing="false" text="Genus" toggleGroup="$rankSelectionToggleGroup" userData="genus"/>
+                        <RadioMenuItem mnemonicParsing="false" text="Species" toggleGroup="$rankSelectionToggleGroup" userData="species"/>
                     </items>
-                  </SplitMenuButton>
+                  </MenuButton>
                   <Text layoutX="14.0" layoutY="272.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Controls" AnchorPane.bottomAnchor="273.93408203125" AnchorPane.leftAnchor="14.0" />
           </children>
         </AnchorPane>
