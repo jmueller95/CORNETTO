@@ -33,7 +33,6 @@ public class MyVertexView extends Group {
 
         translateXProperty().bindBidirectional(myVertex.xCoordinatesProperty());
         translateYProperty().bindBidirectional(myVertex.yCoordinatesProperty());
-        //addMouseEvent();
         addSelectionMarker();
 
         getChildren().add(vertexShape);
@@ -45,7 +44,6 @@ public class MyVertexView extends Group {
      * Bidirectional bind also updates coordinates in node class
      */
 
-
     public void addSelectionMarker() {
         myVertex.isSelectedProperty().addListener(((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -56,6 +54,11 @@ public class MyVertexView extends Group {
                 System.out.println("node unselected");
             }
         }));
+    }
+
+    public void addNodeTransition() {
+
+
     }
 
     public MyVertex getMyVertex() {

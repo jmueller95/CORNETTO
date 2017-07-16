@@ -48,41 +48,42 @@ public class SpringAnimationService extends Service<String> {
 
         return new Task<String>() {
 
+            Timer timer = new Timer();
+
+            TimerTask drawFrame = new TimerTask() {
+                @Override
+                public void run() {
+
+                    width = (int)graphView.getBoundsInParent().getWidth();
+                    height = (int)graphView.getBoundsInParent().getHeight();
+
+                    // Calculate next iteration and move nodes
+                    springLayout2.step();
+                    System.out.println("STEP DONE");
+                    graph.getVertices().forEach((node) -> {
+                        node.xCoordinatesProperty().setValue(springLayout2.getX(node));
+                        node.yCoordinatesProperty().setValue(springLayout2.getY(node));
+                    });
+
+                    // TODO CREATE BREAK CONDITIONS
+
+                }
+            };
+
             @Override
             protected String call() throws Exception {
                 // Here is the main workload:
-                Timer timer = new Timer();
 
-                TimerTask drawFrame = new TimerTask() {
-                    @Override
-                    public void run() {
-
-                        width = (int)graphView.getBoundsInParent().getWidth();
-                        height = (int)graphView.getBoundsInParent().getHeight();
-
-                        // Calculate next iteration and move nodes
-                        springLayout2.step();
-                        graph.getVertices().forEach((node) -> {
-                            node.xCoordinatesProperty().setValue(springLayout2.getX(node));
-                            node.yCoordinatesProperty().setValue(springLayout2.getY(node));
-                        });
-
-
-                        // Check if layout progress has converged
-                        if (springLayout2.done()) {
-                            System.out.println("Layout has finished");
-                            cancel();
-                        }
-
-                    }
-                };
-                timer.schedule(drawFrame, 200l);
-
-                return null;
+                timer.scheduleAtFixedRate(drawFrame, 0l, 200l);
+                return "FINISHED";
             }
 
 
         };
+    }
+
+    public void updateNode(MyVertex vertex) {
+        springLayout2.setLocation(vertex, vertex.getXCoordinates(), vertex.getYCoordinates());
     }
 
 

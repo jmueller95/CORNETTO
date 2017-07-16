@@ -91,7 +91,7 @@ public class ViewPane extends StackPane {
 
             pressedX = me.getSceneX();
             pressedY = me.getSceneY();
-            myGraphView.makeStep();
+
         });
 
         // Mouse clicked on elements of the VertexViewGroup:
@@ -127,11 +127,7 @@ public class ViewPane extends StackPane {
                     me.consume();
 
                     // Update new Position in SpringLayout
-                    myGraphView.updateNodePosition(vertexView.myVertex);
-
-                    // Ugly Hack: Toggle node selection because it will be toggled again by setOnMouseClicked
-                    // TODO: Improve this (Event Handlers?) but for now it works.
-                    //myGraphView.getSelectionModel().toggleSelect(vertexView.getMyVertex());
+                       myGraphView.updateNodePosition(vertexView.myVertex);
                 }
             });
 

@@ -26,9 +26,9 @@ public class MyGraphView extends Group {
     private Group myVertexViewGroup;
     private Group myEdgeViewGroup;
     private MyGraph<MyVertex, MyEdge> graph;
-    private SpringLayout2 springLayout;
-
+    private SpringAnimationService animationService;
     private VertexSelectionModel selectionModel;
+
 
     protected Function<MyEdge, Integer> myEdgeLengthFunction;
 
@@ -37,19 +37,8 @@ public class MyGraphView extends Group {
         this.graph = graph;
         this.myVertexViewGroup = new Group();
         this.myEdgeViewGroup = new Group();
-
-        this.myEdgeLengthFunction = new Function<MyEdge, Integer>() {
-            @Nullable
-            @Override
-            public Integer apply(@Nullable MyEdge myEdge) {
-                Double weight = myEdge.getWeight();
-                Integer intWeight = weight.intValue();
-                return intWeight;
-            }
-        };
-
-        this.springLayout = new SpringLayout2(graph, myEdgeLengthFunction);
-        springLayout.setSize(new Dimension(width, height));
+        this.animationService = new SpringAnimationService(graph, this);
+        animationService.createTask();
 
 
         drawNodes();
@@ -62,12 +51,6 @@ public class MyGraphView extends Group {
         // Add all Vertex to the selection Model and add Listener
         selectionModel = new VertexSelectionModel(graph.getVertices().toArray());
         addSelectionListener();
-
-    }
-
-    public void updateDimensions() {
-        width = (int)getBoundsInParent().getWidth();
-        height = (int)getBoundsInParent().getHeight();
 
     }
 
@@ -86,27 +69,13 @@ public class MyGraphView extends Group {
     }
 
     public void startLayout() {
-        updateDimensions();
-        springLayout.initialize();
-        graph.getVertices().forEach((node) -> {
-            node.xCoordinatesProperty().setValue(springLayout.getX(node));
-            node.yCoordinatesProperty().setValue(springLayout.getY(node));
-        });
-    }
-
-    public void makeStep() {
-        springLayout.step();
-        graph.getVertices().forEach((node) -> {
-            node.xCoordinatesProperty().setValue(springLayout.getX(node));
-            node.yCoordinatesProperty().setValue(springLayout.getY(node));
-        });
-
+        animationService.start();
     }
 
     public void updateNodePosition(MyVertex vertex) {
-        updateDimensions();
-        springLayout.setLocation(vertex, vertex.getXCoordinates(), vertex.getYCoordinates());
+        animationService.updateNode(vertex);
     }
+
 
     public void addSelectionListener() {
         selectionModel.getSelectedItems().addListener((ListChangeListener) c -> {
