@@ -65,7 +65,10 @@ public class MainStageController implements Initializable {
     private TreeView<String> treeViewFiles;
 
     @FXML
-    private TextArea textAreaDetails;
+    private Accordion preferencesAccordion;
+
+    //@FXML
+    //private TextArea textAreaDetails;
 
     @FXML
     public ProgressBar progressBar;
@@ -82,6 +85,9 @@ public class MainStageController implements Initializable {
 
     @FXML
     private ToggleGroup rankSelectionToggleGroup;
+
+    @FXML
+    private CheckBox useSelectedCheckBox;
 
     //Filter items
     @FXML
@@ -103,9 +109,10 @@ public class MainStageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         startTreePreloadService();
         initializeTreeView();
-        initializeTextAreaDetails();
+        //initializeTextAreaDetails();
+        initializeAccordion();
         initializeCollapseAllButton();
-        initializeMaxCountSlider();
+        //initializeMaxCountSlider();
         initializeButtonsOnTheRightPane();
         initializeRankSelectionToggleGroup();
     }
@@ -159,7 +166,7 @@ public class MainStageController implements Initializable {
      */ public void closeProject() {
         if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
             LoadedData.closeProject(treeViewFiles);
-            textAreaDetails.setText("");
+            //textAreaDetails.setText("");
             maxCountSlider.setDisable(true);
             maxCountText.setText("Max count: ");
         }
@@ -358,13 +365,13 @@ public class MainStageController implements Initializable {
         TreeItem<String> treeItem = treeViewFiles.getSelectionModel().getSelectedItem();
 
         if (treeItem != null) {
-            textAreaDetails.setText("");
+            //textAreaDetails.setText("");
             /*if (!treeItem.isLeaf()) {
                 for (TreeItem<String> child : treeItem.getChildren()) {
                     textAreaDetails.appendText(child.getValue() + "\n");
                 }
             } else {*/
-            textAreaDetails.appendText(treeItem.getValue() + "\n");
+            //textAreaDetails.appendText(treeItem.getValue() + "\n");
             //}
         }
     }
@@ -432,6 +439,14 @@ public class MainStageController implements Initializable {
     private void initializeButtonsOnTheRightPane() {
         initializeStartAnalysisButton();
         initializeSplitMenuButton();
+        initializeUseSelectedCheckBox();
+    }
+
+    /**
+     * Initializes the accordion on the right pane
+     */
+    private void initializeAccordion() {
+        //preferencesAccordion.setExpandedPane(preferencesAccordion.getPanes().get(0));
     }
 
     /**
@@ -445,7 +460,7 @@ public class MainStageController implements Initializable {
      * Initializes the text area on the right pane
      */
     private void initializeTextAreaDetails() {
-        textAreaDetails.setEditable(false);
+        //textAreaDetails.setEditable(false);
     }
 
     /**
@@ -453,6 +468,13 @@ public class MainStageController implements Initializable {
      */
     private void initializeCollapseAllButton() {
         collapseAllButton.setSelected(false);
+    }
+
+    /**
+     * Initialize the use selected check box on the right pane
+     */
+    private void initializeUseSelectedCheckBox() {
+        useSelectedCheckBox.setTooltip(new Tooltip("Use only selected Taxa"));
     }
 
     /**

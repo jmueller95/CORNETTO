@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -25,9 +28,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.RadioMenuItem?>
-<?import javafx.scene.control.ToggleGroup?>
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
@@ -112,21 +112,6 @@
                           <AnchorPane fx:id="mainViewPane" minHeight="0.0" minWidth="0.0" />
                         </content>
                       </Tab>
-                      <Tab text="Filter">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <Text layoutX="24.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filter options">
-                                       <font>
-                                          <Font name="System Bold" size="13.0" />
-                                       </font>
-                                    </Text>
-                                    <Slider fx:id="maxCountSlider" layoutX="24.0" layoutY="81.0" />
-                                    <Text fx:id="maxCountText" layoutX="24.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max count: " />
-                                 </children>
-                              </AnchorPane>
-                        </content>
-                      </Tab>
                         <Tab text="Analysis">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
@@ -137,29 +122,48 @@
                </content>
         </ScrollPane>
         <AnchorPane fx:id="rightPane" maxWidth="220.0" minWidth="0.0">
-          <children>
-            <Label alignment="CENTER" font="$x1" layoutX="9.0" layoutY="4.0" style="&#10;" text="Details" textAlignment="CENTER" textFill="#c58112" wrapText="false" />
-                  <TextArea fx:id="textAreaDetails" layoutX="11.0" layoutY="57.0" prefWidth="221.0" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-                  <Button fx:id="startAnalysisButton" mnemonicParsing="false" onAction="#startAnalysis" text="Start Analysis" AnchorPane.bottomAnchor="240.0" AnchorPane.leftAnchor="12.0" />
-                  <Separator layoutY="299.0" prefWidth="200.0" AnchorPane.bottomAnchor="227.0" AnchorPane.leftAnchor="11.0" />
-                  <Text layoutX="14.0" layoutY="321.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Properties" AnchorPane.bottomAnchor="205.0" AnchorPane.leftAnchor="14.0" />
-              <fx:define>
-                  <ToggleGroup fx:id="rankSelectionToggleGroup"/>
-              </fx:define>
-              <MenuButton fx:id="rankSelectionButton" layoutX="14.0" layoutY="332.0" mnemonicParsing="false" text="Rank" AnchorPane.bottomAnchor="171.0" AnchorPane.leftAnchor="14.0">
+               <children>
+                  <Accordion fx:id="preferencesAccordion" AnchorPane.bottomAnchor="140.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <panes>
+                      <TitledPane animated="false" text="Filter">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="Settings">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="Colouring">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </TitledPane>
+                    </panes>
+                  </Accordion>
+                  <Text layoutX="-2.0" layoutY="486.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Controls" AnchorPane.bottomAnchor="115.0" AnchorPane.leftAnchor="10.0" />
+                  <Button fx:id="startAnalysisButton" layoutX="10.0" layoutY="492.0" mnemonicParsing="false" onAction="#startAnalysis" text="Start Analysis" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="10.0" />
+                  <Separator layoutX="-6.0" layoutY="486.0" prefWidth="200.0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="10.0" />
+                  <Text layoutX="3.0" layoutY="504.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Properties" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="10.0" />
+              <MenuButton fx:id="rankSelectionButton" layoutX="-1.0" layoutY="500.0" mnemonicParsing="false" text="Rank" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0">
                     <items>
-                      <RadioMenuItem mnemonicParsing="false" text="Domain" toggleGroup="$rankSelectionToggleGroup" userData="domain" />
+                      <RadioMenuItem mnemonicParsing="false" text="Domain" userData="domain">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="rankSelectionToggleGroup" />
+                           </toggleGroup>
+                        </RadioMenuItem>
                       <RadioMenuItem mnemonicParsing="false" text="Kingdom" toggleGroup="$rankSelectionToggleGroup" userData="kingdom" />
-                        <RadioMenuItem mnemonicParsing="false" text="Phylum" toggleGroup="$rankSelectionToggleGroup" userData="phylum"/>
-                        <RadioMenuItem mnemonicParsing="false" text="Class" toggleGroup="$rankSelectionToggleGroup" userData="class"/>
-                        <RadioMenuItem mnemonicParsing="false" text="Order" toggleGroup="$rankSelectionToggleGroup" userData="order"/>
-                        <RadioMenuItem mnemonicParsing="false" text="Family" toggleGroup="$rankSelectionToggleGroup" userData="family"/>
-                        <RadioMenuItem mnemonicParsing="false" text="Genus" toggleGroup="$rankSelectionToggleGroup" userData="genus"/>
-                        <RadioMenuItem mnemonicParsing="false" text="Species" toggleGroup="$rankSelectionToggleGroup" userData="species"/>
+                        <RadioMenuItem mnemonicParsing="false" text="Phylum" toggleGroup="$rankSelectionToggleGroup" userData="phylum" />
+                        <RadioMenuItem mnemonicParsing="false" text="Class" toggleGroup="$rankSelectionToggleGroup" userData="class" />
+                        <RadioMenuItem mnemonicParsing="false" text="Order" toggleGroup="$rankSelectionToggleGroup" userData="order" />
+                        <RadioMenuItem mnemonicParsing="false" text="Family" toggleGroup="$rankSelectionToggleGroup" userData="family" />
+                        <RadioMenuItem mnemonicParsing="false" text="Genus" toggleGroup="$rankSelectionToggleGroup" userData="genus" />
+                        <RadioMenuItem mnemonicParsing="false" text="Species" toggleGroup="$rankSelectionToggleGroup" userData="species" />
                     </items>
                   </MenuButton>
-                  <Text layoutX="14.0" layoutY="272.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Controls" AnchorPane.bottomAnchor="273.93408203125" AnchorPane.leftAnchor="14.0" />
-          </children>
+                  <CheckBox fx:id="useSelectedCheckBox" layoutX="131.0" layoutY="447.0" mnemonicParsing="false" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="135.0" />
+               </children>
         </AnchorPane>
       </items>
     </SplitPane>
