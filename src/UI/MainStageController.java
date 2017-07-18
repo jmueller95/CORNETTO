@@ -12,13 +12,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import jdk.internal.org.objectweb.asm.commons.AnalyzerAdapter;
+import main.GlobalConstants;
 import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
@@ -42,14 +41,16 @@ public class MainStageController implements Initializable {
     public static final String NODES_DMP_SRC = "./res/nodes.dmp";
     public static final String NAMES_DMP_SRC = "./res/names.dmp";
 
+    private static Stage optionsStage;
+
     private static final int MAX_WIDTH_OF_SIDEPANES = 220;
 
     private enum FileType {taxonId2Count, readName2TaxonId, biom}
 
     private ArrayList<String> openFiles;
 
-    public static boolean isDefaultDirectoryLocation = true, isMainViewMaximized = false;
-    public static String defaultLocation = "";
+    public static boolean isDefaultDirectoryLocation = true, isMainViewMaximized = false, ISDARKTHEME = true;
+    public static String defaultFilechooserLocation = "";
 
     // alerts
     private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert;
@@ -229,7 +230,7 @@ public class MainStageController implements Initializable {
         if (isDefaultDirectoryLocation) {
             setDefaultOpenDirectory(fileChooser);
         } else {
-            fileChooser.setInitialDirectory(new File(defaultLocation));
+            fileChooser.setInitialDirectory(new File(defaultFilechooserLocation));
         }
 
         switch (fileType) {
@@ -646,10 +647,11 @@ public class MainStageController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
             Parent root = fxmlLoader.load();
-            root.getStylesheets().add("/UI/optionsStyle.css/");
-            Stage optionsStage = new Stage();
+            this.optionsStage = new Stage();
             optionsStage.setTitle("Options");
-            optionsStage.setScene(new Scene(root, 800, 500));
+            Scene optionsScene = new Scene(root, 800, 500);
+            optionsStage.setScene(optionsScene);
+            optionsScene.getStylesheets().add(GlobalConstants.DARKTHEME);
             optionsStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -685,4 +687,8 @@ public class MainStageController implements Initializable {
             event.consume();
         }
     };
+
+    public static Stage getOptionsStage() {
+        return optionsStage;
+    }
 }

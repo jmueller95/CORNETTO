@@ -1,7 +1,6 @@
 package UI;
 
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
 import main.GlobalConstants;
 import main.Main;
@@ -19,9 +18,20 @@ public class OptionsController {
      * //TODO possibly add a warning when triggered
      */
     private void changeDarkLightMode() throws Exception {
-        Scene scene = Main.getPrimaryStage().getScene();
-        scene.getStylesheets().remove(GlobalConstants.DARKTHEME);
-        scene.getStylesheets().add(GlobalConstants.LIGHTTHEME);
+        if (MainStageController.ISDARKTHEME){
+            Main.getPrimaryStage().getScene().getStylesheets().remove(0);
+            Main.getPrimaryStage().getScene().getStylesheets().add(GlobalConstants.LIGHTTHEME);
+            MainStageController.getOptionsStage().getScene().getStylesheets().clear();
+            MainStageController.getOptionsStage().getScene().getStylesheets().add(GlobalConstants.LIGHTTHEME);
+            MainStageController.ISDARKTHEME = false;
+        } else {
+            Main.getPrimaryStage().getScene().getStylesheets().remove(0);
+            Main.getPrimaryStage().getScene().getStylesheets().add(GlobalConstants.DARKTHEME);
+            MainStageController.getOptionsStage().getScene().getStylesheets().clear();
+            MainStageController.getOptionsStage().getScene().getStylesheets().add(GlobalConstants.DARKTHEME);
+            MainStageController.ISDARKTHEME = true;
+        }
+
     }
 
     @FXML
@@ -33,7 +43,7 @@ public class OptionsController {
         File file = chooser.showDialog(null);
 
         MainStageController.isDefaultDirectoryLocation = false;
-        MainStageController.defaultLocation = file.getAbsolutePath();
+        MainStageController.defaultFilechooserLocation = file.getAbsolutePath();
     }
 
 }
