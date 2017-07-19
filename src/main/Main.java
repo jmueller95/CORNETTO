@@ -43,7 +43,7 @@ public class Main extends Application {
         primaryStage.setTitle("Network Analysis Tool");
         setXEvent(primaryStage);
         mainScene = new Scene(content, 900, 700);
-        mainScene.getStylesheets().add("/darkGuiStyle.css");
+        mainScene.getStylesheets().add(GlobalConstants.DARKTHEME);
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image("images/science-icon.png"));
         primaryStage.show();

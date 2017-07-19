@@ -26,6 +26,7 @@ import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.DownloadNodesAndNameDMPFiles;
+import util.SaveAndLoadOptions;
 import view.MyGraphView;
 
 import java.awt.event.ActionEvent;
@@ -116,6 +117,11 @@ public class MainStageController implements Initializable {
         //initializeMaxCountSlider();
         initializeButtonsOnTheRightPane();
         initializeRankSelectionToggleGroup();
+
+        //preload settings
+        //TODO possibly preload the Usersettings here and not in the 2 other methods
+        SaveAndLoadOptions.loadSettings();
+
     }
 
     /**

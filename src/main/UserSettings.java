@@ -9,18 +9,16 @@ public class UserSettings {
     public static boolean isDarkTheme = true;
     public static boolean isDefaultDirectoryLocation = true;
 
-    public static HashMap<String, Boolean> userSettings = new HashMap<>();
+    //contains all userSettings
+    public static HashMap<String, Object> userSettings = new HashMap<>();
 
     public static void addUserSettings(){
+        //add Strings
+        userSettings.put("defaultFilechooserLocation", defaultFilechooserLocation);
+
+        //add Booleans
         userSettings.put("theme", isDarkTheme);
         userSettings.put("defaultFileChooserDirectory", isDefaultDirectoryLocation);
     }
 
-    public static String getDefaultFilechooserLocation() {
-        return defaultFilechooserLocation;
-    }
-
-    public static void setDefaultFilechooserLocation(String defaultFilechooserLocation) {
-        UserSettings.defaultFilechooserLocation = defaultFilechooserLocation;
-    }
 }

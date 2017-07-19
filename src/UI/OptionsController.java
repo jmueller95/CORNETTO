@@ -5,6 +5,7 @@ import javafx.stage.DirectoryChooser;
 import main.GlobalConstants;
 import main.Main;
 import main.UserSettings;
+import util.SaveAndLoadOptions;
 
 import java.io.File;
 
@@ -39,12 +40,22 @@ public class OptionsController {
     /**
      * changes the default location for loading files
      *
-     */ private void setNewDefaultOpenDirectory(){
+     */
+    private void setNewDefaultOpenDirectory(){
         DirectoryChooser chooser = new DirectoryChooser();
         File file = chooser.showDialog(null);
 
         UserSettings.isDefaultDirectoryLocation = false;
         UserSettings.defaultFilechooserLocation = file.getAbsolutePath();
     }
+
+    @FXML
+    /**
+     * saves the settings
+     */
+    private void saveSettings(){
+        SaveAndLoadOptions.saveSettings();
+    }
+
 
 }
