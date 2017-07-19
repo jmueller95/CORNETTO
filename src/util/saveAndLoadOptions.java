@@ -1,7 +1,7 @@
 package util;
 
-import UI.MainStageController;
 import main.GlobalConstants;
+import main.UserSettings;
 
 import java.io.*;
 
@@ -18,9 +18,10 @@ public class saveAndLoadOptions {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(FILELOCATION)))){
             writer.write("< This file stores the settings of the" + GlobalConstants.NAME_OF_PROGRAM + SEPARATOR);
 
-            writer.write("theme = " + String.valueOf(MainStageController.ISDARKTHEME) + SEPARATOR);
-            writer.write("default fileChooser = " + String.valueOf(MainStageController.isDefaultDirectoryLocation) +
+            writer.write("theme = " + String.valueOf(UserSettings.isDarkTheme) + SEPARATOR);
+            writer.write("defaultFileChooserDirectory = " + String.valueOf(UserSettings.isDefaultDirectoryLocation) +
                     SEPARATOR);
+            writer.write("defaultFilechooserLocation = " + UserSettings.defaultFilechooserLocation);
 
         } catch (IOException e){
             e.printStackTrace();
@@ -42,13 +43,25 @@ public class saveAndLoadOptions {
                     if (line.startsWith("<")){
                         continue;
                     } else {
-                        //TODO handle the read in stuff
+                        String[] settings = line.split("=");
+                        trimStrings(settings);
+                        if (UserSettings.userSettings.containsKey(settings[0])){
+                            UserSettings.userSettings.put(settings[0], Boolean.valueOf(settings[1]));
+                        } else if (settings[0].equals("defaultFilechooserLocation")){
+                            UserSettings.setDefaultFilechooserLocation(settings[1]);
+                        }
                     }
                 }
             } catch (IOException e){
                 e.printStackTrace();
             }
         }
+    }
 
+    private String[] trimStrings(String[] stringArrayToTrim){
+        for (String string: stringArrayToTrim) {
+            string.trim();
+        }
+        return stringArrayToTrim;
     }
 }

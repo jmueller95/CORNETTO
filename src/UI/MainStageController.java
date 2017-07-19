@@ -18,6 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import main.GlobalConstants;
+import main.UserSettings;
 import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
@@ -49,8 +50,7 @@ public class MainStageController implements Initializable {
 
     private ArrayList<String> openFiles;
 
-    public static boolean isDefaultDirectoryLocation = true, isMainViewMaximized = false, ISDARKTHEME = true;
-    public static String defaultFilechooserLocation = "";
+    public static boolean isMainViewMaximized = false;
 
     // alerts
     private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert;
@@ -174,11 +174,6 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    public void exitApplication(ActionEvent event) {
-        Platform.exit();
-    }
-
-    @FXML
     public void openId2CountFiles() {
         openFiles(FileType.taxonId2Count);
     }
@@ -227,10 +222,10 @@ public class MainStageController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         String fileChooserTitle = "Load from ";
 
-        if (isDefaultDirectoryLocation) {
+        if (UserSettings.isDefaultDirectoryLocation) {
             setDefaultOpenDirectory(fileChooser);
         } else {
-            fileChooser.setInitialDirectory(new File(defaultFilechooserLocation));
+            fileChooser.setInitialDirectory(new File(UserSettings.defaultFilechooserLocation));
         }
 
         switch (fileType) {
