@@ -11,7 +11,7 @@ public class UserSettings {
 
     public static HashMap<String, Boolean> userSettings = new HashMap<>();
 
-    private static void addUserSettings(){
+    public static void addUserSettings(){
         userSettings.put("theme", isDarkTheme);
         userSettings.put("defaultFileChooserDirectory", isDefaultDirectoryLocation);
     }

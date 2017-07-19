@@ -61,17 +61,6 @@ public class Main extends Application {
         return pStage;
     }
 
-    public static Scene getMainScene() {
-        return mainScene;
-    }
-
-    public static Parent getContent() {
-        return content;
-    }
-
-    public static void setContent(Parent content) {
-        Main.content = content;
-    }
 
     /**
      * sets the X close button to prompting an alert box
@@ -82,6 +71,5 @@ public class Main extends Application {
         MainStageController mainStageController = new MainStageController();
         stage.setOnCloseRequest(mainStageController.confirmCloseEventHandler);
     }
-
 
 }

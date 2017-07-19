@@ -33,6 +33,10 @@ public class saveAndLoadOptions {
      * loads the settings from the txt file
      */
     private void loadSettings() {
+        //create settingsHashmap if it doesn't exist yet
+        if(UserSettings.userSettings.isEmpty()){
+            UserSettings.addUserSettings();
+        }
         //check if saved file exists
         File file = new File(FILELOCATION);
         String line = "";
