@@ -119,8 +119,8 @@ public class MainStageController implements Initializable {
         initializeRankSelectionToggleGroup();
 
         //preload settings
-        //TODO possibly preload the Usersettings here and not in the 2 other methods
-        SaveAndLoadOptions.loadSettings();
+        UserSettings.addUserSettings();
+        //SaveAndLoadOptions.loadSettings();
 
     }
 

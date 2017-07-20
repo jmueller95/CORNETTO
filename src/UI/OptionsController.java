@@ -20,18 +20,18 @@ public class OptionsController {
      * //TODO possibly add a warning when triggered
      */
     private void changeDarkLightMode() throws Exception {
-        if (UserSettings.isDarkTheme){
+        if ((Boolean) UserSettings.userSettings.get("theme")){
             Main.getPrimaryStage().getScene().getStylesheets().remove(0);
             Main.getPrimaryStage().getScene().getStylesheets().add(GlobalConstants.LIGHTTHEME);
             MainStageController.getOptionsStage().getScene().getStylesheets().clear();
             MainStageController.getOptionsStage().getScene().getStylesheets().add(GlobalConstants.LIGHTTHEME);
-            UserSettings.isDarkTheme = false;
+            UserSettings.userSettings.put("theme", false);
         } else {
             Main.getPrimaryStage().getScene().getStylesheets().remove(0);
             Main.getPrimaryStage().getScene().getStylesheets().add(GlobalConstants.DARKTHEME);
             MainStageController.getOptionsStage().getScene().getStylesheets().clear();
             MainStageController.getOptionsStage().getScene().getStylesheets().add(GlobalConstants.DARKTHEME);
-            UserSettings.isDarkTheme = true;
+            UserSettings.userSettings.put("theme", true);
         }
 
     }
@@ -41,6 +41,7 @@ public class OptionsController {
      * changes the default location for loading files
      *
      */
+    //TODO change this to use usersettings hashmap
     private void setNewDefaultOpenDirectory(){
         DirectoryChooser chooser = new DirectoryChooser();
         File file = chooser.showDialog(null);

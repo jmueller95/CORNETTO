@@ -43,9 +43,9 @@ public class Main extends Application {
         primaryStage.setTitle("Network Analysis Tool");
         setXEvent(primaryStage);
         mainScene = new Scene(content, 900, 700);
-        mainScene.getStylesheets().add(GlobalConstants.DARKTHEME);
+        mainScene.getStylesheets().add(UserSettings.whatTheme((Boolean) UserSettings.userSettings.get("theme")));
         primaryStage.setScene(mainScene);
-        primaryStage.getIcons().add(new Image("images/science-icon.png"));
+        primaryStage.getIcons().add(new Image(GlobalConstants.ICON));
         primaryStage.show();
     }
 

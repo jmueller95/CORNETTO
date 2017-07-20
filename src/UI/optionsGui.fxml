@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.OptionsController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.OptionsController">
     <children>
         <MenuBar prefHeight="6.0" prefWidth="900.0" VBox.vgrow="NEVER">
             <menus>
@@ -49,7 +49,10 @@
                           <tabs>
                             <Tab text="General">
                               <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="107.0" prefWidth="881.0" />
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="107.0" prefWidth="881.0">
+                                       <children>
+                                          <Button layoutX="765.0" layoutY="427.0" mnemonicParsing="false" onAction="#saveSettings" prefHeight="30.0" prefWidth="113.0" text="Save Settings" />
+                                       </children></AnchorPane>
                               </content>
                             </Tab>
                             <Tab text="Files">

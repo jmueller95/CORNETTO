@@ -21,4 +21,12 @@ public class UserSettings {
         userSettings.put("defaultFileChooserDirectory", isDefaultDirectoryLocation);
     }
 
+    public static String whatTheme(boolean theme){
+        if (theme){
+            return GlobalConstants.DARKTHEME;
+        } else {
+            return GlobalConstants.LIGHTTHEME;
+        }
+    }
+
 }
