@@ -5,6 +5,9 @@ import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +23,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.StringConverter;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.NumberStringConverter;
 import main.GlobalConstants;
 import main.UserSettings;
 import model.AnalysisData;
@@ -29,12 +35,11 @@ import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.DownloadNodesAndNameDMPFiles;
-import util.SaveAndLoadOptions;
 import view.MyGraphView;
 
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -86,10 +91,42 @@ public class MainStageController implements Initializable {
     private Button startAnalysisButton;
 
     @FXML
-    private MenuButton rankSelectionButton;
+    private ChoiceBox<String> rankChoiceBox;
+
+    //List of possible choices of the choice box
+    ObservableList<String> ranksList = FXCollections.observableArrayList("Domain", "Kingdom", "Phylum", "Class",
+            "Order", "Family","Genus", "Species");
 
     @FXML
-    private ToggleGroup rankSelectionToggleGroup;
+    private Slider minCorrelationSlider;
+
+    @FXML
+    private TextField minCorrelationText;
+
+    @FXML
+    private Slider maxCorrelationSlider;
+
+    @FXML
+    private TextField maxCorrelationText;
+
+    @FXML
+    private Slider maxPValueSlider;
+
+    @FXML
+    private TextField maxPValueText;
+
+    @FXML
+    private Slider minFrequencySlider;
+
+    @FXML
+    private TextField minFrequencyText;
+
+    @FXML
+    private Slider maxFrequencySlider;
+
+    @FXML
+    private TextField maxFrequencyText;
+
 
     @FXML
     private CheckBox useSelectedCheckBox;
@@ -119,13 +156,15 @@ public class MainStageController implements Initializable {
         initializeCollapseAllButton();
         //initializeMaxCountSlider();
         initializeButtonsOnTheRightPane();
-        initializeRankSelectionToggleGroup();
-
+        initializeRankChoiceBox();
+        initializeSliderBindings();
         //preload settings
         UserSettings.addUserSettings();
         //SaveAndLoadOptions.loadSettings();
 
     }
+
+
 
     /**
      * checks whether nodes.dmp and names.dmp exist
@@ -256,6 +295,8 @@ public class MainStageController implements Initializable {
                 break;
         }
 
+        //DEBUG:
+        fileChooser.setInitialDirectory(new File("/home/julian/IdeaProjects/Network-Analysis-Tool/res/testFiles/megan_examples"));
 
         //Choose the file / files
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
@@ -466,7 +507,7 @@ public class MainStageController implements Initializable {
      * Activates the buttons on the right pane
      */
     private void activateButtonsOnTheRightPane() {
-        rankSelectionButton.setDisable(false);
+        rankChoiceBox.setDisable(false);
     }
 
     /**
@@ -516,20 +557,50 @@ public class MainStageController implements Initializable {
      * Initializes the split menu button on the right pane
      */
     private void initializeSplitMenuButton() {
-        rankSelectionButton.setDisable(true);
+        rankChoiceBox.setDisable(true);
     }
 
     /**
      * Initializes the rank selection toggle group and adds a listener to the rank selection
      */
-    private void initializeRankSelectionToggleGroup() {
-        rankSelectionToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue!=null) {
-                AnalysisData.setLevel_of_analysis(newValue.getUserData().toString());
-                System.out.println(AnalysisData.getLevel_of_analysis());
+    private void initializeRankChoiceBox() {
+        rankChoiceBox.setItems(ranksList);
+        rankChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue!=null){
+                AnalysisData.setLevel_of_analysis(newValue.toLowerCase());
                 startAnalysisButton.setDisable(false);
             }
         });
+    }
+
+    private void initializeSliderBindings(){
+        //Since the slider value property is double and the text field property is a string, we need to convert them
+        //Defining own class to avoid exceptions
+        class MyNumberStringConverter extends NumberStringConverter{
+            @Override
+            public Number fromString(String value) {
+                 try {
+                     return super.fromString(value);
+                 }catch(RuntimeException ex){
+                     return 0;
+                 }
+            }
+        }
+        StringConverter<Number> converter = new MyNumberStringConverter();
+        //Bind every slider to its corresponding text field and vice versa
+        Bindings.bindBidirectional(minCorrelationText.textProperty(),minCorrelationSlider.valueProperty(),converter);
+        Bindings.bindBidirectional(maxCorrelationText.textProperty(),maxCorrelationSlider.valueProperty(),converter);
+        Bindings.bindBidirectional(maxPValueText.textProperty(),maxPValueSlider.valueProperty(),converter);
+        Bindings.bindBidirectional(minFrequencyText.textProperty(),minFrequencySlider.valueProperty(),converter);
+        Bindings.bindBidirectional(maxFrequencyText.textProperty(),maxFrequencySlider.valueProperty(),converter);
+        //Bind the internal filter properties to the slider values
+        AnalysisData.minCorrelationProperty().bind(minCorrelationSlider.valueProperty());
+        AnalysisData.maxCorrelationProperty().bind(maxCorrelationSlider.valueProperty());
+        AnalysisData.maxPValueProperty().bind(maxPValueSlider.valueProperty());
+        AnalysisData.minFrequencyProperty().bind(minFrequencySlider.valueProperty());
+        AnalysisData.maxFrequencyProperty().bind(maxFrequencySlider.valueProperty());
+
+
     }
 
     //ALERTS
