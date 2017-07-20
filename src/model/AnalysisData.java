@@ -1,5 +1,6 @@
 package model;
 
+import UI.MainStageController;
 import analysis.SampleComparison;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -14,9 +15,15 @@ public class AnalysisData {
      * Receives a list of samples, calculates correlationMatrix and pValueMatrix for it
      * @param samples
      */
-    public static void performCorrelationAnalysis(ArrayList<Sample> samples){
-        correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, level_of_analysis);
-        pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples(samples, level_of_analysis);
+    public static boolean performCorrelationAnalysis(ArrayList<Sample> samples){
+        //Check if data is sufficient for analysis performing (check if there are at least two taxa)
+        if(SampleComparison.getUnifiedTaxonList(samples, level_of_analysis).size()>1) {
+            correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, level_of_analysis);
+            pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples(samples, level_of_analysis);
+            return true;
+        }else{
+           return false;
+        }
     }
 
     public static RealMatrix getCorrelationMatrix() {

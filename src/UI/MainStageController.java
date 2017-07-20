@@ -1,6 +1,9 @@
 package UI;
 
 
+import graph.MyEdge;
+import graph.MyGraph;
+import graph.MyVertex;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -54,7 +57,7 @@ public class MainStageController implements Initializable {
     public static boolean isMainViewMaximized = false;
 
     // alerts
-    private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert;
+    private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert, insufficientDataAlert;
 
     // FXML elements
     @FXML
@@ -92,11 +95,11 @@ public class MainStageController implements Initializable {
     private CheckBox useSelectedCheckBox;
 
     //Filter items
-    @FXML
-    private Slider maxCountSlider;
-
-    @FXML
-    private Text maxCountText;
+//    @FXML
+//    private Slider maxCountSlider;
+//
+//    @FXML
+//    private Text maxCountText;
 
     @FXML
     private AnchorPane mainViewPane;
@@ -147,15 +150,24 @@ public class MainStageController implements Initializable {
     public void startAnalysis() {
         startAnalysisButton.setDisable(true);
         System.out.println("Performing analysis at level: " + AnalysisData.getLevel_of_analysis());
-        AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
-        LoadedData.createGraph();
-        //Default values: 0.5<correlation<1, pValue<0.1
-        LoadedData.getTaxonGraph().filterTaxa(
-                LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
-        System.out.println("Taxa filtered after " + AnalysisData.getLevel_of_analysis());
-        MyGraphView graphView = new MyGraphView(LoadedData.getTaxonGraph());
-        mainViewPane.getChildren().add(graphView);
+        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
+        if(isAnalysisSuccessful) {
+            LoadedData.createGraph();
+            //Default values: 0.5<correlation<1, pValue<0.1
+            LoadedData.getTaxonGraph().filterTaxa(
+                    LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
+            System.out.println("Taxa filtered after " + AnalysisData.getLevel_of_analysis());
+            displayGraph(LoadedData.getTaxonGraph());
+        }else{//The analysis couldn't be done because of insufficient data
+            showInsufficientDataAlert();
+        }
 
+    }
+
+    private void displayGraph(MyGraph<MyVertex, MyEdge> taxonGraph) {
+        MyGraphView graphView = new MyGraphView(taxonGraph);
+        mainViewPane.getChildren().add(graphView);
+        mainViewPane.setPickOnBounds(false);
     }
 
     //FILE methods
@@ -174,8 +186,6 @@ public class MainStageController implements Initializable {
         if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
             LoadedData.closeProject(treeViewFiles);
             //textAreaDetails.setText("");
-            maxCountSlider.setDisable(true);
-            maxCountText.setText("Max count: ");
         }
     }
 
@@ -245,6 +255,7 @@ public class MainStageController implements Initializable {
                 fileChooser.setTitle(fileChooserTitle + "biom file");
                 break;
         }
+
 
         //Choose the file / files
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
@@ -408,15 +419,15 @@ public class MainStageController implements Initializable {
      */
     private void activateFilterOptions() {
         //MaxCountSlider
-        initializeMaxCountSlider();
+//        initializeMaxCountSlider();
     }
 
     /**
      * Updates the maxCountText element
      */
-    public void updateMaxCountText() {
-        maxCountText.setText("Max count: " + (int) maxCountSlider.getValue());
-    }
+//    public void updateMaxCountText() {
+//        maxCountText.setText("Max count: " + (int) maxCountSlider.getValue());
+//    }
 
     //INITIALIZATIONS
 
@@ -482,17 +493,17 @@ public class MainStageController implements Initializable {
     /**
      * Initializes the maxCount slider on the middle pane
      */
-    private void initializeMaxCountSlider() {
-        maxCountSlider.setMajorTickUnit(1);
-        maxCountSlider.setMinorTickCount(1);
-        maxCountSlider.setSnapToTicks(true);
-        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
-            maxCountSlider.setDisable(true);
-        } else {
-            maxCountSlider.setDisable(false);
-        }
-        //maxCountSlider.setValue(maxCountSlider.getMax());
-    }
+//    private void initializeMaxCountSlider() {
+//        maxCountSlider.setMajorTickUnit(1);
+//        maxCountSlider.setMinorTickCount(1);
+//        maxCountSlider.setSnapToTicks(true);
+//        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
+//            maxCountSlider.setDisable(true);
+//        } else {
+//            maxCountSlider.setDisable(false);
+//        }
+//        //maxCountSlider.setValue(maxCountSlider.getMax());
+//    }
 
     /**
      * Initializes the start analysis button on the right pane
@@ -513,9 +524,11 @@ public class MainStageController implements Initializable {
      */
     private void initializeRankSelectionToggleGroup() {
         rankSelectionToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-            AnalysisData.setLevel_of_analysis(newValue.getUserData().toString());
-            System.out.println(AnalysisData.getLevel_of_analysis());
-            startAnalysisButton.setDisable(false);
+            if(newValue!=null) {
+                AnalysisData.setLevel_of_analysis(newValue.getUserData().toString());
+                System.out.println(AnalysisData.getLevel_of_analysis());
+                startAnalysisButton.setDisable(false);
+            }
         });
     }
 
@@ -606,6 +619,17 @@ public class MainStageController implements Initializable {
         fileAlreadyLoadedAlert.setTitle("File not loaded.");
         fileAlreadyLoadedAlert.setContentText(fileAlreadyLoaded);
         fileAlreadyLoadedAlert.show();
+    }
+
+    /**
+     * Prompts an alert telling the user that the chosen data is not sufficient for an analysis
+     */
+    private void showInsufficientDataAlert(){
+        insufficientDataAlert = new Alert(Alert.AlertType.ERROR);
+        insufficientDataAlert.setTitle("Insufficient Data for Analysis");
+        insufficientDataAlert.setHeaderText("Maybe you're being to general, try choosing a more specific rank!");
+        insufficientDataAlert.show();
+
     }
 
     /**
