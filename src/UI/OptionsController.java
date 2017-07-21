@@ -47,7 +47,7 @@ public class OptionsController {
         File file = chooser.showDialog(null);
 
         UserSettings.isDefaultDirectoryLocation = false;
-        UserSettings.defaultFilechooserLocation = file.getAbsolutePath();
+        UserSettings.defaultFilechooserLocation = file;
     }
 
     @FXML

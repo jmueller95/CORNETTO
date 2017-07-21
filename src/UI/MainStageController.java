@@ -37,6 +37,7 @@ import sampleParser.TaxonId2CountCSVParser;
 import util.DownloadNodesAndNameDMPFiles;
 import view.MyGraphView;
 
+import javax.jws.soap.SOAPBinding;
 import java.io.*;
 import java.net.URL;
 import java.text.ParseException;
@@ -280,7 +281,7 @@ public class MainStageController implements Initializable {
         if (UserSettings.isDefaultDirectoryLocation) {
             setDefaultOpenDirectory(fileChooser);
         } else {
-            fileChooser.setInitialDirectory(new File(UserSettings.defaultFilechooserLocation));
+            fileChooser.setInitialDirectory(UserSettings.defaultFilechooserLocation);
         }
 
         switch (fileType) {
@@ -296,7 +297,8 @@ public class MainStageController implements Initializable {
         }
 
         //DEBUG:
-        fileChooser.setInitialDirectory(new File("/home/julian/IdeaProjects/Network-Analysis-Tool/res/testFiles/megan_examples"));
+        fileChooser.setInitialDirectory(UserSettings.defaultFilechooserLocation);
+
 
         //Choose the file / files
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
@@ -700,7 +702,6 @@ public class MainStageController implements Initializable {
         insufficientDataAlert.setTitle("Insufficient Data for Analysis");
         insufficientDataAlert.setHeaderText("Maybe you're being to general, try choosing a more specific rank!");
         insufficientDataAlert.show();
-
     }
 
     /**

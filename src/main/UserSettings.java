@@ -1,10 +1,12 @@
 package main;
 
+import java.io.File;
 import java.util.HashMap;
+
 
 public class UserSettings {
 
-    public static String defaultFilechooserLocation = "";
+    public static File defaultFilechooserLocation = new File(System.getProperty("user.home"));
 
     public static boolean isDarkTheme = true;
     public static boolean isDefaultDirectoryLocation = true;
