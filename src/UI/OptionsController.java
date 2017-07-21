@@ -41,13 +41,13 @@ public class OptionsController {
      * changes the default location for loading files
      *
      */
-    //TODO change this to use usersettings hashmap
     private void setNewDefaultOpenDirectory(){
         DirectoryChooser chooser = new DirectoryChooser();
         File file = chooser.showDialog(null);
+        String fileLocation = file.getAbsolutePath();
 
-        UserSettings.isDefaultDirectoryLocation = false;
-        UserSettings.defaultFilechooserLocation = file;
+        UserSettings.userSettings.put("isDefaultFileChooserLocation", false);
+        UserSettings.userSettings.put("defaultFileChooserLocation", fileLocation);
     }
 
     @FXML

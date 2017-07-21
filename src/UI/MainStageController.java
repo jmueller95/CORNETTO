@@ -25,7 +25,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.StringConverter;
-import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import main.GlobalConstants;
 import main.UserSettings;
@@ -35,16 +34,14 @@ import model.Sample;
 import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
-import util.DownloadNodesAndNameDMPFiles;
+import util.SaveAndLoadOptions;
 import view.MyEdgeView;
 import view.MyGraphView;
 import view.MyVertexView;
 import view.ViewPane;
 
-import javax.jws.soap.SOAPBinding;
 import java.io.*;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -173,9 +170,7 @@ public class MainStageController implements Initializable {
         initializeRankChoiceBox();
         initializeSliderBindings();
         //preload settings
-        UserSettings.addUserSettings();
-        //SaveAndLoadOptions.loadSettings();
-
+        SaveAndLoadOptions.loadSettings();
     }
 
 
@@ -203,6 +198,10 @@ public class MainStageController implements Initializable {
 
     }
 
+    /**
+     * shows the graph in the main view
+     * @param taxonGraph
+     */
     private void displayGraph(MyGraph<MyVertex, MyEdge> taxonGraph) {
         MyGraphView graphView = new MyGraphView(taxonGraph);
         ViewPane viewPane = new ViewPane(graphView);
@@ -288,10 +287,11 @@ public class MainStageController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         String fileChooserTitle = "Load from ";
 
-        if (UserSettings.isDefaultDirectoryLocation) {
+        if ((Boolean) UserSettings.userSettings.get("isDefaultFileChooserLocation")) {
             setDefaultOpenDirectory(fileChooser);
         } else {
-            fileChooser.setInitialDirectory(UserSettings.defaultFilechooserLocation);
+            fileChooser.setInitialDirectory((File)UserSettings.userSettings.get
+                    ("defaultFileChooserLocation")); //TODO should be String?!?
         }
 
         switch (fileType) {
@@ -305,10 +305,6 @@ public class MainStageController implements Initializable {
                 fileChooser.setTitle(fileChooserTitle + "biom file");
                 break;
         }
-
-        //DEBUG:
-        fileChooser.setInitialDirectory(UserSettings.defaultFilechooserLocation);
-
 
         //Choose the file / files
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
@@ -344,6 +340,28 @@ public class MainStageController implements Initializable {
         }
     }
 
+    /**
+     * sets the default directory for openings files
+     *
+     * @param fileChooser
+     */
+    private void setDefaultOpenDirectory(FileChooser fileChooser) {
+        //Set to user directory or go to default if cannot access
+        //TODO: osx?
+        String userDirectoryString = System.getProperty("user.home");
+        File userDirectory = new File(userDirectoryString);
+        if (!userDirectory.canRead()) {
+            userDirectory = new File("c:/");
+            userDirectoryString = "c:/";
+        }
+        fileChooser.setInitialDirectory(userDirectory);
+        UserSettings.userSettings.put("defaultFileChooserLocation", userDirectoryString);
+    }
+
+    /**
+     * adds opening readNameToTaxId files to the treeview
+     * @param file
+     */
     private void addReadName2TaxonIdFileToTreeView(File file) {
         ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(TreePreloadService.taxonTree);
 
@@ -361,6 +379,10 @@ public class MainStageController implements Initializable {
         activateButtonsOnTheRightPane();
     }
 
+    /**
+     * adds opening biom files to the treeview
+     * @param file
+     */
     private void addBiomFileToTreeView(File file) {
         BiomV1Parser biomV1Parser = new BiomV1Parser(TreePreloadService.taxonTree);
 
@@ -373,6 +395,10 @@ public class MainStageController implements Initializable {
         activateButtonsOnTheRightPane();
     }
 
+    /**
+     * adds openings taxIdToCountFiles to the tree view
+     * @param file
+     */
     private void addId2CountFileToTreeView(File file) {
         TaxonId2CountCSVParser taxonId2CountCSVParser = new TaxonId2CountCSVParser(TreePreloadService.taxonTree);
 
@@ -407,21 +433,6 @@ public class MainStageController implements Initializable {
         }
     }
 
-    /**
-     * sets the default directory for openings files
-     *
-     * @param fileChooser
-     */
-    private void setDefaultOpenDirectory(FileChooser fileChooser) {
-        //Set to user directory or go to default if cannot access
-        //TODO: osx?
-        String userDirectoryString = System.getProperty("user.home");
-        File userDirectory = new File(userDirectoryString);
-        if (!userDirectory.canRead()) {
-            userDirectory = new File("c:/");
-        }
-        fileChooser.setInitialDirectory(userDirectory);
-    }
 
     @FXML
     /**
@@ -518,8 +529,6 @@ public class MainStageController implements Initializable {
     private void initializeAccordion() {
         preferencesAccordion.setExpandedPane(preferencesAccordion.getPanes().get(0));
     }
-
-
 
     /**
      * Activates the buttons on the right pane

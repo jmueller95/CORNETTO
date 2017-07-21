@@ -8,25 +8,23 @@ import java.io.*;
 public class SaveAndLoadOptions {
 
     private static final String SEPARATOR = System.getProperty("line.separator");
-    private static final String FILELOCATION = "/res/test.txt";
 
     /**
      * writes the settings into a custom txt file
      * '<' specifies header line
      */
     public static void saveSettings() {
-        //create settingsHashmap if it doesn't exist yet
+        //create settings hashmap if it doesn't exist yet
         if (UserSettings.userSettings.isEmpty()) {
             UserSettings.addUserSettings();
         }
-        //save the content of the Usersettings
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(FILELOCATION)))) {
+        //save the content of the user settings
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(GlobalConstants.USER_SETTINGS_FILEPATH)))) {
             writer.write("< This file stores the settings of the" + GlobalConstants.NAME_OF_PROGRAM + SEPARATOR);
 
             writer.write("theme = " + UserSettings.userSettings.get("theme") + SEPARATOR);
-            writer.write("defaultFileChooserDirectory = " + UserSettings.userSettings.get("defaultFileChooserDirectory") + SEPARATOR);
-            writer.write("defaultFilechooserLocation = " + UserSettings.userSettings.get
-                    ("defaultFilechooserLocation"));
+            writer.write("isDefaultFileChooserLocation = " + UserSettings.userSettings.get("defaultFileChooserDirectory") + SEPARATOR);
+            writer.write("defaultFileChooserLocation = " + UserSettings.userSettings.get("defaultFileChooserLocation"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,10 +41,10 @@ public class SaveAndLoadOptions {
             UserSettings.addUserSettings();
         }
         //check if saved file exists
-        File file = new File(FILELOCATION);
+        File file = new File(GlobalConstants.USER_SETTINGS_FILEPATH);
         if (file != null) {
             String line;
-            try (BufferedReader reader = new BufferedReader(new FileReader(new File(FILELOCATION)))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(new File(GlobalConstants.USER_SETTINGS_FILEPATH)))) {
                 while ((line = reader.readLine()) != null) {
                     //we read the header line
                     if (line.startsWith("<")) {
@@ -55,6 +53,7 @@ public class SaveAndLoadOptions {
                         String[] settings = line.split("=");
                         trimStrings(settings);
 
+                        //check whether the setting is a boolean or a string and add it to the settings
                         if (UserSettings.userSettings.containsKey(settings[0])) {
                             if (UserSettings.userSettings.get(settings[0]) instanceof Boolean) {
                                 UserSettings.userSettings.put(settings[0], Boolean.valueOf(settings[1]));
@@ -70,10 +69,9 @@ public class SaveAndLoadOptions {
         }
     }
 
-    private static String[] trimStrings(String[] stringArrayToTrim) {
-        for (String string : stringArrayToTrim) {
-            string.trim();
-        }
-        return stringArrayToTrim;
+    private static void trimStrings(String[] stringArrayToTrim) {
+       for (int i = 0; i < stringArrayToTrim.length; i++){
+           stringArrayToTrim[i] = stringArrayToTrim[i].trim();
+       }
     }
 }

@@ -12,4 +12,5 @@ public class GlobalConstants {
     public static final String LIGHTTHEME = "lightGuiStyle.css";
 
 
+    public static final String USER_SETTINGS_FILEPATH = "./res/userSettings.txt";
 }

@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class UserSettings {
 
-    public static File defaultFilechooserLocation = new File(System.getProperty("user.home"));
+    public static File defaultFileChooserLocation = new File(System.getProperty("user.home"));
 
     public static boolean isDarkTheme = true;
     public static boolean isDefaultDirectoryLocation = true;
@@ -16,11 +16,11 @@ public class UserSettings {
 
     public static void addUserSettings(){
         //add Strings
-        userSettings.put("defaultFilechooserLocation", defaultFilechooserLocation);
+        userSettings.put("defaultFileChooserLocation", defaultFileChooserLocation);
 
         //add Booleans
         userSettings.put("theme", isDarkTheme);
-        userSettings.put("defaultFileChooserDirectory", isDefaultDirectoryLocation);
+        userSettings.put("isDefaultFileChooserLocation", isDefaultDirectoryLocation);
     }
 
     public static String whatTheme(boolean theme){
