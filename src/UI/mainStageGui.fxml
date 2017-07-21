@@ -105,7 +105,7 @@
         </AnchorPane>
             <TabPane prefHeight="566.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Main View">
+                <Tab fx:id="mainViewTab" text="Main View">
                      <content>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>

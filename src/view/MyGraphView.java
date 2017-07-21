@@ -26,7 +26,7 @@ public class MyGraphView extends Group {
     private Group myVertexViewGroup;
     private Group myEdgeViewGroup;
     private MyGraph<MyVertex, MyEdge> graph;
-    private SpringAnimationService animationService;
+    public SpringAnimationService animationService;
     private VertexSelectionModel selectionModel;
 
 
@@ -38,8 +38,6 @@ public class MyGraphView extends Group {
         this.myVertexViewGroup = new Group();
         this.myEdgeViewGroup = new Group();
         this.animationService = new SpringAnimationService(graph, this);
-        animationService.createTask();
-
 
         drawNodes();
         drawEdges();
@@ -95,6 +93,14 @@ public class MyGraphView extends Group {
                 }
             }
         });
+    }
+
+    public void pauseAnimation(){
+        animationService.cancel();
+    }
+
+    public void resumeAnimation(){
+        animationService.resume();
     }
 
 

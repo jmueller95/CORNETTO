@@ -43,7 +43,8 @@ public class MyEdgeView extends Group {
 
     public void setColor() {
         // set interactively and/or based on attributes
-        edgeShape.setStroke(Color.DARKBLUE);
+        if (myEdge.getCorrelation() >= 0) edgeShape.setStroke(Color.DARKGREEN);
+        else edgeShape.setStroke(Color.DARKRED);
     }
 
 

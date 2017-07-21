@@ -36,6 +36,7 @@ import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.DownloadNodesAndNameDMPFiles;
 import view.MyGraphView;
+import view.ViewPane;
 
 import javax.jws.soap.SOAPBinding;
 import java.io.*;
@@ -68,6 +69,9 @@ public class MainStageController implements Initializable {
     private AnchorPane leftPane, rightPane;
 
     @FXML
+    private Tab mainViewTab;
+
+    @FXML
     private Label leftLabel;
 
     @FXML
@@ -75,12 +79,6 @@ public class MainStageController implements Initializable {
 
     @FXML
     private Accordion preferencesAccordion;
-
-    //@FXML
-    //private TextArea textAreaDetails;
-
-    @FXML
-    public ProgressBar progressBar;
 
     //Buttons
     @FXML
@@ -193,9 +191,8 @@ public class MainStageController implements Initializable {
     }
 
     private void displayGraph(MyGraph<MyVertex, MyEdge> taxonGraph) {
-        MyGraphView graphView = new MyGraphView(taxonGraph);
-        mainViewPane.getChildren().add(graphView);
-        mainViewPane.setPickOnBounds(false);
+        ViewPane viewPane = new ViewPane(new MyGraphView(taxonGraph));
+        mainViewTab.setContent(viewPane);
     }
 
     //FILE methods

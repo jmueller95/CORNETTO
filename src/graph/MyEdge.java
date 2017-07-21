@@ -57,6 +57,10 @@ public class MyEdge {
         this.correlation = correlation;
     }
 
+    public double getCorrelation() {
+        return correlation;
+    }
+
     public void setPValue(double pValue) {
         this.pValue = pValue;
     }
