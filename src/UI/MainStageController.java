@@ -290,8 +290,8 @@ public class MainStageController implements Initializable {
         if ((Boolean) UserSettings.userSettings.get("isDefaultFileChooserLocation")) {
             setDefaultOpenDirectory(fileChooser);
         } else {
-            fileChooser.setInitialDirectory((File)UserSettings.userSettings.get
-                    ("defaultFileChooserLocation")); //TODO should be String?!?
+            fileChooser.setInitialDirectory(new File((String)UserSettings.userSettings.get
+                    ("defaultFileChooserLocation"))); //TODO exceptions with defaultFileChooserLocation being a file?!?
         }
 
         switch (fileType) {
