@@ -234,14 +234,14 @@
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <VBox fx:id="sliderEdgeWidth" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <VBox  prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <Label text="Node radius:" />
-                                          <Slider fx:id="sliderNodeRadius" />
-                                          <Label text="Edge width:" />
-                                          <Slider />
+                                          <Slider fx:id="sliderNodeRadius" min="1.0" max="50" value="15"/>
+                                          <Label text="Edge width:"/>
+                                          <Slider fx:id="sliderEdgeWidth"  min="1.0" max="20" value="5.0"/>
                                           <Label text="Edge length:" />
-                                          <Slider fx:id="sliderEdgeLength" />
+                                          <Slider fx:id="sliderEdgeLength" min="1.0" max="10" value="5.0"/>
                                           <Label />
                                           <Button mnemonicParsing="false" text="Reset defaults" />
                                        </children>

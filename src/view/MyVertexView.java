@@ -1,6 +1,7 @@
 package view;
 
 import graph.MyVertex;
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
@@ -52,6 +53,7 @@ public class MyVertexView extends Group {
             } else {
                 vertexShape.setFill(fillColor);
                 System.out.println("node unselected");
+
             }
         }));
     }
@@ -61,7 +63,15 @@ public class MyVertexView extends Group {
 
     }
 
+    public DoubleProperty getRadiusProperty() {
+        return vertexShape.radiusProperty();
+    }
+
     public MyVertex getMyVertex() {
         return myVertex;
+    }
+
+    public void setRadius(double r) {
+        vertexShape.setRadius(r);
     }
 }

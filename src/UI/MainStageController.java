@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -35,7 +36,9 @@ import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.DownloadNodesAndNameDMPFiles;
+import view.MyEdgeView;
 import view.MyGraphView;
+import view.MyVertexView;
 import view.ViewPane;
 
 import javax.jws.soap.SOAPBinding;
@@ -87,6 +90,8 @@ public class MainStageController implements Initializable {
     @FXML
     private Button startAnalysisButton;
 
+
+    /** FILTER OPTION ELEMENTS **/
     @FXML
     private ChoiceBox<String> rankChoiceBox;
 
@@ -128,24 +133,27 @@ public class MainStageController implements Initializable {
     @FXML
     private CheckBox useSelectedCheckBox;
 
-    //Filter items
-//    @FXML
-//    private Slider maxCountSlider;
-//
-//    @FXML
-//    private Text maxCountText;
 
-    @FXML
-    private AnchorPane mainViewPane;
-
+    /** STARTUP PANE ELEMENTS **/
     @FXML
     private Label startupLabel;
 
     @FXML
     private ProgressIndicator startupSpinner;
 
+
+    /** STATUS FOOTER ELEMENTS **/
     @FXML
     private Label statusRightLabel;
+
+
+    /** GRAPH VIEW SETTING ELEMENTS **/
+    @FXML
+    private Slider sliderNodeRadius;
+
+    @FXML
+    private Slider sliderEdgeWidth;
+
 
     /**
      * Initializes every needed service
@@ -196,8 +204,19 @@ public class MainStageController implements Initializable {
     }
 
     private void displayGraph(MyGraph<MyVertex, MyEdge> taxonGraph) {
-        ViewPane viewPane = new ViewPane(new MyGraphView(taxonGraph));
+        MyGraphView graphView = new MyGraphView(taxonGraph);
+        ViewPane viewPane = new ViewPane(graphView);
+
+        // Bind node hover status text
         statusRightLabel.textProperty().bind(viewPane.hoverInfo);
+        // Bind Node Radius Slider
+        for (Node node : graphView.getMyVertexViewGroup().getChildren()) {
+            ((MyVertexView) node).getRadiusProperty().bind(sliderNodeRadius.valueProperty());
+        }
+        // Bind Edge Width Slider
+        for (Node node : graphView.getMyEdgeViewGroup().getChildren()) {
+            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty());
+        }
         mainViewTab.setContent(viewPane);
     }
 
@@ -598,6 +617,8 @@ public class MainStageController implements Initializable {
         AnalysisData.maxPValueProperty().bind(maxPValueSlider.valueProperty());
         AnalysisData.minFrequencyProperty().bind(minFrequencySlider.valueProperty());
         AnalysisData.maxFrequencyProperty().bind(maxFrequencySlider.valueProperty());
+
+
 
 
     }

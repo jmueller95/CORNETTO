@@ -6,8 +6,11 @@ import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import model.VertexSelectionModel;
 
 
@@ -19,16 +22,12 @@ import java.awt.*;
  */
 public class MyGraphView extends Group {
 
-    // TODO bind size to window size or something
-    private int width = 1000;
-    private int height =  800;
 
     private Group myVertexViewGroup;
     private Group myEdgeViewGroup;
     private MyGraph<MyVertex, MyEdge> graph;
     public SpringAnimationService animationService;
     private VertexSelectionModel selectionModel;
-
 
     protected Function<MyEdge, Integer> myEdgeLengthFunction;
 
@@ -66,14 +65,6 @@ public class MyGraphView extends Group {
         });
     }
 
-    public void startLayout() {
-        animationService.start();
-    }
-
-    public void updateNodePosition(MyVertex vertex) {
-        animationService.updateNode(vertex);
-    }
-
 
     public void addSelectionListener() {
         selectionModel.getSelectedItems().addListener((ListChangeListener) c -> {
@@ -95,6 +86,18 @@ public class MyGraphView extends Group {
         });
     }
 
+
+    public void startLayout() {
+        animationService.start();
+    }
+
+    public void updateNodePosition(MyVertex vertex) {
+        animationService.updateNode(vertex);
+    }
+
+
+
+
     public void pauseAnimation(){
         animationService.cancel();
     }
@@ -106,6 +109,10 @@ public class MyGraphView extends Group {
 
     public Group getMyVertexViewGroup() {
         return myVertexViewGroup;
+    }
+
+    public Group getMyEdgeViewGroup() {
+        return myEdgeViewGroup;
     }
 
     public MyGraph<MyVertex, MyEdge> getGraph() {
