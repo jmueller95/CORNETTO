@@ -14,12 +14,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
+import util.DownloadNodesAndNameDMPFiles;
 
+import java.io.File;
 import java.util.ArrayList;
 
-import static UI.MainStageController.NAMES_DMP_SRC;
-import static UI.MainStageController.NODES_DMP_SRC;
-import static UI.MainStageController.setUpRequiredFiles;
 
 /**
  * Created by Zeth on 26.06.2017.
@@ -28,38 +27,29 @@ import static UI.MainStageController.setUpRequiredFiles;
  */
 public class TreePreloadService extends Service<Void> {
     public static TaxonTree taxonTree;
-    private MainStageController mainStageController = new MainStageController();
-    private ProgressBar bar = mainStageController.progressBar;
+    public static final String NODES_DMP_SRC = "./res/nodes.dmp";
+    public static final String NAMES_DMP_SRC = "./res/names.dmp";
+
 
     @Override
     protected Task<Void> createTask() {
         return new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                int maxPercentage = 100;
 
-                //build the tree
-                System.out.println("Downloading files...");
-                setUpRequiredFiles();
+                updateMessage("Checking Required Files");
+                boolean filesPresent = checkFilePresence();
 
-                System.out.println("Parsing tree...");
-                TreeParser treeParser = new TreeParser();
-                treeParser.parseTree(NODES_DMP_SRC, NAMES_DMP_SRC);
-                taxonTree = treeParser.getTaxonTree();
-
-                bar.progressProperty().bind(this.progressProperty());
-
-                for (int i = 1; i <= maxPercentage; i++) {
-                    if (isCancelled()) {
-                        break;
-                    }
-
-                    updateProgress(i, maxPercentage);
-                    updateMessage(String.valueOf(i));
-
-                    Thread.sleep(100);
+                if (!filesPresent) {
+                    updateMessage("Downloading Files (may take a while)");
+                    DownloadNodesAndNameDMPFiles.downloadNamesNodesDMPandUnzip();
                 }
 
+
+                TreeParser treeParser = new TreeParser();
+                treeParser.progressProperty.addListener( (a, o, n) -> updateMessage("Constructing Tree: " + n));
+                treeParser.parseTree(NODES_DMP_SRC, NAMES_DMP_SRC);
+                taxonTree = treeParser.getTaxonTree();
                 return null;
             }
 
@@ -82,5 +72,12 @@ public class TreePreloadService extends Service<Void> {
             }
         };
 
+    }
+
+    private boolean checkFilePresence() {
+        File nodesDmp = new File(NODES_DMP_SRC);
+        File namesDmp = new File(NAMES_DMP_SRC);
+
+        return nodesDmp.exists() && namesDmp.exists() && !nodesDmp.isDirectory();
     }
 }

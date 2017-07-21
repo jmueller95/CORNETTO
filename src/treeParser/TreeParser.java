@@ -1,5 +1,8 @@
 package treeParser;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableStringValue;
 import model.TaxonNode;
 import model.TaxonTree;
 
@@ -14,9 +17,11 @@ import java.io.IOException;
 public class TreeParser {
     //Tree to be created
     private TaxonTree taxonTree;
+    public StringProperty progressProperty;
 
     public TreeParser() {
         this.taxonTree = new TaxonTree();
+        progressProperty = new SimpleStringProperty("initialized");
     }
 
     //System
@@ -29,7 +34,9 @@ public class TreeParser {
      * @param fileNamesDmp parses the two files - makes sure that NodesDmp gets called before NamesDmp!
      */
     public void parseTree(String fileNodesDmp, String fileNamesDmp) {
+        progressProperty.setValue("reading Nodes");
         readNodesDmpFile(fileNodesDmp);
+        progressProperty.setValue("reading Names");
         readNamesDmpFile(fileNamesDmp);
     }
 

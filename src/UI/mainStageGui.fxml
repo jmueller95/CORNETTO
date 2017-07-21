@@ -9,8 +9,8 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
@@ -28,7 +28,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -103,24 +103,25 @@
                   <RadioButton fx:id="collapseAllButton" layoutX="88.0" layoutY="6.0" mnemonicParsing="false" onAction="#collapseAll" text="Collapse all" />
           </children>
         </AnchorPane>
-        <ScrollPane>
-               <content>
-                  <TabPane prefHeight="566.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                      <Tab text="Main View">
-                        <content>
-                          <AnchorPane fx:id="mainViewPane" minHeight="0.0" minWidth="0.0" />
-                        </content>
-                      </Tab>
-                        <Tab text="Analysis">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                           </content>
-                        </Tab>
-                    </tabs>
-                  </TabPane>
-               </content>
-        </ScrollPane>
+            <TabPane prefHeight="566.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Main View">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <ProgressIndicator fx:id="startupSpinner" layoutX="203.0" layoutY="236.0" />
+                              <Label fx:id="startupLabel" layoutX="213.0" layoutY="323.0" text="Label" textAlignment="CENTER" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                </Tab>
+                  <Tab text="Analysis">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
         <AnchorPane fx:id="rightPane" maxWidth="220.0" minWidth="0.0">
                <children>
                   <Accordion fx:id="preferencesAccordion" prefHeight="471.0" prefWidth="220.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -134,8 +135,10 @@
                                            <fx:define>
                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
                                            </fx:define>
-                                          <RadioButton mnemonicParsing="false" selected="true" toggleGroup="$allOrSelectedToggleGroup" text="Compare all Samples">
-                                            </RadioButton>
+                                          <RadioButton mnemonicParsing="false" selected="true" text="Compare all Samples">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
+                                             </toggleGroup></RadioButton>
                                           <RadioButton mnemonicParsing="false" text="Compare selected Samples" toggleGroup="$allOrSelectedToggleGroup" />
                                        </children>
                                     </VBox>

@@ -49,8 +49,6 @@ import java.util.ResourceBundle;
 import static main.Main.getPrimaryStage;
 
 public class MainStageController implements Initializable {
-    public static final String NODES_DMP_SRC = "./res/nodes.dmp";
-    public static final String NAMES_DMP_SRC = "./res/names.dmp";
 
     private static Stage optionsStage;
 
@@ -142,6 +140,12 @@ public class MainStageController implements Initializable {
     @FXML
     private AnchorPane mainViewPane;
 
+    @FXML
+    private Label startupLabel;
+
+    @FXML
+    private ProgressIndicator startupSpinner;
+
     /**
      * Initializes every needed service
      *
@@ -165,22 +169,6 @@ public class MainStageController implements Initializable {
 
     }
 
-
-
-    /**
-     * checks whether nodes.dmp and names.dmp exist
-     * if not it downloads the files and puts them into the correct place
-     */
-    //TODO: Place this method on the outside of the MainStageController class to keep controller clean
-    public static void setUpRequiredFiles() {
-        File nodesDmp = new File(NODES_DMP_SRC), namesDmp = new File(NAMES_DMP_SRC);
-
-        //if files do NOT exist or they are a directory
-        //-> download the files
-        if (!(nodesDmp.exists() && namesDmp.exists() && !nodesDmp.isDirectory() && !namesDmp.isDirectory())) {
-            DownloadNodesAndNameDMPFiles.downloadNamesNodesDMPandUnzip();
-        }
-    }
 
     @FXML
     /**
@@ -478,7 +466,11 @@ public class MainStageController implements Initializable {
      * Starts the tree preload service
      */
     private void startTreePreloadService() {
-        new TreePreloadService().start();
+        TreePreloadService treePreloadService = new TreePreloadService();
+        treePreloadService.setOnSucceeded(e -> startupSpinner.setProgress(100));
+        startupLabel.textProperty().bind(treePreloadService.messageProperty());
+        treePreloadService.start();
+
     }
 
     /**

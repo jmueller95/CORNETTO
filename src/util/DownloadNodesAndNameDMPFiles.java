@@ -16,6 +16,9 @@ import java.util.zip.ZipInputStream;
  * Created by Zeth on 27.05.2017.
  */
 public class DownloadNodesAndNameDMPFiles {
+
+    //TODO Throw error when no internet connection
+
     private static final Logger LOGGER = Logger.getLogger(DownloadNodesAndNameDMPFiles.class.getName());
     private static final String OUTPUT_FOLDER = "./res";
     private static final String NCBI_URL = "ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip";
