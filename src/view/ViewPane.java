@@ -4,6 +4,8 @@ import com.sun.javafx.geom.transform.Affine3D;
 import com.sun.javafx.geom.transform.BaseTransform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -39,6 +41,7 @@ public class ViewPane extends AnchorPane {
     private double initTransY;
 
     private Property<Transform> viewTransformProperty;
+    public StringProperty hoverInfo;
 
     public ViewPane(MyGraphView graphView) {
 
@@ -63,6 +66,8 @@ public class ViewPane extends AnchorPane {
 
         // Add StackPane in SubScene and add content.
         getChildren().addAll(viewScene);
+
+        hoverInfo = new SimpleStringProperty("");
 
         // Setup interactions and view elements
         setupTransforms();
@@ -114,6 +119,15 @@ public class ViewPane extends AnchorPane {
 
             MyVertexView vertexView = (MyVertexView) o;
 
+            // OnMouseOver: Display Information in the Status Bar
+            o.setOnMouseEntered(me -> {
+                hoverInfo.setValue(vertexView.getMyVertex().getTaxonName());
+            });
+
+            o.setOnMouseExited(me -> {
+                hoverInfo.setValue("");
+            });
+
             // Register translation of vertexVIew before starting Drag operation
             o.setOnMousePressed(me -> {
                 initTransX = vertexView.translateXProperty().get();
@@ -124,8 +138,6 @@ public class ViewPane extends AnchorPane {
 
             // Left Mouse Drag: Move Node
             o.setOnMouseDragged(me -> {
-
-
 
                 if (me.getButton() == MouseButton.PRIMARY) {
 

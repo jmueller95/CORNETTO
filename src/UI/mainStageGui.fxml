@@ -27,219 +27,257 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
-  <children>
-    <MenuBar VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="File">
-          <items>
-            <MenuItem mnemonicParsing="false" text="New" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <Menu mnemonicParsing="false" text="Load from...">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#openId2CountFiles" text="taxonId2Count" />
-                        <MenuItem mnemonicParsing="false" onAction="#openReadName2TaxonIdFiles" text="readName2TaxId" />
-                        <MenuItem mnemonicParsing="false" text="biom" />
-                     </items>
-                  </Menu>
-            <Menu mnemonicParsing="false" onAction="#openRecentFile" text="Open Recent" />
-            <MenuItem mnemonicParsing="false" onAction="#closeProject" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-                  <Menu mnemonicParsing="false" text="Export">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+    <children>
+        <MenuBar VBox.vgrow="NEVER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="PDF" />
-                        <MenuItem mnemonicParsing="false" text="JPG" />
-                        <MenuItem mnemonicParsing="false" text="PNG" />
+                        <MenuItem mnemonicParsing="false" text="New" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <Menu mnemonicParsing="false" text="Load from...">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#openId2CountFiles" text="taxonId2Count" />
+                                <MenuItem mnemonicParsing="false" onAction="#openReadName2TaxonIdFiles" text="readName2TaxId" />
+                                <MenuItem mnemonicParsing="false" text="biom" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" onAction="#openRecentFile" text="Open Recent" />
+                        <MenuItem mnemonicParsing="false" onAction="#closeProject" text="Close" />
+                        <MenuItem mnemonicParsing="false" text="Save" />
+                        <MenuItem mnemonicParsing="false" text="Save As…" />
+                        <Menu mnemonicParsing="false" text="Export">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="PDF" />
+                                <MenuItem mnemonicParsing="false" text="JPG" />
+                                <MenuItem mnemonicParsing="false" text="PNG" />
+                            </items>
+                        </Menu>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Settings" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="buttonExit" mnemonicParsing="false" onAction="#quit" text="Quit" />
                     </items>
-                  </Menu>
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Settings" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="buttonExit" mnemonicParsing="false" onAction="#quit" text="Quit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Create Screenshot" />
-          </items>
-        </Menu>
-            <Menu mnemonicParsing="false" text="View">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#toggleMainView" text="Toggle Main View" />
-               </items></Menu>
-            <Menu mnemonicParsing="false" text="Settings">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Open Settings" />
-               </items>
-            </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#showAboutAlert" text="About Network Analysis Tool" />
-                  <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
-    <SplitPane dividerPositions="0.2505567928730512, 0.5" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-      <items>
-        <AnchorPane fx:id="leftPane" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefWidth="221.0">
-          <children>
-            <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="5.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#c58112" wrapText="false">
-              <font>
-                <Font size="18.0" fx:id="x1" />
-              </font>
-            </Label>
-                  <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="-176.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onContextMenuRequested="#selectTaxon" onMouseClicked="#selectTaxon" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
-                  <RadioButton fx:id="collapseAllButton" layoutX="88.0" layoutY="6.0" mnemonicParsing="false" onAction="#collapseAll" text="Collapse all" />
-          </children>
-        </AnchorPane>
-            <TabPane prefHeight="566.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                <Tab fx:id="mainViewTab" text="Main View">
-                     <content>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <ProgressIndicator fx:id="startupSpinner" layoutX="203.0" layoutY="236.0" />
-                              <Label fx:id="startupLabel" layoutX="213.0" layoutY="323.0" text="Label" textAlignment="CENTER" />
-                           </children>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Cut" />
+                        <MenuItem mnemonicParsing="false" text="Copy" />
+                        <MenuItem mnemonicParsing="false" text="Paste" />
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Select All" />
+                        <MenuItem mnemonicParsing="false" text="Unselect All" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Create Screenshot" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="View">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#toggleMainView" text="Toggle Main View" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Settings">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Open Settings" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showAboutAlert" text="About Network Analysis Tool" />
+                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <SplitPane dividerPositions="0.24721603563474387, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+            <items>
+                <SplitPane dividerPositions="0.5" focusTraversable="true" maxWidth="220.0" minWidth="0.0" nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefWidth="220.0" VBox.vgrow="ALWAYS">
+                    <items>
+                        <AnchorPane fx:id="leftPane" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
+                            <children>
+                                <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="5.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#c58112" wrapText="false">
+                                    <font>
+                                        <Font size="18.0" fx:id="x1" />
+                                    </font>
+                                </Label>
+                                <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="-176.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onContextMenuRequested="#selectTaxon" onMouseClicked="#selectTaxon" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
+                                <RadioButton fx:id="collapseAllButton" layoutX="88.0" layoutY="6.0" mnemonicParsing="false" onAction="#collapseAll" text="Collapse all" />
+                            </children>
                         </AnchorPane>
-                     </content>
-                </Tab>
-                  <Tab text="Analysis">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                     </content>
-                  </Tab>
-              </tabs>
-            </TabPane>
-        <AnchorPane fx:id="rightPane" maxWidth="220.0" minWidth="0.0">
-               <children>
-                  <Accordion fx:id="preferencesAccordion" prefHeight="471.0" prefWidth="220.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <panes>
-                      <TitledPane animated="false" text="Filter">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="369.0" prefWidth="218.0">
+                        <AnchorPane fx:id="infoBox" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
+                     <children>
+                        <TextFlow prefHeight="420.0" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+                <TabPane prefHeight="566.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab fx:id="mainViewTab" text="Main View">
+                            <content>
+                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                    <children>
+                              <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <VBox layoutX="10.0" layoutY="5.0" spacing="5.0">
+                                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="816.0" prefWidth="742.0">
                                        <children>
-                                           <fx:define>
-                                               <ToggleGroup fx:id="allOrSelectedToggleGroup" />
-                                           </fx:define>
-                                          <RadioButton mnemonicParsing="false" selected="true" text="Compare all Samples">
-                                             <toggleGroup>
-                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
-                                             </toggleGroup></RadioButton>
-                                          <RadioButton mnemonicParsing="false" text="Compare selected Samples" toggleGroup="$allOrSelectedToggleGroup" />
-                                       </children>
-                                    </VBox>
-                                    <HBox layoutX="10.0" layoutY="55.0" spacing="5.0">
-                                       <children>
-                                          <Label text="Rank:" translateY="4.0" />
-                                          <ChoiceBox fx:id="rankChoiceBox" prefHeight="26.0" prefWidth="113.0" />
-                                       </children>
-                                    </HBox>
-                                    <VBox layoutX="5.0" layoutY="100.0" spacing="5.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Minimal Correlation:" />
-                                          <HBox spacing="5.0">
-                                             <children>
-                                                <Slider fx:id="minCorrelationSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" value="-1.0" />
-                                                <TextField fx:id="minCorrelationText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                    <VBox layoutX="5.0" layoutY="150.0" spacing="5.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal Correlation:" />
-                                          <HBox spacing="5.0">
-                                             <children>
-                                                <Slider fx:id="maxCorrelationSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" value="1.0" />
-                                                <TextField fx:id="maxCorrelationText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                    <VBox layoutX="5.0" layoutY="200.0" spacing="5.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal p-Value:" />
-                                          <HBox spacing="5.0">
-                                             <children>
-                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" minorTickCount="0" showTickLabels="true" value="1.0" />
-                                                <TextField fx:id="maxPValueText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                    <VBox layoutX="5.0" layoutY="250.0" spacing="5.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Minimal relative frequency:" />
-                                          <HBox spacing="5.0">
-                                             <children>
-                                                <Slider fx:id="minFrequencySlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" minorTickCount="0" showTickLabels="true" />
-                                                <TextField fx:id="minFrequencyText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                    <VBox layoutX="5.0" layoutY="300.0" spacing="5.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal relative frequency:" />
-                                          <HBox spacing="5.0">
-                                             <children>
-                                                <Slider fx:id="maxFrequencySlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" minorTickCount="0" showTickLabels="true" value="1.0" />
-                                                <TextField fx:id="maxFrequencyText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
-                                             </children>
-                                          </HBox>
+                                                    <ProgressIndicator fx:id="startupSpinner" />
+                                                    <Label fx:id="startupLabel" nodeOrientation="LEFT_TO_RIGHT" text="Label" textAlignment="CENTER" />
                                        </children>
                                     </VBox>
                                  </children>
-                              </AnchorPane>
-                        </content>
-                      </TitledPane>
-                      <TitledPane animated="false" text="Settings">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        </content>
-                      </TitledPane>
-                      <TitledPane animated="false" prefHeight="415.0" prefWidth="220.0" text="Colouring">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        </content>
-                      </TitledPane>
-                    </panes>
-                  </Accordion>
-                  <Text layoutX="14.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Controls" AnchorPane.bottomAnchor="49.93408203125" AnchorPane.leftAnchor="14.0" />
-                  <Button fx:id="startAnalysisButton" layoutX="14.0" layoutY="509.0" mnemonicParsing="false" onAction="#startAnalysis" text="Start Analysis" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-                  <CheckBox fx:id="useSelectedCheckBox" layoutX="139.0" layoutY="513.0" mnemonicParsing="false" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="139.0" />
-               </children>
-        </AnchorPane>
-      </items>
-    </SplitPane>
-    <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
-      <children>
-        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-        <Label maxWidth="-1.0" text="Running" HBox.hgrow="NEVER">
-               <font>
-            <Font size="11.0" fx:id="x3" />
-               </font>
-               <textFill>
-            <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
-               </textFill></Label>
-      </children>
-      <padding>
-        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-      </padding>
-    </HBox>
-  </children>
+                              </Pane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Analysis">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+                <AnchorPane fx:id="rightPane" maxWidth="220.0" minWidth="0.0">
+                    <children>
+                        <Accordion fx:id="preferencesAccordion" prefHeight="471.0" prefWidth="220.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <panes>
+                                <TitledPane animated="false" text="Filter">
+                                    <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="369.0" prefWidth="218.0">
+                                            <children>
+                                                <VBox layoutX="10.0" layoutY="5.0" spacing="5.0">
+                                                    <children>
+                                                        <fx:define>
+                                                            <ToggleGroup fx:id="allOrSelectedToggleGroup" />
+                                                        </fx:define>
+                                                        <RadioButton mnemonicParsing="false" selected="true" text="Compare all Samples">
+                                                            <toggleGroup>
+                                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
+                                                            </toggleGroup>
+                                                        </RadioButton>
+                                                        <RadioButton mnemonicParsing="false" text="Compare selected Samples">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
+                                             </toggleGroup></RadioButton>
+                                                    </children>
+                                                </VBox>
+                                                <HBox layoutX="10.0" layoutY="55.0" spacing="5.0">
+                                                    <children>
+                                                        <Label text="Rank:" translateY="4.0" />
+                                                        <ChoiceBox fx:id="rankChoiceBox" prefHeight="26.0" prefWidth="113.0" />
+                                                    </children>
+                                                </HBox>
+                                                <VBox layoutX="5.0" layoutY="100.0" spacing="5.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Minimal Correlation:" />
+                                                        <HBox spacing="5.0">
+                                                            <children>
+                                                                <Slider fx:id="minCorrelationSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" value="-1.0" />
+                                                                <TextField fx:id="minCorrelationText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                                <VBox layoutX="5.0" layoutY="150.0" spacing="5.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal Correlation:" />
+                                                        <HBox spacing="5.0">
+                                                            <children>
+                                                                <Slider fx:id="maxCorrelationSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" value="1.0" />
+                                                                <TextField fx:id="maxCorrelationText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                                <VBox layoutX="5.0" layoutY="200.0" spacing="5.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal p-Value:" />
+                                                        <HBox spacing="5.0">
+                                                            <children>
+                                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" minorTickCount="0" showTickLabels="true" value="1.0" />
+                                                                <TextField fx:id="maxPValueText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                                <VBox layoutX="5.0" layoutY="250.0" spacing="5.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Minimal relative frequency:" />
+                                                        <HBox spacing="5.0">
+                                                            <children>
+                                                                <Slider fx:id="minFrequencySlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" minorTickCount="0" showTickLabels="true" />
+                                                                <TextField fx:id="minFrequencyText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                                <VBox layoutX="5.0" layoutY="300.0" spacing="5.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal relative frequency:" />
+                                                        <HBox spacing="5.0">
+                                                            <children>
+                                                                <Slider fx:id="maxFrequencySlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" minorTickCount="0" showTickLabels="true" value="1.0" />
+                                                                <TextField fx:id="maxFrequencyText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                </TitledPane>
+                                <TitledPane animated="false" text="Graph settings">
+                                    <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox fx:id="sliderEdgeWidth" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <Label text="Node radius:" />
+                                          <Slider fx:id="sliderNodeRadius" />
+                                          <Label text="Edge width:" />
+                                          <Slider />
+                                          <Label text="Edge length:" />
+                                          <Slider fx:id="sliderEdgeLength" />
+                                          <Label />
+                                          <Button mnemonicParsing="false" text="Reset defaults" />
+                                       </children>
+                                    </VBox>
+                                 </children></AnchorPane>
+                                    </content>
+                                </TitledPane>
+                                <TitledPane animated="false" prefHeight="415.0" prefWidth="220.0" text="Colouring">
+                                    <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    </content>
+                                </TitledPane>
+                            </panes>
+                        </Accordion>
+                        <Text layoutX="14.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Controls" AnchorPane.bottomAnchor="49.93408203125" AnchorPane.leftAnchor="14.0" />
+                        <Button fx:id="startAnalysisButton" layoutX="14.0" layoutY="509.0" mnemonicParsing="false" onAction="#startAnalysis" text="Start Analysis" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
+                        <CheckBox fx:id="useSelectedCheckBox" layoutX="139.0" layoutY="513.0" mnemonicParsing="false" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="139.0" />
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+        <HBox id="HBox" alignment="CENTER_LEFT" fillHeight="false" spacing="5.0" VBox.vgrow="NEVER">
+            <children>
+                <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+                <Label fx:id="statusRightLabel" maxWidth="-1.0" text="Running" HBox.hgrow="NEVER">
+                    <font>
+                        <Font size="11.0" fx:id="x3" />
+                    </font>
+                    <textFill>
+                        <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
+                    </textFill>
+                </Label>
+            </children>
+            <padding>
+                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+            </padding>
+        </HBox>
+    </children>
 </VBox>

@@ -42,7 +42,7 @@ public class Main extends Application {
         content = loader.load();
         primaryStage.setTitle("Network Analysis Tool");
         setXEvent(primaryStage);
-        mainScene = new Scene(content, 900, 700);
+        mainScene = new Scene(content, 1200, 900);
         mainScene.getStylesheets().add(UserSettings.whatTheme((Boolean) UserSettings.userSettings.get("theme")));
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(GlobalConstants.ICON));

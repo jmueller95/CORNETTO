@@ -144,6 +144,9 @@ public class MainStageController implements Initializable {
     @FXML
     private ProgressIndicator startupSpinner;
 
+    @FXML
+    private Label statusRightLabel;
+
     /**
      * Initializes every needed service
      *
@@ -166,6 +169,8 @@ public class MainStageController implements Initializable {
         //SaveAndLoadOptions.loadSettings();
 
     }
+
+
 
 
     @FXML
@@ -192,6 +197,7 @@ public class MainStageController implements Initializable {
 
     private void displayGraph(MyGraph<MyVertex, MyEdge> taxonGraph) {
         ViewPane viewPane = new ViewPane(new MyGraphView(taxonGraph));
+        statusRightLabel.textProperty().bind(viewPane.hoverInfo);
         mainViewTab.setContent(viewPane);
     }
 
@@ -491,8 +497,10 @@ public class MainStageController implements Initializable {
      * Initializes the accordion on the right pane
      */
     private void initializeAccordion() {
-        //preferencesAccordion.setExpandedPane(preferencesAccordion.getPanes().get(0));
+        preferencesAccordion.setExpandedPane(preferencesAccordion.getPanes().get(0));
     }
+
+
 
     /**
      * Activates the buttons on the right pane
