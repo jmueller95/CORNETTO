@@ -42,10 +42,10 @@ public class MetadataMapping {
 
      public static void main(String[] args) throws IOException {
         //if the same ID twice exists, then throw an error
-         //ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFileTestwithSameID");
+         //ArrayList<String> show =  MetadataParser("./res/testFiles/FilesTestwithSameID");
 
          //if each IDs exist only once
-         ArrayList<String> show =  MetadataParser("./res/testFiles/metaData/metadataFileTest");
+         ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFilesTest");
 
     }
 
