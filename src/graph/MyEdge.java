@@ -1,5 +1,8 @@
 package graph;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 import java.util.HashMap;
 
 /**
@@ -9,7 +12,7 @@ public class MyEdge {
 
     private MyVertex source;
     private MyVertex target;
-    private boolean isHidden = false;
+    private BooleanProperty isHidden = new SimpleBooleanProperty(false);
     private double weight;
     private HashMap<String, Object> attributesMap;
     private double correlation;
@@ -30,11 +33,11 @@ public class MyEdge {
 
 
     public void hideEdge() {
-        this.isHidden = true;
+        isHidden.set(true);
     }
 
     public void showEdge() {
-        this.isHidden = false;
+        isHidden.set(false);
     }
 
     public MyVertex getSource() {
@@ -63,5 +66,13 @@ public class MyEdge {
 
     public void setPValue(double pValue) {
         this.pValue = pValue;
+    }
+
+    public boolean isHidden(){
+        return isHidden.get();
+    }
+
+    public BooleanProperty isHiddenProperty() {
+        return isHidden;
     }
 }

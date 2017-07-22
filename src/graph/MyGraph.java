@@ -234,22 +234,22 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
      */
     public void filterTaxa(List<Sample> samples, double lowerCorrelationThreshold, double upperCorrelationThreshold, double pValueThreshold, String rank) {
         //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
-        LinkedList<TaxonNode> unfilteredTaxonList = SampleComparison.getUnifiedTaxonList(samples, rank);
+        LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(samples, rank);
 
         //Counts the visible edges of each node - is initially set to n-1 for every node, decremented when edge is hidden
-        int[] visibleEdgeCounts = new int[unfilteredTaxonList.size()];
-        Arrays.fill(visibleEdgeCounts, unfilteredTaxonList.size() - 1);
+        int[] visibleEdgeCounts = new int[taxonList.size()];
+        Arrays.fill(visibleEdgeCounts, taxonList.size() - 1);
 
         //Get correlation matrix and p-value matrix
         RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, rank);
         RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples, rank);
 
         //Compare every node with every other node
-        for (int i = 0; i < unfilteredTaxonList.size(); i++) {
+        for (int i = 0; i < taxonList.size(); i++) {
             for (int j = 0; j < i; j++) {
                 //Access MyEdge object via the Hashmap (we need the node ids for this)
-                int idOfFirstNode = unfilteredTaxonList.get(i).getTaxonId();
-                int idOfSecondNode = unfilteredTaxonList.get(j).getTaxonId();
+                int idOfFirstNode = taxonList.get(i).getTaxonId();
+                int idOfSecondNode = taxonList.get(j).getTaxonId();
                 MyEdge currentEdge = getNodeIdsToEdgesMap().get(idOfFirstNode).get(idOfSecondNode);
                 //Test if edge between the nodes should be hidden
                 if (correlationMatrix.getEntry(i, j) < upperCorrelationThreshold ||
@@ -266,10 +266,12 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
                 }
             }
         }
-        //Hide all vertices that don't have visible edges anymore
+        //Hide all vertices that don't have visible edges anymore, show the rest
         for (int i = 0; i < visibleEdgeCounts.length; i++) {
             if(visibleEdgeCounts[i] == 0)
-                taxonNodeToVertexMap.get(unfilteredTaxonList.get(i)).hideVertex();
+                taxonNodeToVertexMap.get(taxonList.get(i)).hideVertex();
+            else
+                taxonNodeToVertexMap.get(taxonList.get(i)).showVertex();
         }
     }
 

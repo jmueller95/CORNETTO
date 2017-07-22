@@ -183,13 +183,14 @@ public class MainStageController implements Initializable {
      */
     public void startAnalysis() {
         startAnalysisButton.setDisable(true);
-        System.out.println("Performing analysis at level: " + AnalysisData.getLevel_of_analysis());
         boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
         if(isAnalysisSuccessful) {
             LoadedData.createGraph();
             //Default values: 0.5<correlation<1, pValue<0.1
             LoadedData.getTaxonGraph().filterTaxa(
-                    LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
+                    LoadedData.getSamples(),
+                    AnalysisData.getMaxCorrelation(), AnalysisData.getMinCorrelation(),
+                    AnalysisData.getMaxPValue(), AnalysisData.getLevel_of_analysis());
             System.out.println("Taxa filtered after " + AnalysisData.getLevel_of_analysis());
             displayGraph(LoadedData.getTaxonGraph());
         }else{//The analysis couldn't be done because of insufficient data
@@ -744,8 +745,9 @@ public class MainStageController implements Initializable {
      */
     private void showInsufficientDataAlert(){
         insufficientDataAlert = new Alert(Alert.AlertType.ERROR);
-        insufficientDataAlert.setTitle("Insufficient Data for Analysis");
-        insufficientDataAlert.setHeaderText("Maybe you're being to general, try choosing a more specific rank!");
+        insufficientDataAlert.setTitle("Insufficient data for Analysis");
+        insufficientDataAlert.setHeaderText("Not enough data to perform the analysis.");
+        insufficientDataAlert.setContentText("Try choosing a more specific rank!");
         insufficientDataAlert.show();
     }
 
