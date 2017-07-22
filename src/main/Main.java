@@ -40,7 +40,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getClassLoader().getResource("UI/mainStageGui.fxml"));
         content = loader.load();
-        primaryStage.setTitle("Network Analysis Tool");
+        primaryStage.setTitle(GlobalConstants.NAME_OF_PROGRAM);
         setXEvent(primaryStage);
         mainScene = new Scene(content, 1200, 900);
         mainScene.getStylesheets().add(UserSettings.whatTheme((Boolean) UserSettings.userSettings.get("theme")));
