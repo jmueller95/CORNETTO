@@ -191,7 +191,6 @@ public class MainStageController implements Initializable {
                     LoadedData.getSamples(),
                     AnalysisData.getMaxCorrelation(), AnalysisData.getMinCorrelation(),
                     AnalysisData.getMaxPValue(), AnalysisData.getLevel_of_analysis());
-            System.out.println("Taxa filtered after " + AnalysisData.getLevel_of_analysis());
             displayGraph(LoadedData.getTaxonGraph());
         }else{//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();

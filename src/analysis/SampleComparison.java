@@ -68,16 +68,13 @@ public abstract class SampleComparison {
 
 
     public static RealMatrix getCorrelationMatrixOfSamples(List<Sample> samples, String rank) {
-        if (sampleCorrelation == null) {
-            createPearsonsCorrelationOfSamples(samples, rank);
-        }
+        createPearsonsCorrelationOfSamples(samples, rank);
         return sampleCorrelation.getCorrelationMatrix();
     }
 
     public static RealMatrix getCorrelationPValuesOfSamples(List<Sample> samples, String rank) {
-        if (sampleCorrelation == null) {
-            createPearsonsCorrelationOfSamples(samples, rank);
-        }
+        createPearsonsCorrelationOfSamples(samples, rank);
+
         return sampleCorrelation.getCorrelationPValues();
     }
 
@@ -112,11 +109,12 @@ public abstract class SampleComparison {
      * Given a list of samples and a rank to operate on, creates a mapping of all taxon nodes to their maximal relative
      * frequency. This method is needed for filtering (e.g. if we set "minimal frequency" to 0.3, only the taxa who appear
      * in at least one of the samples with a frequency of at least 0.3 will be shown)
+     *
      * @param samples
      * @param rank
      * @return
      */
-    public static HashMap<TaxonNode, Double> getMaximumRelativeFrequencies(List<Sample> samples, String rank){
+    public static HashMap<TaxonNode, Double> getMaximumRelativeFrequencies(List<Sample> samples, String rank) {
         HashMap<Sample, HashMap<TaxonNode, Double>> allRelativeCounts = new HashMap<>();
         for (Sample sample : samples) {
             allRelativeCounts.put(sample, getRelativeFrequenciesForSample(sample, rank));
@@ -126,10 +124,10 @@ public abstract class SampleComparison {
         for (TaxonNode taxonNode : getUnifiedTaxonList(samples, rank)) {
             double maxRelativeCount = 0;
             for (Sample sample : samples) {
-                double currentRelativeCount = allRelativeCounts.get(sample).getOrDefault(taxonNode,0.d);
-                maxRelativeCount = Math.max(maxRelativeCount,currentRelativeCount);
+                double currentRelativeCount = allRelativeCounts.get(sample).getOrDefault(taxonNode, 0.d);
+                maxRelativeCount = Math.max(maxRelativeCount, currentRelativeCount);
             }
-            maximumRelativeCountsMap.put(taxonNode,maxRelativeCount);
+            maximumRelativeCountsMap.put(taxonNode, maxRelativeCount);
         }
         return maximumRelativeCountsMap;
     }
