@@ -1,97 +1,74 @@
 package view;
 
+import com.sun.glass.ui.View;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+import org.graphstream.ui.j2dviewer.renderer.shape.swing.SquareShape;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RadialGradientPaint;
-import java.awt.geom.Point2D;
-import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.*;
+
 
 /**
- * Created by NantiaL on 02.07.2017.
+ * Created by NantiaL on 22.07.2017.
  */
+public class MyColorGradient extends Application {
 
-public class MyColorGradient {
+    //define colors
+    Color Red = Color.RED;
+    Color Green = Color.GREEN;
+    Color Pink = Color.PINK;
+    Color Blue = Color.BLUE;
 
-    private static class MyLabel extends JLabel{
-
-        Color TopL;
-        Color TopR;
-        Color BottomL;
-        Color BottomR;
-        Color Middle;
-        int size;
+    CycleMethod Reflect = CycleMethod.REFLECT;
 
 
-            public MyLabel(int size, Color leftTop, Color rightTop,Color middle ,Color leftBottom, Color rightBottom){
-                super();
-                this.size = size;
-                this.TopL = leftTop;
-                this.TopR = rightTop;
-                this.BottomL = leftBottom;
-                this.BottomR = rightBottom;
-                this.Middle = middle;
-                this.setPreferredSize(new Dimension(size, size));
-            }
-
-            @Override
-            protected void paintComponent(Graphics g){
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                GradientPaint twoColorGradient = new GradientPaint(
-                        size, 0f, TopR, 0, size, BottomL);
-
-                float radius = size-(size/4);
-                float[] dist = {0f, 1.0f};
-                Point2D center = new Point2D.Float(0f, 0f);
-                Color noColor = new Color(0f, 0f, 0f, 0f);
-                Color[] colors = {TopL, noColor};
-                RadialGradientPaint thirdColor = new RadialGradientPaint(center, radius, dist, colors);
+    @Override
+        //using Linear Gradient
+        public void start (Stage r){
 
 
-                center = new Point2D.Float(size, size);
-                Color[] colors2 = {BottomR, noColor};
-                RadialGradientPaint fourthColor = new RadialGradientPaint(center, radius, dist, colors2);
-                RadialGradientPaint fifthColor = new RadialGradientPaint(center, radius, dist, colors2);
+        //color stop-list for the gradient
+        Stop Stop1 = new Stop(0, Red);
+        Stop Stop2 = new Stop(1, Green);
+        Stop Stop3 = new Stop(2,Pink);
+        Stop[] end = new Stop[]{Stop1, Stop2, Stop3};
+
+        //constructs the color Gradient
+        LinearGradient linearGradient = new LinearGradient(2, 0, 1, 0,true, Reflect, end);
+
+        //sets the frame
+        VBox boxFrame = new VBox();
+        Scene frame = new Scene(boxFrame, 200, 200);
+        frame.setFill(null);
+
+        //defines the square
+        Rectangle rectangle = new Rectangle(0, 0, 200, 200);
+        rectangle.setFill(linearGradient);
 
 
-                //add colors
-                g2d.setPaint(twoColorGradient);
-                g2d.fillRect(0, 0, size, size);
+        //put the color gradient in the frame
+        boxFrame.getChildren().add(rectangle);
 
-                g2d.setPaint(thirdColor);
-                g2d.fillRect(0, 0, size, size);
+        r.setScene(frame);
+        r.show();
+    }
 
-                g2d.setPaint(fourthColor);
-                g2d.fillRect(0, 0, size, size);
-
-                g2d.setPaint(fifthColor);
-                g2d.fillRect(0, 0, size, size);
-            }
-        }
-
-
+    //show the frame
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Frame");
-        JPanel myPanel = new JPanel();
-        frame.add(myPanel);
-
-        myPanel.add(new MyLabel(400, Color.RED, Color.RED, Color.BLUE, Color.PINK,Color.GREEN));
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-    }
+        launch(args);
     }
 
+}
 
 
 
