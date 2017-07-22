@@ -22,10 +22,16 @@ public class SaveAndLoadOptions {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(GlobalConstants.USER_SETTINGS_FILEPATH)))) {
             writer.write("< This file stores the settings of the" + GlobalConstants.NAME_OF_PROGRAM + SEPARATOR);
 
+            //write booleans
             writer.write("theme = " + UserSettings.userSettings.get("theme") + SEPARATOR);
             writer.write("isDefaultFileChooserLocation = " + UserSettings.userSettings.get
                     ("isDefaultFileChooserLocation") + SEPARATOR);
-            writer.write("defaultFileChooserLocation = " + UserSettings.userSettings.get("defaultFileChooserLocation"));
+            writer.write("isUnconnectedEdgesHiddenOnStartup = " + UserSettings.userSettings.get("isUnconnectedEdgesHiddenOnStartup") + SEPARATOR);
+            //write strings
+            writer.write("defaultFileChooserLocation = " + UserSettings.userSettings.get
+                    ("defaultFileChooserLocation") + SEPARATOR);
+            writer.write("font = " + UserSettings.userSettings.get("font") + SEPARATOR);
+            writer.write("nodesColor = " + UserSettings.userSettings.get("nodesColor"));
 
         } catch (IOException e) {
             e.printStackTrace();

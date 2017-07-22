@@ -1,26 +1,42 @@
 package main;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 
 public class UserSettings {
 
-    public static File defaultFileChooserLocation = new File(System.getProperty("user.home"));
+    //Strings
+    private static File defaultFileChooserLocation = new File(System.getProperty("user.home"));
+    private static String font;
+    private static String nodesColor;
 
-    public static boolean isDarkTheme = true;
-    public static boolean isDefaultDirectoryLocation = true;
+    //booleans
+    private static boolean isDarkTheme = true;
+    private static boolean isDefaultDirectoryLocation = true;
+    private static boolean isUnconnectedEdgesHiddenOnStartup = false;
 
     //contains all userSettings
     public static HashMap<String, Object> userSettings = new HashMap<>();
 
     public static void addUserSettings(){
+        File dummyFile = new File("./res/userSettings.txt");
+        boolean isFileCreated = false;
+        try {
+            isFileCreated = dummyFile.createNewFile();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
         //add Strings
         userSettings.put("defaultFileChooserLocation", defaultFileChooserLocation.getAbsolutePath());
+        userSettings.put("font", font);
+        userSettings.put("nodesColor", nodesColor);
 
         //add Booleans
         userSettings.put("theme", isDarkTheme);
         userSettings.put("isDefaultFileChooserLocation", isDefaultDirectoryLocation);
+        userSettings.put("isUnconnectedEdgesHiddenOnStartup", isUnconnectedEdgesHiddenOnStartup);
     }
 
     public static String whatTheme(boolean theme){

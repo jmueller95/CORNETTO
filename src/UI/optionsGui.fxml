@@ -51,7 +51,7 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="107.0" prefWidth="881.0">
                                        <children>
-                                          <Button layoutX="765.0" layoutY="427.0" mnemonicParsing="false" onAction="#saveSettings" prefHeight="30.0" prefWidth="113.0" text="Save Settings" />
+                                          <Button layoutX="754.0" layoutY="422.0" mnemonicParsing="false" onAction="#saveSettings" prefHeight="35.0" prefWidth="120.0" text="Save Settings" />
                                        </children></AnchorPane>
                               </content>
                             </Tab>
@@ -59,7 +59,8 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Button layoutX="-24.0" layoutY="-2.0" mnemonicParsing="false" onAction="#setNewDefaultOpenDirectory" prefHeight="25.0" prefWidth="235.0" text="Change default load files location" />
+                                          <Button layoutX="14.0" layoutY="2.0" mnemonicParsing="false" onAction="#setNewDefaultOpenDirectory" prefHeight="25.0" prefWidth="235.0" text="Change default load files location" />
+                                          <Button layoutX="747.0" layoutY="417.0" mnemonicParsing="false" onAction="#saveSettings" prefHeight="35.0" prefWidth="120.0" text="Save Settings" />
                                        </children>
                                     </AnchorPane>
                               </content>
@@ -68,7 +69,8 @@
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <ToggleButton layoutX="-10.0" layoutY="2.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="234.0" text="Hide Unconnected Nodes on Startup" />
+                                          <ToggleButton layoutX="14.0" layoutY="2.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="234.0" text="Hide Unconnected Nodes on Startup" />
+                                          <Button layoutX="747.0" layoutY="417.0" mnemonicParsing="false" onAction="#saveSettings" prefHeight="35.0" prefWidth="120.0" text="Save Settings" />
                                        </children>
                                     </AnchorPane>
                                 </content>
@@ -77,7 +79,7 @@
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <ToggleButton layoutX="-21.0" layoutY="-1.0" mnemonicParsing="false" onAction="#changeDarkLightMode" prefHeight="30.0" prefWidth="235.0" text="Dark/Bright Mode" />
+                                          <ToggleButton layoutX="14.0" layoutY="-1.0" mnemonicParsing="false" onAction="#changeDarkLightMode" prefHeight="30.0" prefWidth="235.0" text="Dark/Bright Mode" />
                                           <ChoiceBox fx:id="fontChoiceBox" layoutX="214.0" layoutY="-1.0" prefHeight="30.0" prefWidth="180.0" value="default font">
                                               <items>
                                                   <FXCollections fx:factory="observableArrayList">
@@ -96,6 +98,7 @@
                                                   </FXCollections>
                                               </items>
                                           </ChoiceBox>
+                                          <Button layoutX="747.0" layoutY="417.0" mnemonicParsing="false" onAction="#saveSettings" prefHeight="35.0" prefWidth="120.0" text="Save Settings" />
                                        </children>
                                     </AnchorPane>
                                 </content>

@@ -31,7 +31,7 @@ public abstract class SampleComparison {
                 }
             }
         }
-        //Sort the list TODO: Might it be more efficient to directly insert the nodes sorted?
+        //Sort the list
         unifiedTaxonList.sort((tn1, tn2) -> {
             int id1 = tn1.getTaxonId();
             int id2 = tn2.getTaxonId();
@@ -81,6 +81,58 @@ public abstract class SampleComparison {
         return sampleCorrelation.getCorrelationPValues();
     }
 
+    /**
+     * Given a sample and a rank to operate on, returns a hashmap of all the taxa with this rank contained in the sample
+     * and their relative frequencies
+     *
+     * @param sample
+     * @param rank
+     * @return
+     */
+    public static HashMap<TaxonNode, Double> getRelativeFrequenciesForSample(Sample sample, String rank) {
+        //Get all taxa on the given rank
+        LinkedList<TaxonNode> nodesOnRank = getUnifiedTaxonList(Collections.singletonList(sample), rank);
+        int countSum = 0;
+        HashMap<TaxonNode, Double> relativeCountsMap = new HashMap<>();
+        for (TaxonNode taxonNode : nodesOnRank) {
+            int taxonCount = sample.getTaxonCountRecursive(taxonNode);
+            countSum += taxonCount;
+            relativeCountsMap.put(taxonNode, (double) taxonCount);
+        }
+        //Replace absolute counts with relative counts
+        for (TaxonNode taxonNode : nodesOnRank) {
+            relativeCountsMap.put(taxonNode, relativeCountsMap.get(taxonNode) / countSum);
+        }
+
+        return relativeCountsMap;
+
+    }
+
+    /**
+     * Given a list of samples and a rank to operate on, creates a mapping of all taxon nodes to their maximal relative
+     * frequency. This method is needed for filtering (e.g. if we set "minimal frequency" to 0.3, only the taxa who appear
+     * in at least one of the samples with a frequency of at least 0.3 will be shown)
+     * @param samples
+     * @param rank
+     * @return
+     */
+    public static HashMap<TaxonNode, Double> getMaximumRelativeFrequencies(List<Sample> samples, String rank){
+        HashMap<Sample, HashMap<TaxonNode, Double>> allRelativeCounts = new HashMap<>();
+        for (Sample sample : samples) {
+            allRelativeCounts.put(sample, getRelativeFrequenciesForSample(sample, rank));
+        }
+
+        HashMap<TaxonNode, Double> maximumRelativeCountsMap = new HashMap<>();
+        for (TaxonNode taxonNode : getUnifiedTaxonList(samples, rank)) {
+            double maxRelativeCount = 0;
+            for (Sample sample : samples) {
+                double currentRelativeCount = allRelativeCounts.get(sample).getOrDefault(taxonNode,0.d);
+                maxRelativeCount = Math.max(maxRelativeCount,currentRelativeCount);
+            }
+            maximumRelativeCountsMap.put(taxonNode,maxRelativeCount);
+        }
+        return maximumRelativeCountsMap;
+    }
 
 /*
 PROBABLY DEPRECATED - Does the same as "getCorrelationMatrixOfSamples", but returns a hashmap so you know which nodes
