@@ -1,6 +1,7 @@
 package main;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 
@@ -15,6 +16,13 @@ public class UserSettings {
     public static HashMap<String, Object> userSettings = new HashMap<>();
 
     public static void addUserSettings(){
+        File dummyFile = new File("./res/userSettings.txt");
+        boolean isFileCreated = false;
+        try {
+            isFileCreated = dummyFile.createNewFile();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
         //add Strings
         userSettings.put("defaultFileChooserLocation", defaultFileChooserLocation.getAbsolutePath());
 

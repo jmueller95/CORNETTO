@@ -791,7 +791,7 @@ public class MainStageController implements Initializable {
             Parent root = fxmlLoader.load();
             this.optionsStage = new Stage();
             optionsStage.setTitle("Options");
-            Scene optionsScene = new Scene(root, 800, 500);
+            Scene optionsScene = new Scene(root, 1000, 700);
             optionsStage.setScene(optionsScene);
             optionsScene.getStylesheets().add(GlobalConstants.DARKTHEME);
             optionsStage.show();
