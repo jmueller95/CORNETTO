@@ -283,6 +283,11 @@ public class MainStageController implements Initializable {
         rightPane.setMinWidth(width);
     }
 
+    /**
+     * sets the openFileChooser directory
+     * opens a file to load from
+     * @param fileType
+     */
     private void openFiles(FileType fileType) {
         FileChooser fileChooser = new FileChooser();
         String fileChooserTitle = "Load from ";
@@ -290,8 +295,7 @@ public class MainStageController implements Initializable {
         if ((Boolean) UserSettings.userSettings.get("isDefaultFileChooserLocation")) {
             setDefaultOpenDirectory(fileChooser);
         } else {
-            fileChooser.setInitialDirectory(new File((String)UserSettings.userSettings.get
-                    ("defaultFileChooserLocation"))); //TODO exceptions with defaultFileChooserLocation being a file?!?
+            fileChooser.setInitialDirectory(new File((String) UserSettings.userSettings.get("defaultFileChooserLocation")));
         }
 
         switch (fileType) {

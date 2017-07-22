@@ -16,7 +16,7 @@ public class UserSettings {
 
     public static void addUserSettings(){
         //add Strings
-        userSettings.put("defaultFileChooserLocation", defaultFileChooserLocation);
+        userSettings.put("defaultFileChooserLocation", defaultFileChooserLocation.getAbsolutePath());
 
         //add Booleans
         userSettings.put("theme", isDarkTheme);

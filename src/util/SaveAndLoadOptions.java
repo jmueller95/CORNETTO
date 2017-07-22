@@ -23,7 +23,8 @@ public class SaveAndLoadOptions {
             writer.write("< This file stores the settings of the" + GlobalConstants.NAME_OF_PROGRAM + SEPARATOR);
 
             writer.write("theme = " + UserSettings.userSettings.get("theme") + SEPARATOR);
-            writer.write("isDefaultFileChooserLocation = " + UserSettings.userSettings.get("defaultFileChooserDirectory") + SEPARATOR);
+            writer.write("isDefaultFileChooserLocation = " + UserSettings.userSettings.get
+                    ("isDefaultFileChooserLocation") + SEPARATOR);
             writer.write("defaultFileChooserLocation = " + UserSettings.userSettings.get("defaultFileChooserLocation"));
 
         } catch (IOException e) {

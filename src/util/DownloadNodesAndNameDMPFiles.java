@@ -1,6 +1,7 @@
 package util;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.math3.analysis.function.Exp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +17,6 @@ import java.util.zip.ZipInputStream;
  * Created by Zeth on 27.05.2017.
  */
 public class DownloadNodesAndNameDMPFiles {
-
-    //TODO Throw error when no internet connection
 
     private static final Logger LOGGER = Logger.getLogger(DownloadNodesAndNameDMPFiles.class.getName());
     private static final String OUTPUT_FOLDER = "./res";
@@ -54,15 +53,21 @@ public class DownloadNodesAndNameDMPFiles {
      * @param outputFolder zip file output folder
      */
     private static void downloadFile(URL url, String outputFolder) {
-        String fileName = "NodesAndNamesDmp.zip";
-        File newFile = new File(outputFolder + File.separator + fileName);
-
-        //download file and save it
         try {
-            LOGGER.log(Level.FINE, "Downloading file...");
-            FileUtils.copyURLToFile(url, newFile);
-            LOGGER.log(Level.FINE, "Done downloading file");
-        } catch (Exception e) {
+            if (InternetAvailabilityChecker.isInternetAvailable()){
+                String fileName = "NodesAndNamesDmp.zip";
+                File newFile = new File(outputFolder + File.separator + fileName);
+
+                //download file and save it
+                try {
+                    LOGGER.log(Level.FINE, "Downloading file...");
+                    FileUtils.copyURLToFile(url, newFile);
+                    LOGGER.log(Level.FINE, "Done downloading file");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

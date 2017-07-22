@@ -13,4 +13,7 @@ public class GlobalConstants {
 
 
     public static final String USER_SETTINGS_FILEPATH = "./res/userSettings.txt";
+
+    public static final String NODES_DMP_SRC = "./res/nodes.dmp";
+    public static final String NAMES_DMP_SRC = "./res/names.dmp";
 }
