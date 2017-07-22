@@ -31,12 +31,14 @@ public class MyEdgeView extends Group {
         edgeShape.endXProperty().bind((myEdge.getTarget()).xCoordinatesProperty());
         edgeShape.endYProperty().bind((myEdge.getTarget()).yCoordinatesProperty());
 
+        visibleProperty().bind(myEdge.isHiddenProperty().not());
 
         edgeShape.setStrokeWidth(lineThickness);
         setColor();
 
         getChildren().add(edgeShape);
         addLabel();
+
 
     }
 

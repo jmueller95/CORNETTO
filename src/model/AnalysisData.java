@@ -98,4 +98,20 @@ public class AnalysisData {
     public static DoubleProperty maxFrequencyProperty() {
         return maxFrequency;
     }
+
+
+    /**
+     * Helper method for printing a matrix to the console
+     *
+     * @param matrix
+     */
+    public static void printMatrix(RealMatrix matrix) {
+        for (int rowIndex = 0; rowIndex < matrix.getRowDimension(); rowIndex++) {
+            for (int colIndex = 0; colIndex < matrix.getColumnDimension(); colIndex++) {
+                System.out.printf("%.3f", matrix.getEntry(rowIndex, colIndex));
+                System.out.print("\t");
+            }
+            System.out.println();
+        }
+    }
 }

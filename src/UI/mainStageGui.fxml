@@ -29,7 +29,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -154,15 +154,10 @@
                                                         <fx:define>
                                                             <ToggleGroup fx:id="allOrSelectedToggleGroup" />
                                                         </fx:define>
-                                                        <RadioButton mnemonicParsing="false" selected="true" text="Compare all Samples">
-                                                            <toggleGroup>
-                                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
-                                                            </toggleGroup>
+                                                        <RadioButton fx:id="compareAllSamplesButton" mnemonicParsing="false" selected="true" text="Compare all Samples" toggleGroup="$allOrSelectedToggleGroup">
+                                             </RadioButton>
+                                                        <RadioButton fx:id="compareSelectedSamplesButton" mnemonicParsing="false" text="Compare selected Samples" toggleGroup="$allOrSelectedToggleGroup">
                                                         </RadioButton>
-                                                        <RadioButton mnemonicParsing="false" text="Compare selected Samples">
-                                             <toggleGroup>
-                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
-                                             </toggleGroup></RadioButton>
                                                     </children>
                                                 </VBox>
                                                 <HBox layoutX="10.0" layoutY="55.0" spacing="5.0">
@@ -226,6 +221,7 @@
                                                         </HBox>
                                                     </children>
                                                 </VBox>
+                                    <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="375.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
                                             </children>
                                         </AnchorPane>
                                     </content>
@@ -234,14 +230,14 @@
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <VBox  prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <Label text="Node radius:" />
-                                          <Slider fx:id="sliderNodeRadius" min="1.0" max="50" value="15"/>
-                                          <Label text="Edge width:"/>
-                                          <Slider fx:id="sliderEdgeWidth"  min="1.0" max="20" value="5.0"/>
+                                          <Slider fx:id="sliderNodeRadius" max="50" min="1.0" value="15" />
+                                          <Label text="Edge width:" />
+                                          <Slider fx:id="sliderEdgeWidth" max="20" min="1.0" value="5.0" />
                                           <Label text="Edge length:" />
-                                          <Slider fx:id="sliderEdgeLength" min="1.0" max="10" value="5.0"/>
+                                          <Slider fx:id="sliderEdgeLength" max="10" min="1.0" value="5.0" />
                                           <Label />
                                           <Button mnemonicParsing="false" text="Reset defaults" />
                                        </children>

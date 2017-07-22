@@ -36,6 +36,8 @@ public class MyVertexView extends Group {
         translateYProperty().bindBidirectional(myVertex.yCoordinatesProperty());
         addSelectionMarker();
 
+        visibleProperty().bind(myVertex.isHiddenProperty().not());
+
         getChildren().add(vertexShape);
 
     }
