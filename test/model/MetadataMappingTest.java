@@ -27,8 +27,8 @@ public class MetadataMappingTest {
 
     @Test
     public void metadataParser() throws Exception {
-        //HashMap<String,String> show =  csvparser.MetadataParser("./res/testFiles/metadataFileTest");
-        ArrayList<String> show =  csvparser.MetadataParser("./res/testFiles/metadataFileTest");
+        //HashMap<String,String> show =  csvparser.MetadataParser("./res/testFiles//metaData/metadataFileTest");
+        ArrayList<String> show =  csvparser.MetadataParser("./res/testFiles//metaData/metadataFileTest");
 
 
         assertEquals( 18, show.size() ); //checks if the size of the file is correct

@@ -4,10 +4,14 @@ import com.sun.javafx.geom.transform.Affine3D;
 import com.sun.javafx.geom.transform.BaseTransform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.BoundingBox;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.SubScene;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -20,39 +24,55 @@ import javafx.scene.transform.Translate;
 /**
  * Created by caspar on 26.06.17.
  */
-public class ViewPane extends StackPane {
+public class ViewPane extends AnchorPane {
 
-    //constants
     private final static double ZOOM_FACTOR = 1.1;
+
+    private Rectangle selectRectangle;
+    private Pane bottomPane;
+    private Pane topPane;
+    private MyGraphView myGraphView;
+    private SubScene viewScene;
+    private StackPane stackPane;
 
     private double pressedX;
     private double pressedY;
     private double initTransX;
     private double initTransY;
 
-
-    private Rectangle selectRectangle;
-    private Pane topPane;
-    private Pane bottomPane;
-    private MyGraphView myGraphView;
-
     private Property<Transform> viewTransformProperty;
+    public StringProperty hoverInfo;
 
-    ViewPane(MyGraphView graphView) {
+    public ViewPane(MyGraphView graphView) {
+
+        // Setup Main Pane
+        AnchorPane.setBottomAnchor(this, 0.0);
+        AnchorPane.setTopAnchor(this, 0.0);
+        AnchorPane.setLeftAnchor(this, 0.0);
+        AnchorPane.setRightAnchor(this, 0.0);
+        this.setStyle("-fx-background-color : whitesmoke");
+
+        // Create new scene with graphView
+        this.myGraphView = graphView;
+        bottomPane = new Pane();
         topPane = new Pane();
         topPane.setPickOnBounds(false);
 
-        bottomPane = new Pane();
-        this.myGraphView = graphView;
-        bottomPane.getChildren().add(myGraphView);
+        stackPane = new StackPane(bottomPane, myGraphView, topPane);
+        viewScene = new SubScene(stackPane, this.getWidth(), this.getHeight());
+        viewScene.widthProperty().bind(this.widthProperty());
+        viewScene.heightProperty().bind(this.heightProperty());
+        viewScene.setPickOnBounds(false);
 
-        //myGraphView.getTransforms().addAll(translate, scale);
-        getChildren().addAll(bottomPane, topPane);
+        // Add StackPane in SubScene and add content.
+        getChildren().addAll(viewScene);
 
+        hoverInfo = new SimpleStringProperty("");
+
+        // Setup interactions and view elements
         setupTransforms();
         initRectangle();
         addMouseInteractions();
-
     }
 
     private void setupTransforms() {
@@ -77,7 +97,7 @@ public class ViewPane extends StackPane {
         selectRectangle.setFill(Color.TRANSPARENT);
         selectRectangle.setStroke(Color.DARKSLATEGREY);
         selectRectangle.getStrokeDashArray().addAll(3.0, 7.0, 3.0, 7.0);
-        topPane.getChildren().add(selectRectangle);
+        stackPane.getChildren().add(selectRectangle);
     }
 
 
@@ -86,10 +106,12 @@ public class ViewPane extends StackPane {
      */
     private void addMouseInteractions() {
         // Register Location of Mouse button click for all Events
-        setOnMousePressed((me) -> {
+        stackPane.setOnMousePressed((me) -> {
 
             pressedX = me.getSceneX();
             pressedY = me.getSceneY();
+            myGraphView.pauseAnimation();
+            setCursor(Cursor.MOVE);
         });
 
         // Mouse clicked on elements of the VertexViewGroup:
@@ -97,17 +119,26 @@ public class ViewPane extends StackPane {
 
             MyVertexView vertexView = (MyVertexView) o;
 
+            // OnMouseOver: Display Information in the Status Bar
+            o.setOnMouseEntered(me -> {
+                hoverInfo.setValue(vertexView.getMyVertex().getTaxonName());
+            });
+
+            o.setOnMouseExited(me -> {
+                hoverInfo.setValue("");
+            });
+
             // Register translation of vertexVIew before starting Drag operation
             o.setOnMousePressed(me -> {
                 initTransX = vertexView.translateXProperty().get();
                 initTransY = vertexView.translateYProperty().get();
+
             });
 
 
             // Left Mouse Drag: Move Node
             o.setOnMouseDragged(me -> {
 
-                setCursor(Cursor.MOVE);
                 if (me.getButton() == MouseButton.PRIMARY) {
 
                     // Diagnostic output:
@@ -115,25 +146,33 @@ public class ViewPane extends StackPane {
                     //System.out.println(" |||  MY: " + me.getSceneY() + " | " +  initTransY + " | " + viewTransformProperty.getValue().getTy() );
 
                     // Node translation takes into account: previous vertex translation (due to automatic layout), total pane Translation
-                    double deltaX = (me.getSceneX() - 2 * viewTransformProperty.getValue().getTx());
-                    double deltaY = (me.getSceneY() - 2 * viewTransformProperty.getValue().getTy());
+                    //double deltaX = (me.getSceneX() - 2 * viewTransformProperty.getValue().getTx());
+                    //double deltaY = (me.getSceneY() - 2 * viewTransformProperty.getValue().getTy());
 
                     // Translation value is divided by the initial scaling factor of the whole pane
-                    vertexView.translateXProperty().set(((pressedX + deltaX) / viewTransformProperty.getValue().getMxx()) - initTransX);
-                    vertexView.translateYProperty().set(((pressedY + deltaY) / viewTransformProperty.getValue().getMyy()) - initTransY);
+                    //vertexView.translateXProperty().set(((pressedX + deltaX) / viewTransformProperty.getValue().getMxx()) - initTransX);
+                    //vertexView.translateYProperty().set(((pressedY + deltaY) / viewTransformProperty.getValue().getMyy()) - initTransY);
+
+                    double deltaX = (pressedX - me.getSceneX());
+                    double deltaY = (pressedY - me.getSceneY());
+
+                    vertexView.translateXProperty().set(initTransX - (deltaX / viewTransformProperty.getValue().getMxx()));
+                    vertexView.translateYProperty().set(initTransY - (deltaY/  viewTransformProperty.getValue().getMxx()));
+
+                    //initTransX = vertexView.translateXProperty().get();
+                    //initTransY = vertexView.translateYProperty().get();
 
                     me.consume();
 
-                    // Ugly Hack: Toggle node selection because it will be toggled again by setOnMouseClicked
-                    // TODO: Improve this (Event Handlers?) but for now it works.
-                    myGraphView.getSelectionModel().toggleSelect(vertexView.getMyVertex());
+                    // Update new Position in SpringLayout
+                    myGraphView.updateNodePosition(vertexView.myVertex);
                 }
             });
 
             // Select vertex on normal click without drag
             o.setOnMouseClicked(me -> {
 
-                if (me.getButton() == MouseButton.PRIMARY) {
+                if (me.getButton() == MouseButton.PRIMARY && me.isStillSincePress()) {
 
                     System.out.println(me.isDragDetect());
                     myGraphView.getSelectionModel().toggleSelect(vertexView.getMyVertex());
@@ -186,7 +225,7 @@ public class ViewPane extends StackPane {
         });
 
         //Select Elements in Rectangle when Right Mouse is released
-        setOnMouseReleased((me -> {
+        stackPane.setOnMouseReleased((me -> {
 
             myGraphView.getMyVertexViewGroup().getChildren().forEach(node -> {
                 // Check if rectangle intersects node
@@ -210,12 +249,13 @@ public class ViewPane extends StackPane {
             selectRectangle.setX(0);
 
             // Reset cursor type to normal
+            myGraphView.resumeAnimation();
             setCursor(Cursor.DEFAULT);
 
         }));
 
         // Set on Mouse Wheel scroll
-        setOnScroll((se -> {
+        stackPane.setOnScroll((se -> {
 
             double scaleFactor = (se.getDeltaY() > 0) ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
 

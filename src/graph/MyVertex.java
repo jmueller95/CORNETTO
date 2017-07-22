@@ -25,12 +25,15 @@ public class MyVertex {
         yCoordinates = new SimpleDoubleProperty(0);
         vertexLabel = new SimpleStringProperty("initName");
         attributesMap = new HashMap<>();
-
     }
 
 
-    public double getxCoordinates() {
+    public double getXCoordinates() {
         return xCoordinates.get();
+    }
+
+    public double getYCoordinates() {
+        return yCoordinates.get();
     }
 
     public DoubleProperty xCoordinatesProperty() {
@@ -65,4 +68,6 @@ public class MyVertex {
     public TaxonNode getTaxonNode() {
         return taxonNode;
     }
+
+    public String getTaxonName() { return taxonNode.getName();}
 }

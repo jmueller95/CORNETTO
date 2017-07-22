@@ -1,45 +1,62 @@
 package UI;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
+import main.GlobalConstants;
 import main.Main;
+import main.UserSettings;
+import util.SaveAndLoadOptions;
 
 import java.io.File;
-import java.net.URL;
 
 /**
  * Created by Zeth on 22.06.2017.
  */
 public class OptionsController {
+
     @FXML
     /**
      * changes the UI from dark to light mode
      * //TODO possibly add a warning when triggered
      */
-    private void changeDarkLightMode() throws Exception{
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(new URL("file:"+new File("").getCanonicalPath().concat("/src/UI/mainStageGui.fxml")));
-        Parent newParent;
-        newParent = loader.load();
-        newParent.getStylesheets().add("/UI/lightGuiStyle.css");
-        Stage newStage = Main.getPrimaryStage();
-        newStage.setScene(new Scene(newParent, 1000, 700));
+    private void changeDarkLightMode() throws Exception {
+        if ((Boolean) UserSettings.userSettings.get("theme")){
+            Main.getPrimaryStage().getScene().getStylesheets().remove(0);
+            Main.getPrimaryStage().getScene().getStylesheets().add(GlobalConstants.LIGHTTHEME);
+            MainStageController.getOptionsStage().getScene().getStylesheets().clear();
+            MainStageController.getOptionsStage().getScene().getStylesheets().add(GlobalConstants.LIGHTTHEME);
+            UserSettings.userSettings.put("theme", false);
+        } else {
+            Main.getPrimaryStage().getScene().getStylesheets().remove(0);
+            Main.getPrimaryStage().getScene().getStylesheets().add(GlobalConstants.DARKTHEME);
+            MainStageController.getOptionsStage().getScene().getStylesheets().clear();
+            MainStageController.getOptionsStage().getScene().getStylesheets().add(GlobalConstants.DARKTHEME);
+            UserSettings.userSettings.put("theme", true);
+        }
+
     }
 
     @FXML
     /**
      * changes the default location for loading files
      *
-     */ private void setNewDefaultOpenDirectory(){
+     */
+    private void setNewDefaultOpenDirectory(){
         DirectoryChooser chooser = new DirectoryChooser();
         File file = chooser.showDialog(null);
+        String fileLocation = file.getAbsolutePath();
 
-        MainStageController.isDefaultDirectoryLocation = false;
-        MainStageController.defaultLocation = file.getAbsolutePath();
+        UserSettings.userSettings.put("isDefaultFileChooserLocation", false);
+        UserSettings.userSettings.put("defaultFileChooserLocation", fileLocation);
     }
+
+    @FXML
+    /**
+     * saves the settings
+     */
+    private void saveSettings(){
+        SaveAndLoadOptions.saveSettings();
+    }
+
 
 }

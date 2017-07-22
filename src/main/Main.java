@@ -9,10 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
 
 /**
  * Created by Zeth on 08.06.2017.
@@ -21,6 +17,7 @@ import java.net.URL;
 public class Main extends Application {
     private static Stage pStage;
     private static Parent content;
+    private static Scene mainScene;
 
     /**
      * the Main method
@@ -43,11 +40,12 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getClassLoader().getResource("UI/mainStageGui.fxml"));
         content = loader.load();
-        content.getStylesheets().add("/UI/darkGuiStyle.css");
         primaryStage.setTitle("Network Analysis Tool");
         setXEvent(primaryStage);
-        primaryStage.setScene(new Scene(content, 900, 700));
-//        primaryStage.getIcons().add(new Image("images/science-icon.png"));
+        mainScene = new Scene(content, 1200, 900);
+        mainScene.getStylesheets().add(UserSettings.whatTheme((Boolean) UserSettings.userSettings.get("theme")));
+        primaryStage.setScene(mainScene);
+        primaryStage.getIcons().add(new Image(GlobalConstants.ICON));
         primaryStage.show();
     }
 
@@ -63,13 +61,6 @@ public class Main extends Application {
         return pStage;
     }
 
-    public static Parent getContent() {
-        return content;
-    }
-
-    public static void setContent(Parent content) {
-        Main.content = content;
-    }
 
     /**
      * sets the X close button to prompting an alert box
@@ -80,6 +71,5 @@ public class Main extends Application {
         MainStageController mainStageController = new MainStageController();
         stage.setOnCloseRequest(mainStageController.confirmCloseEventHandler);
     }
-
 
 }

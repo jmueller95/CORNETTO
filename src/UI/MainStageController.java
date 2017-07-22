@@ -1,34 +1,45 @@
 package UI;
 
 
+import graph.MyEdge;
+import graph.MyGraph;
+import graph.MyVertex;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import jdk.internal.org.objectweb.asm.commons.AnalyzerAdapter;
+import javafx.util.StringConverter;
+import javafx.util.converter.NumberStringConverter;
+import main.GlobalConstants;
+import main.UserSettings;
 import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
 import sampleParser.BiomV1Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
-import util.DownloadNodesAndNameDMPFiles;
+import util.SaveAndLoadOptions;
+import view.MyEdgeView;
 import view.MyGraphView;
+import view.MyVertexView;
+import view.ViewPane;
 
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,8 +50,8 @@ import java.util.ResourceBundle;
 import static main.Main.getPrimaryStage;
 
 public class MainStageController implements Initializable {
-    public static final String NODES_DMP_SRC = "./res/nodes.dmp";
-    public static final String NAMES_DMP_SRC = "./res/names.dmp";
+
+    private static Stage optionsStage;
 
     private static final int MAX_WIDTH_OF_SIDEPANES = 220;
 
@@ -48,15 +59,17 @@ public class MainStageController implements Initializable {
 
     private ArrayList<String> openFiles;
 
-    public static boolean isDefaultDirectoryLocation = true, isMainViewMaximized = false;
-    public static String defaultLocation = "";
+    public static boolean isMainViewMaximized = false;
 
     // alerts
-    private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert;
+    private Alert fileNotFoundAlert, confirmQuitAlert, aboutAlert, fileAlreadyLoadedAlert, wrongFileAlert, insufficientDataAlert;
 
     // FXML elements
     @FXML
     private AnchorPane leftPane, rightPane;
+
+    @FXML
+    private Tab mainViewTab;
 
     @FXML
     private Label leftLabel;
@@ -65,10 +78,7 @@ public class MainStageController implements Initializable {
     private TreeView<String> treeViewFiles;
 
     @FXML
-    private TextArea textAreaDetails;
-
-    @FXML
-    public ProgressBar progressBar;
+    private Accordion preferencesAccordion;
 
     //Buttons
     @FXML
@@ -77,50 +87,94 @@ public class MainStageController implements Initializable {
     @FXML
     private Button startAnalysisButton;
 
-    @FXML
-    private SplitMenuButton rankSelectionButton;
 
-    //Filter items
+    /** FILTER OPTION ELEMENTS **/
     @FXML
-    private Slider maxCountSlider;
+    private ChoiceBox<String> rankChoiceBox;
+
+    //List of possible choices of the choice box
+    ObservableList<String> ranksList = FXCollections.observableArrayList("Domain", "Kingdom", "Phylum", "Class",
+            "Order", "Family","Genus", "Species");
 
     @FXML
-    private Text maxCountText;
+    private Slider minCorrelationSlider;
 
     @FXML
-    private AnchorPane mainViewPane;
+    private TextField minCorrelationText;
+
+    @FXML
+    private Slider maxCorrelationSlider;
+
+    @FXML
+    private TextField maxCorrelationText;
+
+    @FXML
+    private Slider maxPValueSlider;
+
+    @FXML
+    private TextField maxPValueText;
+
+    @FXML
+    private Slider minFrequencySlider;
+
+    @FXML
+    private TextField minFrequencyText;
+
+    @FXML
+    private Slider maxFrequencySlider;
+
+    @FXML
+    private TextField maxFrequencyText;
+
+
+    @FXML
+    private CheckBox useSelectedCheckBox;
+
+
+    /** STARTUP PANE ELEMENTS **/
+    @FXML
+    private Label startupLabel;
+
+    @FXML
+    private ProgressIndicator startupSpinner;
+
+
+    /** STATUS FOOTER ELEMENTS **/
+    @FXML
+    private Label statusRightLabel;
+
+
+    /** GRAPH VIEW SETTING ELEMENTS **/
+    @FXML
+    private Slider sliderNodeRadius;
+
+    @FXML
+    private Slider sliderEdgeWidth;
+
 
     /**
-     * initializes all required files
+     * Initializes every needed service
      *
      * @param location
      * @param resources
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        TreePreloadService treePreloadService = new TreePreloadService();
-        treePreloadService.start();
+        startTreePreloadService();
         initializeTreeView();
-        initializeTextAreaDetails();
+        //initializeTextAreaDetails();
+        initializeAccordion();
         initializeCollapseAllButton();
-        initializeMaxCountSlider();
+        //initializeMaxCountSlider();
         initializeButtonsOnTheRightPane();
+        initializeRankChoiceBox();
+        initializeSliderBindings();
+        //preload settings
+        SaveAndLoadOptions.loadSettings();
     }
 
-    /**
-     * checks whether nodes.dmp and names.dmp exist
-     * if not it downloads the files and puts them into the correct place
-     */
-    //TODO: Place this method on the outside of the MainStageController class to keep controller clean
-    public static void setUpRequiredFiles() {
-        File nodesDmp = new File(NODES_DMP_SRC), namesDmp = new File(NAMES_DMP_SRC);
 
-        //if files do NOT exist or they are a directory
-        //-> download the files
-        if (!(nodesDmp.exists() && namesDmp.exists() && !nodesDmp.isDirectory() && !namesDmp.isDirectory())) {
-            DownloadNodesAndNameDMPFiles.downloadNamesNodesDMPandUnzip();
-        }
-    }
+
 
     @FXML
     /**
@@ -129,16 +183,40 @@ public class MainStageController implements Initializable {
      */
     public void startAnalysis() {
         startAnalysisButton.setDisable(true);
+        System.out.println("Performing analysis at level: " + AnalysisData.getLevel_of_analysis());
+        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
+        if(isAnalysisSuccessful) {
+            LoadedData.createGraph();
+            //Default values: 0.5<correlation<1, pValue<0.1
+            LoadedData.getTaxonGraph().filterTaxa(
+                    LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
+            System.out.println("Taxa filtered after " + AnalysisData.getLevel_of_analysis());
+            displayGraph(LoadedData.getTaxonGraph());
+        }else{//The analysis couldn't be done because of insufficient data
+            showInsufficientDataAlert();
+        }
 
-        AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
-        LoadedData.createGraph();
-        //Default values: 0.5<correlation<1, pValue<0.1
-        LoadedData.getTaxonGraph().filterTaxa(
-                LoadedData.getSamples(), 1, 0.5, 0.1, AnalysisData.getLevel_of_analysis());
-        System.out.println("Taxa filtered after " + AnalysisData.getLevel_of_analysis());
-        MyGraphView graphView = new MyGraphView(LoadedData.getTaxonGraph());
-        mainViewPane.getChildren().add(graphView);
+    }
 
+    /**
+     * shows the graph in the main view
+     * @param taxonGraph
+     */
+    private void displayGraph(MyGraph<MyVertex, MyEdge> taxonGraph) {
+        MyGraphView graphView = new MyGraphView(taxonGraph);
+        ViewPane viewPane = new ViewPane(graphView);
+
+        // Bind node hover status text
+        statusRightLabel.textProperty().bind(viewPane.hoverInfo);
+        // Bind Node Radius Slider
+        for (Node node : graphView.getMyVertexViewGroup().getChildren()) {
+            ((MyVertexView) node).getRadiusProperty().bind(sliderNodeRadius.valueProperty());
+        }
+        // Bind Edge Width Slider
+        for (Node node : graphView.getMyEdgeViewGroup().getChildren()) {
+            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty());
+        }
+        mainViewTab.setContent(viewPane);
     }
 
     //FILE methods
@@ -156,16 +234,8 @@ public class MainStageController implements Initializable {
      */ public void closeProject() {
         if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
             LoadedData.closeProject(treeViewFiles);
-            textAreaDetails.setText("");
-            maxCountSlider.setDisable(true);
-            maxCountText.setText("Max count: ");
-            System.out.println("Preferred size: " + leftPane.getPrefWidth());
+            //textAreaDetails.setText("");
         }
-    }
-
-    @FXML
-    public void exitApplication(ActionEvent event) {
-        Platform.exit();
     }
 
     @FXML
@@ -204,53 +274,6 @@ public class MainStageController implements Initializable {
         }
     }
 
-    //Methods
-    @FXML
-    private void selectDomain() {
-        selectRank("Domain");
-    }
-
-    @FXML
-    private void selectKingdom() {
-        selectRank("Kingdom");
-    }
-
-    @FXML
-    private void selectPhylum() {
-        selectRank("Phylum");
-    }
-
-    @FXML
-    private void selectClass() {
-        selectRank("Class");
-    }
-
-    @FXML
-    private void selectOrder() {
-        selectRank("Order");
-    }
-
-    @FXML
-    private void selectFamily() {
-        selectRank("Family");
-    }
-
-    @FXML
-    private void selectGenus() {
-        selectRank("Genus");
-    }
-
-    @FXML
-    private void selectSpecies() {
-        selectRank("Species");
-    }
-
-    @FXML
-    private void selectRank(String rank) {
-        AnalysisData.setLevel_of_analysis(rank);
-        startAnalysisButton.setDisable(false);
-    }
-
     //SPECIALIZED METHODS
 
     private void setPanesWidth(int width) {
@@ -260,14 +283,19 @@ public class MainStageController implements Initializable {
         rightPane.setMinWidth(width);
     }
 
+    /**
+     * sets the openFileChooser directory
+     * opens a file to load from
+     * @param fileType
+     */
     private void openFiles(FileType fileType) {
         FileChooser fileChooser = new FileChooser();
         String fileChooserTitle = "Load from ";
 
-        if (isDefaultDirectoryLocation) {
+        if ((Boolean) UserSettings.userSettings.get("isDefaultFileChooserLocation")) {
             setDefaultOpenDirectory(fileChooser);
         } else {
-            fileChooser.setInitialDirectory(new File(defaultLocation));
+            fileChooser.setInitialDirectory(new File((String) UserSettings.userSettings.get("defaultFileChooserLocation")));
         }
 
         switch (fileType) {
@@ -316,6 +344,28 @@ public class MainStageController implements Initializable {
         }
     }
 
+    /**
+     * sets the default directory for openings files
+     *
+     * @param fileChooser
+     */
+    private void setDefaultOpenDirectory(FileChooser fileChooser) {
+        //Set to user directory or go to default if cannot access
+        //TODO: osx?
+        String userDirectoryString = System.getProperty("user.home");
+        File userDirectory = new File(userDirectoryString);
+        if (!userDirectory.canRead()) {
+            userDirectory = new File("c:/");
+            userDirectoryString = "c:/";
+        }
+        fileChooser.setInitialDirectory(userDirectory);
+        UserSettings.userSettings.put("defaultFileChooserLocation", userDirectoryString);
+    }
+
+    /**
+     * adds opening readNameToTaxId files to the treeview
+     * @param file
+     */
     private void addReadName2TaxonIdFileToTreeView(File file) {
         ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(TreePreloadService.taxonTree);
 
@@ -333,6 +383,10 @@ public class MainStageController implements Initializable {
         activateButtonsOnTheRightPane();
     }
 
+    /**
+     * adds opening biom files to the treeview
+     * @param file
+     */
     private void addBiomFileToTreeView(File file) {
         BiomV1Parser biomV1Parser = new BiomV1Parser(TreePreloadService.taxonTree);
 
@@ -345,6 +399,10 @@ public class MainStageController implements Initializable {
         activateButtonsOnTheRightPane();
     }
 
+    /**
+     * adds openings taxIdToCountFiles to the tree view
+     * @param file
+     */
     private void addId2CountFileToTreeView(File file) {
         TaxonId2CountCSVParser taxonId2CountCSVParser = new TaxonId2CountCSVParser(TreePreloadService.taxonTree);
 
@@ -379,21 +437,6 @@ public class MainStageController implements Initializable {
         }
     }
 
-    /**
-     * sets the default directory for openings files
-     *
-     * @param fileChooser
-     */
-    private void setDefaultOpenDirectory(FileChooser fileChooser) {
-        //Set to user directory or go to default if cannot access
-        //TODO: osx?
-        String userDirectoryString = System.getProperty("user.home");
-        File userDirectory = new File(userDirectoryString);
-        if (!userDirectory.canRead()) {
-            userDirectory = new File("c:/");
-        }
-        fileChooser.setInitialDirectory(userDirectory);
-    }
 
     @FXML
     /**
@@ -403,13 +446,13 @@ public class MainStageController implements Initializable {
         TreeItem<String> treeItem = treeViewFiles.getSelectionModel().getSelectedItem();
 
         if (treeItem != null) {
-            textAreaDetails.setText("");
+            //textAreaDetails.setText("");
             /*if (!treeItem.isLeaf()) {
                 for (TreeItem<String> child : treeItem.getChildren()) {
                     textAreaDetails.appendText(child.getValue() + "\n");
                 }
             } else {*/
-            textAreaDetails.appendText(treeItem.getValue() + "\n");
+            //textAreaDetails.appendText(treeItem.getValue() + "\n");
             //}
         }
     }
@@ -444,17 +487,28 @@ public class MainStageController implements Initializable {
      */
     private void activateFilterOptions() {
         //MaxCountSlider
-        initializeMaxCountSlider();
+//        initializeMaxCountSlider();
     }
 
     /**
      * Updates the maxCountText element
      */
-    public void updateMaxCountText() {
-        maxCountText.setText("Max count: " + (int) maxCountSlider.getValue());
-    }
+//    public void updateMaxCountText() {
+//        maxCountText.setText("Max count: " + (int) maxCountSlider.getValue());
+//    }
 
     //INITIALIZATIONS
+
+    /**
+     * Starts the tree preload service
+     */
+    private void startTreePreloadService() {
+        TreePreloadService treePreloadService = new TreePreloadService();
+        treePreloadService.setOnSucceeded(e -> startupSpinner.setProgress(100));
+        startupLabel.textProperty().bind(treePreloadService.messageProperty());
+        treePreloadService.start();
+
+    }
 
     /**
      * Initializes the tree view on left pane
@@ -462,6 +516,20 @@ public class MainStageController implements Initializable {
     private void initializeTreeView() {
         treeViewFiles.setRoot(new TreeItem<>("root"));
         treeViewFiles.setShowRoot(false);
+        treeViewFiles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        treeViewFiles.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                LoadedData.selectSample(newValue.getValue());
+            } else {
+                LoadedData.selectSample(oldValue.getValue());
+            }
+        });
+    }
+
+    private void addSampleToSelectedSamples(String sampleName) {
+
     }
 
     /**
@@ -470,20 +538,28 @@ public class MainStageController implements Initializable {
     private void initializeButtonsOnTheRightPane() {
         initializeStartAnalysisButton();
         initializeSplitMenuButton();
+        initializeUseSelectedCheckBox();
+    }
+
+    /**
+     * Initializes the accordion on the right pane
+     */
+    private void initializeAccordion() {
+        preferencesAccordion.setExpandedPane(preferencesAccordion.getPanes().get(0));
     }
 
     /**
      * Activates the buttons on the right pane
      */
     private void activateButtonsOnTheRightPane() {
-        rankSelectionButton.setDisable(false);
+        rankChoiceBox.setDisable(false);
     }
 
     /**
      * Initializes the text area on the right pane
      */
     private void initializeTextAreaDetails() {
-        textAreaDetails.setEditable(false);
+        //textAreaDetails.setEditable(false);
     }
 
     /**
@@ -494,19 +570,26 @@ public class MainStageController implements Initializable {
     }
 
     /**
+     * Initialize the use selected check box on the right pane
+     */
+    private void initializeUseSelectedCheckBox() {
+        useSelectedCheckBox.setTooltip(new Tooltip("Use only selected Taxa"));
+    }
+
+    /**
      * Initializes the maxCount slider on the middle pane
      */
-    private void initializeMaxCountSlider() {
-        maxCountSlider.setMajorTickUnit(1);
-        maxCountSlider.setMinorTickCount(1);
-        maxCountSlider.setSnapToTicks(true);
-        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
-            maxCountSlider.setDisable(true);
-        } else {
-            maxCountSlider.setDisable(false);
-        }
-        //maxCountSlider.setValue(maxCountSlider.getMax());
-    }
+//    private void initializeMaxCountSlider() {
+//        maxCountSlider.setMajorTickUnit(1);
+//        maxCountSlider.setMinorTickCount(1);
+//        maxCountSlider.setSnapToTicks(true);
+//        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
+//            maxCountSlider.setDisable(true);
+//        } else {
+//            maxCountSlider.setDisable(false);
+//        }
+//        //maxCountSlider.setValue(maxCountSlider.getMax());
+//    }
 
     /**
      * Initializes the start analysis button on the right pane
@@ -519,7 +602,52 @@ public class MainStageController implements Initializable {
      * Initializes the split menu button on the right pane
      */
     private void initializeSplitMenuButton() {
-        rankSelectionButton.setDisable(true);
+        rankChoiceBox.setDisable(true);
+    }
+
+    /**
+     * Initializes the rank selection toggle group and adds a listener to the rank selection
+     */
+    private void initializeRankChoiceBox() {
+        rankChoiceBox.setItems(ranksList);
+        rankChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue!=null){
+                AnalysisData.setLevel_of_analysis(newValue.toLowerCase());
+                startAnalysisButton.setDisable(false);
+            }
+        });
+    }
+
+    private void initializeSliderBindings(){
+        //Since the slider value property is double and the text field property is a string, we need to convert them
+        //Defining own class to avoid exceptions
+        class MyNumberStringConverter extends NumberStringConverter{
+            @Override
+            public Number fromString(String value) {
+                 try {
+                     return super.fromString(value);
+                 }catch(RuntimeException ex){
+                     return 0;
+                 }
+            }
+        }
+        StringConverter<Number> converter = new MyNumberStringConverter();
+        //Bind every slider to its corresponding text field and vice versa
+        Bindings.bindBidirectional(minCorrelationText.textProperty(),minCorrelationSlider.valueProperty(),converter);
+        Bindings.bindBidirectional(maxCorrelationText.textProperty(),maxCorrelationSlider.valueProperty(),converter);
+        Bindings.bindBidirectional(maxPValueText.textProperty(),maxPValueSlider.valueProperty(),converter);
+        Bindings.bindBidirectional(minFrequencyText.textProperty(),minFrequencySlider.valueProperty(),converter);
+        Bindings.bindBidirectional(maxFrequencyText.textProperty(),maxFrequencySlider.valueProperty(),converter);
+        //Bind the internal filter properties to the slider values
+        AnalysisData.minCorrelationProperty().bind(minCorrelationSlider.valueProperty());
+        AnalysisData.maxCorrelationProperty().bind(maxCorrelationSlider.valueProperty());
+        AnalysisData.maxPValueProperty().bind(maxPValueSlider.valueProperty());
+        AnalysisData.minFrequencyProperty().bind(minFrequencySlider.valueProperty());
+        AnalysisData.maxFrequencyProperty().bind(maxFrequencySlider.valueProperty());
+
+
+
+
     }
 
     //ALERTS
@@ -612,6 +740,16 @@ public class MainStageController implements Initializable {
     }
 
     /**
+     * Prompts an alert telling the user that the chosen data is not sufficient for an analysis
+     */
+    private void showInsufficientDataAlert(){
+        insufficientDataAlert = new Alert(Alert.AlertType.ERROR);
+        insufficientDataAlert.setTitle("Insufficient Data for Analysis");
+        insufficientDataAlert.setHeaderText("Maybe you're being to general, try choosing a more specific rank!");
+        insufficientDataAlert.show();
+    }
+
+    /**
      * method for the quit button
      * opens an alert box
      * asks whether to save/quit/continue running the program
@@ -651,10 +789,11 @@ public class MainStageController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
             Parent root = fxmlLoader.load();
-            root.getStylesheets().add("/UI/optionsStyle.css/");
-            Stage optionsStage = new Stage();
+            this.optionsStage = new Stage();
             optionsStage.setTitle("Options");
-            optionsStage.setScene(new Scene(root, 800, 500));
+            Scene optionsScene = new Scene(root, 800, 500);
+            optionsStage.setScene(optionsScene);
+            optionsScene.getStylesheets().add(GlobalConstants.DARKTHEME);
             optionsStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -690,4 +829,8 @@ public class MainStageController implements Initializable {
             event.consume();
         }
     };
+
+    public static Stage getOptionsStage() {
+        return optionsStage;
+    }
 }

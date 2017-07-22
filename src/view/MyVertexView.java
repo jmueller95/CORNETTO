@@ -1,6 +1,7 @@
 package view;
 
 import graph.MyVertex;
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
@@ -33,7 +34,6 @@ public class MyVertexView extends Group {
 
         translateXProperty().bindBidirectional(myVertex.xCoordinatesProperty());
         translateYProperty().bindBidirectional(myVertex.yCoordinatesProperty());
-        //addMouseEvent();
         addSelectionMarker();
 
         getChildren().add(vertexShape);
@@ -45,7 +45,6 @@ public class MyVertexView extends Group {
      * Bidirectional bind also updates coordinates in node class
      */
 
-
     public void addSelectionMarker() {
         myVertex.isSelectedProperty().addListener(((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -54,11 +53,25 @@ public class MyVertexView extends Group {
             } else {
                 vertexShape.setFill(fillColor);
                 System.out.println("node unselected");
+
             }
         }));
     }
 
+    public void addNodeTransition() {
+
+
+    }
+
+    public DoubleProperty getRadiusProperty() {
+        return vertexShape.radiusProperty();
+    }
+
     public MyVertex getMyVertex() {
         return myVertex;
+    }
+
+    public void setRadius(double r) {
+        vertexShape.setRadius(r);
     }
 }

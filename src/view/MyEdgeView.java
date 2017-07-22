@@ -2,6 +2,7 @@ package view;
 
 import graph.MyEdge;
 import graph.MyVertex;
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
@@ -43,7 +44,12 @@ public class MyEdgeView extends Group {
 
     public void setColor() {
         // set interactively and/or based on attributes
-        edgeShape.setStroke(Color.DARKBLUE);
+        if (myEdge.getCorrelation() >= 0) edgeShape.setStroke(Color.DARKGREEN);
+        else edgeShape.setStroke(Color.DARKRED);
+    }
+
+    public DoubleProperty getWidthProperty() {
+        return edgeShape.strokeWidthProperty();
     }
 
 

@@ -2,7 +2,7 @@ package model;
 
 
 import com.sun.media.jfxmedia.MetadataParser;
-import scala.util.regexp.Base;
+//import scala.util.regexp.Base;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -42,10 +42,10 @@ public class MetadataMapping {
 
      public static void main(String[] args) throws IOException {
         //if the same ID twice exists, then throw an error
-        // ArrayList<String> show =  MetadataParser("./res/metadataFileTestwithSameID");
+         //ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFileTestwithSameID");
 
          //if each IDs exist only once
-         ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFileTest");
+         ArrayList<String> show =  MetadataParser("./res/testFiles/metaData/metadataFileTest");
 
     }
 

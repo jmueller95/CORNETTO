@@ -31,6 +31,8 @@ public class LoadedData {
     private static ArrayList<Sample> samples;
     private static ArrayList<String> openFiles;
     private static MyGraph<MyVertex, MyEdge> taxonGraph;
+    private static HashMap<String, Sample> sampleNameToSample = new HashMap<>();
+    private static ArrayList<Sample> selectedSamples = new ArrayList<>();
 
     public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles) {
         if (samples == null) {
@@ -120,7 +122,8 @@ public class LoadedData {
         int count = 0;
         for (Sample sample : samples) {
             //TODO: Find a way to display the file name here without needing the fileName as parameter
-            newSample = new TreeItem<>("sample " + ++count);
+            String sampleName = "sample " + ++count;
+            newSample = new TreeItem<>(sampleName);
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
                 String[] name = taxonNode.getName().split(".");
                 newRoot = new TreeItem<>("name: " + (name.length == 0 ? taxonNode.getName() : name[0]));
@@ -132,6 +135,17 @@ public class LoadedData {
                 newRoot.getChildren().addAll(newRootID, newRootCount);
             }
             treeViewFiles.getRoot().getChildren().add(newSample);
+            sampleNameToSample.put(sampleName, sample);
+        }
+    }
+
+    public static void selectSample(String sampleName) {
+
+        boolean isNotAlreadySelected = !selectedSamples.contains(sampleNameToSample.get(sampleName));
+        if (isNotAlreadySelected) {
+            selectedSamples.add(sampleNameToSample.get(sampleName));
+        } else {
+            selectedSamples.remove(sampleNameToSample.get(sampleName));
         }
     }
 
@@ -143,6 +157,8 @@ public class LoadedData {
     public static MyGraph<MyVertex, MyEdge> getTaxonGraph() {
         return taxonGraph;
     }
+
+    public static HashMap<String, Sample> getSampleNameToSample() { return sampleNameToSample; }
 
     // SETTERS
     public static void setSamples(ArrayList<Sample> samples) {
