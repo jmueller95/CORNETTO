@@ -516,6 +516,20 @@ public class MainStageController implements Initializable {
     private void initializeTreeView() {
         treeViewFiles.setRoot(new TreeItem<>("root"));
         treeViewFiles.setShowRoot(false);
+        treeViewFiles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        treeViewFiles.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                LoadedData.selectSample(newValue.getValue());
+            } else {
+                LoadedData.selectSample(oldValue.getValue());
+            }
+        });
+    }
+
+    private void addSampleToSelectedSamples(String sampleName) {
+
     }
 
     /**
