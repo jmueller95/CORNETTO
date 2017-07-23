@@ -2,7 +2,6 @@ package view;
 
 
 import com.sun.prism.j2d.paint.MultipleGradientPaint;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +22,6 @@ public class MyColorGradient //extends Application
     Color Green = Color.GREEN;
     Color Pink = Color.PINK;
     Color Blue = Color.BLUE;
-
     MultipleGradientPaint.CycleMethod Reflect = MultipleGradientPaint.CycleMethod.REFLECT;
 
 /*
@@ -83,21 +81,21 @@ public class MyColorGradient //extends Application
             return value;
         }
 
+     // factor (increment or decrement)
+        private static int factorZero = 0;
+        private static int factorOne = 1;
+        private static int Low1 = LOW;
+        private static int Low2= LOW;
+        private static int Half = HALF;
 
         public static Map<Integer, Color> initNumberToColorMap() {
             HashMap<Integer, Color> Map = new HashMap<Integer, Color>();
 
-            // factor (increment or decrement)
-            int factorZero = 0;
-            int factorOne = 1;
-            int Low1 = LOW;
-            int Low2= LOW;
-            int Half = HALF;
-
             int count = 0;
-            while (true) {
-                java.awt.Color color;
-//            color = Map.put(count++, new Color(Low1, Low2, Half));
+            while (true)
+            {
+                //java.awt.Color color;
+                //  color = Map.put(count++, new Color(Low1, Low2, Half));
                 if (Half == HIGH) {
                     factorZero = 1; // increment
                 }
