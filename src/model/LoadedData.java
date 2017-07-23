@@ -1,17 +1,18 @@
 package model;
 
 import analysis.SampleComparison;
+import com.sun.javafx.webkit.theme.ContextMenuImpl;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTreeCell;
 import org.apache.commons.math3.linear.RealMatrix;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import javax.security.auth.callback.Callback;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <h1>Class that stores data parsed from the loaded files</h1>
@@ -117,13 +118,23 @@ public class LoadedData {
     private static void initializeTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples) {
         treeViewFiles.setRoot(new TreeItem<>("root"));
 
-        TreeItem<String> newSample, newRoot, newRootID, newRootCount;
+        CheckBoxTreeItem<String> newSample;
+        TreeItem<String> newRoot, newRootID, newRootCount;
 
+        treeViewFiles.setEditable(true);
+
+        treeViewFiles.setCellFactory(CheckBoxTreeCell.<String>forTreeView());
+
+        treeViewFiles.setCellFactory(item -);
         int count = 0;
         for (Sample sample : samples) {
             //TODO: Find a way to display the file name here without needing the fileName as parameter
             String sampleName = "sample " + ++count;
-            newSample = new TreeItem<>(sampleName);
+            sample.name = sampleName;
+            newSample = new CheckBoxTreeItem<>(sampleName);
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem selectForAnalysis = new MenuItem("selectForAnalysis for analysis");
+            contextMenu.getItems().add(selectForAnalysis);
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
                 String[] name = taxonNode.getName().split(".");
                 newRoot = new TreeItem<>("name: " + (name.length == 0 ? taxonNode.getName() : name[0]));
@@ -139,19 +150,36 @@ public class LoadedData {
         }
     }
 
-    public static void selectSample(String sampleName) {
+    /*public static void selectSample(String sampleName) {
 
+        //Works so far
         boolean isNotAlreadySelected = !selectedSamples.contains(sampleNameToSample.get(sampleName));
         if (isNotAlreadySelected) {
             selectedSamples.add(sampleNameToSample.get(sampleName));
+            System.out.println("added " + sampleName);
         } else {
             selectedSamples.remove(sampleNameToSample.get(sampleName));
+            System.out.println("removed " + sampleName);
         }
+    }*/
+
+    public static void selectSample(String sampleName) {
+        selectedSamples.add(sampleNameToSample.get(sampleName));
+        System.out.println("selected " + sampleName);
+    }
+
+    public static void unselectSample(String sampleName) {
+        selectedSamples.remove(sampleNameToSample.get(sampleName));
+        System.out.println("unselected " + sampleName);
     }
 
     // GETTERS
     public static ArrayList<Sample> getSamples() {
         return samples;
+    }
+
+    public static ArrayList<Sample> getSelectedSamples() {
+        return selectedSamples;
     }
 
     public static MyGraph<MyVertex, MyEdge> getTaxonGraph() {

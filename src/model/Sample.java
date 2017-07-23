@@ -8,9 +8,9 @@ import java.util.HashMap;
 public class Sample {
 
     private HashMap<TaxonNode, Integer> taxa2CountMap;
-    private HashMap<String, String> metaDataMap;
-    private String sampleId;
-
+    private static HashMap<String, String> metaDataMap;
+    private  static String sampleId;
+    public String name;
 
     // Empty constructor needed in CSV Parsers
     public Sample() {
@@ -42,25 +42,26 @@ public class Sample {
     }
 
 
-    //Getters
-    public HashMap<TaxonNode, Integer> getTaxa2CountMap() {
-        return taxa2CountMap;
-    }
+        //Getters
+        public HashMap<TaxonNode, Integer> getTaxa2CountMap () {
+            return taxa2CountMap;
+        }
 
-    public HashMap<String, String> getMetaData() {
-        return metaDataMap;
-    }
+        public static HashMap<String, String> getMetaData () {
+            return metaDataMap;
+        }
 
-    public String getSampleId() {
+        public   static String getSampleId()
+    {
         return sampleId;
     }
 
-    //Setters
-    public void setTaxa2CountMap(HashMap<TaxonNode, Integer> taxa2CountMap) {
-        this.taxa2CountMap = taxa2CountMap;
-    }
+        //Setters
+        public void setTaxa2CountMap(HashMap<TaxonNode, Integer> taxa2CountMap) {
+            this.taxa2CountMap = taxa2CountMap;
+        }
 
-    public void setSampleId(String id) {
-        sampleId = id;
+        public void setSampleId(String id) {
+            sampleId = id;
+        }
     }
-}
