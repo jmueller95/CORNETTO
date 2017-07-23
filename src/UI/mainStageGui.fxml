@@ -29,7 +29,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -103,7 +103,7 @@
                                         <Font size="18.0" fx:id="x1" />
                                     </font>
                                 </Label>
-                                <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="-176.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onContextMenuRequested="#selectTaxon" onMouseClicked="#selectTaxon" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
+                                <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="-176.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
                                 <RadioButton fx:id="collapseAllButton" layoutX="88.0" layoutY="6.0" mnemonicParsing="false" onAction="#collapseAll" text="Collapse all" />
                             </children>
                         </AnchorPane>
@@ -154,8 +154,10 @@
                                                         <fx:define>
                                                             <ToggleGroup fx:id="allOrSelectedToggleGroup" />
                                                         </fx:define>
-                                                        <RadioButton fx:id="compareAllSamplesButton" mnemonicParsing="false" selected="true" text="Compare all Samples" toggleGroup="$allOrSelectedToggleGroup">
-                                             </RadioButton>
+                                                        <RadioButton fx:id="compareAllSamplesButton" mnemonicParsing="false" selected="true" text="Compare all Samples">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
+                                             </toggleGroup></RadioButton>
                                                         <RadioButton fx:id="compareSelectedSamplesButton" mnemonicParsing="false" text="Compare selected Samples" toggleGroup="$allOrSelectedToggleGroup">
                                                         </RadioButton>
                                                     </children>

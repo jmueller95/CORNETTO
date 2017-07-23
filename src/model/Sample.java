@@ -11,7 +11,6 @@ public class Sample {
     private HashMap<String, String> metaDataMap;
     private String sampleId;
 
-
     // Empty constructor needed in CSV Parsers
     public Sample() {
         this.taxa2CountMap = new HashMap<>();

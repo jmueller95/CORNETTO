@@ -118,12 +118,14 @@ public class LoadedData {
      */
     private static void initializeTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples) {
         treeViewFiles.setRoot(new TreeItem<>("root"));
+        treeViewFiles.setShowRoot(false);
 
-        CheckBoxTreeItem<String> newSample;
+        //CheckBoxTreeItem<String> newSample;
         TreeItem<String> newRoot, newRootID, newRootCount;
 
         treeViewFiles.setCellFactory(CheckBoxTreeCell.<String>forTreeView());
 
+        //TODO: Need to exchange the CheckBoxTreeItems with TreeItems for the 'not-sample' Items
         /*treeViewFiles.setCellFactory(item -> {
             return new CheckBoxTreeCell<String>() {
 
@@ -144,7 +146,12 @@ public class LoadedData {
         for (Sample sample : samples) {
             //TODO: Find a way to display the file name here without needing the fileName as parameter
             String sampleName = "sample " + ++count;
-            newSample = new CheckBoxTreeItem<>(sampleName);
+
+            CheckBoxTreeItem<String> newSample = new CheckBoxTreeItem<>(sampleName);
+            newSample.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                selectOrDeselectSample(newValue, oldValue, newSample);
+            });
+
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
                 String[] name = taxonNode.getName().split(".");
                 newRoot = new TreeItem<>("name: " + (name.length == 0 ? taxonNode.getName() : name[0]));
@@ -160,13 +167,11 @@ public class LoadedData {
         }
     }
 
-    public static void selectSample(String sampleName) {
-
-        boolean isNotAlreadySelected = !selectedSamples.contains(sampleNameToSample.get(sampleName));
-        if (isNotAlreadySelected) {
-            selectedSamples.add(sampleNameToSample.get(sampleName));
+    private static void selectOrDeselectSample(boolean newValue, boolean oldValue, CheckBoxTreeItem<String> newSample) {
+        if (newValue && !oldValue) {
+            selectedSamples.add(sampleNameToSample.get(newSample.getValue()));
         } else {
-            selectedSamples.remove(sampleNameToSample.get(sampleName));
+            selectedSamples.remove(sampleNameToSample.get(newSample.getValue()));
         }
     }
 
@@ -180,6 +185,10 @@ public class LoadedData {
     }
 
     public static HashMap<String, Sample> getSampleNameToSample() { return sampleNameToSample; }
+
+    public static ArrayList<Sample> getSelectedSamples() {
+        return selectedSamples;
+    }
 
     // SETTERS
     public static void setSamples(ArrayList<Sample> samples) {

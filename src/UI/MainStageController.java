@@ -1,6 +1,5 @@
 package UI;
 
-
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
@@ -80,7 +79,10 @@ public class MainStageController implements Initializable {
     @FXML
     private Accordion preferencesAccordion;
 
-    //Buttons
+
+    /**
+     * BUTTON ELEMENTS
+     */
     @FXML
     private RadioButton collapseAllButton;
 
@@ -134,9 +136,6 @@ public class MainStageController implements Initializable {
     @FXML
     private Button resetFilterSettingsButton;
 
-    @FXML
-    private CheckBox useSelectedCheckBox;
-
 
     /**
      * STARTUP PANE ELEMENTS
@@ -174,11 +173,8 @@ public class MainStageController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         startTreePreloadService();
-        initializeTreeView();
-        //initializeTextAreaDetails();
         initializeAccordion();
         initializeCollapseAllButton();
-        //initializeMaxCountSlider();
         initializeButtonsOnTheRightPane();
         initializeRankChoiceBox();
         initializeSliderBindings();
@@ -194,7 +190,9 @@ public class MainStageController implements Initializable {
      */
     public void startAnalysis() {
         startAnalysisButton.setDisable(true);
-        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(LoadedData.getSamples());
+        boolean isUseOnlySelectedSamples = compareSelectedSamplesButton.isSelected();
+        //TODO: Exchange so that only one method call named selectedSamples needs to be called which returns every sample if every sample is selected
+        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(isUseOnlySelectedSamples ? LoadedData.getSelectedSamples() : LoadedData.getSamples());
         if (isAnalysisSuccessful) {
 
            /*DEBUG*/
@@ -203,7 +201,7 @@ public class MainStageController implements Initializable {
             LoadedData.createGraph();
             //Default values: 0.5<correlation<1, pValue<0.1
             LoadedData.getTaxonGraph().filterTaxa(
-                    LoadedData.getSamples(),
+                    isUseOnlySelectedSamples ? LoadedData.getSelectedSamples() : LoadedData.getSamples(),
                     AnalysisData.getMaxCorrelation(), AnalysisData.getMinCorrelation(),
                     AnalysisData.getMaxPValue(), AnalysisData.getLevel_of_analysis());
             displayGraph(LoadedData.getTaxonGraph());
@@ -397,7 +395,6 @@ public class MainStageController implements Initializable {
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
-        activateFilterOptions();
         activateButtonsOnTheRightPane();
     }
 
@@ -414,7 +411,6 @@ public class MainStageController implements Initializable {
         samples = biomV1Parser.parse(file.getAbsolutePath());
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
-        activateFilterOptions();
         activateButtonsOnTheRightPane();
     }
 
@@ -436,7 +432,6 @@ public class MainStageController implements Initializable {
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
-        activateFilterOptions();
         activateButtonsOnTheRightPane();
     }
 
@@ -457,25 +452,6 @@ public class MainStageController implements Initializable {
         }
     }
 
-
-    @FXML
-    /**
-     *
-     * Shows the details of the selected taxon
-     */ public void selectTaxon() {
-        TreeItem<String> treeItem = treeViewFiles.getSelectionModel().getSelectedItem();
-
-        if (treeItem != null) {
-            //textAreaDetails.setText("");
-            /*if (!treeItem.isLeaf()) {
-                for (TreeItem<String> child : treeItem.getChildren()) {
-                    textAreaDetails.appendText(child.getValue() + "\n");
-                }
-            } else {*/
-            //textAreaDetails.appendText(treeItem.getValue() + "\n");
-            //}
-        }
-    }
 
     @FXML
     /**
@@ -502,21 +478,6 @@ public class MainStageController implements Initializable {
         }
     }
 
-    /**
-     * Activates the filter options after a file is loaded
-     */
-    private void activateFilterOptions() {
-        //MaxCountSlider
-//        initializeMaxCountSlider();
-    }
-
-    /**
-     * Updates the maxCountText element
-     */
-//    public void updateMaxCountText() {
-//        maxCountText.setText("Max count: " + (int) maxCountSlider.getValue());
-//    }
-
     //INITIALIZATIONS
 
     /**
@@ -527,28 +488,6 @@ public class MainStageController implements Initializable {
         treePreloadService.setOnSucceeded(e -> startupSpinner.setProgress(100));
         startupLabel.textProperty().bind(treePreloadService.messageProperty());
         treePreloadService.start();
-
-    }
-
-    /**
-     * Initializes the tree view on left pane
-     */
-    private void initializeTreeView() {
-        treeViewFiles.setRoot(new TreeItem<>("root"));
-        treeViewFiles.setShowRoot(false);
-        /*treeViewFiles.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        LoadedData.selectSample(newValue.getValue());
-                    } else {
-                        LoadedData.selectSample(oldValue.getValue());
-                    }
-                });*/
-    }
-
-    private void addSampleToSelectedSamples(String sampleName) {
-
     }
 
     /**
@@ -556,8 +495,6 @@ public class MainStageController implements Initializable {
      */
     private void initializeButtonsOnTheRightPane() {
         initializeStartAnalysisButton();
-        initializeSplitMenuButton();
-        initializeUseSelectedCheckBox();
     }
 
     /**
@@ -575,40 +512,11 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * Initializes the text area on the right pane
-     */
-    private void initializeTextAreaDetails() {
-        //textAreaDetails.setEditable(false);
-    }
-
-    /**
      * Initializes the collapse all button on the left pane
      */
     private void initializeCollapseAllButton() {
         collapseAllButton.setSelected(false);
     }
-
-    /**
-     * Initialize the use selected check box on the right pane
-     */
-    private void initializeUseSelectedCheckBox() {
-        useSelectedCheckBox.setTooltip(new Tooltip("Use only selected Taxa"));
-    }
-
-    /**
-     * Initializes the maxCount slider on the middle pane
-     */
-//    private void initializeMaxCountSlider() {
-//        maxCountSlider.setMajorTickUnit(1);
-//        maxCountSlider.setMinorTickCount(1);
-//        maxCountSlider.setSnapToTicks(true);
-//        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
-//            maxCountSlider.setDisable(true);
-//        } else {
-//            maxCountSlider.setDisable(false);
-//        }
-//        //maxCountSlider.setValue(maxCountSlider.getMax());
-//    }
 
     /**
      * Initializes the start analysis button on the right pane
@@ -618,16 +526,10 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * Initializes the split menu button on the right pane
-     */
-    private void initializeSplitMenuButton() {
-        rankChoiceBox.setDisable(true);
-    }
-
-    /**
      * Initializes the rank selection toggle group and adds a listener to the rank selection
      */
     private void initializeRankChoiceBox() {
+        rankChoiceBox.setDisable(true);
         rankChoiceBox.setItems(ranksList);
         rankChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
