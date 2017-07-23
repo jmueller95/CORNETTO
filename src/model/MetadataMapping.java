@@ -1,11 +1,14 @@
 package model;
 
 
-import com.sun.media.jfxmedia.MetadataParser;
-//import scala.util.regexp.Base;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
+//import scala.util.regexp.Base;
 
 
 /**
@@ -18,34 +21,45 @@ public class MetadataMapping {
     public static  ArrayList<String>  MetadataParser(String filepath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filepath));
         String line = reader.readLine();
-        String[] arr = line.split("\t"); // the fields are tab separated
+        String[] arr = line.split(" "); // the fields are tab separated
         int columns = arr.length; //number of files' columns
         //HashMap<HashSet,String> metaDataObject = new HashMap();
 
 
       while(line != null ) {
-          for (int j = 1; j < columns; j++) {
-
+/*
               //HashMap<String,String> metadataObjectSet = new HashMap<>();
+              metaDataObject.add(arr[0]);
               metaDataObject.add(arr[3] ); //includes its "treatment"
               metaDataObject.add(arr[4] + "\t\t"); //includes its "dob"
 
-              arr = line.split("\t");
-              j++;
+              arr = line.split(" ");
+
               line = reader.readLine();
               System.out.println("" + metaDataObject);
-          }
+*/
+
+
+       HashMap<String, String> metadataObjectSet = new HashMap<>();
+       metadataObjectSet.put(arr[0], arr[3]);
+       System.out.println(metadataObjectSet + "\t");
+
+
+          arr = line.split(" ");
+
+          line = reader.readLine();
+
 
       }
+
         return metaDataObject;
 }
 
      public static void main(String[] args) throws IOException {
-        //if the same ID twice exists, then throw an error
-         //ArrayList<String> show =  MetadataParser("./res/testFiles/FilesTestwithSameID");
-
          //if each IDs exist only once
-         ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFilesTest");
+        ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFilesTest");
+
+
 
     }
 
