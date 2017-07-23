@@ -118,6 +118,7 @@ public class LoadedData {
      */
     private static void initializeTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples) {
         treeViewFiles.setRoot(new TreeItem<>("root"));
+        treeViewFiles.setShowRoot(false);
 
         //CheckBoxTreeItem<String> newSample;
         TreeItem<String> newRoot, newRootID, newRootCount;
