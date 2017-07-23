@@ -536,8 +536,7 @@ public class MainStageController implements Initializable {
     private void initializeTreeView() {
         treeViewFiles.setRoot(new TreeItem<>("root"));
         treeViewFiles.setShowRoot(false);
-        treeViewFiles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        treeViewFiles.getSelectionModel()
+        /*treeViewFiles.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
@@ -545,7 +544,7 @@ public class MainStageController implements Initializable {
                     } else {
                         LoadedData.selectSample(oldValue.getValue());
                     }
-                });
+                });*/
     }
 
     private void addSampleToSelectedSamples(String sampleName) {

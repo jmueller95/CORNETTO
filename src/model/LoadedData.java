@@ -4,8 +4,10 @@ import analysis.SampleComparison;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
+import javafx.scene.control.CheckBoxTreeItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.CheckBoxTreeCell;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.ArrayList;
@@ -117,13 +119,32 @@ public class LoadedData {
     private static void initializeTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples) {
         treeViewFiles.setRoot(new TreeItem<>("root"));
 
-        TreeItem<String> newSample, newRoot, newRootID, newRootCount;
+        CheckBoxTreeItem<String> newSample;
+        TreeItem<String> newRoot, newRootID, newRootCount;
+
+        treeViewFiles.setCellFactory(CheckBoxTreeCell.<String>forTreeView());
+
+        /*treeViewFiles.setCellFactory(item -> {
+            return new CheckBoxTreeCell<String>() {
+
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item != null) {
+                        this.editableProperty().unbind();
+                        CheckBoxTreeItem<String> value = (CheckBoxTreeItem<String>) treeItemProperty().getValue();
+                        this.disableProperty().bind(value.leafProperty());
+                    }
+                }
+            };
+        });*/
 
         int count = 0;
         for (Sample sample : samples) {
             //TODO: Find a way to display the file name here without needing the fileName as parameter
             String sampleName = "sample " + ++count;
-            newSample = new TreeItem<>(sampleName);
+            newSample = new CheckBoxTreeItem<>(sampleName);
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
                 String[] name = taxonNode.getName().split(".");
                 newRoot = new TreeItem<>("name: " + (name.length == 0 ? taxonNode.getName() : name[0]));
