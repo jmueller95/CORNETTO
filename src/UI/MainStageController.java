@@ -333,7 +333,8 @@ public class MainStageController implements Initializable {
         }
 
         //Choose the file / files
-        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
+
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(getPrimaryStage());
 
         if (selectedFiles != null) {
             ArrayList<String> namesOfAlreadyLoadedFiles = new ArrayList<>();
