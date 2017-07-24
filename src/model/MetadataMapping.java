@@ -13,6 +13,13 @@ import java.util.HashMap;
  */
 public class MetadataMapping extends Sample{
 
+    //
+
+    //HashMap<String,String> MT  = new HashMap<>();
+
+    //HashMap<String, String> metadataObjectSet = new HashMap<>();
+
+    //
 
     private static HashMap<String, String> getMT() {
         return getMetaData(); //gets MetaData from Sample Class
@@ -24,7 +31,7 @@ public class MetadataMapping extends Sample{
         BufferedReader reader = new BufferedReader(new FileReader("./res/testFiles/metadataFilesTest"));
         String line = reader.readLine();
         String[] arr = line.split(" "); // the fields are tab separated
-        int columns = arr.length; //number of files' columns
+       // int columns = arr.length; //number of files' columns
 
 
       while(line != null ) {
@@ -39,12 +46,6 @@ public class MetadataMapping extends Sample{
               line = reader.readLine();
               System.out.println("" + metaDataObject);
 */
-
-
-       // HashMap<String,String> MT  = new HashMap<>();
-
-       //HashMap<String, String> metadataObjectSet = new HashMap<>();
-
           getMT().put(arr[0], arr[1]);
           System.out.println(getMT() + "\t");
 
@@ -66,10 +67,7 @@ public class MetadataMapping extends Sample{
 
          //if an ID come twice
          // ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFilesTestWithSameID");
-
-
-
-    }
+     }
 
 }
 
