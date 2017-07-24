@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-//import scala.util.regexp.Base;
-
 
 /**
  * Created by NantiaL on 02.07.2017.
@@ -30,7 +28,6 @@ public class MetadataMapping extends Sample{
         String line = reader.readLine();
         String[] arr = line.split(" "); // the fields are tab separated
         int columns = arr.length; //number of files' columns
-        //HashMap<HashSet,String> metaDataObject = new HashMap();
 
 
       while(line != null ) {
@@ -54,7 +51,6 @@ public class MetadataMapping extends Sample{
           getMT().put(arr[0], arr[1]);
           System.out.println(getMT() + "\t");
 
-
           arr = line.split(" ");
 
           line = reader.readLine();
@@ -68,7 +64,7 @@ public class MetadataMapping extends Sample{
 
      public static void main(String[] args) throws IOException {
          //if each IDs exist only once
-        ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFilesTest");
+       // ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFilesTest");
 
 
 

@@ -2,11 +2,18 @@ package view;
 
 
 import com.sun.prism.j2d.paint.MultipleGradientPaint;
+import javafx.scene.paint.*;
+
 import java.awt.*;
+import java.awt.Color;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -24,6 +31,25 @@ public class MyColorGradient //extends Application
     Color Blue = Color.BLUE;
     MultipleGradientPaint.CycleMethod Reflect = MultipleGradientPaint.CycleMethod.REFLECT;
 
+
+     /**
+      * Return a Map with all all defined colors in JavaFX. The key is the static
+      * name of color and the value contains an instance of a Color object.
+      */
+     public Map<String, Color> getJavaFXColorMap() {
+         Field[] declaredFields = java.awt.Color.class.getDeclaredFields();
+         Map<String, Color> colors = new HashMap<>();
+         for (Field field : declaredFields) {
+             if (Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers())) {
+                 try {
+                     colors.put(field.getName(), (Color)field.get(null));
+                 } catch (NoSuchFieldError | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+                     Logger.getLogger(JavaFXColorChooser.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+             }
+         }
+         return colors;
+     }
 /*
     @Override
         //using Linear Gradient
@@ -55,7 +81,7 @@ public class MyColorGradient //extends Application
         r.setScene(frame);
         r.show();
     }
-*/
+
         private final static int LOW = 0;
         private final static int HIGH = 300;
         private final static int HALF = (HIGH + 1) / 2;
@@ -74,6 +100,7 @@ public class MyColorGradient //extends Application
          * @param value
          * @return
          */
+/*
         private static int rangeCheck(final int value) {
             while (value > HIGH) {
                 return HIGH;
@@ -124,7 +151,7 @@ public class MyColorGradient //extends Application
         public static void main(String[] args) {
             //launch(args);
         }
-
+*/
 
 }
 
