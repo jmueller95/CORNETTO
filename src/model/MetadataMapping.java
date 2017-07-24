@@ -1,14 +1,11 @@
 package model;
 
 
-import com.sun.media.sound.DLSSampleLoop;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 
 /**
@@ -17,14 +14,14 @@ import java.util.HashSet;
 public class MetadataMapping extends Sample{
 
 
-    public static HashMap<String, String> getMT() {
+    private static HashMap<String, String> getMT() {
         return getMetaData(); //gets MetaData from Sample Class
     }
 
     private static ArrayList<String> metaDataObject = new ArrayList<>();
 
-    public static  ArrayList<String>  MetadataParser(String filepath) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(filepath));
+    static  ArrayList<String>  MetadataParser() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("./res/testFiles/metadataFilesTest"));
         String line = reader.readLine();
         String[] arr = line.split(" "); // the fields are tab separated
         int columns = arr.length; //number of files' columns
@@ -53,7 +50,8 @@ public class MetadataMapping extends Sample{
 
           arr = line.split(" ");
 
-          line = reader.readLine();
+          switch (line = reader.readLine()) {
+          }
 
 
 

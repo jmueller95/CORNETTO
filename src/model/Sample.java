@@ -7,21 +7,21 @@ import java.util.HashMap;
  */
 public class Sample {
 
-    public HashMap<TaxonNode, Integer> taxa2CountMap;
-    public static HashMap<String, String> metaDataMap;
-    public String sampleId;
+    private HashMap<TaxonNode, Integer> taxa2CountMap;
+    private static HashMap<String, String> metaDataMap;
+    private String sampleId;
 
     // Empty constructor needed in CSV Parsers
     public Sample() {
         this.taxa2CountMap = new HashMap<>();
-        this.metaDataMap = new HashMap<>();
-        this.sampleId = new String();
+        metaDataMap = new HashMap<>();
+        this.sampleId = "";
     }
 
     // Constructor with initialisation data
     public Sample(HashMap<TaxonNode, Integer> taxa2CountMap, HashMap<String, String> metaData) {
         this.taxa2CountMap = taxa2CountMap;
-        this.metaDataMap = metaData;
+        metaDataMap = metaData;
         this.sampleId = sampleId;
     }
 
