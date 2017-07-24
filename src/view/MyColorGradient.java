@@ -46,11 +46,6 @@ public class MyColorGradient {
     }
 
 
-  /*  public static void main(String[] args) {
-        // launch(args);
-    }
-*/
-
 }
 
 
