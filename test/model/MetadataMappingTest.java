@@ -26,8 +26,6 @@ public class MetadataMappingTest {
      public void metadataParser() throws Exception {
 
         ArrayList<String> show =  csvparser.MetadataParser();
-
-
         assertEquals( 0, show.size() ); //checks if the size of the file is correct
 
 
