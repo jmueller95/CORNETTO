@@ -249,7 +249,9 @@ public class MainStageController implements Initializable {
      */ public void closeProject() {
         if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
             LoadedData.closeProject(treeViewFiles);
-            //textAreaDetails.setText("");
+            if (mainViewTab.getGraphic() != null) {
+                mainViewTab.getGraphic().setDisable(true);
+            }
         }
     }
 
@@ -399,7 +401,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        LoadedData.addSamplesToDatabase(samples, treeViewFiles);
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
         activateButtonsOnTheRightPane();
     }
 
@@ -415,7 +417,7 @@ public class MainStageController implements Initializable {
 
         samples = biomV1Parser.parse(file.getAbsolutePath());
 
-        LoadedData.addSamplesToDatabase(samples, treeViewFiles);
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
         activateButtonsOnTheRightPane();
     }
 
@@ -436,7 +438,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        LoadedData.addSamplesToDatabase(samples, treeViewFiles);
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
         activateButtonsOnTheRightPane();
     }
 
@@ -457,7 +459,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        LoadedData.addSamplesToDatabase(samples, treeViewFiles);
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
         activateButtonsOnTheRightPane();
     }
 

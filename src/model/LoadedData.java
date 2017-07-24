@@ -5,15 +5,13 @@ import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.scene.control.CheckBoxTreeItem;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import org.apache.commons.math3.linear.RealMatrix;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <h1>Class that stores data parsed from the loaded files</h1>
@@ -24,7 +22,7 @@ import java.util.Map;
  * <p>
  * <b>Note:</b> This class is not intended to store methods or data
  * that is connected with analysis. The AnalysisData class has been
- * created for this purpose those.
+ * created for this purpose.
  *
  * @see AnalysisData
  */
@@ -36,13 +34,13 @@ public class LoadedData {
     private static HashMap<String, Sample> sampleNameToSample = new HashMap<>();
     private static ArrayList<Sample> selectedSamples = new ArrayList<>();
 
-    public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles) {
+    public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles, String fileName) {
         if (samples == null) {
             samples = loadedSamples;
         } else {
             samples.addAll(loadedSamples);
         }
-        initializeTreeView(treeViewFiles, samples);
+        initializeTreeView(treeViewFiles, loadedSamples, fileName);
     }
 
     /**
@@ -107,6 +105,9 @@ public class LoadedData {
             treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
             //TODO: Add open files feature
             //openFiles.clear();
+            samples.clear();
+            selectedSamples.clear();
+            //TODO:: Kill graph view when Project is closed
         }
     }
 
@@ -116,14 +117,15 @@ public class LoadedData {
      *
      * @param treeViewFiles Tree view fxml element to display the loaded samples
      */
-    private static void initializeTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples) {
-        treeViewFiles.setRoot(new TreeItem<>("root"));
-        treeViewFiles.setShowRoot(false);
-
-        //CheckBoxTreeItem<String> newSample;
+    private static void initializeTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
+        //If no samples have been loaded so far
+        if (treeViewFiles.getRoot() == null) {
+            treeViewFiles.setRoot(new TreeItem<>("root"));
+            //The classic treeview only has one root item, but you can work around this by just setting it to invisible
+            treeViewFiles.setShowRoot(false);
+            treeViewFiles.setCellFactory(CheckBoxTreeCell.<String>forTreeView());
+        }
         TreeItem<String> newRoot, newRootID, newRootCount;
-
-        treeViewFiles.setCellFactory(CheckBoxTreeCell.<String>forTreeView());
 
         //TODO: Need to exchange the CheckBoxTreeItems with TreeItems for the 'not-sample' Items
         /*treeViewFiles.setCellFactory(item -> {
@@ -143,9 +145,10 @@ public class LoadedData {
         });*/
 
         int count = 0;
-        for (Sample sample : samples) {
-            //TODO: Find a way to display the file name here without needing the fileName as parameter
-            String sampleName = "sample " + ++count;
+        for (Sample sample : loadedSamples) {
+            String[] fileNameSplit = fileName.split("\\.");
+            String fileNameWithoutExtension = (String.join(".", Arrays.copyOfRange(fileNameSplit, 0, fileNameSplit.length - 1)));
+            String sampleName = (loadedSamples.size() > 1 ? "[" + ++count + "] " + fileNameWithoutExtension : fileNameWithoutExtension);
 
             CheckBoxTreeItem<String> newSample = new CheckBoxTreeItem<>(sampleName);
             newSample.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -153,8 +156,7 @@ public class LoadedData {
             });
 
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
-                String[] name = taxonNode.getName().split(".");
-                newRoot = new TreeItem<>("name: " + (name.length == 0 ? taxonNode.getName() : name[0]));
+                newRoot = new TreeItem<>(taxonNode.getName());
                 newSample.getChildren().add(newRoot);
 
                 newRootID = new TreeItem<>("id: " + taxonNode.getTaxonId());
