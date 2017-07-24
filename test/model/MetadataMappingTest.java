@@ -24,7 +24,7 @@ public class MetadataMappingTest {
 
     @Test
      public void metadataParser() throws Exception {
-        //HashMap<String,String> show =  csvparser.MetadataParser("./res/testFiles/metadataFilesTest");
+
         ArrayList<String> show =  csvparser.MetadataParser();
 
 
