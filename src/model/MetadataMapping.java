@@ -1,6 +1,8 @@
 package model;
 
 
+import com.sun.media.sound.DLSSampleLoop;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,7 +16,12 @@ import java.util.HashSet;
 /**
  * Created by NantiaL on 02.07.2017.
  */
-public class MetadataMapping {
+public class MetadataMapping extends Sample{
+
+
+    public static HashMap<String, String> getMT() {
+        return getMetaData(); //gets MetaData from Sample Class
+    }
 
     private static ArrayList<String> metaDataObject = new ArrayList<>();
 
@@ -40,9 +47,12 @@ public class MetadataMapping {
 */
 
 
-       HashMap<String, String> metadataObjectSet = new HashMap<>();
-       metadataObjectSet.put(arr[0], arr[3]);
-       System.out.println(metadataObjectSet + "\t");
+       // HashMap<String,String> MT  = new HashMap<>();
+
+       //HashMap<String, String> metadataObjectSet = new HashMap<>();
+
+          getMT().put(arr[0], arr[1]);
+          System.out.println(getMT() + "\t");
 
 
           arr = line.split(" ");
