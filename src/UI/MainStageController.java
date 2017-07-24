@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -247,10 +248,10 @@ public class MainStageController implements Initializable {
     /**
      * Closes the current project and empties the tree view
      */ public void closeProject() {
-        if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
+        if (treeViewFiles.getRoot() != null) {
             LoadedData.closeProject(treeViewFiles);
-            if (mainViewTab.getGraphic() != null) {
-                mainViewTab.getGraphic().setDisable(true);
+            if (mainViewTab.getContent() != null) {
+                mainViewTab.setContent(null);
             }
         }
     }
