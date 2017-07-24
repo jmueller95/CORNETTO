@@ -13,11 +13,11 @@ import java.util.logging.Logger;
  */
 public class JavaFXColorChooser extends MyColorGradient{
     private Map<String, Color> colorMap = getJavaFXColorMap();
+
     /**
      * Return a map with all possible colors in JavaFX. Value contains an instance of a color object and the
      * key is the static name
      */
-
     public Map<String, Color> getJavaFXColorMap() {
         Field[] fields = java.awt.Color.class.getDeclaredFields();
         Map<String, Color> color = new HashMap<>();

@@ -34,12 +34,12 @@ public class MyColorGradient {
     MultipleGradientPaint.CycleMethod Reflect = MultipleGradientPaint.CycleMethod.REFLECT;
 */
 
-    /**
+   /**
      * Return a map with all possible colors in JavaFX. Value contains an instance of a color object and the
      * key is the static name
      */
 
-    public Map<String, Color> getJavaFXColorMap() {
+ /*   public Map<String, Color> getJavaFXColorMap() {
         Field[] fields = java.awt.Color.class.getDeclaredFields();
         Map<String, Color> color = new HashMap<>();
         for (Field field : fields) {
@@ -53,6 +53,7 @@ public class MyColorGradient {
         }
         return color;
     }
+    */
 
     public static void main(String[] args) {
         // launch(args);
