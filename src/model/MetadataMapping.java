@@ -63,6 +63,7 @@ public class MetadataMapping extends Sample{
      public static void main(String[] args) throws IOException {
          //if each IDs exist only once
        // ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFilesTest");
+         // ArrayList<String> show =  MetadataParser("./res/testFiles/metadataFilesTestWithSameID");
 
 
 
