@@ -34,9 +34,7 @@ public class MyColorGradient {
     MultipleGradientPaint.CycleMethod Reflect = MultipleGradientPaint.CycleMethod.REFLECT;
 */
 
-
-
-   /**
+    /**
      * Return a map with all possible colors in JavaFX. Value contains an instance of a color object and the
      * key is the static name
      */
@@ -62,52 +60,6 @@ public class MyColorGradient {
     }
 */
 
-/*
-    @Override
-    //using Linear Gradient
-    public void start(Stage r) {
-
-
-        //color stop-list for the gradient
-        Stop Stop1 = new Stop(0, Red);
-        Stop Stop2 = new Stop(1, Green);
-        Stop Stop3 = new Stop(2, Pink);
-        Stop[] end = new Stop[]{Stop1, Stop2, Stop3};
-
-        //constructs the color Gradient
-        LinearGradient linearGradient = new LinearGradient(2, 0, 1, 0, true, Reflect, end);
-
-        //sets the frame
-        VBox boxFrame = new VBox();
-        Scene frame = new Scene(boxFrame, 200, 200);
-        frame.setFill(null);
-
-        //defines the square
-        Rectangle rectangle = new Rectangle(0, 0, 200, 200);
-        rectangle.setFill(linearGradient);
-
-
-        //put the color gradient in the frame
-        boxFrame.getChildren().add(rectangle);
-
-        r.setScene(frame);
-        r.show();
-    }
-
-    private final static int LOW = 0;
-    private final static int HIGH = 300;
-    private final static int HALF = (HIGH + 1) / 2;
-
-    private static int factor;
-
-    private static void initList(final HashMap<Integer, Color> localMap) {
-        java.util.List<Integer> list = new ArrayList<Integer>(localMap.keySet());
-        Collections.sort(list);
-        Integer min = list.get(0);
-        Integer max = list.get(list.size() - 1);
-        factor = max + 1;
-    }
-*/
 }
 
 
