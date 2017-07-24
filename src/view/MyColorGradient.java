@@ -25,15 +25,6 @@ import static javafx.application.Application.launch;
 public class MyColorGradient {
 
 //private   final static Map<Integer, Color> map = initNumberToColorMap();
-//private    static int factor;
-/*define colors
-    Color Red = Color.RED;
-    Color Green = Color.GREEN;
-    Color Pink = Color.PINK;
-    Color Blue = Color.BLUE;
-    MultipleGradientPaint.CycleMethod Reflect = MultipleGradientPaint.CycleMethod.REFLECT;
-*/
-
     /**
      * Return a map with all possible colors in JavaFX. Value contains an instance of a color object and the
      * key is the static name
