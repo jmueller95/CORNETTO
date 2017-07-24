@@ -31,6 +31,7 @@ import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
 import sampleParser.BiomV1Parser;
+import sampleParser.BiomV2Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.SaveAndLoadOptions;
@@ -54,7 +55,7 @@ public class MainStageController implements Initializable {
 
     private static final int MAX_WIDTH_OF_SIDEPANES = 220;
 
-    private enum FileType {taxonId2Count, readName2TaxonId, biom}
+    private enum FileType {taxonId2Count, readName2TaxonId, biomV1, biomV2}
 
     private ArrayList<String> openFiles;
 
@@ -263,10 +264,12 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    public void openBiomFiles() {
-        openFiles(FileType.taxonId2Count);
+    public void openBiomV1Files() {
+        openFiles(FileType.biomV1);
     }
 
+    @FXML
+    public void openBiomV2Files() { openFiles(FileType.biomV1); }
 
     /**
      * Exits the program
@@ -320,9 +323,11 @@ public class MainStageController implements Initializable {
             case readName2TaxonId:
                 fileChooser.setTitle(fileChooserTitle + "readName2TaxonId file");
                 break;
-            case biom:
-                fileChooser.setTitle(fileChooserTitle + "biom file");
+            case biomV1:
+                fileChooser.setTitle(fileChooserTitle + "biomV1 file");
                 break;
+            case biomV2:
+                fileChooser.setTitle(fileChooserTitle + "biomV2 file");
         }
 
         //Choose the file / files
@@ -342,11 +347,11 @@ public class MainStageController implements Initializable {
                         case readName2TaxonId:
                             addReadName2TaxonIdFileToTreeView(file);
                             break;
-                        case biom:
-                            addBiomFileToTreeView(file);
+                        case biomV1:
+                            addBiomV1FileToTreeView(file);
                             break;
-                        default:
-                            //Will never happen
+                        case biomV2:
+                            addBiomV2FileToTreeView(file);
                             break;
                     }
                 }
@@ -403,12 +408,33 @@ public class MainStageController implements Initializable {
      *
      * @param file
      */
-    private void addBiomFileToTreeView(File file) {
+    private void addBiomV1FileToTreeView(File file) {
         BiomV1Parser biomV1Parser = new BiomV1Parser(TreePreloadService.taxonTree);
 
         ArrayList<Sample> samples;
 
         samples = biomV1Parser.parse(file.getAbsolutePath());
+
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles);
+        activateButtonsOnTheRightPane();
+    }
+
+    /**
+     * adds opening biom files to the treeview
+     *
+     * @param file
+     */
+    private void addBiomV2FileToTreeView(File file) {
+        BiomV2Parser biomV2Parser = new BiomV2Parser(TreePreloadService.taxonTree);
+
+        ArrayList<Sample> samples;
+
+        try {
+            samples = biomV2Parser.parse(file.getAbsolutePath());
+        } catch (IOException e) {
+            showWrongFileAlert();
+            return;
+        }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles);
         activateButtonsOnTheRightPane();
