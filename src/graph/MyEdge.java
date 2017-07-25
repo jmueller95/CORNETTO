@@ -22,7 +22,8 @@ public class MyEdge {
         this.source = source;
         this.target = target;
         attributesMap = new HashMap<>();
-        addListeners();
+        source.getEdgesList().add(this);
+        target.getEdgesList().add(this);
     }
 
     public MyEdge(MyVertex source, MyVertex target, double weight) {
@@ -30,28 +31,21 @@ public class MyEdge {
         this.target = target;
         attributesMap = new HashMap<>();
         this.weight = weight;
-        addListeners();
     }
-
-    private void addListeners() {
-        source.isHiddenProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                this.hideEdge();
-            }
-        });
-        target.isHiddenProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                this.hideEdge();
-            }
-        });
-    }
-
 
     public void hideEdge() {
+        if (!isHidden()) {
+            source.setNumberofVisibleEdges(source.getNumberofVisibleEdges() - 1);
+            target.setNumberofVisibleEdges(target.getNumberofVisibleEdges() - 1);
+        }
         isHidden.set(true);
     }
 
     public void showEdge() {
+        if (isHidden()) {
+            source.setNumberofVisibleEdges(source.getNumberofVisibleEdges() + 1);
+            target.setNumberofVisibleEdges(target.getNumberofVisibleEdges() + 1);
+        }
         isHidden.set(false);
     }
 
@@ -77,6 +71,10 @@ public class MyEdge {
 
     public double getCorrelation() {
         return correlation;
+    }
+
+    public double getPValue() {
+        return pValue;
     }
 
     public void setPValue(double pValue) {

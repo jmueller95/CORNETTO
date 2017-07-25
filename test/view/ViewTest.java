@@ -22,10 +22,10 @@ public class ViewTest extends Application {
     public void setUp() throws Exception {
 
         //Create new sample Graph
-        MyVertex v1 = new MyVertex(new TaxonNode(1, "rank", 1));
-        MyVertex v2 = new MyVertex(new TaxonNode(2, "rank", 1));
-        MyVertex v3 = new MyVertex(new TaxonNode(3, "rank", 1));
-        MyVertex v4 = new MyVertex(new TaxonNode(4, "rank", 1));
+        MyVertex v1 = new MyVertex(new TaxonNode(1, "rank", 1),3);
+        MyVertex v2 = new MyVertex(new TaxonNode(2, "rank", 1),3);
+        MyVertex v3 = new MyVertex(new TaxonNode(3, "rank", 1),3);
+        MyVertex v4 = new MyVertex(new TaxonNode(4, "rank", 1),3);
         MyEdge edge12 = new MyEdge(v1, v2, 100);
         MyEdge edge23 = new MyEdge(v2, v3, 200);
         MyEdge edge24 = new MyEdge(v4, v2, 303);

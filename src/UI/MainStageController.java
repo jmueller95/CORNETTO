@@ -1,6 +1,5 @@
 package UI;
 
-import analysis.SampleComparison;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
@@ -193,14 +192,14 @@ public class MainStageController implements Initializable {
         boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(LoadedData.getSamplesToAnalyze());
         if (isAnalysisSuccessful) {
 
-           /*DEBUG*/
-            AnalysisData.printMatrix(AnalysisData.getCorrelationMatrix());
-            final HashMap<TaxonNode, Double> maximumRelativeFrequencies = SampleComparison.getMaximumRelativeFrequencies(LoadedData.getSamples(), AnalysisData.getLevel_of_analysis());
-            System.out.println("Relative Frequencies:");
-            for (TaxonNode taxonNode : maximumRelativeFrequencies.keySet()) {
-                System.out.println(taxonNode.getName() + ": " + maximumRelativeFrequencies.get(taxonNode));
-            }
-            /*DEBUG END*/
+//           /*DEBUG*/
+//            AnalysisData.printMatrix(AnalysisData.getCorrelationMatrix());
+//            final HashMap<TaxonNode, Double> maximumRelativeFrequencies = AnalysisData.getMaximumRelativeFrequencies();
+//            System.out.println("Relative Frequencies:");
+//            for (TaxonNode taxonNode : maximumRelativeFrequencies.keySet()) {
+//                System.out.println(taxonNode.getName() + ": " + maximumRelativeFrequencies.get(taxonNode));
+//            }
+//            /*DEBUG END*/
 
             LoadedData.createGraph();
             //Default values: 0.5<correlation<1, pValue<0.1

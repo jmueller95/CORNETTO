@@ -3,11 +3,12 @@ package graph;
 import javafx.beans.property.*;
 import model.TaxonNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by julian on 10.06.17.
- * //TODO: A vertex should have a castListToGeneric of edges, and if all of them are hidden, it should hide as well!
  */
 public class MyVertex {
     private TaxonNode taxonNode;
@@ -17,14 +18,27 @@ public class MyVertex {
     private DoubleProperty xCoordinates;
     private DoubleProperty yCoordinates;
     private Property<String> vertexLabel;
+    private IntegerProperty numberofVisibleEdges;
+    private List<MyEdge> edgesList;
     private HashMap<String, Object> attributesMap;
 
-    public MyVertex(TaxonNode taxonNode) {
+    public MyVertex(TaxonNode taxonNode, int numberOfEdges) {
         this.taxonNode = taxonNode;
         xCoordinates = new SimpleDoubleProperty(0);
         yCoordinates = new SimpleDoubleProperty(0);
         vertexLabel = new SimpleStringProperty("initName");
+        numberofVisibleEdges = new SimpleIntegerProperty(numberOfEdges);
         attributesMap = new HashMap<>();
+
+        edgesList = new ArrayList<>();
+        //Vertex should be hidden if number of visible edges reaches 0
+        numberofVisibleEdges.addListener((observable, oldValue, newValue) -> {
+            if (newValue.doubleValue() == 0) {
+                hideVertex();
+            } else {
+                showVertex();
+            }
+        });
     }
 
 
@@ -72,5 +86,23 @@ public class MyVertex {
         return taxonNode;
     }
 
-    public String getTaxonName() { return taxonNode.getName();}
+    public String getTaxonName() {
+        return taxonNode.getName();
+    }
+
+    public int getNumberofVisibleEdges() {
+        return numberofVisibleEdges.get();
+    }
+
+    public IntegerProperty numberofVisibleEdgesProperty() {
+        return numberofVisibleEdges;
+    }
+
+    public void setNumberofVisibleEdges(int numberofVisibleEdges) {
+        this.numberofVisibleEdges.set(numberofVisibleEdges);
+    }
+
+    public List<MyEdge> getEdgesList() {
+        return edgesList;
+    }
 }

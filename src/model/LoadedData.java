@@ -57,7 +57,7 @@ public class LoadedData {
 
         //Create a vertex for each taxonNode
         for (TaxonNode taxonNode : nodeList) {
-            MyVertex vertex = new MyVertex(taxonNode);
+            MyVertex vertex = new MyVertex(taxonNode, nodeList.size()-1); //It will be a fully connected graph
             taxonGraph.addVertex(vertex);
             //Add mapping of node to vertex to hashmap
             taxonGraph.getTaxonNodeToVertexMap().put(taxonNode, vertex);

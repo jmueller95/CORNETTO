@@ -6,9 +6,11 @@ import javafx.beans.property.SimpleDoubleProperty;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AnalysisData {
     private static RealMatrix correlationMatrix, pValueMatrix;
+    private static HashMap<TaxonNode, Double> maximumRelativeFrequencies;
     private static String level_of_analysis;
     //Possible values: "Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"
 
@@ -28,6 +30,7 @@ public class AnalysisData {
         if(SampleComparison.getUnifiedTaxonList(samples, level_of_analysis).size()>1) {
             correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, level_of_analysis);
             pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples(samples, level_of_analysis);
+            maximumRelativeFrequencies = SampleComparison.calcMaximumRelativeFrequencies(samples, level_of_analysis);
             return true;
         }else{
            return false;
@@ -99,6 +102,9 @@ public class AnalysisData {
         return maxFrequency;
     }
 
+    public static HashMap<TaxonNode, Double> getMaximumRelativeFrequencies() {
+        return maximumRelativeFrequencies;
+    }
 
     /**
      * Helper method for printing a matrix to the console
