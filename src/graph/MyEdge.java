@@ -17,6 +17,8 @@ public class MyEdge {
     private HashMap<String, Object> attributesMap;
     private double correlation;
     private double pValue;
+    private BooleanProperty correlationAndPValueInRange;
+    private BooleanProperty frequencyInRange;
 
     public MyEdge(MyVertex source, MyVertex target) {
         this.source = source;
@@ -24,6 +26,7 @@ public class MyEdge {
         attributesMap = new HashMap<>();
         source.getEdgesList().add(this);
         target.getEdgesList().add(this);
+        setupListeners();
     }
 
     public MyEdge(MyVertex source, MyVertex target, double weight) {
@@ -31,6 +34,30 @@ public class MyEdge {
         this.target = target;
         attributesMap = new HashMap<>();
         this.weight = weight;
+        setupListeners();
+    }
+
+    private void setupListeners() {
+        correlationAndPValueInRange = new SimpleBooleanProperty(true);
+        frequencyInRange = new SimpleBooleanProperty(true);
+        //Add listeners for the two range properties - if both are false, set hidden to true
+        correlationAndPValueInRange.addListener(observable -> {
+            System.out.println("Hello from correlation listener! cir = "+ isCorrelationAndPValueInRange() + ", fir = " +  isFrequencyInRange());
+            if (correlationAndPValueInRange.get() && frequencyInRange.get()) {
+                showEdge();
+            } else {
+                hideEdge();
+            }
+        });
+
+        frequencyInRange.addListener(observable -> {
+            System.out.println("Hello from frequency listener! cir = "+ isCorrelationAndPValueInRange() + ", fir = " +  isFrequencyInRange());
+            if (correlationAndPValueInRange.get() && frequencyInRange.get()) {
+                showEdge();
+            } else {
+                hideEdge();
+            }
+        });
     }
 
     public void hideEdge() {
@@ -87,5 +114,29 @@ public class MyEdge {
 
     public BooleanProperty isHiddenProperty() {
         return isHidden;
+    }
+
+    public boolean isCorrelationAndPValueInRange() {
+        return correlationAndPValueInRange.get();
+    }
+
+    public BooleanProperty correlationAndPValueInRangeProperty() {
+        return correlationAndPValueInRange;
+    }
+
+    public void setCorrelationAndPValueInRange(boolean correlationAndPValueInRange) {
+        this.correlationAndPValueInRange.set(correlationAndPValueInRange);
+    }
+
+    public boolean isFrequencyInRange() {
+        return frequencyInRange.get();
+    }
+
+    public BooleanProperty frequencyInRangeProperty() {
+        return frequencyInRange;
+    }
+
+    public void setFrequencyInRange(boolean frequencyInRange) {
+        this.frequencyInRange.set(frequencyInRange);
     }
 }

@@ -43,12 +43,8 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         minCorrelationProperty().addListener(observable -> filterEdges());
         maxCorrelationProperty().addListener(observable -> filterEdges());
         maxPValueProperty().addListener(observable -> filterEdges());
-        minFrequencyProperty().addListener(observable -> {
-            filterVertices();
-        });
-        maxFrequencyProperty().addListener(observable -> {
-            filterVertices();
-        });
+        minFrequencyProperty().addListener(observable -> filterVertices());
+        maxFrequencyProperty().addListener(observable -> filterVertices());
 
 //        minCorrelationProperty().addListener((observable, oldValue, newValue) -> {
 //            for (E e : edges.keySet()) {
@@ -283,28 +279,34 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
     }
 
     public void filterEdges(){
+        System.out.println("In filterEdges");
         for (E e: edges.keySet()){
             MyEdge edge = (MyEdge) e; //E is always of type MyEdge
             if(edge.getCorrelation() < getMinCorrelation() || edge.getCorrelation() > getMaxCorrelation()
                     || edge.getPValue() > getMaxPValue()){
-                edge.hideEdge();
+                System.out.println("in filteredges: False");
+                edge.setCorrelationAndPValueInRange(false);
             }else{
-                edge.showEdge();
+                System.out.println("In filteredges: True");
+                edge.setCorrelationAndPValueInRange(true);
             }
         }
     }
 
     public  void filterVertices(){
+        System.out.println("In filterVertices");
         for (V v : vertices.keySet()){
             MyVertex vertex = (MyVertex) v;
             double vertexMaxRelativeFrequency = AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode());
             if(vertexMaxRelativeFrequency < getMinFrequency() || vertexMaxRelativeFrequency > getMaxFrequency()){
-                for (MyEdge myEdge : vertex.getEdgesList()) {
-                    myEdge.hideEdge();
+                System.out.println("In filterVertices: False");
+                for (MyEdge edge : vertex.getEdgesList()) {
+                    edge.setFrequencyInRange(false);
                 }
             }else{
+                System.out.println("In filterVertices: True");
                 for (MyEdge myEdge : vertex.getEdgesList()) {
-                    myEdge.showEdge();
+                    myEdge.setFrequencyInRange(true);
                 }
             }
         }
