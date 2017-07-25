@@ -40,75 +40,84 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
     }
 
     private void setupFilterListeners() {
-
-        minCorrelationProperty().addListener((observable, oldValue, newValue) -> {
-            for (E e : edges.keySet()) {
-                MyEdge edge = (MyEdge) e; //E is always MyEdge
-                if (edge.getCorrelation() < newValue.doubleValue()) {
-                    edge.hideEdge();
-                } else {
-                    edge.showEdge();
-
-                }
-            }
+        minCorrelationProperty().addListener(observable -> filterEdges());
+        maxCorrelationProperty().addListener(observable -> filterEdges());
+        maxPValueProperty().addListener(observable -> filterEdges());
+        minFrequencyProperty().addListener(observable -> {
+            filterVertices();
+        });
+        maxFrequencyProperty().addListener(observable -> {
+            filterVertices();
         });
 
-        maxCorrelationProperty().addListener((observable, oldValue, newValue) -> {
-            for (E e : edges.keySet()) {
-                MyEdge edge = (MyEdge) e;
-                if (edge.getCorrelation() > newValue.doubleValue()) {
-                    edge.hideEdge();
-
-                } else {
-                    edge.showEdge();
-
-                }
-            }
-        });
-
-        maxPValueProperty().addListener((observable, oldValue, newValue) -> {
-            for (E e : edges.keySet()) {
-                MyEdge edge = (MyEdge) e;
-                if (edge.getPValue() > newValue.doubleValue()) {
-                    edge.hideEdge();
-
-                } else {
-                    edge.showEdge();
-
-                }
-            }
-        });
-
-        minFrequencyProperty().addListener((observable, oldValue, newValue) -> {
-            for (V v : vertices.keySet()) {
-                MyVertex vertex = (MyVertex) v;
-                if (AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode()) < newValue.doubleValue()){
-                    for (MyEdge myEdge : vertex.getEdgesList()) {
-                        myEdge.hideEdge();
-                    }
-                }else{
-                    for (MyEdge myEdge : vertex.getEdgesList()) {
-                        myEdge.showEdge();
-                    }
-                }
-
-            }
-        });
-
-        maxFrequencyProperty().addListener((observable, oldValue, newValue) -> {
-            for (V v : vertices.keySet()) {
-                MyVertex vertex = (MyVertex) v;
-                if (AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode()) > newValue.doubleValue()){
-                    for (MyEdge myEdge : vertex.getEdgesList()) {
-                        myEdge.hideEdge();
-                    }
-                }else{
-                    for (MyEdge myEdge : vertex.getEdgesList()) {
-                        myEdge.showEdge();
-                    }
-                }
-            }
-        });
+//        minCorrelationProperty().addListener((observable, oldValue, newValue) -> {
+//            for (E e : edges.keySet()) {
+//                MyEdge edge = (MyEdge) e; //E is always MyEdge
+//                if (edge.getCorrelation() < newValue.doubleValue()) {
+//                    edge.hideEdge();
+//                } else {
+//                    edge.showEdge();
+//
+//                }
+//            }
+//        });
+//
+//        maxCorrelationProperty().addListener((observable, oldValue, newValue) -> {
+//            for (E e : edges.keySet()) {
+//                MyEdge edge = (MyEdge) e;
+//                if (edge.getCorrelation() > newValue.doubleValue()) {
+//                    edge.hideEdge();
+//
+//                } else {
+//                    edge.showEdge();
+//
+//                }
+//            }
+//        });
+//
+//        maxPValueProperty().addListener((observable, oldValue, newValue) -> {
+//            for (E e : edges.keySet()) {
+//                MyEdge edge = (MyEdge) e;
+//                if (edge.getPValue() > newValue.doubleValue()) {
+//                    edge.hideEdge();
+//
+//                } else {
+//                    edge.showEdge();
+//
+//                }
+//            }
+//        });
+//
+//        minFrequencyProperty().addListener((observable, oldValue, newValue) -> {
+//            for (V v : vertices.keySet()) {
+//                MyVertex vertex = (MyVertex) v;
+//                if (AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode()) < newValue.doubleValue()){
+//                    for (MyEdge myEdge : vertex.getEdgesList()) {
+//                        myEdge.hideEdge();
+//                    }
+//                }else{
+//                    for (MyEdge myEdge : vertex.getEdgesList()) {
+//                        myEdge.showEdge();
+//                    }
+//                }
+//
+//            }
+//        });
+//
+//        maxFrequencyProperty().addListener((observable, oldValue, newValue) -> {
+//            for (V v : vertices.keySet()) {
+//                MyVertex vertex = (MyVertex) v;
+//                if (AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode()) > newValue.doubleValue()){
+//                    for (MyEdge myEdge : vertex.getEdgesList()) {
+//                        myEdge.hideEdge();
+//                    }
+//                }else{
+//                    for (MyEdge myEdge : vertex.getEdgesList()) {
+//                        myEdge.showEdge();
+//                    }
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -273,6 +282,34 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         return true;
     }
 
+    public void filterEdges(){
+        for (E e: edges.keySet()){
+            MyEdge edge = (MyEdge) e; //E is always of type MyEdge
+            if(edge.getCorrelation() < getMinCorrelation() || edge.getCorrelation() > getMaxCorrelation()
+                    || edge.getPValue() > getMaxPValue()){
+                edge.hideEdge();
+            }else{
+                edge.showEdge();
+            }
+        }
+    }
+
+    public  void filterVertices(){
+        for (V v : vertices.keySet()){
+            MyVertex vertex = (MyVertex) v;
+            double vertexMaxRelativeFrequency = AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode());
+            if(vertexMaxRelativeFrequency < getMinFrequency() || vertexMaxRelativeFrequency > getMaxFrequency()){
+                for (MyEdge myEdge : vertex.getEdgesList()) {
+                    myEdge.hideEdge();
+                }
+            }else{
+                for (MyEdge myEdge : vertex.getEdgesList()) {
+                    myEdge.showEdge();
+                }
+            }
+        }
+    }
+
     /**
      * Filters the taxa contained in the castListToGeneric of samples. Returns a list of taxa that lie below/above the given
      * lower/upper correlation & frequency thresholds and below the given p-Value threshold
@@ -280,6 +317,7 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
      * @param samples
      */
     public void filterTaxa(List<Sample> samples) {
+
 //        //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
 //        LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(samples, getLevel_of_analysis());
 //
