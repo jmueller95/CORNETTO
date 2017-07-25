@@ -306,61 +306,6 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         }
     }
 
-    /**
-     * Filters the taxa contained in the castListToGeneric of samples. Returns a list of taxa that lie below/above the given
-     * lower/upper correlation & frequency thresholds and below the given p-Value threshold
-     *
-     * @param samples
-     */
-    public void filterTaxa(List<Sample> samples) {
-
-//        //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
-//        LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(samples, getLevel_of_analysis());
-//
-//        //Counts the visible edges of each node - is initially set to n-1 for every node, decremented when edge is hidden
-//        int[] visibleEdgeCounts = new int[taxonList.size()];
-//        Arrays.fill(visibleEdgeCounts, taxonList.size() - 1);
-//
-//        //Get correlation matrix and p-value matrix
-//        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, getLevel_of_analysis());
-//        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples, getLevel_of_analysis());
-//
-//        //Compare every node with every other node
-//        for (int i = 0; i < taxonList.size(); i++) {
-//            for (int j = 0; j < i; j++) {
-//                //Access MyEdge object via the Hashmap (we need the node ids for this)
-//                int idOfFirstNode = taxonList.get(i).getTaxonId();
-//                int idOfSecondNode = taxonList.get(j).getTaxonId();
-//                MyEdge currentEdge = getNodeIdsToEdgesMap().get(idOfFirstNode).get(idOfSecondNode);
-//                //Test if edge between the nodes should be hidden
-//                if (correlationMatrix.getEntry(i, j) < getMinCorrelation() ||
-//                        correlationMatrix.getEntry(i, j) > getMaxCorrelation() ||
-//                        correlationPValues.getEntry(i, j) > getMaxPValue()) {
-//                    //Hide it
-//                    currentEdge.hideEdge();
-//                    //Decrement edgeCount of both nodes
-//                    visibleEdgeCounts[i]--;
-//                    visibleEdgeCounts[j]--;
-//                } else {
-//                    //Show it
-//                    currentEdge.showEdge();
-//                }
-//            }
-//        }
-//        //Check if the maximum relative frequency of every taxon lies in between the upper and lower threshold
-//        final HashMap<TaxonNode, Double> maximumRelativeFrequencies = getMaximumRelativeFrequencies();
-//        //Additionally, hide all vertices that don't have visible edges anymore, show the rest
-//        for (int i = 0; i < visibleEdgeCounts.length; i++) {
-//            TaxonNode currentNode = taxonList.get(i);
-//            if (visibleEdgeCounts[i] == 0
-//                    || maximumRelativeFrequencies.get(currentNode) < getMinFrequency()
-//                    || maximumRelativeFrequencies.get(currentNode) > getMaxFrequency())
-//                taxonNodeToVertexMap.get(currentNode).hideVertex();
-//            else
-//                taxonNodeToVertexMap.get(currentNode).showVertex();
-//        }
-    }
-
 
     public HashMap<Integer, HashMap<Integer, MyEdge>> getNodeIdsToEdgesMap() {
         return nodeIdsToEdgesMap;

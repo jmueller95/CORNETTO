@@ -87,7 +87,7 @@ public abstract class SampleComparison {
         for (int i = 0; i < correlationPValues.getRowDimension(); i++) {
             for (int j = 0; j < correlationPValues.getColumnDimension(); j++) {
                 if (Double.isNaN(correlationPValues.getEntry(i, j)))
-                    correlationPValues.setEntry(i, j, 0.0);
+                    correlationPValues.setEntry(i, j, 1.0);
             }
         }
         return correlationPValues;

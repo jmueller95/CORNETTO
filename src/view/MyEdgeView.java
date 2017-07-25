@@ -9,10 +9,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 
 /**
  * Created by caspar on 19.06.17.
@@ -23,6 +25,7 @@ public class MyEdgeView extends Group {
     double lineThickness = 10;
     Line edgeShape;
     Label edgelabel;
+    Tooltip tooltip;
 
     public MyEdgeView(MyEdge myEdge) {
         this.myEdge = myEdge;
@@ -40,6 +43,12 @@ public class MyEdgeView extends Group {
         setColor();
 
         getChildren().add(edgeShape);
+        tooltip = new Tooltip(myEdge.getSource().getTaxonName() + " --- " + myEdge.getTarget().getTaxonName()
+                + "\nCorrelation: " + String.format("%.3f", myEdge.getCorrelation())
+                + "\np-Value: " + String.format("%.3f", myEdge.getPValue()));
+        tooltip.setFont(Font.font(14));
+        Tooltip.install(this, tooltip);
+
         addLabel();
 
 

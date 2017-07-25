@@ -129,10 +129,6 @@ public class MainStageController implements Initializable {
     @FXML
     private TextField maxFrequencyText;
 
-    @FXML
-    private Button resetFilterSettingsButton;
-
-
     /**
      * STARTUP PANE ELEMENTS
      **/
@@ -186,20 +182,7 @@ public class MainStageController implements Initializable {
     public void startAnalysis() {
         boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(new ArrayList<>(LoadedData.getSamplesToAnalyze()));
         if (isAnalysisSuccessful) {
-
-//           /*DEBUG*/
-//            AnalysisData.printMatrix(AnalysisData.getCorrelationMatrix());
-//            final HashMap<TaxonNode, Double> maximumRelativeFrequencies = AnalysisData.getMaximumRelativeFrequencies();
-//            System.out.println("Relative Frequencies:");
-//            for (TaxonNode taxonNode : maximumRelativeFrequencies.keySet()) {
-//                System.out.println(taxonNode.getName() + ": " + maximumRelativeFrequencies.get(taxonNode));
-//            }
-//            /*DEBUG END*/
-
             LoadedData.createGraph();
-            //Default values: 0.5<correlation<1, pValue<0.1
-            LoadedData.getTaxonGraph().filterTaxa(
-                    LoadedData.getSamplesToAnalyze());
             displayGraph(LoadedData.getTaxonGraph());
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();

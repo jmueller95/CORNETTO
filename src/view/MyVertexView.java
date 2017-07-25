@@ -4,9 +4,12 @@ import graph.MyVertex;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import model.AnalysisData;
 
 /**
  * Created by caspar on 19.06.17.
@@ -19,6 +22,7 @@ public class MyVertexView extends Group {
     Label vertexLabel;
     private double downX;
     private double downY;
+    private Tooltip tooltip;
 
     // Stylistic variables
     Double vertexWeight = 20.0;
@@ -38,6 +42,11 @@ public class MyVertexView extends Group {
 
         visibleProperty().bind(myVertex.isHiddenProperty().not());
 
+
+        tooltip = new Tooltip(myVertex.getTaxonNode().getName() + "\nID: " + myVertex.getTaxonNode().getTaxonId()
+        + "\nRelative Frequency: " + String.format("%.3f", AnalysisData.getMaximumRelativeFrequencies().get(myVertex.getTaxonNode())));
+        tooltip.setFont(Font.font(14));
+        Tooltip.install(this,tooltip);
         getChildren().add(vertexShape);
 
     }
