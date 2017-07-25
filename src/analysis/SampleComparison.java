@@ -69,13 +69,28 @@ public abstract class SampleComparison {
 
     public static RealMatrix getCorrelationMatrixOfSamples(List<Sample> samples, String rank) {
         createPearsonsCorrelationOfSamples(samples, rank);
-        return sampleCorrelation.getCorrelationMatrix();
+        RealMatrix correlationMatrix = sampleCorrelation.getCorrelationMatrix();
+        for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
+            for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
+                if (Double.isNaN(correlationMatrix.getEntry(i, j)))
+                    correlationMatrix.setEntry(i, j, 0.0);
+
+            }
+        }
+        return correlationMatrix;
     }
 
     public static RealMatrix getCorrelationPValuesOfSamples(List<Sample> samples, String rank) {
         createPearsonsCorrelationOfSamples(samples, rank);
 
-        return sampleCorrelation.getCorrelationPValues();
+        RealMatrix correlationPValues = sampleCorrelation.getCorrelationPValues();
+        for (int i = 0; i < correlationPValues.getRowDimension(); i++) {
+            for (int j = 0; j < correlationPValues.getColumnDimension(); j++) {
+                if (Double.isNaN(correlationPValues.getEntry(i, j)))
+                    correlationPValues.setEntry(i, j, 0.0);
+            }
+        }
+        return correlationPValues;
     }
 
     /**

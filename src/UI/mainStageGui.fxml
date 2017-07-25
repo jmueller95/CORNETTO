@@ -159,10 +159,9 @@
                                                         <fx:define>
                                                             <ToggleGroup fx:id="allOrSelectedToggleGroup" />
                                                         </fx:define>
-                                                        <RadioButton fx:id="compareAllSamplesButton" mnemonicParsing="false" selected="true" text="Compare all Samples">
-                                             <toggleGroup>
-                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
-                                             </toggleGroup></RadioButton>
+                                                        <RadioButton fx:id="compareAllSamplesButton" mnemonicParsing="false" selected="true" text="Compare all Samples" toggleGroup="$allOrSelectedToggleGroup">
+
+                                                        </RadioButton>
                                                         <RadioButton fx:id="compareSelectedSamplesButton" mnemonicParsing="false" text="Compare selected Samples" toggleGroup="$allOrSelectedToggleGroup">
                                                         </RadioButton>
                                                     </children>

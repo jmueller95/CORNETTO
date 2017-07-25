@@ -5,6 +5,7 @@ import edu.uci.ics.jung.graph.AbstractTypedGraph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.graph.util.Pair;
+import model.AnalysisData;
 import model.Sample;
 import model.TaxonNode;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -13,17 +14,17 @@ import java.util.*;
 
 /**
  * Created by julian on 10.06.17.
- *
+ * <p>
  * Heavily based on the JUNG UndirectedSparseGraph class,
  * most methods are copied.
  */
-public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
+public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         implements UndirectedGraph<V, E> {
 
 
     private HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap;
     private HashMap<Integer, HashMap<Integer, MyEdge>> nodeIdsToEdgesMap;
-    protected Map<V, Map<V,E>> vertices; // Map of vertices to adjacency maps of vertices to incident edges
+    protected Map<V, Map<V, E>> vertices; // Map of vertices to adjacency maps of vertices to incident edges
     protected Map<E, Pair<V>> edges;    // Map of edges to connected vertex sets
 
     /**
@@ -31,15 +32,14 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
      */
     public MyGraph() {
         super(EdgeType.UNDIRECTED);
-        vertices = new HashMap<V, Map<V,E>>();
+        vertices = new HashMap<V, Map<V, E>>();
         edges = new HashMap<E, Pair<V>>();
         taxonNodeToVertexMap = new HashMap<>();
         nodeIdsToEdgesMap = new HashMap<>();
     }
 
     @Override
-    public boolean addEdge(E edge, Pair<? extends V> endpoints, EdgeType edgeType)
-    {
+    public boolean addEdge(E edge, Pair<? extends V> endpoints, EdgeType edgeType) {
         this.validateEdgeType(edgeType);
         Pair<V> new_endpoints = getValidatedEndpoints(edge, endpoints);
         if (new_endpoints == null)
@@ -67,37 +67,31 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
     }
 
 
-    public Collection<E> getInEdges(V vertex)
-    {
+    public Collection<E> getInEdges(V vertex) {
         return this.getIncidentEdges(vertex);
     }
 
-    public Collection<E> getOutEdges(V vertex)
-    {
+    public Collection<E> getOutEdges(V vertex) {
         return this.getIncidentEdges(vertex);
     }
 
-    public Collection<V> getPredecessors(V vertex)
-    {
+    public Collection<V> getPredecessors(V vertex) {
         return this.getNeighbors(vertex);
     }
 
-    public Collection<V> getSuccessors(V vertex)
-    {
+    public Collection<V> getSuccessors(V vertex) {
         return this.getNeighbors(vertex);
     }
 
     @Override
-    public E findEdge(V v1, V v2)
-    {
+    public E findEdge(V v1, V v2) {
         if (!containsVertex(v1) || !containsVertex(v2))
             return null;
         return vertices.get(v1).get(v2);
     }
 
     @Override
-    public Collection<E> findEdgeSet(V v1, V v2)
-    {
+    public Collection<E> findEdgeSet(V v1, V v2) {
         if (!containsVertex(v1) || !containsVertex(v2))
             return null;
         ArrayList<E> edge_collection = new ArrayList<E>(1);
@@ -110,90 +104,75 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
         return edge_collection;
     }
 
-    public Pair<V> getEndpoints(E edge)
-    {
+    public Pair<V> getEndpoints(E edge) {
         return edges.get(edge);
     }
 
-    public V getSource(E directed_edge)
-    {
+    public V getSource(E directed_edge) {
         return null;
     }
 
-    public V getDest(E directed_edge)
-    {
+    public V getDest(E directed_edge) {
         return null;
     }
 
-    public boolean isSource(V vertex, E edge)
-    {
+    public boolean isSource(V vertex, E edge) {
         return false;
     }
 
-    public boolean isDest(V vertex, E edge)
-    {
+    public boolean isDest(V vertex, E edge) {
         return false;
     }
 
-    public Collection<E> getEdges()
-    {
+    public Collection<E> getEdges() {
         return Collections.unmodifiableCollection(edges.keySet());
     }
 
-    public Collection<V> getVertices()
-    {
+    public Collection<V> getVertices() {
         return Collections.unmodifiableCollection(vertices.keySet());
     }
 
-    public boolean containsVertex(V vertex)
-    {
+    public boolean containsVertex(V vertex) {
         return vertices.containsKey(vertex);
     }
 
-    public boolean containsEdge(E edge)
-    {
+    public boolean containsEdge(E edge) {
         return edges.containsKey(edge);
     }
 
-    public int getEdgeCount()
-    {
+    public int getEdgeCount() {
         return edges.size();
     }
 
-    public int getVertexCount()
-    {
+    public int getVertexCount() {
         return vertices.size();
     }
 
-    public Collection<V> getNeighbors(V vertex)
-    {
+    public Collection<V> getNeighbors(V vertex) {
         if (!containsVertex(vertex))
             return null;
         return Collections.unmodifiableCollection(vertices.get(vertex).keySet());
     }
 
-    public Collection<E> getIncidentEdges(V vertex)
-    {
+    public Collection<E> getIncidentEdges(V vertex) {
         if (!containsVertex(vertex))
             return null;
         return Collections.unmodifiableCollection(vertices.get(vertex).values());
     }
 
-    public boolean addVertex(V vertex)
-    {
-        if(vertex == null) {
+    public boolean addVertex(V vertex) {
+        if (vertex == null) {
             throw new IllegalArgumentException("vertex may not be null");
         }
         if (!containsVertex(vertex)) {
-            vertices.put(vertex, new HashMap<V,E>());
+            vertices.put(vertex, new HashMap<V, E>());
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean removeVertex(V vertex)
-    {
+    public boolean removeVertex(V vertex) {
         if (!containsVertex(vertex))
             return false;
 
@@ -205,8 +184,7 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
         return true;
     }
 
-    public boolean removeEdge(E edge)
-    {
+    public boolean removeEdge(E edge) {
         if (!containsEdge(edge))
             return false;
 
@@ -223,26 +201,22 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
     }
 
     /**
-     * TODO: Where can we move this?
-     * Filters the taxa contained in the castListToGeneric of samples. Returns a castListToGeneric of taxa that lie below/above the given
-     * lower/upper correlation thresholds and below the given p-Value threshold
+     * Filters the taxa contained in the castListToGeneric of samples. Returns a list of taxa that lie below/above the given
+     * lower/upper correlation & frequency thresholds and below the given p-Value threshold
      *
      * @param samples
-     * @param lowerCorrelationThreshold
-     * @param upperCorrelationThreshold
-     * @param pValueThreshold
      */
-    public void filterTaxa(List<Sample> samples, double lowerCorrelationThreshold, double upperCorrelationThreshold, double pValueThreshold, String rank) {
+    public void filterTaxa(List<Sample> samples) {
         //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
-        LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(samples, rank);
+        LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(samples, AnalysisData.getLevel_of_analysis());
 
         //Counts the visible edges of each node - is initially set to n-1 for every node, decremented when edge is hidden
         int[] visibleEdgeCounts = new int[taxonList.size()];
         Arrays.fill(visibleEdgeCounts, taxonList.size() - 1);
 
         //Get correlation matrix and p-value matrix
-        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, rank);
-        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples, rank);
+        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, AnalysisData.getLevel_of_analysis());
+        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples, AnalysisData.getLevel_of_analysis());
 
         //Compare every node with every other node
         for (int i = 0; i < taxonList.size(); i++) {
@@ -252,9 +226,9 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
                 int idOfSecondNode = taxonList.get(j).getTaxonId();
                 MyEdge currentEdge = getNodeIdsToEdgesMap().get(idOfFirstNode).get(idOfSecondNode);
                 //Test if edge between the nodes should be hidden
-                if (correlationMatrix.getEntry(i, j) < upperCorrelationThreshold ||
-                        correlationMatrix.getEntry(i, j) > lowerCorrelationThreshold ||
-                        correlationPValues.getEntry(i, j) > pValueThreshold) {
+                if (correlationMatrix.getEntry(i, j) < AnalysisData.getMinCorrelation() ||
+                        correlationMatrix.getEntry(i, j) > AnalysisData.getMaxCorrelation() ||
+                        correlationPValues.getEntry(i, j) > AnalysisData.getMaxPValue()) {
                     //Hide it
                     currentEdge.hideEdge();
                     //Decrement edgeCount of both nodes
@@ -266,35 +240,44 @@ public class MyGraph<V,E>  extends AbstractTypedGraph<V, E>
                 }
             }
         }
-        //Hide all vertices that don't have visible edges anymore, show the rest
+        //Check if the maximum relative frequency of every taxon lies in between the upper and lower threshold
+        final HashMap<TaxonNode, Double> maximumRelativeFrequencies =
+                SampleComparison.getMaximumRelativeFrequencies(samples, AnalysisData.getLevel_of_analysis());
+        //Additionally, hide all vertices that don't have visible edges anymore, show the rest
         for (int i = 0; i < visibleEdgeCounts.length; i++) {
-            if(visibleEdgeCounts[i] == 0)
-                taxonNodeToVertexMap.get(taxonList.get(i)).hideVertex();
+            TaxonNode currentNode = taxonList.get(i);
+            if (visibleEdgeCounts[i] == 0
+                    || maximumRelativeFrequencies.get(currentNode) < AnalysisData.getMinFrequency()
+                    || maximumRelativeFrequencies.get(currentNode) > AnalysisData.getMaxFrequency())
+                taxonNodeToVertexMap.get(currentNode).hideVertex();
             else
-                taxonNodeToVertexMap.get(taxonList.get(i)).showVertex();
+                taxonNodeToVertexMap.get(currentNode).showVertex();
         }
     }
 
-    /*
-  The following 3 methods are basically overloaded filters with default params for 2 of the three doubles
-   */
-    public void filterSamplesByPValue(List<Sample> samples, double pValueThreshold, String rank) {
-        filterTaxa(samples, 1, -1, pValueThreshold, rank);
-    }
 
-    public void filterSamplesByMinimalCorrelation(List<Sample> samples, double upperCorrelationThreshold, String rank) {
-        filterTaxa(samples, 1, upperCorrelationThreshold, 1, rank);
-    }
-
-    public void filterSamplesByMaximalCorrelation(List<Sample> samples, double lowerCorrelationThreshold, String rank) {
-        filterTaxa(samples, lowerCorrelationThreshold, -1, 1, rank);
+    public HashMap<Integer, HashMap<Integer, MyEdge>> getNodeIdsToEdgesMap() {
+        return nodeIdsToEdgesMap;
     }
 
     public HashMap<TaxonNode, MyVertex> getTaxonNodeToVertexMap() {
         return taxonNodeToVertexMap;
     }
 
-    public HashMap<Integer, HashMap<Integer, MyEdge>> getNodeIdsToEdgesMap() {
-        return nodeIdsToEdgesMap;
-    }
+    //    /*
+//  The following 3 methods are basically overloaded filters with default params for 2 of the three doubles
+//   */
+//    public void filterSamplesByPValue(List<Sample> samples, double pValueThreshold, String rank) {
+//        filterTaxa(samples, 1, -1, pValueThreshold, rank);
+//    }
+//
+//    public void filterSamplesByMinimalCorrelation(List<Sample> samples, double upperCorrelationThreshold, String rank) {
+//        filterTaxa(samples, 1, upperCorrelationThreshold, 1, rank);
+//    }
+//
+//    public void filterSamplesByMaximalCorrelation(List<Sample> samples, double lowerCorrelationThreshold, String rank) {
+//        filterTaxa(samples, lowerCorrelationThreshold, -1, 1, rank);
+//    }
+
+
 }

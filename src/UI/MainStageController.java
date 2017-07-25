@@ -1,5 +1,6 @@
 package UI;
 
+import analysis.SampleComparison;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
@@ -31,6 +32,7 @@ import main.UserSettings;
 import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
+import model.TaxonNode;
 import sampleParser.BiomV1Parser;
 import sampleParser.BiomV2Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
@@ -43,10 +45,7 @@ import view.ViewPane;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static main.Main.getPrimaryStage;
 
@@ -199,13 +198,17 @@ public class MainStageController implements Initializable {
 
            /*DEBUG*/
             AnalysisData.printMatrix(AnalysisData.getCorrelationMatrix());
+            final HashMap<TaxonNode, Double> maximumRelativeFrequencies = SampleComparison.getMaximumRelativeFrequencies(LoadedData.getSamples(), AnalysisData.getLevel_of_analysis());
+            System.out.println("Relative Frequencies:");
+            for (TaxonNode taxonNode : maximumRelativeFrequencies.keySet()) {
+                System.out.println(taxonNode.getName() + ": " + maximumRelativeFrequencies.get(taxonNode));
+            }
+
 
             LoadedData.createGraph();
             //Default values: 0.5<correlation<1, pValue<0.1
             LoadedData.getTaxonGraph().filterTaxa(
-                    isUseOnlySelectedSamples ? LoadedData.getSelectedSamples() : LoadedData.getSamples(),
-                    AnalysisData.getMaxCorrelation(), AnalysisData.getMinCorrelation(),
-                    AnalysisData.getMaxPValue(), AnalysisData.getLevel_of_analysis());
+                    isUseOnlySelectedSamples ? LoadedData.getSelectedSamples() : LoadedData.getSamples());
             displayGraph(LoadedData.getTaxonGraph());
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();

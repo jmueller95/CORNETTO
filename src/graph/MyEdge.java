@@ -22,6 +22,7 @@ public class MyEdge {
         this.source = source;
         this.target = target;
         attributesMap = new HashMap<>();
+        addListeners();
     }
 
     public MyEdge(MyVertex source, MyVertex target, double weight) {
@@ -29,6 +30,20 @@ public class MyEdge {
         this.target = target;
         attributesMap = new HashMap<>();
         this.weight = weight;
+        addListeners();
+    }
+
+    private void addListeners() {
+        source.isHiddenProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.hideEdge();
+            }
+        });
+        target.isHiddenProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.hideEdge();
+            }
+        });
     }
 
 
@@ -68,7 +83,7 @@ public class MyEdge {
         this.pValue = pValue;
     }
 
-    public boolean isHidden(){
+    public boolean isHidden() {
         return isHidden.get();
     }
 
