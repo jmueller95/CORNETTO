@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
@@ -27,6 +28,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
+<?import org.controlsfx.control.RangeSlider?>
 
 <VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
@@ -242,9 +244,19 @@
                                           <Label text="Edge width:" />
                                           <Slider fx:id="sliderEdgeWidth" max="20" min="1.0" value="5.0" />
                                           <Label text="Edge length:" />
-                                          <Slider fx:id="sliderEdgeLength" max="10" min="1.0" value="5.0" />
+                                          <RangeSlider fx:id="sliderEdgeLength" max="1000" min="1.0" lowValue="200" highValue="500"  />
                                           <Label />
-                                          <Button mnemonicParsing="false" text="Reset defaults" />
+                                          <CheckBox fx:id="checkAdvancedGraphSettings" mnemonicParsing="false" text="show advanced settings" />
+                                          <Label fx:id="labelNodeRepulsion" text="Node repulsion" />
+                                          <Slider fx:id="sliderNodeRepulsion" />
+                                          <Label fx:id="labelEdgeForce" text="Edge force" />
+                                          <Slider fx:id="sliderEdgeForce" />
+                                          <Label fx:id="labelStretchParameter" text="Stretch parameter" />
+                                          <Slider fx:id="sliderStretchParameter" />
+                                          <Label fx:id="labelAnimationSpeed" text="Animation speed" />
+                                          <Slider fx:id="sliderAnimationSpeed" />
+                                          <Label />
+                                          <Button fx:id="buttonResetGraphDefaults" mnemonicParsing="false" text="Reset defaults" />
                                        </children>
                                     </VBox>
                                  </children></AnchorPane>

@@ -1,32 +1,50 @@
 package view;
 
 import com.google.common.base.Function;
+import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
+import edu.uci.ics.jung.algorithms.layout.util.Relaxer;
+import edu.uci.ics.jung.algorithms.layout.util.VisRunner;
+import edu.uci.ics.jung.algorithms.util.IterativeContext;
+import edu.uci.ics.jung.visualization.DefaultVisualizationModel;
+import edu.uci.ics.jung.visualization.VisualizationModel;
+import edu.uci.ics.jung.visualization.renderers.CachingVertexRenderer;
+import edu.uci.ics.jung.visualization.util.ChangeEventSupport;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
+import javafx.collections.ListChangeListener;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+
+import javax.swing.event.ChangeListener;
+import java.awt.Dimension;
 import java.lang.Thread;
 
-import java.awt.*;
+
 
 /**
  * Created by caspar on 16.07.17.
  */
-public class SpringAnimationService extends Service<String> {
+public class SpringAnimationService implements Runnable {
 
-    private SpringLayout2 springLayout;
+    private MySpringLayout springLayout;
     private Function<MyEdge, Integer> myEdgeLengthFunction;
     private MyGraph<MyVertex, MyEdge> graph;
-    private MyGraphView graphView;
+
+    private VisRunner relaxer;
+
     private int width = 1000;
     private int height =  800;
-    private int LENGTH_FACTOR = 300;
     private int frameRate = 50;
 
     private double maxLength = 800;
     private double minLength = 100;
+
+    protected boolean running;
+    protected boolean stop;
+    protected boolean manualSuspend;
+    protected Thread thread;
 
 
     /**
@@ -36,120 +54,123 @@ public class SpringAnimationService extends Service<String> {
      */
     public SpringAnimationService(MyGraph graph, MyGraphView graphView) {
         this.graph = graph;
-        this.graphView = graphView;
-    }
-
-    @Override
-    public boolean cancel() {
-        System.out.println("Paused/Cancelled service");
-        return super.cancel();
-    }
-
-
-    public void resume() {
-        super.reset();
-        super.start();
-        System.out.println("Restarted service");
-        for (MyVertex vertex: graph.getVertices()) {
-            springLayout.setLocation(vertex, vertex.getXCoordinates(), vertex.getYCoordinates());
-        }
-
-    }
-
-    @Override
-    public void start() {
-        super.start();
-    }
-
-    /**
-     * Initializes Service before use. Needs graph as argument.
-     * @return
-     */
-    @Override
-    protected Task<String> createTask() {
-
         myEdgeLengthFunction = getMyEdgeLengthFunction();
-        springLayout = new SpringLayout2(graph, myEdgeLengthFunction);
+        springLayout = new MySpringLayout(graph, myEdgeLengthFunction);
         springLayout.setSize(new Dimension(width, height));
 
-        // Init settings
-        springLayout.setStretch(0.9);
-        springLayout.setRepulsionRange(80);
-        springLayout.setForceMultiplier(0.8);
-
-        springLayout.SpringVertexData()
-
-
-
-
-        return new Task<String>() {
-
-            //Timer timer = new Timer();
-            /*TimerTask drawFrame = new TimerTask() {
-                @Override
-                public void run() {
-
-                    width = (int)graphView.getBoundsInParent().getWidth();
-                    height = (int)graphView.getBoundsInParent().getHeight();
-
-                    // Calculate next iteration and move nodes
-                    springLayout.step();
-                    graph.getVertices().forEach((node) -> {
-                        node.xCoordinatesProperty().setValue(springLayout.getX(node));
-                        node.yCoordinatesProperty().setValue(springLayout.getY(node));
-                    });
-
-
-                    if (springLayout.done()) { drawFrame.cancel(); }
-
-                    // TODO CREATE BREAK CONDITIONS
-
-                }
-            };
-            */
-
-            @Override
-            protected String call() throws Exception {
-                // Here is the main workload:
-
-                boolean isConverged = false;
-
-                while (!isConverged) {
-
-                    long startTime = System.currentTimeMillis();
-                    springLayout.step();
-                    graph.getVertices().forEach((node) -> {
-                        node.xCoordinatesProperty().setValue(springLayout.getX(node));
-                        node.yCoordinatesProperty().setValue(springLayout.getY(node));
-                    });
-                    long deltaTime = System.currentTimeMillis()-startTime;
-
-                    if (deltaTime < frameRate) {
-                        Thread.sleep(frameRate - deltaTime);
-                    }
-
-//                    isConverged = springLayout.done();
-//
-
-                }
-                this.done();
-                return "FINISHED";
-
-            }
-        };
-
     }
+
+
 
     public void updateNode(MyVertex vertex) {
         springLayout.setLocation(vertex, vertex.getXCoordinates(), vertex.getYCoordinates());
     }
 
-    public void setNodeRepulsion(int range) {
 
+
+    /**
+     * how long the relaxer thread pauses between iteration loops.
+     */
+    protected long sleepTime = 100L;
+
+
+    public void prerelax() {
+        manualSuspend = true;
+        long timeNow = System.currentTimeMillis();
+        while (System.currentTimeMillis() - timeNow < 500 && !springLayout.done()) {
+            springLayout.step();
+        }
+        manualSuspend = false;
+    }
+
+    public void pause() {
+        manualSuspend = true;
+    }
+
+    public void relax() {
+        // in case its running
+        stop();
+        stop = false;
+        thread = new Thread(this);
+        thread.setPriority(Thread.MIN_PRIORITY);
+        thread.start();
+    }
+
+    /**
+     * Used for synchronization.
+     */
+    public Object pauseObject = new String("PAUSE OBJECT");
+
+    public void resume() {
+        manualSuspend = false;
+        if(running == false) {
+            //prerelax();
+            relax();
+        } else {
+            synchronized(pauseObject) {
+                pauseObject.notifyAll();
+            }
+        }
+    }
+
+    public synchronized void stop() {
+        if(thread != null) {
+            manualSuspend = false;
+            stop = true;
+            // interrupt the relaxer, in case it is paused or sleeping
+            // this should ensure that visRunnerIsRunning gets set to false
+            try { thread.interrupt(); }
+            catch(Exception ex) {
+                // the applet security manager may have prevented this.
+                // just sleep for a second to let the thread stop on its own
+                try { Thread.sleep(1000); }
+                catch(InterruptedException ie) {} // ignore
+            }
+            synchronized (pauseObject) {
+                pauseObject.notifyAll();
+            }
+        }
+    }
+
+    @Override
+    public void run() {
+        running = true;
+        try {
+            while (!springLayout.done() && !stop) {
+                synchronized (pauseObject) {
+                    while (manualSuspend && !stop) {
+                        try {
+                            pauseObject.wait();
+                        } catch (InterruptedException e) {
+                            // ignore
+                        }
+                    }
+                }
+                springLayout.step();
+
+                if (stop)
+                    return;
+
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException ie) {
+                    // ignore
+                }
+            }
+
+        } finally {
+            running = false;
+        }
+    }
+
+
+
+    /** This can be simplified later **/
+    public void setNodeRepulsion(int range) {
         springLayout.setRepulsionRange(range);
     }
 
-    public void setStrechForce(double stretch) {
+    public void setStretchForce(double stretch) {
         springLayout.setStretch(stretch);
     }
 
@@ -170,6 +191,7 @@ public class SpringAnimationService extends Service<String> {
     }
 
 
+
     /**
      * Creates a function that calculates an edge length based on the correlation value of the edge
      * Gives preferred distance in integer values
@@ -180,6 +202,8 @@ public class SpringAnimationService extends Service<String> {
         Function<MyEdge, Integer> foo = myEdge -> {
             Double corr = myEdge.getCorrelation();
             Double weight = (minLength + ((maxLength - minLength)/2)*(corr +1));
+            //Double weight = myEdge.getWeight();
+
             return weight.intValue();
         };
         return foo;

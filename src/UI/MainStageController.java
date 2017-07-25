@@ -32,6 +32,7 @@ import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
 import model.TaxonNode;
+import org.controlsfx.control.RangeSlider;
 import sampleParser.BiomV1Parser;
 import sampleParser.BiomV2Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
@@ -155,6 +156,40 @@ public class MainStageController implements Initializable {
     @FXML
     private Slider sliderEdgeWidth;
 
+    @FXML
+    private RangeSlider sliderEdgeLength;
+
+    @FXML
+    private CheckBox checkAdvancedGraphSettings;
+
+    @FXML
+    private Label labelNodeRepulsion;
+
+    @FXML
+    private Slider sliderNodeRepulsion;
+
+    @FXML
+    private Label labelStretchParameter;
+
+    @FXML
+    private Slider sliderStretchParameter;
+
+    @FXML
+    private Label labelAnimationSpeed;
+
+    @FXML
+    private Slider sliderAnimationSpeed;
+
+    @FXML
+    private Label labelEdgeForce;
+
+    @FXML
+    private Slider sliderEdgeForce;
+
+    @FXML
+    private Button buttonResetGraphDefaults;
+
+
 
     /**
      * Initializes every needed service
@@ -168,6 +203,7 @@ public class MainStageController implements Initializable {
         initializeAccordion();
         initializeCollapseAllButton();
         initializeRankChoiceBox();
+        initializeGraphSettings();
         initializeBindings();
         //preload settings
         SaveAndLoadOptions.loadSettings();
@@ -198,17 +234,11 @@ public class MainStageController implements Initializable {
     private void displayGraph(MyGraph<MyVertex, MyEdge> taxonGraph) {
         MyGraphView graphView = new MyGraphView(taxonGraph);
         ViewPane viewPane = new ViewPane(graphView);
-
         // Bind node hover status text
         statusRightLabel.textProperty().bind(viewPane.hoverInfo);
-        // Bind Node Radius Slider
-        for (Node node : graphView.getMyVertexViewGroup().getChildren()) {
-            ((MyVertexView) node).getRadiusProperty().bind(sliderNodeRadius.valueProperty());
-        }
-        // Bind Edge Width Slider
-        for (Node node : graphView.getMyEdgeViewGroup().getChildren()) {
-            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty());
-        }
+
+        // Settings need to be initialized with graphView
+        bindGraphSettings(graphView);
         mainViewTab.setContent(viewPane);
     }
 
@@ -579,6 +609,67 @@ public class MainStageController implements Initializable {
                 startAnalysis();
             }
         });
+
+    }
+
+    /**
+     * Initialize advanced setting elements to only be visible when checkbox is activated
+     */
+    public void initializeGraphSettings() {
+
+
+
+        labelAnimationSpeed.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
+        sliderAnimationSpeed.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
+        labelEdgeForce.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
+        sliderEdgeForce.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
+        labelNodeRepulsion.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
+        sliderNodeRepulsion.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
+        labelStretchParameter.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
+        sliderStretchParameter.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
+    }
+
+    /**
+     * Bind graph setting controls to MyGraphView isntance.
+     * @param graphView instance to which controls are bound
+     */
+    public void bindGraphSettings(MyGraphView graphView) {
+        // Bind Node Radius Slider to all Nodes in Graph
+        for (Node node : graphView.getMyVertexViewGroup().getChildren()) {
+            ((MyVertexView) node).getRadiusProperty().bind(sliderNodeRadius.valueProperty());
+        }
+        // Bind Edge Width Slider to all Edges in Graph
+        for (Node node : graphView.getMyEdgeViewGroup().getChildren()) {
+            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty());
+        }
+
+        sliderEdgeLength.lowValueProperty().addListener((o, e, n) -> {
+            graphView.animationService.setEdgeLengthLow(n.doubleValue());
+        });
+
+        sliderEdgeLength.highValueProperty().addListener((o, e, n) -> {
+            graphView.animationService.setEdgeLengthHigh(n.doubleValue());
+        });
+
+        sliderNodeRepulsion.valueProperty().addListener((o, e, n) -> {
+            graphView.animationService.setNodeRepulsion(n.intValue());
+        });
+
+        sliderStretchParameter.valueProperty().addListener((o, e, n) -> {
+            graphView.animationService.setStretchForce(n.doubleValue());
+        });
+
+        sliderEdgeForce.valueProperty().addListener((o, e, n) -> {
+            graphView.animationService.setForce(n.doubleValue());
+        });
+
+        sliderAnimationSpeed.valueProperty().addListener((o, e, n) -> {
+            graphView.animationService.setFrameRate(n.intValue());
+        });
+
+
+
+
 
     }
 

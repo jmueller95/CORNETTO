@@ -54,8 +54,11 @@ public class ViewTest extends Application {
         MyGraphView myGraphView = new MyGraphView(graph);
         ViewPane root = new ViewPane(myGraphView);
 
+
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
+
+        myGraphView.startLayout();
 
         // Open Scenic VIew Diagnostics Tool
         //ScenicView.show(root);

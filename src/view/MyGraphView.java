@@ -15,8 +15,6 @@ import model.VertexSelectionModel;
 
 
 import javax.annotation.Nullable;
-import java.awt.*;
-
 /**
  * Created by caspar on 19.06.17.
  */
@@ -38,9 +36,9 @@ public class MyGraphView extends Group {
         this.myEdgeViewGroup = new Group();
         this.animationService = new SpringAnimationService(graph, this);
 
+
         drawNodes();
         drawEdges();
-        startLayout();
 
         getChildren().add(myEdgeViewGroup);
         getChildren().add(myVertexViewGroup);
@@ -48,6 +46,8 @@ public class MyGraphView extends Group {
         // Add all Vertex to the selection Model and add Listener
         selectionModel = new VertexSelectionModel(graph.getVertices().toArray());
         addSelectionListener();
+
+        startLayout();
 
     }
 
@@ -88,7 +88,7 @@ public class MyGraphView extends Group {
 
 
     public void startLayout() {
-        animationService.start();
+        animationService.relax();
     }
 
     public void updateNodePosition(MyVertex vertex) {
@@ -99,7 +99,7 @@ public class MyGraphView extends Group {
 
 
     public void pauseAnimation(){
-        animationService.cancel();
+        animationService.pause();
     }
 
     public void resumeAnimation(){
