@@ -4,6 +4,7 @@ import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.application.Platform;
+import javafx.beans.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -84,10 +85,6 @@ public class MainStageController implements Initializable {
      */
     @FXML
     private RadioButton collapseAllButton;
-
-    @FXML
-    private Button startAnalysisButton;
-
 
     /**
      * FILTER OPTION ELEMENTS
@@ -174,7 +171,6 @@ public class MainStageController implements Initializable {
         startTreePreloadService();
         initializeAccordion();
         initializeCollapseAllButton();
-        initializeButtonsOnTheRightPane();
         initializeRankChoiceBox();
         initializeBindings();
         //preload settings
@@ -188,8 +184,7 @@ public class MainStageController implements Initializable {
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
     public void startAnalysis() {
-        startAnalysisButton.setDisable(true);
-        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(LoadedData.getSamplesToAnalyze());
+        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(new ArrayList<>(LoadedData.getSamplesToAnalyze()));
         if (isAnalysisSuccessful) {
 
 //           /*DEBUG*/
@@ -271,7 +266,9 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    public void openBiomV2Files() { openFiles(FileType.biomV1); }
+    public void openBiomV2Files() {
+        openFiles(FileType.biomV1);
+    }
 
     /**
      * Exits the program
@@ -520,13 +517,6 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * Summarizes the initialization of the buttons on the right pane
-     */
-    private void initializeButtonsOnTheRightPane() {
-        initializeStartAnalysisButton();
-    }
-
-    /**
      * Initializes the accordion on the right pane
      */
     private void initializeAccordion() {
@@ -548,24 +538,12 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * Initializes the start analysis button on the right pane
-     */
-    private void initializeStartAnalysisButton() {
-        startAnalysisButton.setDisable(true);
-    }
-
-    /**
      * Initializes the rank selection toggle group and adds a listener to the rank selection
      */
     private void initializeRankChoiceBox() {
         rankChoiceBox.setDisable(true);
         rankChoiceBox.setItems(ranksList);
-        rankChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                AnalysisData.setLevel_of_analysis(newValue.toLowerCase());
-                startAnalysisButton.setDisable(false);
-            }
-        });
+
     }
 
     private void initializeBindings() {
@@ -598,6 +576,26 @@ public class MainStageController implements Initializable {
         AnalysisData.minFrequencyProperty().bind(minFrequencySlider.valueProperty());
         AnalysisData.maxFrequencyProperty().bind(maxFrequencySlider.valueProperty());
 
+        //We want the graph to be redone if one of the following occurs:
+        //1. Radio button switches between "Analyze All" and "Analyze Selected"
+        compareSelectedSamplesButton.selectedProperty().addListener(observable -> {
+            if ((!compareSelectedSamplesButton.isSelected() || LoadedData.getSelectedSamples().size() >= 3)
+                    && rankChoiceBox.getValue() != null)
+                startAnalysis();
+        });
+        //2. Rank selection changes
+        rankChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                AnalysisData.setLevel_of_analysis(newValue.toLowerCase());
+                startAnalysis();
+            }
+        });
+        //3. Sample selection changes while "Analyze Selected" is selected AND at least three samples are selected
+        LoadedData.getSelectedSamples().addListener((InvalidationListener) observable -> {
+            if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() >= 3) {
+                startAnalysis();
+            }
+        });
 
     }
 

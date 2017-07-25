@@ -42,7 +42,6 @@ public class MyEdge {
         frequencyInRange = new SimpleBooleanProperty(true);
         //Add listeners for the two range properties - if both are false, set hidden to true
         correlationAndPValueInRange.addListener(observable -> {
-            System.out.println("Hello from correlation listener! cir = "+ isCorrelationAndPValueInRange() + ", fir = " +  isFrequencyInRange());
             if (correlationAndPValueInRange.get() && frequencyInRange.get()) {
                 showEdge();
             } else {
@@ -51,7 +50,6 @@ public class MyEdge {
         });
 
         frequencyInRange.addListener(observable -> {
-            System.out.println("Hello from frequency listener! cir = "+ isCorrelationAndPValueInRange() + ", fir = " +  isFrequencyInRange());
             if (correlationAndPValueInRange.get() && frequencyInRange.get()) {
                 showEdge();
             } else {

@@ -279,32 +279,26 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
     }
 
     public void filterEdges(){
-        System.out.println("In filterEdges");
         for (E e: edges.keySet()){
             MyEdge edge = (MyEdge) e; //E is always of type MyEdge
             if(edge.getCorrelation() < getMinCorrelation() || edge.getCorrelation() > getMaxCorrelation()
                     || edge.getPValue() > getMaxPValue()){
-                System.out.println("in filteredges: False");
                 edge.setCorrelationAndPValueInRange(false);
             }else{
-                System.out.println("In filteredges: True");
                 edge.setCorrelationAndPValueInRange(true);
             }
         }
     }
 
     public  void filterVertices(){
-        System.out.println("In filterVertices");
         for (V v : vertices.keySet()){
             MyVertex vertex = (MyVertex) v;
             double vertexMaxRelativeFrequency = AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode());
             if(vertexMaxRelativeFrequency < getMinFrequency() || vertexMaxRelativeFrequency > getMaxFrequency()){
-                System.out.println("In filterVertices: False");
                 for (MyEdge edge : vertex.getEdgesList()) {
                     edge.setFrequencyInRange(false);
                 }
             }else{
-                System.out.println("In filterVertices: True");
                 for (MyEdge myEdge : vertex.getEdgesList()) {
                     myEdge.setFrequencyInRange(true);
                 }
