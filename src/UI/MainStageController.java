@@ -1,14 +1,13 @@
 package UI;
 
-import analysis.SampleComparison;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.application.Platform;
+import javafx.beans.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -87,10 +86,6 @@ public class MainStageController implements Initializable {
     @FXML
     private RadioButton collapseAllButton;
 
-    @FXML
-    private Button startAnalysisButton;
-
-
     /**
      * FILTER OPTION ELEMENTS
      **/
@@ -102,7 +97,7 @@ public class MainStageController implements Initializable {
             "Order", "Family", "Genus", "Species");
 
     @FXML
-    private RadioButton compareAllSamplesButton, compareSelectedSamplesButton;
+    private RadioButton compareSelectedSamplesButton;
 
     @FXML
     private Slider minCorrelationSlider;
@@ -133,10 +128,6 @@ public class MainStageController implements Initializable {
 
     @FXML
     private TextField maxFrequencyText;
-
-    @FXML
-    private Button resetFilterSettingsButton;
-
 
     /**
      * STARTUP PANE ELEMENTS
@@ -176,9 +167,8 @@ public class MainStageController implements Initializable {
         startTreePreloadService();
         initializeAccordion();
         initializeCollapseAllButton();
-        initializeButtonsOnTheRightPane();
         initializeRankChoiceBox();
-        initializeSliderBindings();
+        initializeBindings();
         //preload settings
         SaveAndLoadOptions.loadSettings();
     }
@@ -190,25 +180,9 @@ public class MainStageController implements Initializable {
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
     public void startAnalysis() {
-        startAnalysisButton.setDisable(true);
-        boolean isUseOnlySelectedSamples = compareSelectedSamplesButton.isSelected();
-        //TODO: Exchange so that only one method call named selectedSamples needs to be called which returns every sample if every sample is selected
-        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(isUseOnlySelectedSamples ? LoadedData.getSelectedSamples() : LoadedData.getSamples());
+        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(new ArrayList<>(LoadedData.getSamplesToAnalyze()));
         if (isAnalysisSuccessful) {
-
-           /*DEBUG*/
-            AnalysisData.printMatrix(AnalysisData.getCorrelationMatrix());
-            final HashMap<TaxonNode, Double> maximumRelativeFrequencies = SampleComparison.getMaximumRelativeFrequencies(LoadedData.getSamples(), AnalysisData.getLevel_of_analysis());
-            System.out.println("Relative Frequencies:");
-            for (TaxonNode taxonNode : maximumRelativeFrequencies.keySet()) {
-                System.out.println(taxonNode.getName() + ": " + maximumRelativeFrequencies.get(taxonNode));
-            }
-
-
             LoadedData.createGraph();
-            //Default values: 0.5<correlation<1, pValue<0.1
-            LoadedData.getTaxonGraph().filterTaxa(
-                    isUseOnlySelectedSamples ? LoadedData.getSelectedSamples() : LoadedData.getSamples());
             displayGraph(LoadedData.getTaxonGraph());
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
@@ -275,7 +249,9 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    public void openBiomV2Files() { openFiles(FileType.biomV1); }
+    public void openBiomV2Files() {
+        openFiles(FileType.biomV1);
+    }
 
     /**
      * Exits the program
@@ -524,13 +500,6 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * Summarizes the initialization of the buttons on the right pane
-     */
-    private void initializeButtonsOnTheRightPane() {
-        initializeStartAnalysisButton();
-    }
-
-    /**
      * Initializes the accordion on the right pane
      */
     private void initializeAccordion() {
@@ -552,27 +521,18 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * Initializes the start analysis button on the right pane
-     */
-    private void initializeStartAnalysisButton() {
-        startAnalysisButton.setDisable(true);
-    }
-
-    /**
      * Initializes the rank selection toggle group and adds a listener to the rank selection
      */
     private void initializeRankChoiceBox() {
         rankChoiceBox.setDisable(true);
         rankChoiceBox.setItems(ranksList);
-        rankChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                AnalysisData.setLevel_of_analysis(newValue.toLowerCase());
-                startAnalysisButton.setDisable(false);
-            }
-        });
+
     }
 
-    private void initializeSliderBindings() {
+    private void initializeBindings() {
+        //First, bind the LoadedData.analyzeAll boolean property to the radio buttons
+        LoadedData.analyzeSelectedProperty().bind(compareSelectedSamplesButton.selectedProperty());
+
         //Since the slider value property is double and the text field property is a string, we need to convert them
         //Defining own class to avoid exceptions
         class MyNumberStringConverter extends NumberStringConverter {
@@ -599,6 +559,26 @@ public class MainStageController implements Initializable {
         AnalysisData.minFrequencyProperty().bind(minFrequencySlider.valueProperty());
         AnalysisData.maxFrequencyProperty().bind(maxFrequencySlider.valueProperty());
 
+        //We want the graph to be redone if one of the following occurs:
+        //1. Radio button switches between "Analyze All" and "Analyze Selected"
+        compareSelectedSamplesButton.selectedProperty().addListener(observable -> {
+            if ((!compareSelectedSamplesButton.isSelected() || LoadedData.getSelectedSamples().size() >= 3)
+                    && rankChoiceBox.getValue() != null)
+                startAnalysis();
+        });
+        //2. Rank selection changes
+        rankChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                AnalysisData.setLevel_of_analysis(newValue.toLowerCase());
+                startAnalysis();
+            }
+        });
+        //3. Sample selection changes while "Analyze Selected" is selected AND at least three samples are selected
+        LoadedData.getSelectedSamples().addListener((InvalidationListener) observable -> {
+            if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() >= 3) {
+                startAnalysis();
+            }
+        });
 
     }
 

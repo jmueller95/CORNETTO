@@ -4,8 +4,11 @@ import analysis.SampleComparison;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBoxTreeItem;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
@@ -28,15 +31,17 @@ import java.util.*;
  */
 public class LoadedData {
 
-    private static ArrayList<Sample> samples;
+    private static ObservableList<Sample> samples;
     private static ArrayList<String> openFiles;
     private static MyGraph<MyVertex, MyEdge> taxonGraph;
     private static HashMap<String, Sample> sampleNameToSample = new HashMap<>();
-    private static ArrayList<Sample> selectedSamples = new ArrayList<>();
+   private static ObservableList<Sample> selectedSamples = FXCollections.observableArrayList();
+    private static BooleanProperty analyzeSelected = new SimpleBooleanProperty(false);
+
 
     public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles, String fileName) {
         if (samples == null) {
-            samples = loadedSamples;
+            samples = FXCollections.observableArrayList(loadedSamples);
         } else {
             samples.addAll(loadedSamples);
         }
@@ -54,7 +59,7 @@ public class LoadedData {
 
         //Create a vertex for each taxonNode
         for (TaxonNode taxonNode : nodeList) {
-            MyVertex vertex = new MyVertex(taxonNode);
+            MyVertex vertex = new MyVertex(taxonNode, nodeList.size()-1); //It will be a fully connected graph
             taxonGraph.addVertex(vertex);
             //Add mapping of node to vertex to hashmap
             taxonGraph.getTaxonNodeToVertexMap().put(taxonNode, vertex);
@@ -177,8 +182,12 @@ public class LoadedData {
         }
     }
 
+    public static ObservableList<Sample> getSamplesToAnalyze(){
+        return analyzeSelected.get() ? selectedSamples : samples;
+    }
+
     // GETTERS
-    public static ArrayList<Sample> getSamples() {
+    public static ObservableList<Sample> getSamples() {
         return samples;
     }
 
@@ -188,12 +197,26 @@ public class LoadedData {
 
     public static HashMap<String, Sample> getSampleNameToSample() { return sampleNameToSample; }
 
-    public static ArrayList<Sample> getSelectedSamples() {
+    public static ObservableList<Sample> getSelectedSamples() {
         return selectedSamples;
     }
 
+    public static boolean isAnalyzeSelected() {
+        return analyzeSelected.get();
+    }
+
+    public static BooleanProperty analyzeSelectedProperty() {
+        return analyzeSelected;
+    }
+
+
+
     // SETTERS
-    public static void setSamples(ArrayList<Sample> samples) {
+    public static void setSamples(ObservableList<Sample> samples) {
         LoadedData.samples = samples;
+    }
+
+    public static void setAnalyzeSelected(boolean analyzeSelected) {
+        LoadedData.analyzeSelected.set(analyzeSelected);
     }
 }

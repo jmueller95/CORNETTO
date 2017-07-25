@@ -87,7 +87,7 @@ public abstract class SampleComparison {
         for (int i = 0; i < correlationPValues.getRowDimension(); i++) {
             for (int j = 0; j < correlationPValues.getColumnDimension(); j++) {
                 if (Double.isNaN(correlationPValues.getEntry(i, j)))
-                    correlationPValues.setEntry(i, j, 0.0);
+                    correlationPValues.setEntry(i, j, 1.0);
             }
         }
         return correlationPValues;
@@ -129,7 +129,7 @@ public abstract class SampleComparison {
      * @param rank
      * @return
      */
-    public static HashMap<TaxonNode, Double> getMaximumRelativeFrequencies(List<Sample> samples, String rank) {
+    public static HashMap<TaxonNode, Double> calcMaximumRelativeFrequencies(List<Sample> samples, String rank) {
         HashMap<Sample, HashMap<TaxonNode, Double>> allRelativeCounts = new HashMap<>();
         for (Sample sample : samples) {
             allRelativeCounts.put(sample, getRelativeFrequenciesForSample(sample, rank));

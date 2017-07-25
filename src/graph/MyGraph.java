@@ -1,6 +1,5 @@
 package graph;
 
-import analysis.SampleComparison;
 import edu.uci.ics.jung.graph.AbstractTypedGraph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
@@ -8,9 +7,10 @@ import edu.uci.ics.jung.graph.util.Pair;
 import model.AnalysisData;
 import model.Sample;
 import model.TaxonNode;
-import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.*;
+
+import static model.AnalysisData.*;
 
 /**
  * Created by julian on 10.06.17.
@@ -32,10 +32,88 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
      */
     public MyGraph() {
         super(EdgeType.UNDIRECTED);
-        vertices = new HashMap<V, Map<V, E>>();
-        edges = new HashMap<E, Pair<V>>();
+        vertices = new HashMap<>();
+        edges = new HashMap<>();
         taxonNodeToVertexMap = new HashMap<>();
         nodeIdsToEdgesMap = new HashMap<>();
+        setupFilterListeners();
+    }
+
+    private void setupFilterListeners() {
+        minCorrelationProperty().addListener(observable -> filterEdges());
+        maxCorrelationProperty().addListener(observable -> filterEdges());
+        maxPValueProperty().addListener(observable -> filterEdges());
+        minFrequencyProperty().addListener(observable -> filterVertices());
+        maxFrequencyProperty().addListener(observable -> filterVertices());
+
+//        minCorrelationProperty().addListener((observable, oldValue, newValue) -> {
+//            for (E e : edges.keySet()) {
+//                MyEdge edge = (MyEdge) e; //E is always MyEdge
+//                if (edge.getCorrelation() < newValue.doubleValue()) {
+//                    edge.hideEdge();
+//                } else {
+//                    edge.showEdge();
+//
+//                }
+//            }
+//        });
+//
+//        maxCorrelationProperty().addListener((observable, oldValue, newValue) -> {
+//            for (E e : edges.keySet()) {
+//                MyEdge edge = (MyEdge) e;
+//                if (edge.getCorrelation() > newValue.doubleValue()) {
+//                    edge.hideEdge();
+//
+//                } else {
+//                    edge.showEdge();
+//
+//                }
+//            }
+//        });
+//
+//        maxPValueProperty().addListener((observable, oldValue, newValue) -> {
+//            for (E e : edges.keySet()) {
+//                MyEdge edge = (MyEdge) e;
+//                if (edge.getPValue() > newValue.doubleValue()) {
+//                    edge.hideEdge();
+//
+//                } else {
+//                    edge.showEdge();
+//
+//                }
+//            }
+//        });
+//
+//        minFrequencyProperty().addListener((observable, oldValue, newValue) -> {
+//            for (V v : vertices.keySet()) {
+//                MyVertex vertex = (MyVertex) v;
+//                if (AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode()) < newValue.doubleValue()){
+//                    for (MyEdge myEdge : vertex.getEdgesList()) {
+//                        myEdge.hideEdge();
+//                    }
+//                }else{
+//                    for (MyEdge myEdge : vertex.getEdgesList()) {
+//                        myEdge.showEdge();
+//                    }
+//                }
+//
+//            }
+//        });
+//
+//        maxFrequencyProperty().addListener((observable, oldValue, newValue) -> {
+//            for (V v : vertices.keySet()) {
+//                MyVertex vertex = (MyVertex) v;
+//                if (AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode()) > newValue.doubleValue()){
+//                    for (MyEdge myEdge : vertex.getEdgesList()) {
+//                        myEdge.hideEdge();
+//                    }
+//                }else{
+//                    for (MyEdge myEdge : vertex.getEdgesList()) {
+//                        myEdge.showEdge();
+//                    }
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -200,58 +278,31 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         return true;
     }
 
-    /**
-     * Filters the taxa contained in the castListToGeneric of samples. Returns a list of taxa that lie below/above the given
-     * lower/upper correlation & frequency thresholds and below the given p-Value threshold
-     *
-     * @param samples
-     */
-    public void filterTaxa(List<Sample> samples) {
-        //Get the unfiltered List of all taxons contained in either sample1 or sample2 and sort it by node id
-        LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(samples, AnalysisData.getLevel_of_analysis());
-
-        //Counts the visible edges of each node - is initially set to n-1 for every node, decremented when edge is hidden
-        int[] visibleEdgeCounts = new int[taxonList.size()];
-        Arrays.fill(visibleEdgeCounts, taxonList.size() - 1);
-
-        //Get correlation matrix and p-value matrix
-        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, AnalysisData.getLevel_of_analysis());
-        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples, AnalysisData.getLevel_of_analysis());
-
-        //Compare every node with every other node
-        for (int i = 0; i < taxonList.size(); i++) {
-            for (int j = 0; j < i; j++) {
-                //Access MyEdge object via the Hashmap (we need the node ids for this)
-                int idOfFirstNode = taxonList.get(i).getTaxonId();
-                int idOfSecondNode = taxonList.get(j).getTaxonId();
-                MyEdge currentEdge = getNodeIdsToEdgesMap().get(idOfFirstNode).get(idOfSecondNode);
-                //Test if edge between the nodes should be hidden
-                if (correlationMatrix.getEntry(i, j) < AnalysisData.getMinCorrelation() ||
-                        correlationMatrix.getEntry(i, j) > AnalysisData.getMaxCorrelation() ||
-                        correlationPValues.getEntry(i, j) > AnalysisData.getMaxPValue()) {
-                    //Hide it
-                    currentEdge.hideEdge();
-                    //Decrement edgeCount of both nodes
-                    visibleEdgeCounts[i]--;
-                    visibleEdgeCounts[j]--;
-                } else {
-                    //Show it
-                    currentEdge.showEdge();
-                }
+    public void filterEdges(){
+        for (E e: edges.keySet()){
+            MyEdge edge = (MyEdge) e; //E is always of type MyEdge
+            if(edge.getCorrelation() < getMinCorrelation() || edge.getCorrelation() > getMaxCorrelation()
+                    || edge.getPValue() > getMaxPValue()){
+                edge.setCorrelationAndPValueInRange(false);
+            }else{
+                edge.setCorrelationAndPValueInRange(true);
             }
         }
-        //Check if the maximum relative frequency of every taxon lies in between the upper and lower threshold
-        final HashMap<TaxonNode, Double> maximumRelativeFrequencies =
-                SampleComparison.getMaximumRelativeFrequencies(samples, AnalysisData.getLevel_of_analysis());
-        //Additionally, hide all vertices that don't have visible edges anymore, show the rest
-        for (int i = 0; i < visibleEdgeCounts.length; i++) {
-            TaxonNode currentNode = taxonList.get(i);
-            if (visibleEdgeCounts[i] == 0
-                    || maximumRelativeFrequencies.get(currentNode) < AnalysisData.getMinFrequency()
-                    || maximumRelativeFrequencies.get(currentNode) > AnalysisData.getMaxFrequency())
-                taxonNodeToVertexMap.get(currentNode).hideVertex();
-            else
-                taxonNodeToVertexMap.get(currentNode).showVertex();
+    }
+
+    public  void filterVertices(){
+        for (V v : vertices.keySet()){
+            MyVertex vertex = (MyVertex) v;
+            double vertexMaxRelativeFrequency = AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode());
+            if(vertexMaxRelativeFrequency < getMinFrequency() || vertexMaxRelativeFrequency > getMaxFrequency()){
+                for (MyEdge edge : vertex.getEdgesList()) {
+                    edge.setFrequencyInRange(false);
+                }
+            }else{
+                for (MyEdge myEdge : vertex.getEdgesList()) {
+                    myEdge.setFrequencyInRange(true);
+                }
+            }
         }
     }
 

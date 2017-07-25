@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
@@ -29,7 +28,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -114,7 +113,7 @@
                         </AnchorPane>
                         <AnchorPane fx:id="infoBox" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
                      <children>
-                        <TextFlow prefHeight="420.0" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TextFlow fx:id="infoTextFlow" prefHeight="420.0" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                         </AnchorPane>
                     </items>
@@ -159,7 +158,7 @@
                                                         <fx:define>
                                                             <ToggleGroup fx:id="allOrSelectedToggleGroup" />
                                                         </fx:define>
-                                                        <RadioButton fx:id="compareAllSamplesButton" mnemonicParsing="false" selected="true" text="Compare all Samples" toggleGroup="$allOrSelectedToggleGroup">
+                                                        <RadioButton mnemonicParsing="false" selected="true" text="Compare all Samples" toggleGroup="$allOrSelectedToggleGroup">
 
                                                         </RadioButton>
                                                         <RadioButton fx:id="compareSelectedSamplesButton" mnemonicParsing="false" text="Compare selected Samples" toggleGroup="$allOrSelectedToggleGroup">
@@ -258,9 +257,6 @@
                                 </TitledPane>
                             </panes>
                         </Accordion>
-                        <Text layoutX="14.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Controls" AnchorPane.bottomAnchor="49.93408203125" AnchorPane.leftAnchor="14.0" />
-                        <Button fx:id="startAnalysisButton" layoutX="14.0" layoutY="509.0" mnemonicParsing="false" onAction="#startAnalysis" text="Start Analysis" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-                        <CheckBox fx:id="useSelectedCheckBox" layoutX="139.0" layoutY="513.0" mnemonicParsing="false" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="139.0" />
                     </children>
                 </AnchorPane>
             </items>
