@@ -24,8 +24,8 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
 
     private HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap;
     private HashMap<Integer, HashMap<Integer, MyEdge>> nodeIdsToEdgesMap;
-    protected Map<V, Map<V, E>> vertices; // Map of vertices to adjacency maps of vertices to incident edges
-    protected Map<E, Pair<V>> edges;    // Map of edges to connected vertex sets
+    private Map<V, Map<V, E>> vertices; // Map of vertices to adjacency maps of vertices to incident edges
+    private Map<E, Pair<V>> edges;    // Map of edges to connected vertex sets
 
     /**
      * Creates an instance.

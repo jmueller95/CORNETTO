@@ -13,7 +13,6 @@ import edu.uci.ics.jung.visualization.util.ChangeEventSupport;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
-import javafx.collections.ListChangeListener;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -26,31 +25,30 @@ import java.lang.Thread;
 /**
  * Created by caspar on 16.07.17.
  */
-public class SpringAnimationService implements Runnable {
+public class SpringAnimationService extends Service {
 
     private MySpringLayout springLayout;
     private Function<MyEdge, Integer> myEdgeLengthFunction;
     private MyGraph<MyVertex, MyEdge> graph;
 
-    private VisRunner relaxer;
-
     private int width = 1000;
-    private int height =  800;
-    private int frameRate = 50;
+    private int height = 800;
+    private int sleepTime = 50;
 
-    private double maxLength = 800;
-    private double minLength = 100;
+    private double maxLength = 500;
+    private double minLength = 10;
 
-    protected boolean running;
-    protected boolean stop;
-    protected boolean manualSuspend;
-    protected Thread thread;
+    private boolean running;
+    private boolean stop;
+    private boolean manualSuspend;
 
+    /* Used for synchronization. */
+    private Object pauseObject = new String("PAUSE OBJECT");
 
     /**
-     * Constructor for the AnimationService
-     * @param graph GraphModel which is the basis of the Layout
-     * @param graphView GraphView to get extent of the view.
+     * Constructor for this class
+     * @param graph used for Jung Layout
+     * @param graphView providing mouse events to control the service status
      */
     public SpringAnimationService(MyGraph graph, MyGraphView graphView) {
         this.graph = graph;
@@ -60,20 +58,83 @@ public class SpringAnimationService implements Runnable {
 
     }
 
+    /**
+     * Creates a function that calculates an edge length based on the correlation value of the edge
+     * Gives preferred distance in integer values
+     * @return edge length function used in the SpringLayout2
+     */
+    private Function<MyEdge, Integer> getMyEdgeLengthFunction() {
+
+        Function<MyEdge, Integer> foo = myEdge -> {
+            Double corr = myEdge.getCorrelation();
+            Double weight = (minLength + ((maxLength - minLength)/2)*(corr +1));
+            //Double weight = myEdge.getWeight();
+
+            return weight.intValue();
+        };
+        return foo;
+    }
 
 
+    /**
+     * Worker class for JavaFX concurrency
+     * creates a task which includes all the main Stuff
+     * @return empty
+     */
+    @Override
+    protected Task<Void> createTask() {
+        return new Task<Void>() {
+
+            @Override
+            protected Void call() throws Exception {
+                /* Workload goes here */
+                running = true;
+                try {
+                    while (!springLayout.done() && !stop) {
+                        synchronized (pauseObject) {
+                            while (manualSuspend && !stop) {
+                                try {
+                                    pauseObject.wait();
+                                } catch (InterruptedException e) {
+                                    // ignore
+                                }
+                            }
+                        }
+                        springLayout.step();
+
+                        if (stop)
+                            return null;
+
+                        try {
+                            Thread.sleep(sleepTime);
+                        } catch (InterruptedException ie) {
+                            // ignore
+                        }
+                    }
+
+                } finally {
+                    manualSuspend = true;
+                    springLayout.setDone(false);
+                }
+                return null;
+            }
+
+        };
+    }
+
+
+    /**
+     * Updates location of given vertex in the layout.
+     * @param vertex with custom position
+     */
     public void updateNode(MyVertex vertex) {
         springLayout.setLocation(vertex, vertex.getXCoordinates(), vertex.getYCoordinates());
     }
 
-
-
     /**
-     * how long the relaxer thread pauses between iteration loops.
+     * Calculates layout steps until converged or for 500ms
+     * Preconfigures the layout before starting the animation process.
      */
-    protected long sleepTime = 100L;
-
-
     public void prerelax() {
         manualSuspend = true;
         long timeNow = System.currentTimeMillis();
@@ -83,24 +144,16 @@ public class SpringAnimationService implements Runnable {
         manualSuspend = false;
     }
 
+    /**
+     * Sets manualSuspend flag, pausing the Task
+     */
     public void pause() {
         manualSuspend = true;
     }
 
-    public void relax() {
-        // in case its running
-        stop();
-        stop = false;
-        thread = new Thread(this);
-        thread.setPriority(Thread.MIN_PRIORITY);
-        thread.start();
-    }
-
     /**
-     * Used for synchronization.
+     * Resume paused Task
      */
-    public Object pauseObject = new String("PAUSE OBJECT");
-
     public void resume() {
         manualSuspend = false;
         if(running == false) {
@@ -113,13 +166,25 @@ public class SpringAnimationService implements Runnable {
         }
     }
 
+    /**
+     *
+     */
+    public void relax() {
+        // in case its running
+        stop();
+        stop = false;
+        createTask();
+        start();
+    }
+
     public synchronized void stop() {
-        if(thread != null) {
+        if(this.getState() != null) {
             manualSuspend = false;
             stop = true;
+            running = false;
             // interrupt the relaxer, in case it is paused or sleeping
             // this should ensure that visRunnerIsRunning gets set to false
-            try { thread.interrupt(); }
+            try { this.cancel(); }
             catch(Exception ex) {
                 // the applet security manager may have prevented this.
                 // just sleep for a second to let the thread stop on its own
@@ -131,39 +196,6 @@ public class SpringAnimationService implements Runnable {
             }
         }
     }
-
-    @Override
-    public void run() {
-        running = true;
-        try {
-            while (!springLayout.done() && !stop) {
-                synchronized (pauseObject) {
-                    while (manualSuspend && !stop) {
-                        try {
-                            pauseObject.wait();
-                        } catch (InterruptedException e) {
-                            // ignore
-                        }
-                    }
-                }
-                springLayout.step();
-
-                if (stop)
-                    return;
-
-                try {
-                    Thread.sleep(sleepTime);
-                } catch (InterruptedException ie) {
-                    // ignore
-                }
-            }
-
-        } finally {
-            running = false;
-        }
-    }
-
-
 
     /** This can be simplified later **/
     public void setNodeRepulsion(int range) {
@@ -187,26 +219,7 @@ public class SpringAnimationService implements Runnable {
     }
 
     public void setFrameRate(int t) {
-        frameRate = t;
-    }
-
-
-
-    /**
-     * Creates a function that calculates an edge length based on the correlation value of the edge
-     * Gives preferred distance in integer values
-     * @return edge length function used in the SpringLayout2
-     */
-    private Function<MyEdge, Integer> getMyEdgeLengthFunction() {
-
-        Function<MyEdge, Integer> foo = myEdge -> {
-            Double corr = myEdge.getCorrelation();
-            Double weight = (minLength + ((maxLength - minLength)/2)*(corr +1));
-            //Double weight = myEdge.getWeight();
-
-            return weight.intValue();
-        };
-        return foo;
+        sleepTime = t;
     }
 
 }

@@ -138,29 +138,13 @@ public class ViewPane extends AnchorPane {
 
             // Left Mouse Drag: Move Node
             o.setOnMouseDragged(me -> {
-
                 if (me.getButton() == MouseButton.PRIMARY) {
-
-                    // Diagnostic output:
-                    //System.out.print("MX: " + me.getSceneX() + " | " +  initTransX + " | " + viewTransformProperty.getValue().getTx() );
-                    //System.out.println(" |||  MY: " + me.getSceneY() + " | " +  initTransY + " | " + viewTransformProperty.getValue().getTy() );
-
-                    // Node translation takes into account: previous vertex translation (due to automatic layout), total pane Translation
-                    //double deltaX = (me.getSceneX() - 2 * viewTransformProperty.getValue().getTx());
-                    //double deltaY = (me.getSceneY() - 2 * viewTransformProperty.getValue().getTy());
-
-                    // Translation value is divided by the initial scaling factor of the whole pane
-                    //vertexView.translateXProperty().set(((pressedX + deltaX) / viewTransformProperty.getValue().getMxx()) - initTransX);
-                    //vertexView.translateYProperty().set(((pressedY + deltaY) / viewTransformProperty.getValue().getMyy()) - initTransY);
 
                     double deltaX = (pressedX - me.getSceneX());
                     double deltaY = (pressedY - me.getSceneY());
 
                     vertexView.translateXProperty().set(initTransX - (deltaX / viewTransformProperty.getValue().getMxx()));
                     vertexView.translateYProperty().set(initTransY - (deltaY/  viewTransformProperty.getValue().getMxx()));
-
-                    //initTransX = vertexView.translateXProperty().get();
-                    //initTransY = vertexView.translateYProperty().get();
 
                     me.consume();
 

@@ -30,10 +30,10 @@ import java.util.ConcurrentModificationException;
 
 public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements IterativeContext {
 
-    protected double stretch = 0.70;
+    protected double stretch = 0.90;
     protected Function<? super E, Integer> lengthFunction;
-    protected int repulsion_range_sq = 100 * 100;
-    protected double force_multiplier = 1.0 / 3.0;
+    protected int repulsion_range_sq = 20 * 20;
+    protected double force_multiplier = 2.0;
 
     protected LoadingCache<V, MySpringLayout.SpringVertexData> springVertexData =
             CacheBuilder.newBuilder().build(new CacheLoader<V, SpringVertexData>() {
@@ -116,7 +116,7 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
     private void testAverageDeltas() {
         double dx = this.averageDelta.getX();
         double dy = this.averageDelta.getY();
-        if(Math.abs(dx) < 1E-16 && Math.abs(dy) < 1E-16) {
+        if(Math.abs(dx) < 1E-15 && Math.abs(dy) < 1E-15) {
             done = true;
             System.err.println("done, dx="+dx+", dy="+dy);
         }
@@ -312,6 +312,7 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
                     }
 
                     // Updates the locations in MyVertex of the Graph
+
                     ((MyVertex) v).xCoordinatesProperty().setValue(xyd.getX());
                     ((MyVertex) v).yCoordinatesProperty().setValue(xyd.getY());
 
@@ -359,7 +360,15 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
      * @return false
      */
     public boolean done() {
-        return false;
+        return done;
+    }
+
+    /**
+     * Reset done, Layout parameter continues running.
+     * @param b
+     */
+    public void setDone(boolean b) {
+        done = b;
     }
 
     /**

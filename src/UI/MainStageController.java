@@ -617,8 +617,6 @@ public class MainStageController implements Initializable {
      */
     public void initializeGraphSettings() {
 
-
-
         labelAnimationSpeed.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
         sliderAnimationSpeed.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
         labelEdgeForce.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());

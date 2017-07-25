@@ -88,14 +88,12 @@ public class MyGraphView extends Group {
 
 
     public void startLayout() {
-        animationService.relax();
+        animationService.start();
     }
 
     public void updateNodePosition(MyVertex vertex) {
         animationService.updateNode(vertex);
     }
-
-
 
 
     public void pauseAnimation(){
@@ -105,7 +103,6 @@ public class MyGraphView extends Group {
     public void resumeAnimation(){
         animationService.resume();
     }
-
 
     public Group getMyVertexViewGroup() {
         return myVertexViewGroup;

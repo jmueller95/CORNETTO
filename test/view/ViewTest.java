@@ -17,7 +17,6 @@ public class ViewTest extends Application {
 
     private MyGraph<MyVertex, MyEdge> graph = new MyGraph<MyVertex, MyEdge>();
 
-
     @Before
     public void setUp() throws Exception {
 
@@ -53,7 +52,6 @@ public class ViewTest extends Application {
 
         MyGraphView myGraphView = new MyGraphView(graph);
         ViewPane root = new ViewPane(myGraphView);
-
 
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
