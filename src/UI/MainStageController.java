@@ -8,7 +8,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -102,7 +101,7 @@ public class MainStageController implements Initializable {
             "Order", "Family", "Genus", "Species");
 
     @FXML
-    private RadioButton compareAllSamplesButton, compareSelectedSamplesButton;
+    private RadioButton compareSelectedSamplesButton;
 
     @FXML
     private Slider minCorrelationSlider;
@@ -178,7 +177,7 @@ public class MainStageController implements Initializable {
         initializeCollapseAllButton();
         initializeButtonsOnTheRightPane();
         initializeRankChoiceBox();
-        initializeSliderBindings();
+        initializeBindings();
         //preload settings
         SaveAndLoadOptions.loadSettings();
     }
@@ -191,9 +190,7 @@ public class MainStageController implements Initializable {
      */
     public void startAnalysis() {
         startAnalysisButton.setDisable(true);
-        boolean isUseOnlySelectedSamples = compareSelectedSamplesButton.isSelected();
-        //TODO: Exchange so that only one method call named selectedSamples needs to be called which returns every sample if every sample is selected
-        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(isUseOnlySelectedSamples ? LoadedData.getSelectedSamples() : LoadedData.getSamples());
+        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(LoadedData.getSamplesToAnalyze());
         if (isAnalysisSuccessful) {
 
            /*DEBUG*/
@@ -203,12 +200,12 @@ public class MainStageController implements Initializable {
             for (TaxonNode taxonNode : maximumRelativeFrequencies.keySet()) {
                 System.out.println(taxonNode.getName() + ": " + maximumRelativeFrequencies.get(taxonNode));
             }
-
+            /*DEBUG END*/
 
             LoadedData.createGraph();
             //Default values: 0.5<correlation<1, pValue<0.1
             LoadedData.getTaxonGraph().filterTaxa(
-                    isUseOnlySelectedSamples ? LoadedData.getSelectedSamples() : LoadedData.getSamples());
+                    LoadedData.getSamplesToAnalyze());
             displayGraph(LoadedData.getTaxonGraph());
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
@@ -572,7 +569,10 @@ public class MainStageController implements Initializable {
         });
     }
 
-    private void initializeSliderBindings() {
+    private void initializeBindings() {
+        //First, bind the LoadedData.analyzeAll boolean property to the radio buttons
+        LoadedData.analyzeSelectedProperty().bind(compareSelectedSamplesButton.selectedProperty());
+
         //Since the slider value property is double and the text field property is a string, we need to convert them
         //Defining own class to avoid exceptions
         class MyNumberStringConverter extends NumberStringConverter {

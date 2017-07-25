@@ -4,8 +4,9 @@ import analysis.SampleComparison;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.CheckBoxTreeItem;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
@@ -33,6 +34,8 @@ public class LoadedData {
     private static MyGraph<MyVertex, MyEdge> taxonGraph;
     private static HashMap<String, Sample> sampleNameToSample = new HashMap<>();
     private static ArrayList<Sample> selectedSamples = new ArrayList<>();
+    private static BooleanProperty analyzeSelected = new SimpleBooleanProperty(false);
+
 
     public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles, String fileName) {
         if (samples == null) {
@@ -177,6 +180,10 @@ public class LoadedData {
         }
     }
 
+    public static ArrayList<Sample> getSamplesToAnalyze(){
+        return analyzeSelected.get() ? selectedSamples : samples;
+    }
+
     // GETTERS
     public static ArrayList<Sample> getSamples() {
         return samples;
@@ -192,8 +199,22 @@ public class LoadedData {
         return selectedSamples;
     }
 
+    public static boolean isAnalyzeSelected() {
+        return analyzeSelected.get();
+    }
+
+    public static BooleanProperty analyzeSelectedProperty() {
+        return analyzeSelected;
+    }
+
+
+
     // SETTERS
     public static void setSamples(ArrayList<Sample> samples) {
         LoadedData.samples = samples;
+    }
+
+    public static void setAnalyzeSelected(boolean analyzeSelected) {
+        LoadedData.analyzeSelected.set(analyzeSelected);
     }
 }
