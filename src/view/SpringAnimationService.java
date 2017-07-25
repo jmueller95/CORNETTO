@@ -1,7 +1,6 @@
 package view;
 
 import com.google.common.base.Function;
-import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
 import graph.MyEdge;
 import graph.MyGraph;
@@ -11,8 +10,6 @@ import javafx.concurrent.Task;
 import java.lang.Thread;
 
 import java.awt.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by caspar on 16.07.17.
@@ -26,9 +23,11 @@ public class SpringAnimationService extends Service<String> {
     private int width = 1000;
     private int height =  800;
     private int LENGTH_FACTOR = 300;
+    private int frameRate = 50;
 
-    private int max_length = 300;
-    private int min_length = 50;
+    private double maxLength = 800;
+    private double minLength = 100;
+
 
     /**
      * Constructor for the AnimationService
@@ -73,6 +72,16 @@ public class SpringAnimationService extends Service<String> {
         springLayout = new SpringLayout2(graph, myEdgeLengthFunction);
         springLayout.setSize(new Dimension(width, height));
 
+        // Init settings
+        springLayout.setStretch(0.9);
+        springLayout.setRepulsionRange(80);
+        springLayout.setForceMultiplier(0.8);
+
+        springLayout.SpringVertexData()
+
+
+
+
         return new Task<String>() {
 
             //Timer timer = new Timer();
@@ -106,17 +115,26 @@ public class SpringAnimationService extends Service<String> {
                 boolean isConverged = false;
 
                 while (!isConverged) {
-                    Thread.sleep(50 );
-                    springLayout.step();
 
+                    long startTime = System.currentTimeMillis();
+                    springLayout.step();
                     graph.getVertices().forEach((node) -> {
                         node.xCoordinatesProperty().setValue(springLayout.getX(node));
                         node.yCoordinatesProperty().setValue(springLayout.getY(node));
                     });
+                    long deltaTime = System.currentTimeMillis()-startTime;
+
+                    if (deltaTime < frameRate) {
+                        Thread.sleep(frameRate - deltaTime);
+                    }
+
+//                    isConverged = springLayout.done();
+//
 
                 }
-
+                this.done();
                 return "FINISHED";
+
             }
         };
 
@@ -126,46 +144,43 @@ public class SpringAnimationService extends Service<String> {
         springLayout.setLocation(vertex, vertex.getXCoordinates(), vertex.getYCoordinates());
     }
 
-    public void monitoredStep() {
+    public void setNodeRepulsion(int range) {
 
-        int nodeCounter = 0;
-        double sumX = 0;
-        double sumY = 0;
+        springLayout.setRepulsionRange(range);
+    }
 
-        for (MyVertex v: graph.getVertices()){
-            nodeCounter++;
-            sumX += v.getXCoordinates();
-            sumY += v.getYCoordinates();
-        }
+    public void setStrechForce(double stretch) {
+        springLayout.setStretch(stretch);
+    }
 
-        springLayout.step();
+    public void setForce(double force) {
+        springLayout.setForceMultiplier(force);
+    }
+
+    public void setEdgeLengthLow(double val) {
+        minLength = val;
+    }
+
+    public void setEdgeLengthHigh(double val){
+        maxLength = val;
+    }
+
+    public void setFrameRate(int t) {
+        frameRate = t;
     }
 
 
-
-
-
-
     /**
-     * Creates a function that calculates an edge length based on the weight of the edge
-     * FOr now, returns weight, in future this should be the correlation (bivariate dist.)
+     * Creates a function that calculates an edge length based on the correlation value of the edge
      * Gives preferred distance in integer values
      * @return edge length function used in the SpringLayout2
      */
     private Function<MyEdge, Integer> getMyEdgeLengthFunction() {
 
-        Function<MyEdge, Integer> foo = new Function<MyEdge, Integer>() {
-            @Override
-            public Integer apply(MyEdge myEdge) {
-                Double corr = myEdge.getCorrelation();
-
-                Double weight = (min_length + ((max_length - min_length)/2)*(corr +1));
-
-                //Double weight = (1 - Math.abs(corr)) * LENGTH_FACTOR;
-                //Double weight = myEdge.getWeight();
-                Integer intWeight = weight.intValue();
-                return intWeight;
-            }
+        Function<MyEdge, Integer> foo = myEdge -> {
+            Double corr = myEdge.getCorrelation();
+            Double weight = (minLength + ((maxLength - minLength)/2)*(corr +1));
+            return weight.intValue();
         };
         return foo;
     }
