@@ -146,7 +146,7 @@
                                 <AnchorPane fx:id="analysisPane" minHeight="0.0" minWidth="0.0" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0">
                                     <children>
                                         <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                            <TableView fx:id="analysisTable" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                            <TableView fx:id="analysisTable" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
                                     </children>
                                 </AnchorPane>
                             </content>

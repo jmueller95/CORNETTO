@@ -7,30 +7,25 @@ import graph.MyVertex;
 import javafx.application.Platform;
 import javafx.beans.*;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import main.GlobalConstants;
@@ -39,7 +34,6 @@ import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
 import model.TaxonNode;
-import org.apache.commons.math3.linear.RealMatrix;
 import org.controlsfx.control.RangeSlider;
 import sampleParser.BiomV1Parser;
 import sampleParser.BiomV2Parser;
@@ -244,7 +238,7 @@ public class MainStageController implements Initializable {
             LoadedData.getTaxonGraph().filterEdges();
             LoadedData.getTaxonGraph().filterVertices();
             displayGraph(LoadedData.getTaxonGraph());
-            displayTable();
+            displayCorrelationTable();
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
         }
@@ -271,7 +265,7 @@ public class MainStageController implements Initializable {
     /**
      * shows the table in the analysis view
      */
-    private void displayTable() {
+    private void displayCorrelationTable() {
         //Delete whatever's been in the table before
         analysisTable.getItems().clear();
         analysisTable.getColumns().clear();
@@ -282,42 +276,46 @@ public class MainStageController implements Initializable {
         LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(
                 LoadedData.getSamplesToAnalyze(),AnalysisData.getLevel_of_analysis());
 
-
+        //We also want to color the two cells with the highest positive/negative correlation
+        double[] highestPositiveCorrelationCoordinates = AnalysisData.getHighestPositiveCorrelationCoordinates();
+        double[] highestNegativeCorrelationCoordinates = AnalysisData.getHighestNegativeCorrelationCoordinates();
 
         //Table will consist of strings
-        String[][] tableValues = new String[correlationMatrix.length + 1][correlationMatrix[0].length + 1];
-
-        //Create first line with taxon names
-        for (int j = 1; j < tableValues.length; j++) {
-            tableValues[0][j] = taxonList.get(j-1).getName();
-        }
+        String[][] tableValues = new String[correlationMatrix.length][correlationMatrix[0].length + 1];
 
         //Add the values as formatted strings
-        for (int i = 1; i < tableValues.length; i++) {
-            tableValues[i][0] = taxonList.get(i-1).getName();
+        for (int i = 0; i < tableValues.length; i++) {
+            tableValues[i][0] = taxonList.get(i).getName();
             for (int j = 1; j < tableValues[0].length; j++) {
-                tableValues[i][j] = String.format("%.3f", correlationMatrix[i-1][j-1])
-                        + "\n" + String.format("%.3f", pValueMatrix[i-1][j-1]);
+                tableValues[i][j] = String.format("%.3f", correlationMatrix[i][j-1])
+                        + "\n(" + String.format("%.2f", pValueMatrix[i][j-1]) + ")";
             }
         }
 
         for (int i = 0; i < tableValues[0].length; i++) {
-            TableColumn<String[], String> column = new TableColumn<>();
+            String columnTitle;
+            if(i>0){
+                columnTitle = taxonList.get(i-1).getName();
+            }else{
+                columnTitle = "";
+            }
+            TableColumn<String[], String> column = new TableColumn<>(columnTitle);
             final int columnIndex = i;
             column.setCellValueFactory(cellData -> {
                 String[] row = cellData.getValue();
                 return new SimpleStringProperty(row[columnIndex]);
             });
             analysisTable.getColumns().add(column);
+
+            //First column contains taxon names and should be italic
+            if(i==0)
+                column.setStyle("-fx-font-style:italic;");
         }
 
         for (int i = 0; i < tableValues.length; i++) {
             analysisTable.getItems().add(tableValues[i]);
         }
 
-//        /*DEBUG*/
-//        analysisPane.getChildren().clear();
-//        analysisPane.getChildren().add(analysisTable);
     }
 
     //FILE methods
