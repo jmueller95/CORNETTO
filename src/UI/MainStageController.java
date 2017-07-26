@@ -1,11 +1,15 @@
 package UI;
 
+import analysis.SampleComparison;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.application.Platform;
 import javafx.beans.*;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -19,12 +23,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import main.GlobalConstants;
@@ -33,6 +39,7 @@ import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
 import model.TaxonNode;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -57,6 +64,9 @@ public class MainStageController implements Initializable {
     private static Stage optionsStage;
 
     private static final int MAX_WIDTH_OF_SIDEPANES = 220;
+
+    public MainStageController() {
+    }
 
     private enum FileType {taxonId2Count, readName2TaxonId, biomV1, biomV2}
 
@@ -195,6 +205,15 @@ public class MainStageController implements Initializable {
     @FXML
     private Button buttonResetGraphDefaults;
 
+    /**
+     * ANALYSIS PANE ELEMENTS
+     */
+
+    @FXML
+    private AnchorPane analysisPane;
+
+    @FXML
+    private TableView<String[]> analysisTable;
 
 
     /**
@@ -219,6 +238,8 @@ public class MainStageController implements Initializable {
     }
 
 
+
+
     @FXML
     /**
      * Should be called when the user clicks a button to analyze the loaded samples and display the graphview
@@ -228,7 +249,10 @@ public class MainStageController implements Initializable {
         boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(new ArrayList<>(LoadedData.getSamplesToAnalyze()));
         if (isAnalysisSuccessful) {
             LoadedData.createGraph();
+            LoadedData.getTaxonGraph().filterEdges();
+            LoadedData.getTaxonGraph().filterVertices();
             displayGraph(LoadedData.getTaxonGraph());
+            displayTable();
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
         }
@@ -250,6 +274,58 @@ public class MainStageController implements Initializable {
         bindGraphSettings(graphView);
         mainViewTab.setContent(viewPane);
 
+    }
+
+    /**
+     * shows the table in the analysis view
+     */
+    private void displayTable() {
+        //Delete whatever's been in the table before
+        analysisTable.getItems().clear();
+        analysisTable.getColumns().clear();
+
+        //We want to display correlations and p-Values of every node combination
+        double[][] correlationMatrix = AnalysisData.getCorrelationMatrix().getData();
+        double[][] pValueMatrix = AnalysisData.getPValueMatrix().getData();
+        LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(
+                LoadedData.getSamplesToAnalyze(),AnalysisData.getLevel_of_analysis());
+
+
+
+        //Table will consist of strings
+        String[][] tableValues = new String[correlationMatrix.length + 1][correlationMatrix[0].length + 1];
+
+        //Create first line with taxon names
+        for (int j = 1; j < tableValues.length; j++) {
+            tableValues[0][j] = taxonList.get(j-1).getName();
+        }
+
+        //Add the values as formatted strings
+        for (int i = 1; i < tableValues.length; i++) {
+            tableValues[i][0] = taxonList.get(i-1).getName();
+            for (int j = 1; j < tableValues[0].length; j++) {
+                tableValues[i][j] = String.format("%.3f", correlationMatrix[i-1][j-1])
+                        + "\n" + String.format("%.3f", pValueMatrix[i-1][j-1]);
+            }
+        }
+
+        for (int i = 0; i < tableValues[0].length; i++) {
+            TableColumn<String[], String> column = new TableColumn<>();
+            final int columnIndex = i;
+            column.setCellValueFactory(cellData -> {
+                String[] row = cellData.getValue();
+                return new SimpleStringProperty(row[columnIndex]);
+            });
+            analysisTable.getColumns().add(column);
+        }
+
+        for (int i = 0; i < tableValues.length; i++) {
+            analysisTable.getItems().add(tableValues[i]);
+        }
+
+//        /*DEBUG*/
+//        analysisPane.getChildren().clear();
+//        analysisPane.getChildren().add(analysisTable);
     }
 
     //FILE methods
@@ -387,10 +463,8 @@ public class MainStageController implements Initializable {
         }
     }
 
-    /**here and as far as I can tell business= first transatlantic/pacific.
-
-But then I don't fly any really fancy
-     * sets the default directory for openings files
+    /**
+     *  sets the default directory for openings files
      *
      * @param fileChooser
      */
@@ -643,6 +717,7 @@ But then I don't fly any really fancy
 
     /**
      * Bind graph setting controls to MyGraphView isntance.
+     *
      * @param graphView instance to which controls are bound
      */
     public void bindGraphSettings(MyGraphView graphView) {
