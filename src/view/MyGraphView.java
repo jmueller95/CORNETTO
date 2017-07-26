@@ -94,7 +94,7 @@ public class MyGraphView extends Group {
     }
 
     public void pauseAnimation(){
-        animationService.pause();
+        animationService.cancel();
     }
 
     public void resumeAnimation(){

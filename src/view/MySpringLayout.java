@@ -118,7 +118,7 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
     private void testAverageDeltas() {
         double dx = this.averageDelta.getX();
         double dy = this.averageDelta.getY();
-        if(Math.abs(dx) < 1E-15 && Math.abs(dy) < 1E-15) {
+        if(Math.abs(dx) < 1E-17 && Math.abs(dy) < 1E-17) {
             done = true;
             System.err.println("done, dx="+dx+", dy="+dy);
         }

@@ -91,35 +91,18 @@ public class SpringAnimationService extends Service {
                     prerelaxDone = true;
                 }
 
-                running = true;
-                try {
-                    while (!springLayout.done() && !stop) {
-                        synchronized (pauseObject) {
-                            while (manualSuspend && !stop) {
-                                try {
-                                    pauseObject.wait();
-                                } catch (InterruptedException e) {
-                                    // ignore
-                                }
-                            }
-                        }
+                while (!springLayout.done()) {
+
+                        long timeNow = System.currentTimeMillis();
                         springLayout.step();
+                        long duration = System.currentTimeMillis() - timeNow;
 
-                        if (stop)
-                            return null;
-
-                        try {
-                            Thread.sleep(sleepTime);
-                        } catch (InterruptedException ie) {
-                            // ignore
+                        if (duration < sleepTime) {
+                            Thread.sleep(sleepTime - duration);
                         }
-                    }
 
-                } finally {
-                    manualSuspend = true;
-                    springLayout.setDone(false);
                 }
-                return null;
+            return null;
             }
         };
     }
@@ -153,47 +136,7 @@ public class SpringAnimationService extends Service {
         springLayout.setSize(new Dimension(width, height));
         setAllLocations();
 
-        manualSuspend = false;
-        if(running == false) {
-            //prerelax();
-            relax();
-        } else {
-            synchronized(pauseObject) {
-                pauseObject.notifyAll();
-            }
-        }
-    }
-
-    public void relax() {
-        // in case its running
-        stop();
-        stop = false;
-        createTask();
         start();
-    }
-
-    public void pause() {
-        manualSuspend = true;
-    }
-
-    public synchronized void stop() {
-        if(this.getState() != null) {
-            manualSuspend = false;
-            stop = true;
-            running = false;
-            // interrupt the relaxer, in case it is paused or sleeping
-            // this should ensure that visRunnerIsRunning gets set to false
-            try { this.cancel(); }
-            catch(Exception ex) {
-                // the applet security manager may have prevented this.
-                // just sleep for a second to let the thread stop on its own
-                try { Thread.sleep(1000); }
-                catch(InterruptedException ie) {} // ignore
-            }
-            synchronized (pauseObject) {
-                pauseObject.notifyAll();
-            }
-        }
     }
 
     private void setAllLocations() {
