@@ -35,8 +35,6 @@ public class MyGraphView extends Group {
         this.myVertexViewGroup = new Group();
         this.myEdgeViewGroup = new Group();
         this.animationService = new SpringAnimationService(graph, this);
-
-
         drawNodes();
         drawEdges();
 

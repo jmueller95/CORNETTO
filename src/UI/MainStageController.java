@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -240,6 +241,7 @@ public class MainStageController implements Initializable {
         // Settings need to be initialized with graphView
         bindGraphSettings(graphView);
         mainViewTab.setContent(viewPane);
+
     }
 
     //FILE methods

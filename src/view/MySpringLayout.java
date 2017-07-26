@@ -169,14 +169,16 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
     public void step() {
         try {
             for(V v : getGraph().getVertices()) {
-                MySpringLayout.SpringVertexData svd = springVertexData.getUnchecked(v);
-                if (svd == null) {
-                    continue;
+                if(!((MyVertex)v).isHidden()) {
+                    MySpringLayout.SpringVertexData svd = springVertexData.getUnchecked(v);
+                    if (svd == null) {
+                        continue;
+                    }
+                    svd.dx /= 4;
+                    svd.dy /= 4;
+                    svd.edgedx = svd.edgedy = 0;
+                    svd.repulsiondx = svd.repulsiondy = 0;
                 }
-                svd.dx /= 4;
-                svd.dy /= 4;
-                svd.edgedx = svd.edgedy = 0;
-                svd.repulsiondx = svd.repulsiondy = 0;
             }
         } catch(ConcurrentModificationException cme) {
             step();
