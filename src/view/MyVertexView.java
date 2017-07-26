@@ -49,6 +49,15 @@ public class MyVertexView extends Group {
         Tooltip.install(this,tooltip);
         getChildren().add(vertexShape);
 
+        addLabel();
+
+    }
+
+    private void addLabel() {
+        vertexLabel = new Label(myVertex.getTaxonName());
+        vertexLabel.layoutXProperty().bind(vertexShape.translateXProperty());
+        vertexLabel.layoutYProperty().bind(vertexShape.translateYProperty());
+        getChildren().add(vertexLabel);
     }
 
     /**
@@ -84,5 +93,9 @@ public class MyVertexView extends Group {
 
     public void setRadius(double r) {
         vertexShape.setRadius(r);
+    }
+
+    public Label getVertexLabel() {
+        return vertexLabel;
     }
 }

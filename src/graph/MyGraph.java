@@ -5,7 +5,6 @@ import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.graph.util.Pair;
 import model.AnalysisData;
-import model.Sample;
 import model.TaxonNode;
 
 import java.util.*;
@@ -212,8 +211,8 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
     public void filterEdges(){
         for (E e: edges.keySet()){
             MyEdge edge = (MyEdge) e; //E is always of type MyEdge
-            if(edge.getCorrelation() < getMinCorrelation() || edge.getCorrelation() > getMaxCorrelation()
-                    || edge.getPValue() > getMaxPValue()){
+            if(edge.getCorrelation() < getMinCorrelationFilter() || edge.getCorrelation() > getMaxCorrelationFilter()
+                    || edge.getPValue() > getMaxPValueFilter()){
                 edge.setCorrelationAndPValueInRange(false);
             }else{
                 edge.setCorrelationAndPValueInRange(true);
@@ -225,7 +224,7 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         for (V v : vertices.keySet()){
             MyVertex vertex = (MyVertex) v;
             double vertexMaxRelativeFrequency = AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode());
-            if(vertexMaxRelativeFrequency < getMinFrequency() || vertexMaxRelativeFrequency > getMaxFrequency()){
+            if(vertexMaxRelativeFrequency < getMinFrequencyFilter() || vertexMaxRelativeFrequency > getMaxFrequencyFilter()){
                 for (MyEdge edge : vertex.getEdgesList()) {
                     edge.setFrequencyInRange(false);
                 }

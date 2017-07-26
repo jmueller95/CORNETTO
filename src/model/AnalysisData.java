@@ -11,15 +11,16 @@ import java.util.HashMap;
 public class AnalysisData {
     private static RealMatrix correlationMatrix, pValueMatrix;
     private static HashMap<TaxonNode, Double> maximumRelativeFrequencies;
+    private static double[] highestPositiveCorrelationCoordinates, highestNegativeCorrelationCoordinates;
     private static String level_of_analysis;
     //Possible values: "Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"
 
     //Filter properties
-    private static DoubleProperty minCorrelation = new SimpleDoubleProperty();
-    private static DoubleProperty maxCorrelation = new SimpleDoubleProperty();
-    private static DoubleProperty maxPValue = new SimpleDoubleProperty();
-    private static DoubleProperty minFrequency = new SimpleDoubleProperty();
-    private static DoubleProperty maxFrequency = new SimpleDoubleProperty();
+    private static DoubleProperty minCorrelationFilter = new SimpleDoubleProperty();
+    private static DoubleProperty maxCorrelationFilter = new SimpleDoubleProperty();
+    private static DoubleProperty maxPValueFilter = new SimpleDoubleProperty();
+    private static DoubleProperty minFrequencyFilter = new SimpleDoubleProperty();
+    private static DoubleProperty maxFrequencyFilter = new SimpleDoubleProperty();
 
     /**
      * Receives a list of samples, calculates correlationMatrix and pValueMatrix for it
@@ -31,6 +32,8 @@ public class AnalysisData {
             correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, level_of_analysis);
             pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples(samples, level_of_analysis);
             maximumRelativeFrequencies = SampleComparison.calcMaximumRelativeFrequencies(samples, level_of_analysis);
+            highestPositiveCorrelationCoordinates = calcHighestPositiveCorrelationCoordinates();
+            highestNegativeCorrelationCoordinates = calcHighestNegativeCorrelationCoordinates();
             return true;
         }else{
            return false;
@@ -53,57 +56,102 @@ public class AnalysisData {
         AnalysisData.pValueMatrix = pValueMatrix;
     }
 
-    //Getter
+
+    /**
+     * Returns the coordinates in the correlation matrix with the highest positive value in the shape {x,y}
+     * @return
+     */
+    private static double[] calcHighestPositiveCorrelationCoordinates() {
+        double max = -1;
+        double[] maxCoordinates = {0,0};
+        for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
+            for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
+                if(correlationMatrix.getEntry(i,j)>max){
+                    max = correlationMatrix.getEntry(i,j);
+                    maxCoordinates[0] = i;
+                    maxCoordinates[1] = j;
+                }
+            }
+        }
+        return maxCoordinates;
+    }
+
+    /**
+     * Returns the coordinates in the correlation matrix with the highest negative value in the shape {x,y}
+     * @return
+     */
+    private static double[] calcHighestNegativeCorrelationCoordinates() {
+        double min = 1;
+        double[] minCoordinates = {0,0};
+        for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
+            for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
+                if(correlationMatrix.getEntry(i,j)<min){
+                    min = correlationMatrix.getEntry(i,j);
+                    minCoordinates[0] = i;
+                    minCoordinates[1] = j;
+                }
+            }
+        }
+        return minCoordinates;
+
+    }
+
     public static String getLevel_of_analysis() {
         return level_of_analysis;
     }
 
-    //Setter
     public static void setLevel_of_analysis(String level_of_analysis) { AnalysisData.level_of_analysis = level_of_analysis; }
 
-
-    public static double getMinCorrelation() {
-        return minCorrelation.get();
+    public static double getMinCorrelationFilter() {
+        return minCorrelationFilter.get();
     }
 
     public static DoubleProperty minCorrelationProperty() {
-        return minCorrelation;
+        return minCorrelationFilter;
     }
 
-    public static double getMaxCorrelation() {
-        return maxCorrelation.get();
+    public static double getMaxCorrelationFilter() {
+        return maxCorrelationFilter.get();
     }
 
     public static DoubleProperty maxCorrelationProperty() {
-        return maxCorrelation;
+        return maxCorrelationFilter;
     }
 
-    public static double getMaxPValue() {
-        return maxPValue.get();
+    public static double getMaxPValueFilter() {
+        return maxPValueFilter.get();
     }
 
     public static DoubleProperty maxPValueProperty() {
-        return maxPValue;
+        return maxPValueFilter;
     }
 
-    public static double getMinFrequency() {
-        return minFrequency.get();
+    public static double getMinFrequencyFilter() {
+        return minFrequencyFilter.get();
     }
 
     public static DoubleProperty minFrequencyProperty() {
-        return minFrequency;
+        return minFrequencyFilter;
     }
 
-    public static double getMaxFrequency() {
-        return maxFrequency.get();
+    public static double getMaxFrequencyFilter() {
+        return maxFrequencyFilter.get();
     }
 
     public static DoubleProperty maxFrequencyProperty() {
-        return maxFrequency;
+        return maxFrequencyFilter;
     }
 
     public static HashMap<TaxonNode, Double> getMaximumRelativeFrequencies() {
         return maximumRelativeFrequencies;
+    }
+
+    public static double[] getHighestPositiveCorrelationCoordinates() {
+        return highestPositiveCorrelationCoordinates;
+    }
+
+    public static double[] getHighestNegativeCorrelationCoordinates() {
+        return highestNegativeCorrelationCoordinates;
     }
 
     /**

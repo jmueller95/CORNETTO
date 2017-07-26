@@ -13,6 +13,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import org.apache.commons.math3.linear.RealMatrix;
+import view.MyGraphView;
 
 import java.util.*;
 
@@ -34,6 +35,7 @@ public class LoadedData {
     private static ObservableList<Sample> samples;
     private static ArrayList<String> openFiles;
     private static MyGraph<MyVertex, MyEdge> taxonGraph;
+    private static MyGraphView graphView;
     private static HashMap<String, Sample> sampleNameToSample = new HashMap<>();
    private static ObservableList<Sample> selectedSamples = FXCollections.observableArrayList();
     private static BooleanProperty analyzeSelected = new SimpleBooleanProperty(false);
@@ -209,7 +211,9 @@ public class LoadedData {
         return analyzeSelected;
     }
 
-
+    public static MyGraphView getGraphView() {
+        return graphView;
+    }
 
     // SETTERS
     public static void setSamples(ObservableList<Sample> samples) {
@@ -218,5 +222,9 @@ public class LoadedData {
 
     public static void setAnalyzeSelected(boolean analyzeSelected) {
         LoadedData.analyzeSelected.set(analyzeSelected);
+    }
+
+    public static void setGraphView(MyGraphView graphView) {
+        LoadedData.graphView = graphView;
     }
 }

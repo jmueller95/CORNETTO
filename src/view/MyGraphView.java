@@ -5,6 +5,8 @@ import com.google.common.base.Function;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Group;
 import model.VertexSelectionModel;
@@ -112,4 +114,5 @@ public class MyGraphView extends Group {
     public VertexSelectionModel getSelectionModel() {
         return selectionModel;
     }
+
 }

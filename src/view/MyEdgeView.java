@@ -55,7 +55,7 @@ public class MyEdgeView extends Group {
     }
 
     public void addLabel() {
-        // TODO
+
     }
 
     public void setColor() {
@@ -68,5 +68,7 @@ public class MyEdgeView extends Group {
         return edgeShape.strokeWidthProperty();
     }
 
-
+    public Label getEdgelabel() {
+        return edgelabel;
+    }
 }
