@@ -27,25 +27,15 @@ public class MetadataMapping extends Sample{
 
     private static ArrayList<String> metaDataObject = new ArrayList<>();
 
-    static  ArrayList<String>  MetadataParser() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader("./res/testFiles/metadataFilesTest"));
+    static  ArrayList<String>  MetadataParser(String filePath) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
         String line = reader.readLine();
         String[] arr = line.split(" "); // the fields are tab separated
        // int columns = arr.length; //number of files' columns
 
 
       while(line != null ) {
-/*
-              //HashMap<String,String> metadataObjectSet = new HashMap<>();
-              metaDataObject.add(arr[0]);
-              metaDataObject.add(arr[3] ); //includes its "treatment"
-              metaDataObject.add(arr[4] + "\t\t"); //includes its "dob"
 
-              arr = line.split(" ");
-
-              line = reader.readLine();
-              System.out.println("" + metaDataObject);
-*/
           getMT().put(arr[0], arr[1]);
           System.out.println(getMT() + "\t");
 
