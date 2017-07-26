@@ -16,6 +16,7 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -42,12 +43,12 @@
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#openId2CountFiles" text="taxonId2Count" />
                                 <MenuItem mnemonicParsing="false" onAction="#openReadName2TaxonIdFiles" text="readName2TaxId" />
-                        <Menu mnemonicParsing="false" text="biom">
-                          <items>
-                            <MenuItem mnemonicParsing="false" onAction="#openBiomV1Files" text="biomV1" />
-                              <MenuItem mnemonicParsing="false" onAction="#openBiomV2Files" text="biomV2" />
-                          </items>
-                        </Menu>
+                                <Menu mnemonicParsing="false" text="biom">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" onAction="#openBiomV1Files" text="biomV1" />
+                                        <MenuItem mnemonicParsing="false" onAction="#openBiomV2Files" text="biomV2" />
+                                    </items>
+                                </Menu>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" onAction="#openRecentFile" text="Open Recent" />
@@ -114,9 +115,9 @@
                             </children>
                         </AnchorPane>
                         <AnchorPane fx:id="infoBox" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
-                     <children>
-                        <TextFlow fx:id="infoTextFlow" prefHeight="420.0" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
+                            <children>
+                                <TextFlow fx:id="infoTextFlow" prefHeight="420.0" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </children>
                         </AnchorPane>
                     </items>
                 </SplitPane>
@@ -126,23 +127,28 @@
                             <content>
                                 <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                     <children>
-                              <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="816.0" prefWidth="742.0">
-                                       <children>
-                                                    <ProgressIndicator fx:id="startupSpinner" />
-                                                    <Label fx:id="startupLabel" nodeOrientation="LEFT_TO_RIGHT" text="Label" textAlignment="CENTER" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </Pane>
+                                        <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="816.0" prefWidth="742.0">
+                                                    <children>
+                                                        <ProgressIndicator fx:id="startupSpinner" />
+                                                        <Label fx:id="startupLabel" nodeOrientation="LEFT_TO_RIGHT" text="Label" textAlignment="CENTER" />
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </Pane>
                                     </children>
                                 </AnchorPane>
                             </content>
                         </Tab>
                         <Tab text="Analysis">
                             <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                <AnchorPane fx:id="analysisPane" minHeight="0.0" minWidth="0.0" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0">
+                                    <children>
+                                        <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                            <TableView fx:id="analysisTable" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    </children>
+                                </AnchorPane>
                             </content>
                         </Tab>
                     </tabs>
@@ -160,8 +166,10 @@
                                                         <fx:define>
                                                             <ToggleGroup fx:id="allOrSelectedToggleGroup" />
                                                         </fx:define>
-                                                        <RadioButton mnemonicParsing="false" selected="true" text="Compare all Samples" toggleGroup="$allOrSelectedToggleGroup">
-
+                                                        <RadioButton mnemonicParsing="false" selected="true" text="Compare all Samples">
+                                                            <toggleGroup>
+                                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
+                                                            </toggleGroup>
                                                         </RadioButton>
                                                         <RadioButton fx:id="compareSelectedSamplesButton" mnemonicParsing="false" text="Compare selected Samples" toggleGroup="$allOrSelectedToggleGroup">
                                                         </RadioButton>
@@ -228,7 +236,7 @@
                                                         </HBox>
                                                     </children>
                                                 </VBox>
-                                    <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="375.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
+                                                <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="375.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
                                             </children>
                                         </AnchorPane>
                                     </content>
@@ -236,30 +244,31 @@
                                 <TitledPane animated="false" text="Graph settings">
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <children>
-                                          <Label text="Node radius:" />
-                                          <Slider fx:id="sliderNodeRadius" max="50" min="1.0" value="15" />
-                                          <Label text="Edge width:" />
-                                          <Slider fx:id="sliderEdgeWidth" max="20" min="1.0" value="5.0" />
-                                          <Label text="Edge length:" />
-                                          <RangeSlider fx:id="sliderEdgeLength" max="1000" min="1.0" lowValue="200" highValue="500"  />
-                                          <Label />
-                                          <CheckBox fx:id="checkAdvancedGraphSettings" mnemonicParsing="false" text="show advanced settings" />
-                                          <Label fx:id="labelNodeRepulsion" text="Node repulsion" />
-                                          <Slider fx:id="sliderNodeRepulsion" />
-                                          <Label fx:id="labelEdgeForce" text="Edge force" />
-                                          <Slider fx:id="sliderEdgeForce" />
-                                          <Label fx:id="labelStretchParameter" text="Stretch parameter" />
-                                          <Slider fx:id="sliderStretchParameter" />
-                                          <Label fx:id="labelAnimationSpeed" text="Animation speed" />
-                                          <Slider fx:id="sliderAnimationSpeed" />
-                                          <Label />
-                                          <Button fx:id="buttonResetGraphDefaults" mnemonicParsing="false" text="Reset defaults" />
-                                       </children>
-                                    </VBox>
-                                 </children></AnchorPane>
+                                            <children>
+                                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <children>
+                                                        <Label text="Node radius:" />
+                                                        <Slider fx:id="sliderNodeRadius" max="50" min="1.0" value="15" />
+                                                        <Label text="Edge width:" />
+                                                        <Slider fx:id="sliderEdgeWidth" max="20" min="1.0" value="5.0" />
+                                                        <Label text="Edge length:" />
+                                                        <RangeSlider fx:id="sliderEdgeLength" highValue="500" lowValue="200" max="1000" min="1.0" />
+                                                        <Label />
+                                                        <CheckBox fx:id="checkAdvancedGraphSettings" mnemonicParsing="false" text="show advanced settings" />
+                                                        <Label fx:id="labelNodeRepulsion" text="Node repulsion" />
+                                                        <Slider fx:id="sliderNodeRepulsion" />
+                                                        <Label fx:id="labelEdgeForce" text="Edge force" />
+                                                        <Slider fx:id="sliderEdgeForce" />
+                                                        <Label fx:id="labelStretchParameter" text="Stretch parameter" />
+                                                        <Slider fx:id="sliderStretchParameter" />
+                                                        <Label fx:id="labelAnimationSpeed" text="Animation speed" />
+                                                        <Slider fx:id="sliderAnimationSpeed" />
+                                                        <Label />
+                                                        <Button fx:id="buttonResetGraphDefaults" mnemonicParsing="false" text="Reset defaults" />
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </AnchorPane>
                                     </content>
                                 </TitledPane>
                                 <TitledPane animated="false" prefHeight="415.0" prefWidth="220.0" text="Colouring">
