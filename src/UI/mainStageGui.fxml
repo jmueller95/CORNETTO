@@ -30,9 +30,9 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 <?import org.controlsfx.control.RangeSlider?>
-<?import org.controlsfx.glyphfont.*?>
+<?import org.controlsfx.glyphfont.Glyph?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -257,24 +257,25 @@
                                           <Label text="Animation:" />
                                           <HBox alignment="CENTER" VBox.vgrow="NEVER">
                                              <children>
-                                                <Button fx:id = "buttonPauseAnimation" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Pause/Resume"   HBox.hgrow="NEVER">
+                                                <Button fx:id="buttonPauseAnimation" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Pause/Resume" HBox.hgrow="NEVER">
                                                     <Label>
-                                                    <Glyph fontFamily="FontAwesome" icon="PAUSE"/>
+                                                    <Glyph fontFamily="FontAwesome" icon="PAUSE" />
                                                     </Label>
                                                 </Button>
                                              </children>
                                           </HBox>
                                           <Label />
+                                          <CheckBox fx:id="showLabelsCheckBox" mnemonicParsing="false" text="Show Labels" />
+                                          <Label />
                                           <CheckBox fx:id="checkAdvancedGraphSettings" mnemonicParsing="false" text="show advanced settings" />
                                           <Label fx:id="labelNodeRepulsion" text="Node repulsion" />
-                                          <Slider fx:id="sliderNodeRepulsion" max="200" min="1.0"/>
+                                          <Slider fx:id="sliderNodeRepulsion" max="200" min="1.0" />
                                           <Label fx:id="labelEdgeForce" text="Edge force" />
-                                          <Slider fx:id="sliderEdgeForce" max="5" min="0"/>
+                                          <Slider fx:id="sliderEdgeForce" max="5" min="0" />
                                           <Label fx:id="labelStretchParameter" text="Stretch parameter" />
-                                          <Slider fx:id="sliderStretchParameter" max="1.4" min="0.5"/>
-                                          <Label fx:id="labelAnimationSpeed" text="Animation speed"  />
-                                          <Slider fx:id="sliderAnimationSpeed" max="150" min="2"/>
-                                          <Label />
+                                          <Slider fx:id="sliderStretchParameter" max="1.4" min="0.5" />
+                                          <Label fx:id="labelAnimationSpeed" text="Animation speed" />
+                                          <Slider fx:id="sliderAnimationSpeed" max="150" min="2" />
                                           <Button fx:id="buttonResetGraphDefaults" mnemonicParsing="false" text="Reset defaults" />
                                        </children>
                                     </VBox>

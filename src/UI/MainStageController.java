@@ -199,6 +199,9 @@ public class MainStageController implements Initializable {
     @FXML
     private Button buttonResetGraphDefaults;
 
+    @FXML
+    private CheckBox showLabelsCheckBox;
+
     /**
      * ANALYSIS PANE ELEMENTS
      */
@@ -260,6 +263,7 @@ public class MainStageController implements Initializable {
      */
     private void displayGraph(MyGraph<MyVertex, MyEdge> taxonGraph) {
         MyGraphView graphView = new MyGraphView(taxonGraph);
+        LoadedData.setGraphView(graphView);
         ViewPane viewPane = new ViewPane(graphView);
         // Bind node hover status text
         statusRightLabel.textProperty().bind(viewPane.hoverInfo);
@@ -267,6 +271,13 @@ public class MainStageController implements Initializable {
         // Settings need to be initialized with graphView
         bindGraphSettings(graphView);
         mainViewTab.setContent(viewPane);
+
+
+        //Bind the showLabels-Checkbox to the visibility properties of the MyVertexView labels
+        for (Node node : LoadedData.getGraphView().getMyVertexViewGroup().getChildren()) {
+            MyVertexView vertexView = (MyVertexView) node;
+            vertexView.getVertexLabel().visibleProperty().bind(showLabelsCheckBox.selectedProperty());
+        }
 
     }
 
@@ -693,6 +704,7 @@ public class MainStageController implements Initializable {
                 startAnalysis();
             }
         });
+
 
     }
 
