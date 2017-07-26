@@ -29,9 +29,6 @@ public class SpringAnimationService extends Service {
     private double maxLength = 500;
     private double minLength = 10;
 
-    private boolean running;
-    private boolean stop;
-    private boolean manualSuspend;
     private boolean prerelaxDone = false;
 
     /* Used for synchronization. */

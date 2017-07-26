@@ -46,7 +46,7 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
 
     private int currentIteration;
     private int averageCounter;
-    private int loopCountMax = 100;
+    private int loopCountMax = 4;
     private boolean done;
 
     private Point2D averageDelta = new Point2D.Double();
@@ -322,17 +322,12 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
                         }
 
                         // Updates the locations in MyVertex of the Graph
-                        /** New runnable to make threadSafe updates to the main UI Thread **/
-                        Runnable updateNodes = new Runnable() {
-                            @Override
-                            public void run() {
-                                ((MyVertex) v).xCoordinatesProperty().setValue(xyd.getX());
-                                ((MyVertex) v).yCoordinatesProperty().setValue(xyd.getY());
-                            }
+                        /** New runnable to make threadsafe updates to the main UI Thread **/
+                        Runnable updateNodes = () -> {
+                            ((MyVertex) v).xCoordinatesProperty().setValue(xyd.getX());
+                            ((MyVertex) v).yCoordinatesProperty().setValue(xyd.getY());
                         };
                         Platform.runLater(updateNodes);
-
-
                     }
                 }
 

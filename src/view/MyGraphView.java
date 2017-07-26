@@ -2,15 +2,11 @@ package view;
 
 
 import com.google.common.base.Function;
-import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import model.VertexSelectionModel;
 
 
