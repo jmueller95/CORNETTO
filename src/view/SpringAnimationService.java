@@ -1,22 +1,12 @@
 package view;
 
 import com.google.common.base.Function;
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
-import edu.uci.ics.jung.algorithms.layout.util.Relaxer;
-import edu.uci.ics.jung.algorithms.layout.util.VisRunner;
-import edu.uci.ics.jung.algorithms.util.IterativeContext;
-import edu.uci.ics.jung.visualization.DefaultVisualizationModel;
-import edu.uci.ics.jung.visualization.VisualizationModel;
-import edu.uci.ics.jung.visualization.renderers.CachingVertexRenderer;
-import edu.uci.ics.jung.visualization.util.ChangeEventSupport;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-import javax.swing.event.ChangeListener;
 import java.awt.Dimension;
 import java.lang.Thread;
 
@@ -24,12 +14,13 @@ import java.lang.Thread;
 
 /**
  * Created by caspar on 16.07.17.
+ * Creates a javaFX Service for Layout calculations in a separate thread.
  */
 public class SpringAnimationService extends Service {
 
     private MySpringLayout springLayout;
     private Function<MyEdge, Integer> myEdgeLengthFunction;
-    private MyGraph<MyVertex, MyEdge> graph;
+    private MyGraph graph;
 
     private int width = 1000;
     private int height = 800;
@@ -41,6 +32,7 @@ public class SpringAnimationService extends Service {
     private boolean running;
     private boolean stop;
     private boolean manualSuspend;
+    private boolean prerelaxDone = false;
 
     /* Used for synchronization. */
     private Object pauseObject = new String("PAUSE OBJECT");
@@ -48,18 +40,17 @@ public class SpringAnimationService extends Service {
     /**
      * Constructor for this class
      * @param graph used for Jung Layout
-     * @param graphView providing mouse events to control the service status
      */
-    public SpringAnimationService(MyGraph graph, MyGraphView graphView) {
+    public SpringAnimationService(MyGraph graph) {
         this.graph = graph;
         myEdgeLengthFunction = getMyEdgeLengthFunction();
         springLayout = new MySpringLayout(graph, myEdgeLengthFunction);
         springLayout.setSize(new Dimension(width, height));
-
     }
 
     /**
      * Creates a function that calculates an edge length based on the correlation value of the edge
+     * Correlation of -1 results in minmal length, Corr = +1 is maximal length
      * Gives preferred distance in integer values
      * @return edge length function used in the SpringLayout2
      */
@@ -67,9 +58,10 @@ public class SpringAnimationService extends Service {
 
         Function<MyEdge, Integer> foo = myEdge -> {
             Double corr = myEdge.getCorrelation();
-            Double weight = (minLength + ((maxLength - minLength)/2)*(corr +1));
-            //Double weight = myEdge.getWeight();
 
+            // Corr = -1 --> Edgelength = minLength
+            // Corr =  1 --> Edgelength = maxLength
+            Double weight = (minLength + ((maxLength - minLength)/2)*(1 - corr));
             return weight.intValue();
         };
         return foo;
@@ -88,6 +80,17 @@ public class SpringAnimationService extends Service {
             @Override
             protected Void call() throws Exception {
                 /* Workload goes here */
+
+                // Check for prerelax
+                if (!prerelaxDone) {
+                    long timeNow = System.currentTimeMillis();
+                    while (System.currentTimeMillis() - timeNow < 500 && !springLayout.done()) {
+                        springLayout.step();
+                    }
+                    springLayout.setDone(false);
+                    prerelaxDone = true;
+                }
+
                 running = true;
                 try {
                     while (!springLayout.done() && !stop) {
@@ -118,7 +121,6 @@ public class SpringAnimationService extends Service {
                 }
                 return null;
             }
-
         };
     }
 
@@ -131,30 +133,26 @@ public class SpringAnimationService extends Service {
         springLayout.setLocation(vertex, vertex.getXCoordinates(), vertex.getYCoordinates());
     }
 
-    /**
-     * Calculates layout steps until converged or for 500ms
-     * Preconfigures the layout before starting the animation process.
-     */
-    public void prerelax() {
-        manualSuspend = true;
-        long timeNow = System.currentTimeMillis();
-        while (System.currentTimeMillis() - timeNow < 500 && !springLayout.done()) {
-            springLayout.step();
-        }
-        manualSuspend = false;
+
+    @Override
+    public void start() {
+        super.start();
     }
 
-    /**
-     * Sets manualSuspend flag, pausing the Task
-     */
-    public void pause() {
-        manualSuspend = true;
+    @Override
+    public boolean cancel() {
+        return super.cancel();
     }
 
-    /**
-     * Resume paused Task
-     */
-    public void resume() {
+    @Override
+    public void restart() {
+        super.cancel();
+        super.reset();
+
+        springLayout = new MySpringLayout(graph, myEdgeLengthFunction);
+        springLayout.setSize(new Dimension(width, height));
+        setAllLocations();
+
         manualSuspend = false;
         if(running == false) {
             //prerelax();
@@ -166,15 +164,16 @@ public class SpringAnimationService extends Service {
         }
     }
 
-    /**
-     *
-     */
     public void relax() {
         // in case its running
         stop();
         stop = false;
         createTask();
         start();
+    }
+
+    public void pause() {
+        manualSuspend = true;
     }
 
     public synchronized void stop() {
@@ -197,6 +196,13 @@ public class SpringAnimationService extends Service {
         }
     }
 
+    private void setAllLocations() {
+        for (Object v: graph.getVertices()) {
+            MyVertex mV = (MyVertex)v;
+            springLayout.setLocation(mV, mV.getXCoordinates(), mV.getYCoordinates());
+        }
+    }
+
     /** This can be simplified later **/
     public void setNodeRepulsion(int range) {
         springLayout.setRepulsionRange(range);
@@ -212,10 +218,12 @@ public class SpringAnimationService extends Service {
 
     public void setEdgeLengthLow(double val) {
         minLength = val;
+        restart();
     }
 
     public void setEdgeLengthHigh(double val){
         maxLength = val;
+        restart();
     }
 
     public void setFrameRate(int t) {

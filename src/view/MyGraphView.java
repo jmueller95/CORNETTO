@@ -34,7 +34,7 @@ public class MyGraphView extends Group {
         this.graph = graph;
         this.myVertexViewGroup = new Group();
         this.myEdgeViewGroup = new Group();
-        this.animationService = new SpringAnimationService(graph, this);
+        this.animationService = new SpringAnimationService(graph);
         drawNodes();
         drawEdges();
 
@@ -93,13 +93,12 @@ public class MyGraphView extends Group {
         animationService.updateNode(vertex);
     }
 
-
     public void pauseAnimation(){
         animationService.pause();
     }
 
     public void resumeAnimation(){
-        animationService.resume();
+        animationService.restart();
     }
 
     public Group getMyVertexViewGroup() {
