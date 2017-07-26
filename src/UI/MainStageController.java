@@ -35,6 +35,8 @@ import model.LoadedData;
 import model.Sample;
 import model.TaxonNode;
 import org.controlsfx.control.RangeSlider;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.GlyphFontRegistry;
 import sampleParser.BiomV1Parser;
 import sampleParser.BiomV2Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
@@ -165,6 +167,9 @@ public class MainStageController implements Initializable {
     private RangeSlider sliderEdgeLength;
 
     @FXML
+    private Button buttonPauseAnimation;
+
+    @FXML
     private CheckBox checkAdvancedGraphSettings;
 
     @FXML
@@ -213,6 +218,9 @@ public class MainStageController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Load FontAweSome
+        GlyphFontRegistry.register(new FontAwesome(getClass().getResourceAsStream("/fonts/fontawesome-webfont.ttf")));
+
         startTreePreloadService();
         initializeAccordion();
         initializeCollapseAllButton();
@@ -454,7 +462,7 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * sets the default directory for openings files
+     *  sets the default directory for openings files
      *
      * @param fileChooser
      */
@@ -701,6 +709,8 @@ public class MainStageController implements Initializable {
         sliderNodeRepulsion.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
         labelStretchParameter.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
         sliderStretchParameter.visibleProperty().bind(checkAdvancedGraphSettings.selectedProperty());
+        buttonResetGraphDefaults.setOnAction(e -> setGraphSettingsDefault());
+        setGraphSettingsDefault();
     }
 
     /**
@@ -717,6 +727,12 @@ public class MainStageController implements Initializable {
         for (Node node : graphView.getMyEdgeViewGroup().getChildren()) {
             ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty());
         }
+
+        buttonPauseAnimation.setOnAction(e -> {
+            boolean isRunning = graphView.animationService.isRunning();
+            if (isRunning) graphView.animationService.cancel();
+            if (!isRunning) graphView.animationService.restart();
+        });
 
         sliderEdgeLength.lowValueProperty().addListener((o, e, n) -> {
             graphView.animationService.setEdgeLengthLow(n.doubleValue());
@@ -741,8 +757,6 @@ public class MainStageController implements Initializable {
         sliderAnimationSpeed.valueProperty().addListener((o, e, n) -> {
             graphView.animationService.setFrameRate(n.intValue());
         });
-
-
     }
 
     @FXML
@@ -934,6 +948,22 @@ public class MainStageController implements Initializable {
             event.consume();
         }
     };
+
+    /**
+     * Sets all slider elements in the graph settings menu to default values
+     */
+    private void setGraphSettingsDefault() {
+
+        sliderAnimationSpeed.setValue(30);
+        sliderEdgeForce.setValue(1.5);
+        sliderNodeRepulsion.setValue(10);
+        sliderStretchParameter.setValue(0.9);
+        sliderNodeRadius.setValue(15);
+        sliderEdgeWidth.setValue(5);
+        sliderEdgeLength.setLowValue(10);
+        sliderEdgeLength.setHighValue(500);
+
+    }
 
     public static Stage getOptionsStage() {
         return optionsStage;
