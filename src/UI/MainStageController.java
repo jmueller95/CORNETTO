@@ -56,6 +56,9 @@ import static main.Main.getPrimaryStage;
 public class MainStageController implements Initializable {
 
     private static Stage optionsStage;
+    private static Stage exportImagesStage;
+
+    private ViewPane viewPane;
 
     private static final int MAX_WIDTH_OF_SIDEPANES = 220;
 
@@ -265,6 +268,7 @@ public class MainStageController implements Initializable {
         MyGraphView graphView = new MyGraphView(taxonGraph);
         LoadedData.setGraphView(graphView);
         ViewPane viewPane = new ViewPane(graphView);
+        viewPane = new ViewPane(graphView);
         // Bind node hover status text
         statusRightLabel.textProperty().bind(viewPane.hoverInfo);
 
@@ -878,6 +882,32 @@ public class MainStageController implements Initializable {
         insufficientDataAlert.setHeaderText("Not enough data to perform the analysis.");
         insufficientDataAlert.setContentText("Try choosing a more specific rank!");
         insufficientDataAlert.show();
+    }
+
+    /**
+     * Opens new PopUp Window with Image Export options.
+     */
+    @FXML
+    private void exportImages() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("src/UI/exportImageGUI"));
+            loader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("/src/UI/exportImageGUI.fxml")));
+            //Parent root = loader.load();
+            ExportImageController exportImageController = new ExportImageController(viewPane);
+            //ExportImageController exportImageController = loader.getController();
+            //exportImageController.setViewPane(viewPane);
+            loader.setController(exportImageController);
+            Parent root = loader.load();
+            exportImagesStage = new Stage();
+            exportImagesStage.setTitle("Export Image");
+            Scene exportImageScene = new Scene(root, 300, 200);
+            exportImagesStage.setScene(exportImageScene);
+            exportImageScene.getStylesheets().add(GlobalConstants.DARKTHEME);
+            exportImagesStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

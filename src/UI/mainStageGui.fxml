@@ -56,13 +56,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#closeProject" text="Close" />
                         <MenuItem mnemonicParsing="false" text="Save" />
                         <MenuItem mnemonicParsing="false" text="Save As…" />
-                        <Menu mnemonicParsing="false" text="Export">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="PDF" />
-                                <MenuItem mnemonicParsing="false" text="JPG" />
-                                <MenuItem mnemonicParsing="false" text="PNG" />
-                            </items>
-                        </Menu>
+                        <MenuItem mnemonicParsing="false" text="Export" onAction="#exportImages"/>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Settings" />
                         <SeparatorMenuItem mnemonicParsing="false" />
