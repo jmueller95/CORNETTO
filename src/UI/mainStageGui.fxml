@@ -111,7 +111,7 @@
                         </AnchorPane>
                         <AnchorPane fx:id="infoBox" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
                             <children>
-                                <TextFlow fx:id="infoTextFlow" prefHeight="420.0" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                <TextFlow fx:id="infoTextFlow" prefHeight="420.0" prefWidth="220.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
                             </children>
                         </AnchorPane>
                     </items>

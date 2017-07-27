@@ -21,7 +21,6 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -231,6 +230,12 @@ public class MainStageController implements Initializable {
     private Text graphStatDummy;
 
     /**
+     * INFO PANE
+     */
+    @FXML
+    private TextFlow infoTextFlow;
+
+    /**
      * Initializes every needed service
      *
      * @param location
@@ -247,10 +252,16 @@ public class MainStageController implements Initializable {
         initializeRankChoiceBox();
         initializeGraphSettings();
         initializeAnalysisPane();
+        initializeInfoPane();
         initializeBindings();
         //preload settings
         SaveAndLoadOptions.loadSettings();
+
+        //Display the info text in the bottom left pane
+        displayInfoText();
     }
+
+
 
 
     @FXML
@@ -270,6 +281,30 @@ public class MainStageController implements Initializable {
             showInsufficientDataAlert();
         }
 
+    }
+
+    /**
+     * chooses which text to display on the bottom left pane
+     * TODO: This isn't called everytime it should be, add some more listeners!
+     */
+    private void displayInfoText(){
+    Text infoText = new Text();
+    if(LoadedData.getSamplesToAnalyze()==null || LoadedData.getSamples().size()<3){
+        infoText.setText("Please import at least 3 samples to begin correlation analysis!");
+    }else if(compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() <= 3){
+        infoText.setText("If you want to analyse selected samples only, please select at least 3 samples!");
+    }else if(rankChoiceBox.getValue() == null){
+        infoText.setText("Choose a rank to display the graph!");
+    }else if(LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() > 1){
+        infoText.setText("TODO: Display list of chosen nodes");
+    }else if(LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() == 1){
+        infoText.setText("TODO: Display stats for chosen node");
+    }else{
+        infoText.setText("TODO: Show general graph information (e.g. number of visible nodes & edges");
+    }
+
+    infoTextFlow.getChildren().clear();
+    infoTextFlow.getChildren().add(infoText);
     }
 
     /**
@@ -295,6 +330,10 @@ public class MainStageController implements Initializable {
             MyVertexView vertexView = (MyVertexView) node;
             vertexView.getVertexLabel().visibleProperty().bind(showLabelsCheckBox.selectedProperty());
         }
+
+        //call displayInfoText whenever the selection changes
+        LoadedData.getGraphView().getSelectionModel().getSelectedItems().addListener((InvalidationListener) e -> displayInfoText());
+
 
     }
 
@@ -721,6 +760,13 @@ public class MainStageController implements Initializable {
         analysisPane.setVisible(false);
     }
 
+    /**
+     * Sets up listeners to call displayInfoText() whenever it is necessary
+     */
+    private void initializeInfoPane() {
+//        LoadedData.getSamplesToAnalyze().addListener((InvalidationListener) e -> displayInfoText());
+        rankChoiceBox.valueProperty().addListener(e -> displayInfoText());
+    }
 
     private void initializeBindings() {
         //First, bind the LoadedData.analyzeAll boolean property to the radio buttons
