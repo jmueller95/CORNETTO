@@ -9,6 +9,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import model.AnalysisData;
 
 /**
@@ -55,8 +57,9 @@ public class MyVertexView extends Group {
 
     private void addLabel() {
         vertexLabel = new Label(myVertex.getTaxonName());
-        vertexLabel.layoutXProperty().bind(vertexShape.translateXProperty());
-        vertexLabel.layoutYProperty().bind(vertexShape.translateYProperty());
+        vertexLabel.translateXProperty().bind(vertexShape.translateXProperty());
+        vertexLabel.translateYProperty().bind(vertexShape.translateYProperty().add(getRadiusProperty()));
+        vertexLabel.setFont(Font.font("Verdana", FontWeight.BOLD, FontPosture.ITALIC, 12));
         getChildren().add(vertexLabel);
     }
 
