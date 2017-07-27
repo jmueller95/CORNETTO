@@ -11,7 +11,9 @@ import java.util.HashMap;
 public class AnalysisData {
     private static RealMatrix correlationMatrix, pValueMatrix;
     private static HashMap<TaxonNode, Double> maximumRelativeFrequencies;
-    private static double[] highestPositiveCorrelationCoordinates, highestNegativeCorrelationCoordinates;
+    private static double highestFrequency;
+    private static TaxonNode nodeWithHighestFrequency;
+    private static int[] highestPositiveCorrelationCoordinates, highestNegativeCorrelationCoordinates;
     private static String level_of_analysis;
     //Possible values: "Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"
 
@@ -32,6 +34,7 @@ public class AnalysisData {
             correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, level_of_analysis);
             pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples(samples, level_of_analysis);
             maximumRelativeFrequencies = SampleComparison.calcMaximumRelativeFrequencies(samples, level_of_analysis);
+            calcHighestFrequency();
             highestPositiveCorrelationCoordinates = calcHighestPositiveCorrelationCoordinates();
             highestNegativeCorrelationCoordinates = calcHighestNegativeCorrelationCoordinates();
             return true;
@@ -61,9 +64,9 @@ public class AnalysisData {
      * Returns the coordinates in the correlation matrix with the highest positive value in the shape {x,y}
      * @return
      */
-    private static double[] calcHighestPositiveCorrelationCoordinates() {
+    private static int[] calcHighestPositiveCorrelationCoordinates() {
         double max = -1;
-        double[] maxCoordinates = {0,0};
+        int[] maxCoordinates = {0,0};
         for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
             for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
                 if(correlationMatrix.getEntry(i,j)>max){
@@ -80,9 +83,9 @@ public class AnalysisData {
      * Returns the coordinates in the correlation matrix with the highest negative value in the shape {x,y}
      * @return
      */
-    private static double[] calcHighestNegativeCorrelationCoordinates() {
+    private static int[] calcHighestNegativeCorrelationCoordinates() {
         double min = 1;
-        double[] minCoordinates = {0,0};
+        int[] minCoordinates = {0,0};
         for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
             for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
                 if(correlationMatrix.getEntry(i,j)<min){
@@ -94,6 +97,19 @@ public class AnalysisData {
         }
         return minCoordinates;
 
+    }
+
+    private static void calcHighestFrequency(){
+        double max = 0;
+        TaxonNode argMax = null;
+        for (TaxonNode taxonNode : maximumRelativeFrequencies.keySet()) {
+            if(maximumRelativeFrequencies.get(taxonNode)>max){
+                max = maximumRelativeFrequencies.get(taxonNode);
+                argMax = taxonNode;
+            }
+        }
+        highestFrequency = max;
+        nodeWithHighestFrequency = argMax;
     }
 
     public static String getLevel_of_analysis() {
@@ -146,12 +162,20 @@ public class AnalysisData {
         return maximumRelativeFrequencies;
     }
 
-    public static double[] getHighestPositiveCorrelationCoordinates() {
+    public static int[] getHighestPositiveCorrelationCoordinates() {
         return highestPositiveCorrelationCoordinates;
     }
 
-    public static double[] getHighestNegativeCorrelationCoordinates() {
+    public static int[] getHighestNegativeCorrelationCoordinates() {
         return highestNegativeCorrelationCoordinates;
+    }
+
+    public static double getHighestFrequency() {
+        return highestFrequency;
+    }
+
+    public static TaxonNode getNodeWithHighestFrequency() {
+        return nodeWithHighestFrequency;
     }
 
     /**

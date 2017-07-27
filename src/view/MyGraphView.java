@@ -18,7 +18,6 @@ import javax.annotation.Nullable;
  */
 public class MyGraphView extends Group {
 
-
     private Group myVertexViewGroup;
     private Group myEdgeViewGroup;
     private MyGraph<MyVertex, MyEdge> graph;

@@ -147,34 +147,22 @@ public abstract class SampleComparison {
         return maximumRelativeCountsMap;
     }
 
-/*
-PROBABLY DEPRECATED - Does the same as "getCorrelationMatrixOfSamples", but returns a hashmap so you know which nodes
-these fancy numbers belong to.
- */
-//    /**
-//     * @param samples
-//     * @return
-//     */
-//    public static HashMap<TaxonNode, HashMap<TaxonNode, Double>> getPairwiseCorrelations(List<Sample> samples) {
-//        ArrayList<TaxonNode> unifiedTaxonList = getUnifiedTaxonList(samples);
-//        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
-//        HashMap<TaxonNode, HashMap<TaxonNode, Double>> pairwiseCorrelationMap = new HashMap<>();
-//
-//        for (TaxonNode currentTaxonNode : unifiedTaxonList) {
-//            HashMap<TaxonNode, Double> currentNodeCorrelationMap = new HashMap<>();
-//            for (TaxonNode otherTaxonNode : unifiedTaxonList) {
-//                double[] currentCounts = new double[samples.size()];
-//                double[] otherCounts = new double[samples.size()];
-//                for (int i = 0; i < currentCounts.length; i++) {
-//                    currentCounts[i] = samples.get(i).getTaxa2CountMap().get(currentTaxonNode);
-//                    otherCounts[i] = samples.get(i).getTaxa2CountMap().get(otherTaxonNode);
-//                }
-//                double currentCorrelation = pearsonsCorrelation.correlation(currentCounts,otherCounts);
-//                currentNodeCorrelationMap.put(otherTaxonNode,currentCorrelation);
-//            }
-//            pairwiseCorrelationMap.put(currentTaxonNode,currentNodeCorrelationMap);
-//        }
-//    return pairwiseCorrelationMap;
-//    }
+    /**
+     * Returns a map of average counts of every node in the given sample list on the given rank
+     * @param samples
+     * @return
+     */
+    public static HashMap<TaxonNode, Double> calcAverageCounts(List<Sample> samples, String rank){
+        LinkedList<TaxonNode> taxonList = getUnifiedTaxonList(samples, rank);
+        HashMap<TaxonNode, Double> averageCountMap = new HashMap<>();
+        for (TaxonNode taxonNode : taxonList) {
+            int sum = 0;
+            for (Sample sample : samples) {
+                sum += sample.getTaxonCountRecursive(taxonNode);
+            }
+            averageCountMap.put(taxonNode, sum/(double)samples.size());
+        }
+        return averageCountMap;
+    }
 
 }

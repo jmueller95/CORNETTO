@@ -17,11 +17,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -34,6 +36,7 @@ import model.AnalysisData;
 import model.LoadedData;
 import model.Sample;
 import model.TaxonNode;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -215,6 +218,20 @@ public class MainStageController implements Initializable {
     @FXML
     private TableView<String[]> analysisTable;
 
+    @FXML
+    private PieChart frequencyChart;
+
+    @FXML
+    private Button showTableButton;
+
+    @FXML
+    private TextFlow dataAnalysisTextFlow, graphAnalysisTextFlow;
+
+    @FXML
+    private Text highestFrequencyText, highestPositiveCorrelationText, highestNegativeCorrelationText;
+
+    @FXML
+    private Text graphStatDummy;
 
     /**
      * Initializes every needed service
@@ -232,12 +249,11 @@ public class MainStageController implements Initializable {
         initializeCollapseAllButton();
         initializeRankChoiceBox();
         initializeGraphSettings();
+        initializeAnalysisPane();
         initializeBindings();
         //preload settings
         SaveAndLoadOptions.loadSettings();
     }
-
-
 
 
     @FXML
@@ -253,6 +269,7 @@ public class MainStageController implements Initializable {
             LoadedData.getTaxonGraph().filterVertices();
             displayGraph(LoadedData.getTaxonGraph());
             displayCorrelationTable();
+            displayAnalysisTexts();
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
         }
@@ -297,11 +314,11 @@ public class MainStageController implements Initializable {
         double[][] correlationMatrix = AnalysisData.getCorrelationMatrix().getData();
         double[][] pValueMatrix = AnalysisData.getPValueMatrix().getData();
         LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(
-                LoadedData.getSamplesToAnalyze(),AnalysisData.getLevel_of_analysis());
+                LoadedData.getSamplesToAnalyze(), AnalysisData.getLevel_of_analysis());
 
         //We also want to color the two cells with the highest positive/negative correlation
-        double[] highestPositiveCorrelationCoordinates = AnalysisData.getHighestPositiveCorrelationCoordinates();
-        double[] highestNegativeCorrelationCoordinates = AnalysisData.getHighestNegativeCorrelationCoordinates();
+        int[] highestPositiveCorrelationCoordinates = AnalysisData.getHighestPositiveCorrelationCoordinates();
+        int[] highestNegativeCorrelationCoordinates = AnalysisData.getHighestNegativeCorrelationCoordinates();
 
         //Table will consist of strings
         String[][] tableValues = new String[correlationMatrix.length][correlationMatrix[0].length + 1];
@@ -310,16 +327,16 @@ public class MainStageController implements Initializable {
         for (int i = 0; i < tableValues.length; i++) {
             tableValues[i][0] = taxonList.get(i).getName();
             for (int j = 1; j < tableValues[0].length; j++) {
-                tableValues[i][j] = String.format("%.3f", correlationMatrix[i][j-1])
-                        + "\n(" + String.format("%.2f", pValueMatrix[i][j-1]) + ")";
+                tableValues[i][j] = String.format("%.3f", correlationMatrix[i][j - 1])
+                        + "\n(" + String.format("%.2f", pValueMatrix[i][j - 1]) + ")";
             }
         }
 
         for (int i = 0; i < tableValues[0].length; i++) {
             String columnTitle;
-            if(i>0){
-                columnTitle = taxonList.get(i-1).getName();
-            }else{
+            if (i > 0) {
+                columnTitle = taxonList.get(i - 1).getName();
+            } else {
                 columnTitle = "";
             }
             TableColumn<String[], String> column = new TableColumn<>(columnTitle);
@@ -331,7 +348,7 @@ public class MainStageController implements Initializable {
             analysisTable.getColumns().add(column);
 
             //First column contains taxon names and should be italic
-            if(i==0)
+            if (i == 0)
                 column.setStyle("-fx-font-style:italic;");
         }
 
@@ -339,6 +356,36 @@ public class MainStageController implements Initializable {
             analysisTable.getItems().add(tableValues[i]);
         }
 
+    }
+
+    private void displayAnalysisTexts() {
+        //Display node with highest frequency
+        double highestFrequency = AnalysisData.getHighestFrequency();
+        TaxonNode nodeWithHighestFrequency = AnalysisData.getNodeWithHighestFrequency();
+        highestFrequencyText.setText(nodeWithHighestFrequency.getName() + "(" + highestFrequency + ")");
+
+        //Display nodes with highest positive/negative correlation
+        RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
+        int[] highestPositiveCorrelationCoordinates = AnalysisData.getHighestPositiveCorrelationCoordinates();
+        int[] highestNegativeCorrelationCoordinates = AnalysisData.getHighestNegativeCorrelationCoordinates();
+        LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(LoadedData.getSamplesToAnalyze(), AnalysisData.getLevel_of_analysis());
+        TaxonNode hPCNode1 = taxonList.get(highestPositiveCorrelationCoordinates[0]);
+        TaxonNode hPCNode2 = taxonList.get(highestPositiveCorrelationCoordinates[1]);
+        TaxonNode hNCNode1 = taxonList.get(highestNegativeCorrelationCoordinates[0]);
+        TaxonNode hNCNode2 = taxonList.get(highestNegativeCorrelationCoordinates[1]);
+        highestPositiveCorrelationText.setText(hPCNode1.getName() + "---" + hPCNode2.getName()
+                + correlationMatrix.getEntry(highestPositiveCorrelationCoordinates[0], highestPositiveCorrelationCoordinates[1]));
+        highestNegativeCorrelationText.setText(hNCNode1.getName() + "---" + hNCNode2.getName()
+                +correlationMatrix.getEntry(highestNegativeCorrelationCoordinates[0], highestNegativeCorrelationCoordinates[1]));
+        graphStatDummy.setText("dummies dummy");
+
+        //Generate Data for the pie chart
+        HashMap<TaxonNode, Double> averageCounts = SampleComparison.calcAverageCounts(LoadedData.getSamplesToAnalyze(), AnalysisData.getLevel_of_analysis());
+        for (TaxonNode taxonNode : averageCounts.keySet()) {
+            PieChart.Data data = new PieChart.Data(taxonNode.getName(), averageCounts.get(taxonNode));
+            frequencyChart.getData().add(data);
+        }
+        analysisPane.setVisible(true);
     }
 
     //FILE methods
@@ -477,7 +524,7 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     *  sets the default directory for openings files
+     * sets the default directory for openings files
      *
      * @param fileChooser
      */
@@ -657,6 +704,14 @@ public class MainStageController implements Initializable {
         rankChoiceBox.setItems(ranksList);
 
     }
+
+    /**
+     * Hides all the components of the analysis pane, since they should only be displayed when data is loaded
+     */
+    private void initializeAnalysisPane() {
+        analysisPane.setVisible(false);
+    }
+
 
     private void initializeBindings() {
         //First, bind the LoadedData.analyzeAll boolean property to the radio buttons
