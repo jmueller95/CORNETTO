@@ -21,6 +21,7 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -215,7 +216,6 @@ public class MainStageController implements Initializable {
     @FXML
     private AnchorPane analysisPane;
 
-    @FXML
     private TableView<String[]> analysisTable;
 
     @FXML
@@ -265,7 +265,6 @@ public class MainStageController implements Initializable {
             LoadedData.getTaxonGraph().filterEdges();
             LoadedData.getTaxonGraph().filterVertices();
             displayGraph(LoadedData.getTaxonGraph());
-            displayCorrelationTable();
             displayAnalysisTexts();
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
@@ -302,10 +301,12 @@ public class MainStageController implements Initializable {
     /**
      * shows the table in the analysis view
      */
+    @FXML
     private void displayCorrelationTable() {
         //Delete whatever's been in the table before
-        analysisTable.getItems().clear();
-        analysisTable.getColumns().clear();
+//        analysisTable.getItems().clear();
+//        analysisTable.getColumns().clear();
+        analysisTable = new TableView<>();
 
         //We want to display correlations and p-Values of every node combination
         double[][] correlationMatrix = AnalysisData.getCorrelationMatrix().getData();
@@ -352,6 +353,14 @@ public class MainStageController implements Initializable {
         for (int i = 0; i < tableValues.length; i++) {
             analysisTable.getItems().add(tableValues[i]);
         }
+
+        //Display table on a new pane
+        Stage tableStage = new Stage();
+        tableStage.setTitle("Correlation Table");
+        Scene tableScene = new Scene(analysisTable);
+        tableStage.setScene(tableScene);
+        tableStage.show();
+
 
     }
 
