@@ -141,26 +141,24 @@
                             <content>
                                 <AnchorPane fx:id="analysisPane" minHeight="0.0" minWidth="0.0" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0">
                                     <children>
-                              <PieChart fx:id="frequencyChart" layoutX="150.0" layoutY="313.0" title="Frequency Distribution" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="125.0" AnchorPane.topAnchor="375.0" />
-                              <TextFlow fx:id="dataAnalysisTextFlow" layoutY="52.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="500.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="100.0">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Frequency:" />
-                                    <Text fx:id="highestFrequencyText" strokeType="OUTSIDE" strokeWidth="0.0" />
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Positive Correlation:" />
-                                    <Text fx:id="highestPositiveCorrelationText" strokeType="OUTSIDE" strokeWidth="0.0" />
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Negative Correlation:" />
-                                    <Text fx:id="highestNegativeCorrelationText" strokeType="OUTSIDE" strokeWidth="0.0" />
-                                 </children>
-                              </TextFlow>
+                              <PieChart fx:id="frequencyChart" layoutX="125.0" layoutY="64.0" title="Frequency Distribution" AnchorPane.bottomAnchor="350.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="125.0" AnchorPane.topAnchor="50.0" />
+                              <Text fx:id="dataText" strokeType="OUTSIDE" strokeWidth="0.0" text="Data Analysis" AnchorPane.bottomAnchor="310.0" AnchorPane.leftAnchor="100.0">
+                                 <font>
+                                    <Font name="System Italic" size="13.0" />
+                                 </font></Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Frequency:" AnchorPane.bottomAnchor="275.0" AnchorPane.leftAnchor="10.0" />
+                              <Text fx:id="highestFrequencyText" layoutX="150.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="50.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Positive Correlation:" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="10.0" />
+                              <Text fx:id="highestPositiveCorrelationText" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.bottomAnchor="175.0" AnchorPane.leftAnchor="50.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Negative Correlation:" AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="10.0" />
+                              <Text fx:id="highestNegativeCorrelationText" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="50.0" />
                                             <TableView fx:id="analysisTable" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="900.0" />
-                              <TextFlow fx:id="graphAnalysisTextFlow" layoutX="450.0" layoutY="23.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="500.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="100.0">
-                                 <children>
-                                    <Text fx:id="graphStatDummy" strokeType="OUTSIDE" strokeWidth="0.0" text="Dummy" />
-                                 </children>
-                              </TextFlow>
                               <Button fx:id="showTableButton" layoutX="22.0" layoutY="14.0" mnemonicParsing="false" text="Show Correlation Table" />
-                              <Text fx:id="dataText" layoutX="127.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Data Analysis" AnchorPane.leftAnchor="100.0" />
-                              <Text fx:id="graphText" layoutX="567.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Graph Analysis" AnchorPane.rightAnchor="100.0" />
+                              <Text fx:id="graphText" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Graph Analysis" AnchorPane.bottomAnchor="310.0" AnchorPane.rightAnchor="100.0">
+                                 <font>
+                                    <Font name="System Italic" size="13.0" />
+                                 </font></Text>
+                              <Text fx:id="graphStatDummy" strokeType="OUTSIDE" strokeWidth="0.0" text="Dummy" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="200.0" />
                                     </children>
                                 </AnchorPane>
                             </content>

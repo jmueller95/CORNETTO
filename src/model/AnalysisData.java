@@ -69,7 +69,7 @@ public class AnalysisData {
         int[] maxCoordinates = {0,0};
         for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
             for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
-                if(correlationMatrix.getEntry(i,j)>max){
+                if(i!=j && correlationMatrix.getEntry(i,j)>max){
                     max = correlationMatrix.getEntry(i,j);
                     maxCoordinates[0] = i;
                     maxCoordinates[1] = j;
@@ -88,7 +88,7 @@ public class AnalysisData {
         int[] minCoordinates = {0,0};
         for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
             for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
-                if(correlationMatrix.getEntry(i,j)<min){
+                if(i!=j && correlationMatrix.getEntry(i,j)<min){
                     min = correlationMatrix.getEntry(i,j);
                     minCoordinates[0] = i;
                     minCoordinates[1] = j;

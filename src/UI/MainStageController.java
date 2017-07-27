@@ -225,9 +225,6 @@ public class MainStageController implements Initializable {
     private Button showTableButton;
 
     @FXML
-    private TextFlow dataAnalysisTextFlow, graphAnalysisTextFlow;
-
-    @FXML
     private Text highestFrequencyText, highestPositiveCorrelationText, highestNegativeCorrelationText;
 
     @FXML
@@ -362,7 +359,7 @@ public class MainStageController implements Initializable {
         //Display node with highest frequency
         double highestFrequency = AnalysisData.getHighestFrequency();
         TaxonNode nodeWithHighestFrequency = AnalysisData.getNodeWithHighestFrequency();
-        highestFrequencyText.setText(nodeWithHighestFrequency.getName() + "(" + highestFrequency + ")");
+        highestFrequencyText.setText(nodeWithHighestFrequency.getName() + " (" + String.format("%.3f", highestFrequency) + ")");
 
         //Display nodes with highest positive/negative correlation
         RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
@@ -373,13 +370,16 @@ public class MainStageController implements Initializable {
         TaxonNode hPCNode2 = taxonList.get(highestPositiveCorrelationCoordinates[1]);
         TaxonNode hNCNode1 = taxonList.get(highestNegativeCorrelationCoordinates[0]);
         TaxonNode hNCNode2 = taxonList.get(highestNegativeCorrelationCoordinates[1]);
-        highestPositiveCorrelationText.setText(hPCNode1.getName() + "---" + hPCNode2.getName()
-                + correlationMatrix.getEntry(highestPositiveCorrelationCoordinates[0], highestPositiveCorrelationCoordinates[1]));
-        highestNegativeCorrelationText.setText(hNCNode1.getName() + "---" + hNCNode2.getName()
-                +correlationMatrix.getEntry(highestNegativeCorrelationCoordinates[0], highestNegativeCorrelationCoordinates[1]));
-        graphStatDummy.setText("dummies dummy");
+        highestPositiveCorrelationText.setText(hPCNode1.getName() + " - " + hPCNode2.getName()
+                + " (" + String.format("%.3f", correlationMatrix.getEntry(highestPositiveCorrelationCoordinates[0], highestPositiveCorrelationCoordinates[1]))
+                + ")");
+        highestNegativeCorrelationText.setText(hNCNode1.getName() + " - " + hNCNode2.getName()
+                + " (" + String.format("%.3f", correlationMatrix.getEntry(highestNegativeCorrelationCoordinates[0], highestNegativeCorrelationCoordinates[1]))
+                + ")");
+        graphStatDummy.setText("dummy dummy dummy");
 
         //Generate Data for the pie chart
+        frequencyChart.getData().clear();
         HashMap<TaxonNode, Double> averageCounts = SampleComparison.calcAverageCounts(LoadedData.getSamplesToAnalyze(), AnalysisData.getLevel_of_analysis());
         for (TaxonNode taxonNode : averageCounts.keySet()) {
             PieChart.Data data = new PieChart.Data(taxonNode.getName(), averageCounts.get(taxonNode));
