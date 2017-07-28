@@ -313,12 +313,12 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
                         if (xyd.getX() < 0) {
                             xyd.setLocation(0, xyd.getY());//                     setX(0);
                         } else if (xyd.getX() > width) {
-                            xyd.setLocation(width, xyd.getY());             //setX(width);
+                            xyd.setLocation(width, xyd.getY());             //setX(widthProperty);
                         }
                         if (xyd.getY() < 0) {
                             xyd.setLocation(xyd.getX(),0);//setY(0);
                         } else if (xyd.getY() > height) {
-                            xyd.setLocation(xyd.getX(), height);      //setY(height);
+                            xyd.setLocation(xyd.getX(), height);      //setY(heightProperty);
                         }
 
                         // Updates the locations in MyVertex of the Graph

@@ -32,6 +32,7 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
+<?import javafx.scene.control.ToggleButton?>
 <VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
@@ -266,11 +267,11 @@
                                           <Label text="Animation:" />
                                           <HBox alignment="CENTER" VBox.vgrow="NEVER">
                                              <children>
-                                                <Button fx:id="buttonPauseAnimation" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Pause/Resume" HBox.hgrow="NEVER">
+                                                <ToggleButton fx:id="buttonPauseAnimation" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Pause/Resume" HBox.hgrow="NEVER">
                                                     <Label>
                                                     <Glyph fontFamily="FontAwesome" icon="PAUSE" />
                                                     </Label>
-                                                </Button>
+                                                </ToggleButton>
                                              </children>
                                           </HBox>
                                           <Label />
@@ -284,7 +285,7 @@
                                           <Label fx:id="labelStretchParameter" text="Stretch parameter" />
                                           <Slider fx:id="sliderStretchParameter" max="1.4" min="0.5" />
                                           <Label fx:id="labelAnimationSpeed" text="Animation speed" />
-                                          <Slider fx:id="sliderAnimationSpeed" max="150" min="2" />
+                                          <Slider fx:id="sliderAnimationSpeed" max="100" min="0" />
                                           <Button fx:id="buttonResetGraphDefaults" mnemonicParsing="false" text="Reset defaults" />
                                        </children>
                                     </VBox>
