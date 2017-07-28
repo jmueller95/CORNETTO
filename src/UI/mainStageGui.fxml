@@ -192,62 +192,54 @@
                                                         <ChoiceBox fx:id="rankChoiceBox" prefHeight="26.0" prefWidth="113.0" />
                                                     </children>
                                                 </HBox>
-                                                <VBox layoutX="5.0" layoutY="100.0" spacing="5.0">
-                                                    <children>
-                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Minimal Correlation:" />
-                                                        <HBox spacing="5.0">
-                                                            <children>
-                                                                <Slider fx:id="minCorrelationSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" value="-1.0" />
-                                                                <TextField fx:id="minCorrelationText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
-                                                            </children>
-                                                        </HBox>
-                                                    </children>
-                                                </VBox>
-                                                <VBox layoutX="5.0" layoutY="150.0" spacing="5.0">
-                                                    <children>
-                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal Correlation:" />
-                                                        <HBox spacing="5.0">
-                                                            <children>
-                                                                <Slider fx:id="maxCorrelationSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" min="-1.0" minorTickCount="0" showTickLabels="true" value="1.0" />
-                                                                <TextField fx:id="maxCorrelationText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
-                                                            </children>
-                                                        </HBox>
-                                                    </children>
-                                                </VBox>
-                                                <VBox layoutX="5.0" layoutY="200.0" spacing="5.0">
+                                                <VBox layoutX="5.0" layoutY="300.0" spacing="5.0">
                                                     <children>
                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal p-Value:" />
                                                         <HBox spacing="5.0">
                                                             <children>
-                                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" minorTickCount="0" showTickLabels="true" value="1.0" />
+                                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" maxWidth="125.0" minorTickCount="0" showTickLabels="true" value="1.0" />
                                                                 <TextField fx:id="maxPValueText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
                                                             </children>
                                                         </HBox>
                                                     </children>
                                                 </VBox>
-                                                <VBox layoutX="5.0" layoutY="250.0" spacing="5.0">
-                                                    <children>
-                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Minimal relative frequency:" />
-                                                        <HBox spacing="5.0">
-                                                            <children>
-                                                                <Slider fx:id="minFrequencySlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" minorTickCount="0" showTickLabels="true" />
-                                                                <TextField fx:id="minFrequencyText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
-                                                            </children>
-                                                        </HBox>
-                                                    </children>
-                                                </VBox>
-                                                <VBox layoutX="5.0" layoutY="300.0" spacing="5.0">
-                                                    <children>
-                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal relative frequency:" />
-                                                        <HBox spacing="5.0">
-                                                            <children>
-                                                                <Slider fx:id="maxFrequencySlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" minorTickCount="0" showTickLabels="true" value="1.0" />
-                                                                <TextField fx:id="maxFrequencyText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
-                                                            </children>
-                                                        </HBox>
-                                                    </children>
-                                                </VBox>
-                                                <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="375.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
+                                                <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="500.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
+                                    <VBox layoutX="5.0" layoutY="100.0" prefWidth="175.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Positive Correlation Range" />
+                                          <RangeSlider fx:id="posCorrelationRangeSlider" blockIncrement="0.1" highValue="1.0" lowValue="0.0" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
+                                          <HBox spacing="60.0">
+                                             <children>
+                                                                <TextField fx:id="minPosCorrelationText" prefHeight="26.0" prefWidth="60.0" />
+                                                                <TextField fx:id="maxPosCorrelationText" prefHeight="26.0" prefWidth="60.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox layoutX="5.0" layoutY="200.0" prefWidth="175.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Negative Correlation Range" />
+                                          <RangeSlider fx:id="negCorrelationRangeSlider" blockIncrement="0.1" highValue="0.0" lowValue="-1.0" majorTickUnit="1.0" max="0.0" min="-1.0" minorTickCount="0" showTickLabels="true" />
+                                          <HBox spacing="60.0">
+                                             <children>
+                                                <TextField fx:id="minNegCorrelationText" />
+                                                <TextField fx:id="maxNegCorrelationText" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox layoutX="5.0" layoutY="375.0" prefWidth="175.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Relative Frequency" />
+                                          <RangeSlider fx:id="frequencyRangeSlider" highValue="1.0" lowValue="0.0" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" />
+                                          <HBox spacing="60.0">
+                                             <children>
+                                                                <TextField fx:id="minFrequencyText" prefHeight="26.0" prefWidth="60.0" />
+                                                                <TextField fx:id="maxFrequencyText" prefHeight="26.0" prefWidth="60.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
                                             </children>
                                         </AnchorPane>
                                     </content>

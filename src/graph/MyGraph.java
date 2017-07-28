@@ -39,8 +39,11 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
     }
 
     private void setupFilterListeners() {
-        minCorrelationProperty().addListener(observable -> filterEdges());
-        maxCorrelationProperty().addListener(observable -> filterEdges());
+        posCorrelationLowerFilterProperty().addListener(observable -> filterEdges());
+        posCorrelationUpperFilterProperty().addListener(observable -> filterEdges());
+        negCorrelationLowerFilterProperty().addListener(observable -> filterEdges());
+        negCorrelationUpperFilterProperty().addListener(observable -> filterEdges());
+
         maxPValueProperty().addListener(observable -> filterEdges());
         minFrequencyProperty().addListener(observable -> filterVertices());
         maxFrequencyProperty().addListener(observable -> filterVertices());
@@ -208,27 +211,28 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         return true;
     }
 
-    public void filterEdges(){
-        for (E e: edges.keySet()){
+    public void filterEdges() {
+        for (E e : edges.keySet()) {
             MyEdge edge = (MyEdge) e; //E is always of type MyEdge
-            if(edge.getCorrelation() < getMinCorrelationFilter() || edge.getCorrelation() > getMaxCorrelationFilter()
-                    || edge.getPValue() > getMaxPValueFilter()){
+            if (((edge.getCorrelation() < getPosCorrelationLowerFilter() || edge.getCorrelation() > getPosCorrelationUpperFilter())
+                        && (edge.getCorrelation() < getNegCorrelationLowerFilter() || edge.getCorrelation() > getNegCorrelationUpperFilter()))
+                    || edge.getPValue() > getMaxPValueFilter()) {
                 edge.setCorrelationAndPValueInRange(false);
-            }else{
+            } else {
                 edge.setCorrelationAndPValueInRange(true);
             }
         }
     }
 
-    public  void filterVertices(){
-        for (V v : vertices.keySet()){
+    public void filterVertices() {
+        for (V v : vertices.keySet()) {
             MyVertex vertex = (MyVertex) v;
             double vertexMaxRelativeFrequency = AnalysisData.getMaximumRelativeFrequencies().get(vertex.getTaxonNode());
-            if(vertexMaxRelativeFrequency < getMinFrequencyFilter() || vertexMaxRelativeFrequency > getMaxFrequencyFilter()){
+            if (vertexMaxRelativeFrequency < getMinFrequencyFilter() || vertexMaxRelativeFrequency > getMaxFrequencyFilter()) {
                 for (MyEdge edge : vertex.getEdgesList()) {
                     edge.setFrequencyInRange(false);
                 }
-            }else{
+            } else {
                 for (MyEdge myEdge : vertex.getEdgesList()) {
                     myEdge.setFrequencyInRange(true);
                 }

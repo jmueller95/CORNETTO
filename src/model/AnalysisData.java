@@ -18,8 +18,10 @@ public class AnalysisData {
     //Possible values: "Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"
 
     //Filter properties
-    private static DoubleProperty minCorrelationFilter = new SimpleDoubleProperty();
-    private static DoubleProperty maxCorrelationFilter = new SimpleDoubleProperty();
+    private static DoubleProperty negCorrelationLowerFilter = new SimpleDoubleProperty();
+    private static DoubleProperty negCorrelationUpperFilter = new SimpleDoubleProperty();
+    private static DoubleProperty posCorrelationLowerFilter = new SimpleDoubleProperty();
+    private static DoubleProperty posCorrelationUpperFilter = new SimpleDoubleProperty();
     private static DoubleProperty maxPValueFilter = new SimpleDoubleProperty();
     private static DoubleProperty minFrequencyFilter = new SimpleDoubleProperty();
     private static DoubleProperty maxFrequencyFilter = new SimpleDoubleProperty();
@@ -47,17 +49,11 @@ public class AnalysisData {
         return correlationMatrix;
     }
 
-    public static void setCorrelationMatrix(RealMatrix correlationMatrix) {
-        AnalysisData.correlationMatrix = correlationMatrix;
-    }
 
     public static RealMatrix getPValueMatrix() {
         return pValueMatrix;
     }
 
-    public static void setPValueMatrix(RealMatrix pValueMatrix) {
-        AnalysisData.pValueMatrix = pValueMatrix;
-    }
 
 
     /**
@@ -118,20 +114,37 @@ public class AnalysisData {
 
     public static void setLevel_of_analysis(String level_of_analysis) { AnalysisData.level_of_analysis = level_of_analysis; }
 
-    public static double getMinCorrelationFilter() {
-        return minCorrelationFilter.get();
+
+    public static double getNegCorrelationLowerFilter() {
+        return negCorrelationLowerFilter.get();
     }
 
-    public static DoubleProperty minCorrelationProperty() {
-        return minCorrelationFilter;
+    public static DoubleProperty negCorrelationLowerFilterProperty() {
+        return negCorrelationLowerFilter;
     }
 
-    public static double getMaxCorrelationFilter() {
-        return maxCorrelationFilter.get();
+    public static double getNegCorrelationUpperFilter() {
+        return negCorrelationUpperFilter.get();
     }
 
-    public static DoubleProperty maxCorrelationProperty() {
-        return maxCorrelationFilter;
+    public static DoubleProperty negCorrelationUpperFilterProperty() {
+        return negCorrelationUpperFilter;
+    }
+
+    public static double getPosCorrelationLowerFilter() {
+        return posCorrelationLowerFilter.get();
+    }
+
+    public static DoubleProperty posCorrelationLowerFilterProperty() {
+        return posCorrelationLowerFilter;
+    }
+
+    public static double getPosCorrelationUpperFilter() {
+        return posCorrelationUpperFilter.get();
+    }
+
+    public static DoubleProperty posCorrelationUpperFilterProperty() {
+        return posCorrelationUpperFilter;
     }
 
     public static double getMaxPValueFilter() {
