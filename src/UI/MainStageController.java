@@ -114,16 +114,7 @@ public class MainStageController implements Initializable {
     private RadioButton compareSelectedSamplesButton;
 
     @FXML
-    private Slider minCorrelationSlider;
-
-    @FXML
-    private TextField minCorrelationText;
-
-    @FXML
-    private Slider maxCorrelationSlider;
-
-    @FXML
-    private TextField maxCorrelationText;
+    private TextField minPosCorrelationText, maxPosCorrelationText, minNegCorrelationText, maxNegCorrelationText;
 
     @FXML
     private Slider maxPValueSlider;
@@ -132,16 +123,13 @@ public class MainStageController implements Initializable {
     private TextField maxPValueText;
 
     @FXML
-    private Slider minFrequencySlider;
-
-    @FXML
     private TextField minFrequencyText;
 
     @FXML
-    private Slider maxFrequencySlider;
+    private TextField maxFrequencyText;
 
     @FXML
-    private TextField maxFrequencyText;
+    private RangeSlider posCorrelationRangeSlider, negCorrelationRangeSlider, frequencyRangeSlider;
 
     /**
      * STARTUP PANE ELEMENTS
@@ -262,8 +250,6 @@ public class MainStageController implements Initializable {
     }
 
 
-
-
     @FXML
     /**
      * Should be called when the user clicks a button to analyze the loaded samples and display the graphview
@@ -287,24 +273,24 @@ public class MainStageController implements Initializable {
      * chooses which text to display on the bottom left pane
      * TODO: This isn't called everytime it should be, add some more listeners!
      */
-    private void displayInfoText(){
-    Text infoText = new Text();
-    if(LoadedData.getSamplesToAnalyze()==null || LoadedData.getSamples().size()<3){
-        infoText.setText("Please import at least 3 samples to begin correlation analysis!");
-    }else if(compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() <= 3){
-        infoText.setText("If you want to analyse selected samples only, please select at least 3 samples!");
-    }else if(rankChoiceBox.getValue() == null){
-        infoText.setText("Choose a rank to display the graph!");
-    }else if(LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() > 1){
-        infoText.setText("TODO: Display list of chosen nodes");
-    }else if(LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() == 1){
-        infoText.setText("TODO: Display stats for chosen node");
-    }else{
-        infoText.setText("TODO: Show general graph information (e.g. number of visible nodes & edges");
-    }
+    private void displayInfoText() {
+        Text infoText = new Text();
+        if (LoadedData.getSamplesToAnalyze() == null || LoadedData.getSamples().size() < 3) {
+            infoText.setText("Please import at least 3 samples to begin correlation analysis!");
+        } else if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() <= 3) {
+            infoText.setText("If you want to analyse selected samples only, please select at least 3 samples!");
+        } else if (rankChoiceBox.getValue() == null) {
+            infoText.setText("Choose a rank to display the graph!");
+        } else if (LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() > 1) {
+            infoText.setText("TODO: Display list of chosen nodes");
+        } else if (LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() == 1) {
+            infoText.setText("TODO: Display stats for chosen node");
+        } else {
+            infoText.setText("TODO: Show general graph information (e.g. number of visible nodes & edges");
+        }
 
-    infoTextFlow.getChildren().clear();
-    infoTextFlow.getChildren().add(infoText);
+        infoTextFlow.getChildren().clear();
+        infoTextFlow.getChildren().add(infoText);
     }
 
     /**
@@ -786,17 +772,25 @@ public class MainStageController implements Initializable {
         }
         StringConverter<Number> converter = new MyNumberStringConverter();
         //Bind every slider to its corresponding text field and vice versa
-        Bindings.bindBidirectional(minCorrelationText.textProperty(), minCorrelationSlider.valueProperty(), converter);
-        Bindings.bindBidirectional(maxCorrelationText.textProperty(), maxCorrelationSlider.valueProperty(), converter);
+        Bindings.bindBidirectional(minPosCorrelationText.textProperty(), posCorrelationRangeSlider.lowValueProperty(), converter);
+        Bindings.bindBidirectional(maxPosCorrelationText.textProperty(), posCorrelationRangeSlider.highValueProperty(), converter);
+        Bindings.bindBidirectional(minNegCorrelationText.textProperty(), negCorrelationRangeSlider.lowValueProperty(), converter);
+        Bindings.bindBidirectional(maxNegCorrelationText.textProperty(), negCorrelationRangeSlider.highValueProperty(), converter);
         Bindings.bindBidirectional(maxPValueText.textProperty(), maxPValueSlider.valueProperty(), converter);
-        Bindings.bindBidirectional(minFrequencyText.textProperty(), minFrequencySlider.valueProperty(), converter);
-        Bindings.bindBidirectional(maxFrequencyText.textProperty(), maxFrequencySlider.valueProperty(), converter);
+        Bindings.bindBidirectional(minFrequencyText.textProperty(), frequencyRangeSlider.lowValueProperty(), converter);
+        Bindings.bindBidirectional(maxFrequencyText.textProperty(), frequencyRangeSlider.highValueProperty(), converter);
+
         //Bind the internal filter properties to the slider values
-        AnalysisData.minCorrelationProperty().bind(minCorrelationSlider.valueProperty());
-        AnalysisData.maxCorrelationProperty().bind(maxCorrelationSlider.valueProperty());
+        AnalysisData.posCorrelationLowerFilterProperty().bind(posCorrelationRangeSlider.lowValueProperty());
+        AnalysisData.posCorrelationUpperFilterProperty().bind(posCorrelationRangeSlider.highValueProperty());
+        AnalysisData.negCorrelationLowerFilterProperty().bind(negCorrelationRangeSlider.lowValueProperty());
+        AnalysisData.negCorrelationUpperFilterProperty().bind(negCorrelationRangeSlider.highValueProperty());
+        AnalysisData.minFrequencyProperty().bind(frequencyRangeSlider.lowValueProperty());
+        AnalysisData.maxFrequencyProperty().bind(frequencyRangeSlider.highValueProperty());
         AnalysisData.maxPValueProperty().bind(maxPValueSlider.valueProperty());
-        AnalysisData.minFrequencyProperty().bind(minFrequencySlider.valueProperty());
-        AnalysisData.maxFrequencyProperty().bind(maxFrequencySlider.valueProperty());
+
+        //The lower value of the negative slider can't be set to -1 from FXML for reasons beyond understanding, so we set it manually
+        negCorrelationRangeSlider.setLowValue(-1);
 
         //We want the graph to be redone if one of the following occurs:
         //1. Radio button switches between "Analyze All" and "Analyze Selected"
@@ -887,11 +881,13 @@ public class MainStageController implements Initializable {
 
     @FXML
     public void resetFilterSettings() {
-        minCorrelationSlider.setValue(-1);
-        maxCorrelationSlider.setValue(1);
+        posCorrelationRangeSlider.setLowValue(0);
+        posCorrelationRangeSlider.setHighValue(1);
+        negCorrelationRangeSlider.setLowValue(-1);
+        negCorrelationRangeSlider.setHighValue(0);
         maxPValueSlider.setValue(1);
-        minFrequencySlider.setValue(0);
-        maxFrequencySlider.setValue(1);
+        frequencyRangeSlider.setLowValue(0);
+        frequencyRangeSlider.setHighValue(1);
     }
 
     //ALERTS
