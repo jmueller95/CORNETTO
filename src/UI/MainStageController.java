@@ -434,18 +434,17 @@ public class MainStageController implements Initializable {
     }
 
     public void displayGraphAnalysis(){
-        if(LoadedData.getTaxonGraph() != null) {
             //Generate Data for the BarChart
             GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
             HashMap<Integer, Double> degreeDistribution = analysis.getDegreeDistribution();
-            XYChart.Series<String, Double> degreeSeries = new XYChart.Series();
+            XYChart.Series<String, Double> degreeSeries = new XYChart.Series<>();
 
             for (Map.Entry<Integer, Double> entry : degreeDistribution.entrySet()) {
                 degreeSeries.getData().add(new XYChart.Data<>(entry.getKey().toString(), entry.getValue()));
             }
             degreeDistributionChart.getData().clear();
             degreeDistributionChart.getData().add(degreeSeries);
-        }
+
     }
 
     //FILE methods
@@ -775,22 +774,54 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * Sets axis names for the BarChart (TODO: Can this be done in the fxml file?)
      * Sets up listeners that update graph everytime the graph changes
      */
     private void initializeGraphAnalysis(){
         degreeDistributionChart.getXAxis().setLabel("Degree");
         degreeDistributionChart.getYAxis().setLabel("Node Fraction");
-        System.out.println("Now I'm here");
-        posCorrelationLowerFilterProperty().addListener(observable -> displayGraphAnalysis());
-        posCorrelationUpperFilterProperty().addListener(observable -> displayGraphAnalysis());
-        negCorrelationLowerFilterProperty().addListener(observable -> displayGraphAnalysis());
-        negCorrelationUpperFilterProperty().addListener(observable -> displayGraphAnalysis());
+        posCorrelationLowerFilterProperty().addListener(observable -> {
+            if(LoadedData.getTaxonGraph()!=null) {
+                LoadedData.getTaxonGraph().filterEdges();
+                displayGraphAnalysis();
+            }
+        });
+        posCorrelationUpperFilterProperty().addListener(observable -> {
+            if(LoadedData.getTaxonGraph()!=null) {
+                LoadedData.getTaxonGraph().filterEdges();
+                displayGraphAnalysis();
+            }
+        });
+        negCorrelationLowerFilterProperty().addListener(observable -> {
+            if(LoadedData.getTaxonGraph()!=null) {
+                LoadedData.getTaxonGraph().filterEdges();
+                displayGraphAnalysis();
+            }
+        });
+        negCorrelationUpperFilterProperty().addListener(observable -> {
+            if(LoadedData.getTaxonGraph()!=null) {
+                LoadedData.getTaxonGraph().filterEdges();
+                displayGraphAnalysis();
+            }
+        });
 
-        maxPValueProperty().addListener(observable -> displayGraphAnalysis());
-        minFrequencyProperty().addListener(observable -> displayGraphAnalysis());
-        maxFrequencyProperty().addListener(observable -> displayGraphAnalysis());
-        System.out.println("Now I'm there");
+        maxPValueProperty().addListener(observable -> {
+            if(LoadedData.getTaxonGraph()!=null) {
+                LoadedData.getTaxonGraph().filterEdges();
+                displayGraphAnalysis();
+            }
+        });
+        minFrequencyProperty().addListener(observable -> {
+            if(LoadedData.getTaxonGraph()!=null) {
+                LoadedData.getTaxonGraph().filterVertices();
+                displayGraphAnalysis();
+            }
+        });
+        maxFrequencyProperty().addListener(observable -> {
+            if(LoadedData.getTaxonGraph()!=null) {
+                LoadedData.getTaxonGraph().filterVertices();
+                displayGraphAnalysis();
+            }
+        });
 
     }
 

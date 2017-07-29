@@ -15,6 +15,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
@@ -22,6 +23,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -35,7 +37,6 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
-<?import javafx.scene.control.ToggleButton?>
 <VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
@@ -142,35 +143,62 @@
                         </Tab>
                         <Tab text="Analysis">
                             <content>
-                                <AnchorPane fx:id="analysisPane" minHeight="0.0" minWidth="0.0" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0">
-                                    <children>
-                              <PieChart fx:id="frequencyChart" layoutX="125.0" layoutY="64.0" title="Frequency Distribution" AnchorPane.bottomAnchor="400.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="50.0" />
-                              <Text fx:id="dataText" strokeType="OUTSIDE" strokeWidth="0.0" text="Data Analysis" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="50.0">
-                                 <font>
-                                    <Font name="System Italic" size="13.0" />
-                                 </font></Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Frequency:" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="75.0" />
-                              <Text fx:id="highestFrequencyText" layoutX="150.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Positive Correlation:" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="150.0" />
-                              <Text fx:id="highestPositiveCorrelationText" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="175.0" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Negative Correlation:" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="225.0" />
-                              <Text fx:id="highestNegativeCorrelationText" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="250.0" />
-                              <Button fx:id="showTableButton" layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onAction="#displayCorrelationTable" text="Show Correlation Table" />
-                              <Text fx:id="graphText" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Graph Analysis" AnchorPane.bottomAnchor="310.0" AnchorPane.rightAnchor="100.0">
-                                 <font>
-                                    <Font name="System Italic" size="13.0" />
-                                 </font></Text>
-                              <Text fx:id="graphStatDummy" strokeType="OUTSIDE" strokeWidth="0.0" text="Dummy" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="200.0" />
-                              <BarChart fx:id="degreeDistributionChart" layoutX="10.0" layoutY="416.0" legendVisible="false" title="Degree Distribution" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="450.0">
-                                <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
-                                </xAxis>
-                                <yAxis>
-                                  <NumberAxis side="LEFT" />
-                                </yAxis>
-                              </BarChart>
-                                    </children>
-                                </AnchorPane>
+                        <ScrollPane hvalue="1.0" minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0">
+                           <content>
+                                      <AnchorPane fx:id="analysisPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1250.0" minWidth="1250.0" pickOnBounds="false">
+                                          <children>
+                                    <PieChart fx:id="frequencyChart" layoutX="125.0" layoutY="64.0" legendVisible="false" prefHeight="600.0" prefWidth="700.0" title="Frequency Distribution" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                       <padding>
+                                          <Insets bottom="10.0" />
+                                       </padding>
+                                    </PieChart>
+                                    <TextField editable="false" layoutX="1695.0" layoutY="40.0" prefHeight="262.0" prefWidth="388.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="40.0" />
+                                    <Text fx:id="dataText" layoutX="1006.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Data Analysis" AnchorPane.rightAnchor="155.26611328125" AnchorPane.topAnchor="50.0">
+                                       <font>
+                                          <Font name="System Italic" size="13.0" />
+                                       </font>
+                                    </Text>
+                                    <Text layoutX="1770.0" layoutY="87.06689453125" strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Frequency:" AnchorPane.rightAnchor="103.3515625" AnchorPane.topAnchor="75.0" />
+                                    <Text fx:id="highestFrequencyText" layoutX="1953.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="100.0" />
+                                    <Text layoutX="1711.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Positive Correlation:" AnchorPane.rightAnchor="103.83251953125" AnchorPane.topAnchor="150.0" />
+                                    <Text fx:id="highestPositiveCorrelationText" layoutX="1953.0" layoutY="188.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="175.0" />
+                                    <Text layoutX="1704.0" layoutY="237.06689453125" strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Negative Correlation:" AnchorPane.rightAnchor="103.0693359375" AnchorPane.topAnchor="225.0" />
+                                    <Text fx:id="highestNegativeCorrelationText" layoutX="1953.0" layoutY="263.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="250.0" />
+                                    <Button fx:id="showTableButton" layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onAction="#displayCorrelationTable" text="Show Correlation Table" />
+                                    <Text fx:id="graphText" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Graph Analysis" AnchorPane.bottomAnchor="310.0" AnchorPane.rightAnchor="100.0">
+                                       <font>
+                                          <Font name="System Italic" size="13.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fx:id="graphStatDummy" strokeType="OUTSIDE" strokeWidth="0.0" text="Dummy" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="200.0" />
+                                    <BarChart fx:id="degreeDistributionChart" layoutX="10.0" layoutY="400.0" legendVisible="false" prefHeight="500.0" prefWidth="700.0" title="Degree Distribution" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0">
+                                      <xAxis>
+                                        <CategoryAxis side="BOTTOM" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis side="LEFT" />
+                                      </yAxis>
+                                    </BarChart>
+                                      <HBox id="HBox" alignment="CENTER_LEFT" fillHeight="false" layoutX="1039.0" layoutY="792.0" spacing="5.0">
+                                          <children>
+                                              <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+                                              <Label fx:id="statusRightLabel" maxWidth="-1.0" text="Running" HBox.hgrow="NEVER">
+                                                  <font>
+                                                      <Font size="11.0" fx:id="x3" />
+                                                  </font>
+                                                  <textFill>
+                                                      <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
+                                                  </textFill>
+                                              </Label>
+                                          </children>
+                                          <padding>
+                                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                          </padding>
+                                      </HBox>
+                                          </children>
+                                      </AnchorPane>
+                           </content>
+                        </ScrollPane>
                             </content>
                         </Tab>
                     </tabs>
@@ -306,21 +334,5 @@
                 </AnchorPane>
             </items>
         </SplitPane>
-        <HBox id="HBox" alignment="CENTER_LEFT" fillHeight="false" spacing="5.0" VBox.vgrow="NEVER">
-            <children>
-                <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-                <Label fx:id="statusRightLabel" maxWidth="-1.0" text="Running" HBox.hgrow="NEVER">
-                    <font>
-                        <Font size="11.0" fx:id="x3" />
-                    </font>
-                    <textFill>
-                        <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
-                    </textFill>
-                </Label>
-            </children>
-            <padding>
-                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-            </padding>
-        </HBox>
     </children>
 </VBox>

@@ -34,18 +34,6 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         edges = new HashMap<>();
         taxonNodeToVertexMap = new HashMap<>();
         nodeIdsToEdgesMap = new HashMap<>();
-        setupFilterListeners();
-    }
-
-    private void setupFilterListeners() {
-        posCorrelationLowerFilterProperty().addListener(observable -> filterEdges());
-        posCorrelationUpperFilterProperty().addListener(observable -> filterEdges());
-        negCorrelationLowerFilterProperty().addListener(observable -> filterEdges());
-        negCorrelationUpperFilterProperty().addListener(observable -> filterEdges());
-
-        maxPValueProperty().addListener(observable -> filterEdges());
-        minFrequencyProperty().addListener(observable -> filterVertices());
-        maxFrequencyProperty().addListener(observable -> filterVertices());
     }
 
     @Override
