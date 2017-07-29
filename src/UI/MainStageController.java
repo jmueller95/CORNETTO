@@ -75,8 +75,6 @@ public class MainStageController implements Initializable {
 
     private enum FileType {taxonId2Count, readName2TaxonId, biomV1, biomV2}
 
-    private ArrayList<String> openFiles;
-
     public static boolean isMainViewMaximized = false;
 
     // alerts
@@ -596,7 +594,7 @@ public class MainStageController implements Initializable {
             ArrayList<String> namesOfAlreadyLoadedFiles = new ArrayList<>();
             for (File file : selectedFiles) {
                 String foundFileName = file.getName();
-                if (openFiles != null && openFiles.contains(foundFileName)) {
+                if (LoadedData.getOpenFiles() != null && LoadedData.getOpenFiles().contains(foundFileName)) {
                     namesOfAlreadyLoadedFiles.add(foundFileName);
                 } else {
                     switch (fileType) {
@@ -719,6 +717,7 @@ public class MainStageController implements Initializable {
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
         activateButtonsOnTheRightPane();
     }
+
 
     /**
      * verifies the opened file
@@ -1096,16 +1095,19 @@ public class MainStageController implements Initializable {
      * Prompts an alert that the selected file is already part of the current project.
      */
     private void showFileAlreadyLoadedAlert(ArrayList<String> fileNames) {
-        StringBuilder namesOfFileAlreadyLoaded = new StringBuilder();
-
-        for (String name : fileNames) {
-            namesOfFileAlreadyLoaded.append(name).append(fileNames.size() == 1 || fileNames.get(fileNames.size()).equals(name) ? "" : ", ");
+        if (fileNames.size() > 1) {
+            fileNames = fileNames
+                    .stream()
+                    .map(string -> "'" + string + "'")
+                    .collect(Collectors.toCollection(ArrayList::new));
         }
+        String name = String.join(",\n", fileNames);
 
-        String fileAlreadyLoaded = "The files '" + namesOfFileAlreadyLoaded + "' is already loaded in your project.";
+        String oneFileAlreadyLoaded = "The file '" + name + "' is already loaded in your project.";
+        String multipleFilesAlreadyLoaded = "The files\n" + name + "\n are already loaded in your project.";
         fileAlreadyLoadedAlert = new Alert(Alert.AlertType.ERROR);
         fileAlreadyLoadedAlert.setTitle("File not loaded.");
-        fileAlreadyLoadedAlert.setContentText(fileAlreadyLoaded);
+        fileAlreadyLoadedAlert.setContentText(fileNames.size() == 1 ? oneFileAlreadyLoaded : multipleFilesAlreadyLoaded);
         fileAlreadyLoadedAlert.show();
     }
 

@@ -37,7 +37,7 @@ public class LoadedData {
     private static MyGraph<MyVertex, MyEdge> taxonGraph;
     private static MyGraphView graphView;
     private static HashMap<String, Sample> sampleNameToSample = new HashMap<>();
-   private static ObservableList<Sample> selectedSamples = FXCollections.observableArrayList();
+    private static ObservableList<Sample> selectedSamples = FXCollections.observableArrayList();
     private static BooleanProperty analyzeSelected = new SimpleBooleanProperty(false);
 
 
@@ -47,7 +47,11 @@ public class LoadedData {
         } else {
             samples.addAll(loadedSamples);
         }
-        initializeTreeView(treeViewFiles, loadedSamples, fileName);
+        if (openFiles == null) {
+            openFiles = new ArrayList<>();
+        }
+        openFiles.add(fileName);
+        addSamplesToTreeView(treeViewFiles, loadedSamples, fileName);
     }
 
     /**
@@ -110,8 +114,7 @@ public class LoadedData {
         samples.clear();
         if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
             treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
-            //TODO: Add open files feature
-            //openFiles.clear();
+            LoadedData.getOpenFiles().clear();
             samples.clear();
             selectedSamples.clear();
             //TODO:: Kill graph view when Project is closed
@@ -124,7 +127,7 @@ public class LoadedData {
      *
      * @param treeViewFiles Tree view fxml element to display the loaded samples
      */
-    private static void initializeTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
+    private static void addSamplesToTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
         //If no samples have been loaded so far
         if (treeViewFiles.getRoot() == null) {
             treeViewFiles.setRoot(new TreeItem<>("root"));
@@ -213,6 +216,10 @@ public class LoadedData {
 
     public static MyGraphView getGraphView() {
         return graphView;
+    }
+
+    public static ArrayList<String> getOpenFiles() {
+        return openFiles;
     }
 
     // SETTERS
