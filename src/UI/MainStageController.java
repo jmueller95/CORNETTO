@@ -1,5 +1,6 @@
 package UI;
 
+import analysis.GraphAnalysis;
 import analysis.SampleComparison;
 import graph.MyEdge;
 import graph.MyGraph;
@@ -17,7 +18,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -55,6 +58,7 @@ import java.net.URL;
 import java.util.*;
 
 import static main.Main.getPrimaryStage;
+import static model.AnalysisData.*;
 
 public class MainStageController implements Initializable {
 
@@ -209,6 +213,9 @@ public class MainStageController implements Initializable {
     private PieChart frequencyChart;
 
     @FXML
+    private BarChart<String, Double> degreeDistributionChart;
+
+    @FXML
     private Button showTableButton;
 
     @FXML
@@ -240,6 +247,7 @@ public class MainStageController implements Initializable {
         initializeRankChoiceBox();
         initializeGraphSettings();
         initializeAnalysisPane();
+        initializeGraphAnalysis();
         initializeInfoPane();
         initializeBindings();
         //preload settings
@@ -263,6 +271,7 @@ public class MainStageController implements Initializable {
             LoadedData.getTaxonGraph().filterVertices();
             displayGraph(LoadedData.getTaxonGraph());
             displayAnalysisTexts();
+            displayGraphAnalysis();
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
         }
@@ -420,6 +429,23 @@ public class MainStageController implements Initializable {
             frequencyChart.getData().add(data);
         }
         analysisPane.setVisible(true);
+
+
+    }
+
+    public void displayGraphAnalysis(){
+        if(LoadedData.getTaxonGraph() != null) {
+            //Generate Data for the BarChart
+            GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
+            HashMap<Integer, Double> degreeDistribution = analysis.getDegreeDistribution();
+            XYChart.Series<String, Double> degreeSeries = new XYChart.Series();
+
+            for (Map.Entry<Integer, Double> entry : degreeDistribution.entrySet()) {
+                degreeSeries.getData().add(new XYChart.Data<>(entry.getKey().toString(), entry.getValue()));
+            }
+            degreeDistributionChart.getData().clear();
+            degreeDistributionChart.getData().add(degreeSeries);
+        }
     }
 
     //FILE methods
@@ -741,9 +767,31 @@ public class MainStageController implements Initializable {
 
     /**
      * Hides all the components of the analysis pane, since they should only be displayed when data is loaded
+     *
      */
     private void initializeAnalysisPane() {
         analysisPane.setVisible(false);
+
+    }
+
+    /**
+     * Sets axis names for the BarChart (TODO: Can this be done in the fxml file?)
+     * Sets up listeners that update graph everytime the graph changes
+     */
+    private void initializeGraphAnalysis(){
+        degreeDistributionChart.getXAxis().setLabel("Degree");
+        degreeDistributionChart.getYAxis().setLabel("Node Fraction");
+        System.out.println("Now I'm here");
+        posCorrelationLowerFilterProperty().addListener(observable -> displayGraphAnalysis());
+        posCorrelationUpperFilterProperty().addListener(observable -> displayGraphAnalysis());
+        negCorrelationLowerFilterProperty().addListener(observable -> displayGraphAnalysis());
+        negCorrelationUpperFilterProperty().addListener(observable -> displayGraphAnalysis());
+
+        maxPValueProperty().addListener(observable -> displayGraphAnalysis());
+        minFrequencyProperty().addListener(observable -> displayGraphAnalysis());
+        maxFrequencyProperty().addListener(observable -> displayGraphAnalysis());
+        System.out.println("Now I'm there");
+
     }
 
     /**

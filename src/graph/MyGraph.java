@@ -20,7 +20,6 @@ import static model.AnalysisData.*;
 public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         implements UndirectedGraph<V, E> {
 
-
     private HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap;
     private HashMap<Integer, HashMap<Integer, MyEdge>> nodeIdsToEdgesMap;
     private Map<V, Map<V, E>> vertices; // Map of vertices to adjacency maps of vertices to incident edges
