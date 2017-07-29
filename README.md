@@ -1,80 +1,28 @@
 # CORNETTO
 
-A fast and beautiful tool for analyzing microbiomes for statistical values using visualisiations through a graph structure implemented in JavaFX.
+A fast and modern tool for analyzing microbiomes for statistical values using visualisations through a graph structure implemented in JavaFX.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+A jar file is provided at "link". Simply run it using your favorite shell. 
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+Cornetto requires jdk8, oracle or open jdk suffice. 
+If you want to contribute you should use IntelliJ since it includes css, fxml and scenebuilder support.
 
-```
-Give examples
-```
+Furthermore git is our version control software of choice - hey we're on Github afterall!
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
+There is not installing required besides running the Jar file (see above @Getting started). 
+Some example data can be downloaded here: "link". 
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+Simply start the program, click "File" -> "Load from" -> choose your file format and select your file. The graph building will start immediately. On the right one can find the sliders for 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/jmueller95/Network-Analysis-Tool/graphs/contributors) who participated in this project.
 
 ## License
 
@@ -82,6 +30,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+We would like to thank [professor Huson](https://github.com/danielhuson) for giving us the opportunity to work on this exciting topic. In addition to that we are very grateful to [Caner Bagci](https://github.com/canerbagci) for providing a relaxed and productive working atmosphere. His support throughout the whole project was very helpful - he would answer e-mails even at midnight. 
