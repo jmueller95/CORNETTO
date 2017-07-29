@@ -11,6 +11,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 import model.AnalysisData;
 
 /**
@@ -22,9 +24,8 @@ public class MyVertexView extends Group {
     MyVertex myVertex;
     Circle vertexShape;
     Label vertexLabel;
-    private double downX;
-    private double downY;
     private Tooltip tooltip;
+
 
     // Stylistic variables
     Double vertexWeight = 20.0;
@@ -37,6 +38,8 @@ public class MyVertexView extends Group {
         vertexShape = new Circle(vertexWeight);
         vertexShape.setFill(fillColor);
         vertexShape.setStroke(strokeColor);
+
+
 
         translateXProperty().bindBidirectional(myVertex.xCoordinatesProperty());
         translateYProperty().bindBidirectional(myVertex.yCoordinatesProperty());

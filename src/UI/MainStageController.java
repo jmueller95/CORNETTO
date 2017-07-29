@@ -165,7 +165,7 @@ public class MainStageController implements Initializable {
     private RangeSlider sliderEdgeLength;
 
     @FXML
-    private Button buttonPauseAnimation;
+    private ToggleButton buttonPauseAnimation;
 
     @FXML
     private CheckBox checkAdvancedGraphSettings;
@@ -896,11 +896,11 @@ public class MainStageController implements Initializable {
             ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty());
         }
 
-        buttonPauseAnimation.setOnAction(e -> {
+        /**buttonPauseAnimation.setOnAction(e -> {
             boolean isRunning = graphView.animationService.isRunning();
             if (isRunning) graphView.animationService.cancel();
             if (!isRunning) graphView.animationService.restart();
-        });
+        }); **/
 
         sliderEdgeLength.lowValueProperty().addListener((o, e, n) -> {
             graphView.animationService.setEdgeLengthLow(n.doubleValue());
@@ -922,9 +922,13 @@ public class MainStageController implements Initializable {
             graphView.animationService.setForce(n.doubleValue());
         });
 
+
         sliderAnimationSpeed.valueProperty().addListener((o, e, n) -> {
-            graphView.animationService.setFrameRate(n.intValue());
+            Double fr = sliderAnimationSpeed.getMax() - n.doubleValue();
+            graphView.animationService.setFrameRate(fr.intValue());
         });
+
+        buttonPauseAnimation.selectedProperty().bindBidirectional(graphView.pausedProperty);
     }
 
     @FXML
@@ -1150,7 +1154,7 @@ public class MainStageController implements Initializable {
      */
     private void setGraphSettingsDefault() {
 
-        sliderAnimationSpeed.setValue(30);
+        sliderAnimationSpeed.setValue(25);
         sliderEdgeForce.setValue(1.5);
         sliderNodeRepulsion.setValue(10);
         sliderStretchParameter.setValue(0.9);
@@ -1158,6 +1162,7 @@ public class MainStageController implements Initializable {
         sliderEdgeWidth.setValue(5);
         sliderEdgeLength.setLowValue(10);
         sliderEdgeLength.setHighValue(500);
+        buttonPauseAnimation.setSelected(false);
 
     }
 

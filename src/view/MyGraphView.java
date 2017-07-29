@@ -23,6 +23,7 @@ public class MyGraphView extends Group {
     private MyGraph<MyVertex, MyEdge> graph;
     public SpringAnimationService animationService;
     private VertexSelectionModel selectionModel;
+    public BooleanProperty pausedProperty;
 
     protected Function<MyEdge, Integer> myEdgeLengthFunction;
 
@@ -32,6 +33,9 @@ public class MyGraphView extends Group {
         this.myVertexViewGroup = new Group();
         this.myEdgeViewGroup = new Group();
         this.animationService = new SpringAnimationService(graph);
+
+        this.pausedProperty = new SimpleBooleanProperty(false);
+
         drawNodes();
         drawEdges();
 
@@ -41,6 +45,7 @@ public class MyGraphView extends Group {
         // Add all Vertex to the selection Model and add Listener
         selectionModel = new VertexSelectionModel(graph.getVertices().toArray());
         addSelectionListener();
+        addPausedListener();
 
         startLayout();
 
@@ -81,9 +86,24 @@ public class MyGraphView extends Group {
         });
     }
 
+    public void addLayoutDimensionBinding() {
+
+
+    }
+
+    public void addPausedListener() {
+        pausedProperty.addListener(e -> {
+            if (pausedProperty.get()) {
+                pauseAnimation();
+            } else resumeAnimation();
+        });
+    }
+
 
     public void startLayout() {
         animationService.start();
+        // If paused: cancel directly afterwards
+        if (pausedProperty.get()) pauseAnimation();
     }
 
     public void updateNodePosition(MyVertex vertex) {
@@ -95,7 +115,8 @@ public class MyGraphView extends Group {
     }
 
     public void resumeAnimation(){
-        animationService.restart();
+        if (!pausedProperty.get()) animationService.restart();
+
     }
 
     public Group getMyVertexViewGroup() {

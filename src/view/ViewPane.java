@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.SubScene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -19,6 +19,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
+
+import java.util.HashMap;
 
 
 /**
@@ -37,8 +39,11 @@ public class ViewPane extends AnchorPane {
 
     private double pressedX;
     private double pressedY;
+    private double mousePressedX = 0;
+    private double mousePressedY = 0;
     private double initTransX;
     private double initTransY;
+    private HashMap<MyVertexView, Double[]> groupNodeInitLocation;
 
     private Property<Transform> viewTransformProperty;
     public StringProperty hoverInfo;
@@ -67,7 +72,12 @@ public class ViewPane extends AnchorPane {
         // Add StackPane in SubScene and add content.
         getChildren().addAll(viewScene);
 
+        // Bind LayoutWidth to this here
+        myGraphView.animationService.widthProperty.bind(this.widthProperty());
+        myGraphView.animationService.heightProperty.bind(this.heightProperty());
+
         hoverInfo = new SimpleStringProperty("");
+        this.groupNodeInitLocation = new HashMap<>();
 
         // Setup interactions and view elements
         setupTransforms();
@@ -97,7 +107,7 @@ public class ViewPane extends AnchorPane {
         selectRectangle.setFill(Color.TRANSPARENT);
         selectRectangle.setStroke(Color.DARKSLATEGREY);
         selectRectangle.getStrokeDashArray().addAll(3.0, 7.0, 3.0, 7.0);
-        stackPane.getChildren().add(selectRectangle);
+        topPane.getChildren().add(selectRectangle);
     }
 
 
@@ -108,8 +118,8 @@ public class ViewPane extends AnchorPane {
         // Register Location of Mouse button click for all Events
         stackPane.setOnMousePressed((me) -> {
 
-            pressedX = me.getSceneX();
-            pressedY = me.getSceneY();
+            pressedX = me.getX();
+            pressedY = me.getY();
             myGraphView.pauseAnimation();
             setCursor(Cursor.MOVE);
         });
@@ -128,10 +138,13 @@ public class ViewPane extends AnchorPane {
                 hoverInfo.setValue("");
             });
 
-            // Register translation of vertexVIew before starting Drag operation
+            // Register translation of vertexView before starting Drag operation
             o.setOnMousePressed(me -> {
                 initTransX = vertexView.translateXProperty().get();
                 initTransY = vertexView.translateYProperty().get();
+
+                mousePressedX = me.getSceneX();
+                mousePressedY = me.getSceneY();
 
             });
 
@@ -140,11 +153,11 @@ public class ViewPane extends AnchorPane {
             o.setOnMouseDragged(me -> {
                 if (me.getButton() == MouseButton.PRIMARY) {
 
-                    double deltaX = (pressedX - me.getSceneX());
-                    double deltaY = (pressedY - me.getSceneY());
+                    double deltaX = (mousePressedX - me.getSceneX());
+                    double deltaY = (mousePressedY - me.getSceneY());
 
-                    vertexView.translateXProperty().set(initTransX - (deltaX / viewTransformProperty.getValue().getMxx()));
-                    vertexView.translateYProperty().set(initTransY - (deltaY/  viewTransformProperty.getValue().getMxx()));
+                    vertexView.translateXProperty().set(initTransX - deltaX);
+                    vertexView.translateYProperty().set(initTransY - deltaY);
 
                     me.consume();
 
@@ -165,11 +178,28 @@ public class ViewPane extends AnchorPane {
             });
         });
 
+        // Stores initial location of nodes in hashmap for group translate
+        bottomPane.setOnMousePressed((me) -> {
+            mousePressedX = me.getSceneX();
+            mousePressedY = me.getSceneY();
+
+            if (me.getTarget().equals(bottomPane) && me.getButton() == MouseButton.PRIMARY && me.isShiftDown()) {
+
+                for (Node node : myGraphView.getMyVertexViewGroup().getChildren()) {
+
+                    MyVertexView vW = (MyVertexView) node;
+                    // Check if selected:
+                    groupNodeInitLocation.put(vW, new Double[] {vW.translateXProperty().get(),
+                            vW.translateYProperty().get()});
+                }
+            }
+        });
+
 
         bottomPane.setOnMouseDragged((me) -> {
 
-            double deltaX = me.getSceneX() - pressedX;
-            double deltaY = me.getSceneY() - pressedY;
+            double deltaX = me.getSceneX() - mousePressedX;
+            double deltaY = me.getSceneY() - mousePressedY;
 
             // Drag Graph with right Mouse Click
             if (me.getButton() == MouseButton.SECONDARY) {
@@ -179,13 +209,15 @@ public class ViewPane extends AnchorPane {
 
                 Translate translate = new Translate(deltaX, deltaY);
                 viewTransformProperty.setValue(translate.createConcatenation(viewTransformProperty.getValue()));
-                pressedX = me.getSceneX();
-                pressedY = me.getSceneY();
+
+                mousePressedX = me.getSceneX();
+                mousePressedY = me.getSceneY();
             }
+
 
             // Create selection rectangle with left MouseClick
             // Only create selection when mouse event target is NOT on a node
-            if (me.getTarget().equals(bottomPane) && me.getButton() == MouseButton.PRIMARY) {
+            if (me.getTarget().equals(bottomPane) && me.getButton() == MouseButton.PRIMARY && !me.isShiftDown()) {
 
                 //Set crosshair cursor
                 setCursor(Cursor.CROSSHAIR);
@@ -206,7 +238,30 @@ public class ViewPane extends AnchorPane {
                     selectRectangle.setHeight(-deltaY);
                 }
             }
+
+
+            // Drag selected Nodes with Left MB + Shift
+            if (me.getTarget().equals(bottomPane) && me.getButton() == MouseButton.PRIMARY && me.isShiftDown()) {
+
+                for (Node node : myGraphView.getMyVertexViewGroup().getChildren()) {
+
+                    MyVertexView vW = (MyVertexView) node;
+                    // Check if selected:
+                    if (vW.myVertex.isSelectedProperty().get()) {
+
+                            double x = groupNodeInitLocation.get(vW)[0];
+                            double y = groupNodeInitLocation.get(vW)[1];
+                            vW.translateXProperty().set(x + deltaX);
+                            vW.translateYProperty().set(y + deltaY);
+
+
+                        }
+                }
+                //me.consume();
+
+            }
         });
+
 
         //Select Elements in Rectangle when Right Mouse is released
         stackPane.setOnMouseReleased((me -> {
@@ -245,14 +300,24 @@ public class ViewPane extends AnchorPane {
 
             //double pivotX = (myGraphView.getBoundsInParent().getMaxX() - myGraphView.getBoundsInParent().getWidth()/2);
             //double pivotY = (myGraphView.getBoundsInParent().getMaxY() - myGraphView.getBoundsInParent().getHeight()/2);
-            double pivotX = se.getSceneX();
-            double pivotY = se.getSceneY();
+
+            // Pivot Point is under the Mouse button
+            double pivotX = se.getX();
+            double pivotY = se.getY();
+
+            // Set minimal zoom:
 
             Scale scale = new Scale(scaleFactor, scaleFactor, pivotX, pivotY);
             viewTransformProperty.setValue(scale.createConcatenation(viewTransformProperty.getValue()));
+
+
         }));
 
-        // TODO (?) Scroll with alt + / alt - or cmd + mouse?
-        //if we have time! it's a very useful feature
+        // Deselect all nodes when clicked on Background without dragging
+        stackPane.setOnMouseClicked((me -> {
+            if (me.getButton() == MouseButton.PRIMARY && me.isStillSincePress()) {
+                myGraphView.getSelectionModel().clearSelection();
+            }
+        }));
     }
 }

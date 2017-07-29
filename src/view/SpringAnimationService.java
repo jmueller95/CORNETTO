@@ -4,6 +4,8 @@ import com.google.common.base.Function;
 import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -22,8 +24,8 @@ public class SpringAnimationService extends Service {
     private Function<MyEdge, Integer> myEdgeLengthFunction;
     private MyGraph graph;
 
-    private int width = 1000;
-    private int height = 800;
+    public IntegerProperty widthProperty = new SimpleIntegerProperty(1000);
+    public IntegerProperty heightProperty = new SimpleIntegerProperty(800);
     private int sleepTime = 50;
 
     private double maxLength = 500;
@@ -42,7 +44,7 @@ public class SpringAnimationService extends Service {
         this.graph = graph;
         myEdgeLengthFunction = getMyEdgeLengthFunction();
         springLayout = new MySpringLayout(graph, myEdgeLengthFunction);
-        springLayout.setSize(new Dimension(width, height));
+        springLayout.setSize(new Dimension(widthProperty.getValue(), heightProperty.getValue()));
     }
 
     /**
@@ -130,7 +132,7 @@ public class SpringAnimationService extends Service {
         super.reset();
 
         springLayout = new MySpringLayout(graph, myEdgeLengthFunction);
-        springLayout.setSize(new Dimension(width, height));
+        springLayout.setSize(new Dimension(widthProperty.getValue(), heightProperty.getValue()));
         setAllLocations();
 
         start();
@@ -158,16 +160,18 @@ public class SpringAnimationService extends Service {
 
     public void setEdgeLengthLow(double val) {
         minLength = val;
-        restart();
+        if (isRunning()) restart();
     }
 
     public void setEdgeLengthHigh(double val){
         maxLength = val;
-        restart();
+        if (isRunning()) restart();
     }
 
     public void setFrameRate(int t) {
         sleepTime = t;
     }
+
+
 
 }
