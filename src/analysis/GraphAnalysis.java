@@ -66,12 +66,7 @@ public class GraphAnalysis {
         HashMap<TaxonNode, Integer> nodeDegrees = getNodeDegrees();
 
         //Calculate Mean: 1/n*sum(nodeDegrees)
-        double meanDegree = 0;
-
-        for (Integer degree : nodeDegrees.values()) {
-            meanDegree += degree;
-        }
-        meanDegree /= nodeDegrees.size();
+        double meanDegree = getMeanDegree();
 
         //Calculate Standard Deviation: sqrt(1/(n-1)*sum((nodeDegree-meanDegree)^2)
         double standardDeviation = 0;
@@ -87,6 +82,22 @@ public class GraphAnalysis {
         }
         return hubsMap;
 
+    }
+
+    public double getMeanDegree(){
+        HashMap<TaxonNode, Integer> nodeDegrees = getNodeDegrees();
+
+        //Calculate Mean: 1/n*sum(nodeDegrees)
+        double degreeSum = 0;
+
+        for (Integer degree : nodeDegrees.values()) {
+            degreeSum += degree;
+        }
+        return degreeSum / nodeDegrees.size();
+    }
+
+    public MyGraph<MyVertex, MyEdge> getFilteredGraph() {
+        return filteredGraph;
     }
 
     public static void main(String[] args) {

@@ -38,7 +38,7 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -98,6 +98,7 @@
                         </AnchorPane>
                         <AnchorPane fx:id="infoBox" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
                             <children>
+                        <TextArea fx:id="infoTextArea" editable="false" prefHeight="420.0" prefWidth="220.0" />
                                 <TextFlow fx:id="infoTextFlow" prefHeight="420.0" prefWidth="220.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
                             </children>
                         </AnchorPane>

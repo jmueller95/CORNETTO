@@ -222,6 +222,9 @@ public class MainStageController implements Initializable {
     @FXML
     private TextFlow infoTextFlow;
 
+    @FXML
+    private TextArea infoTextArea;
+
     /**
      * Initializes every needed service
      *
@@ -264,6 +267,7 @@ public class MainStageController implements Initializable {
             displayGraph(LoadedData.getTaxonGraph());
             displayAnalysisTextsAndGraphs();
             displayGraphAnalysis();
+            displayInfoText();
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
         }
@@ -275,23 +279,40 @@ public class MainStageController implements Initializable {
      * TODO: This isn't called everytime it should be, add some more listeners!
      */
     private void displayInfoText() {
-        Text infoText = new Text();
+        String infoText="";
         if (LoadedData.getSamplesToAnalyze() == null || LoadedData.getSamples().size() < 3) {
-            infoText.setText("Please import at least 3 samples to begin correlation analysis!");
+            infoText = "Please import at least 3 samples to begin correlation analysis!";
         } else if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() <= 3) {
-            infoText.setText("If you want to analyse selected samples only, please select at least 3 samples!");
+            infoText = "If you want to analyse selected samples only, please select at least 3 samples!";
         } else if (rankChoiceBox.getValue() == null) {
-            infoText.setText("Choose a rank to display the graph!");
+            infoText = "Choose a rank to display the graph!";
         } else if (LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() > 1) {
-            infoText.setText("TODO: Display list of chosen nodes");
+            StringBuilder builder = new StringBuilder("Selected Taxa:\n");
+            ObservableList selectedItems = LoadedData.getGraphView().getSelectionModel().getSelectedItems();
+            for (Object selectedItem : selectedItems) {
+                MyVertex vertex = (MyVertex) selectedItem;
+                builder.append(vertex.getTaxonName());
+                builder.append("\n");
+            }
+            infoText = builder.toString();
         } else if (LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() == 1) {
-            infoText.setText("TODO: Display stats for chosen node");
-        } else {
-            infoText.setText("TODO: Show general graph information (e.g. number of visible nodes & edges");
+            MyVertex selectedVertex = (MyVertex) LoadedData.getGraphView().getSelectionModel().getSelectedItems().get(0);
+            //TODO: Redoing the entire analysis - not good!
+            GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
+
+            infoText = "Selected Taxon:\n" + selectedVertex.getTaxonName() + "\nID: " + selectedVertex.getTaxonNode().getTaxonId()
+                    + "\nMax. Frequency: " + String.format("%.3f", AnalysisData.getMaximumRelativeFrequencies().get(selectedVertex.getTaxonNode()))
+            + "\nNo. of visible edges: " + analysis.getNodeDegrees().get(selectedVertex.getTaxonNode());
+        } else if(LoadedData.getGraphView() != null) {
+            //TODO: Also redoing the entire analysis...
+            GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
+            ;
+            infoText = "Network Overview: \nNo. of visible taxa: " + analysis.getFilteredGraph().getVertices().size()
+            + "\nNo. of visible edges: " + analysis.getFilteredGraph().getEdges().size()
+            + "\nAverage Degree: " + String.format("%.2f", analysis.getMeanDegree());
         }
 
-        infoTextFlow.getChildren().clear();
-        infoTextFlow.getChildren().add(infoText);
+        infoTextArea.setText(infoText);
     }
 
     /**
@@ -802,24 +823,28 @@ public class MainStageController implements Initializable {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
+                displayInfoText();
             }
         });
         posCorrelationUpperFilterProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
+                displayInfoText();
             }
         });
         negCorrelationLowerFilterProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
+                displayInfoText();
             }
         });
         negCorrelationUpperFilterProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
+                displayInfoText();
             }
         });
 
@@ -827,18 +852,21 @@ public class MainStageController implements Initializable {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
+                displayInfoText();
             }
         });
         minFrequencyProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterVertices();
                 displayGraphAnalysis();
+                displayInfoText();
             }
         });
         maxFrequencyProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterVertices();
                 displayGraphAnalysis();
+                displayInfoText();
             }
         });
 
