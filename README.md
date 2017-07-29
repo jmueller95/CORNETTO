@@ -4,18 +4,18 @@ A fast and modern tool for analyzing microbiomes for statistical values using vi
 
 ## Getting Started
 
-A jar file is provided at "link". Simply run it using your favorite shell. 
+A jar file is provided at "link". Simply run it using your favorite shell through: java -jar 'nameofjar.jar'.
 
 ### Prerequisites
 
-Cornetto requires jdk8, oracle or open jdk suffice. 
+Cornetto requires jdk8, oracle or open jdk suffice. It is likely that we will migrate to Java 9 soon.
 If you want to contribute you should use IntelliJ since it includes css, fxml and scenebuilder support.
 
 Furthermore git is our version control software of choice - hey we're on Github afterall!
 
 ### Installing
 
-There is not installing required besides running the Jar file (see above @Getting started). 
+There is no installing required besides running the Jar file (see above @Getting started). 
 Some example data can be downloaded here: "link". 
 
 Simply start the program, click "File" -> "Load from" -> choose your file format and select your file. The graph building will start immediately. On the right one can find the sliders for 
