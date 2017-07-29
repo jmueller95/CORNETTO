@@ -56,6 +56,7 @@ import view.ViewPane;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static main.Main.getPrimaryStage;
 import static model.AnalysisData.*;
@@ -207,8 +208,6 @@ public class MainStageController implements Initializable {
     @FXML
     private AnchorPane analysisPane;
 
-    private TableView<String[]> analysisTable;
-
     @FXML
     private PieChart frequencyChart;
 
@@ -216,14 +215,7 @@ public class MainStageController implements Initializable {
     private BarChart<String, Double> degreeDistributionChart;
 
     @FXML
-    private Button showTableButton;
-
-    @FXML
-    private Text highestFrequencyText, highestPositiveCorrelationText, highestNegativeCorrelationText;
-
-    @FXML
-    private Text graphStatDummy;
-
+    private TextArea graphStatText, dataStatText;
     /**
      * INFO PANE
      */
@@ -270,7 +262,7 @@ public class MainStageController implements Initializable {
             LoadedData.getTaxonGraph().filterEdges();
             LoadedData.getTaxonGraph().filterVertices();
             displayGraph(LoadedData.getTaxonGraph());
-            displayAnalysisTexts();
+            displayAnalysisTextsAndGraphs();
             displayGraphAnalysis();
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
@@ -340,7 +332,7 @@ public class MainStageController implements Initializable {
         //Delete whatever's been in the table before
 //        analysisTable.getItems().clear();
 //        analysisTable.getColumns().clear();
-        analysisTable = new TableView<>();
+        TableView<String[]> analysisTable = new TableView<>();
 
         //We want to display correlations and p-Values of every node combination
         double[][] correlationMatrix = AnalysisData.getCorrelationMatrix().getData();
@@ -398,11 +390,13 @@ public class MainStageController implements Initializable {
 
     }
 
-    private void displayAnalysisTexts() {
+    private void displayAnalysisTextsAndGraphs() {
+
         //Display node with highest frequency
         double highestFrequency = AnalysisData.getHighestFrequency();
         TaxonNode nodeWithHighestFrequency = AnalysisData.getNodeWithHighestFrequency();
-        highestFrequencyText.setText(nodeWithHighestFrequency.getName() + " (" + String.format("%.3f", highestFrequency) + ")");
+        dataStatText.setText("Highest Frequency:\n"
+                + nodeWithHighestFrequency.getName() + " (" + String.format("%.3f", highestFrequency) + ")\n");
 
         //Display nodes with highest positive/negative correlation
         RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
@@ -413,13 +407,15 @@ public class MainStageController implements Initializable {
         TaxonNode hPCNode2 = taxonList.get(highestPositiveCorrelationCoordinates[1]);
         TaxonNode hNCNode1 = taxonList.get(highestNegativeCorrelationCoordinates[0]);
         TaxonNode hNCNode2 = taxonList.get(highestNegativeCorrelationCoordinates[1]);
-        highestPositiveCorrelationText.setText(hPCNode1.getName() + " - " + hPCNode2.getName()
+
+        dataStatText.setText(dataStatText.getText() + "\nHighest Positive Correlation:\n"
+                + hPCNode1.getName() + " - " + hPCNode2.getName()
                 + " (" + String.format("%.3f", correlationMatrix.getEntry(highestPositiveCorrelationCoordinates[0], highestPositiveCorrelationCoordinates[1]))
-                + ")");
-        highestNegativeCorrelationText.setText(hNCNode1.getName() + " - " + hNCNode2.getName()
+                + ")\n");
+        dataStatText.setText(dataStatText.getText() + "\nHighest Negative Correlation:\n"
+                + hNCNode1.getName() + " - " + hNCNode2.getName()
                 + " (" + String.format("%.3f", correlationMatrix.getEntry(highestNegativeCorrelationCoordinates[0], highestNegativeCorrelationCoordinates[1]))
                 + ")");
-        graphStatDummy.setText("dummy dummy dummy");
 
         //Generate Data for the pie chart
         frequencyChart.getData().clear();
@@ -428,24 +424,48 @@ public class MainStageController implements Initializable {
             PieChart.Data data = new PieChart.Data(taxonNode.getName(), averageCounts.get(taxonNode));
             frequencyChart.getData().add(data);
         }
+
+
         analysisPane.setVisible(true);
 
 
     }
 
-    public void displayGraphAnalysis(){
-            //Generate Data for the BarChart
-            GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
-            HashMap<Integer, Double> degreeDistribution = analysis.getDegreeDistribution();
-            XYChart.Series<String, Double> degreeSeries = new XYChart.Series<>();
+    public void displayGraphAnalysis() {
+        //Generate Data for the BarChart
+        GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
+        HashMap<Integer, Double> degreeDistribution = analysis.getDegreeDistribution();
+        XYChart.Series<String, Double> degreeSeries = new XYChart.Series<>();
 
-            for (Map.Entry<Integer, Double> entry : degreeDistribution.entrySet()) {
-                degreeSeries.getData().add(new XYChart.Data<>(entry.getKey().toString(), entry.getValue()));
-            }
-            degreeDistributionChart.getData().clear();
-            degreeDistributionChart.getData().add(degreeSeries);
+        for (Map.Entry<Integer, Double> entry : degreeDistribution.entrySet()) {
+            degreeSeries.getData().add(new XYChart.Data<>(entry.getKey().toString(), entry.getValue()));
+        }
+        degreeDistributionChart.getData().clear();
+        degreeDistributionChart.getData().add(degreeSeries);
+
+        //Generate Graph Statistics to display in the TextArea
+        HashMap<TaxonNode, Integer> hubs = analysis.getHubs();
+        graphStatText.setText("List of Hubs:\n\n");
+
+        //Sort hubs by descending values
+        Map<TaxonNode, Integer> hubsSorted = hubs.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+
+
+        for (Map.Entry<TaxonNode, Integer> entry : hubsSorted.entrySet()) {
+            graphStatText.setText(graphStatText.getText() + entry.getKey().getName() + " (" + entry.getValue() + ")\n");
+        }
+
 
     }
+
 
     //FILE methods
     @FXML
@@ -766,7 +786,6 @@ public class MainStageController implements Initializable {
 
     /**
      * Hides all the components of the analysis pane, since they should only be displayed when data is loaded
-     *
      */
     private void initializeAnalysisPane() {
         analysisPane.setVisible(false);
@@ -776,48 +795,48 @@ public class MainStageController implements Initializable {
     /**
      * Sets up listeners that update graph everytime the graph changes
      */
-    private void initializeGraphAnalysis(){
+    private void initializeGraphAnalysis() {
         degreeDistributionChart.getXAxis().setLabel("Degree");
         degreeDistributionChart.getYAxis().setLabel("Node Fraction");
         posCorrelationLowerFilterProperty().addListener(observable -> {
-            if(LoadedData.getTaxonGraph()!=null) {
+            if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
             }
         });
         posCorrelationUpperFilterProperty().addListener(observable -> {
-            if(LoadedData.getTaxonGraph()!=null) {
+            if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
             }
         });
         negCorrelationLowerFilterProperty().addListener(observable -> {
-            if(LoadedData.getTaxonGraph()!=null) {
+            if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
             }
         });
         negCorrelationUpperFilterProperty().addListener(observable -> {
-            if(LoadedData.getTaxonGraph()!=null) {
+            if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
             }
         });
 
         maxPValueProperty().addListener(observable -> {
-            if(LoadedData.getTaxonGraph()!=null) {
+            if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
                 displayGraphAnalysis();
             }
         });
         minFrequencyProperty().addListener(observable -> {
-            if(LoadedData.getTaxonGraph()!=null) {
+            if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterVertices();
                 displayGraphAnalysis();
             }
         });
         maxFrequencyProperty().addListener(observable -> {
-            if(LoadedData.getTaxonGraph()!=null) {
+            if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterVertices();
                 displayGraphAnalysis();
             }
@@ -928,10 +947,10 @@ public class MainStageController implements Initializable {
         }
 
         /**buttonPauseAnimation.setOnAction(e -> {
-            boolean isRunning = graphView.animationService.isRunning();
-            if (isRunning) graphView.animationService.cancel();
-            if (!isRunning) graphView.animationService.restart();
-        }); **/
+         boolean isRunning = graphView.animationService.isRunning();
+         if (isRunning) graphView.animationService.cancel();
+         if (!isRunning) graphView.animationService.restart();
+         }); **/
 
         sliderEdgeLength.lowValueProperty().addListener((o, e, n) -> {
             graphView.animationService.setEdgeLengthLow(n.doubleValue());

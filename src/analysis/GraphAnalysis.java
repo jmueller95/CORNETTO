@@ -56,6 +56,39 @@ public class GraphAnalysis {
         return degreeDistribution;
     }
 
+    /**
+     * Returns a list of Hubs.
+     * We define a node as a hub if its degree is at least 1 standard deviation higher than the average degree
+     *
+     * @return
+     */
+    public HashMap<TaxonNode, Integer> getHubs() {
+        HashMap<TaxonNode, Integer> nodeDegrees = getNodeDegrees();
+
+        //Calculate Mean: 1/n*sum(nodeDegrees)
+        double meanDegree = 0;
+
+        for (Integer degree : nodeDegrees.values()) {
+            meanDegree += degree;
+        }
+        meanDegree /= nodeDegrees.size();
+
+        //Calculate Standard Deviation: sqrt(1/(n-1)*sum((nodeDegree-meanDegree)^2)
+        double standardDeviation = 0;
+        for (Integer degree : nodeDegrees.values()) {
+            standardDeviation += Math.pow(degree - meanDegree,2);
+        }
+        standardDeviation = Math.sqrt(standardDeviation/(nodeDegrees.size()-1));
+
+        HashMap<TaxonNode, Integer> hubsMap = new HashMap<>();
+        for (Map.Entry<TaxonNode, Integer> entry : nodeDegrees.entrySet()) {
+            if(entry.getValue()>meanDegree+1*standardDeviation)
+                hubsMap.put(entry.getKey(), entry.getValue());
+        }
+        return hubsMap;
+
+    }
+
     public static void main(String[] args) {
         MyGraph<MyVertex, MyEdge> graph = new MyGraph<>();
         MyVertex v1 = new MyVertex(new TaxonNode(1, null, 0), 0);
