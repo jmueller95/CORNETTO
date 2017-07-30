@@ -6,15 +6,17 @@ import graph.MyGraph;
 import graph.MyVertex;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.CheckBoxTreeItem;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
+import javafx.util.Callback;
 import org.apache.commons.math3.linear.RealMatrix;
 import view.MyGraphView;
 
+import java.beans.EventHandler;
 import java.util.*;
 
 /**
@@ -133,26 +135,28 @@ public class LoadedData {
             treeViewFiles.setRoot(new TreeItem<>("root"));
             //The classic treeview only has one root item, but you can work around this by just setting it to invisible
             treeViewFiles.setShowRoot(false);
-            treeViewFiles.setCellFactory(CheckBoxTreeCell.<String>forTreeView());
+            treeViewFiles.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
+                @Override
+                public TreeCell<String> call(TreeView<String> param) {
+                    return new CheckBoxTreeCell<String>() {
+                        @Override
+                        public void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            //If there is no information for the Cell, make it empty
+                            if (empty) {
+                                setGraphic(null);
+                                setText(null);
+                                //Otherwise if it's not representation as an item of the tree
+                                //is not a CheckBoxTreeItem, remove the checkbox item
+                            } else if (!(getTreeItem() instanceof CheckBoxTreeItem)) {
+                                setGraphic(null);
+                            }
+                        }
+                    };
+                }
+            });
         }
         TreeItem<String> newRoot, newRootID, newRootCount;
-
-        //TODO: Need to exchange the CheckBoxTreeItems with TreeItems for the 'not-sample' Items
-        /*treeViewFiles.setCellFactory(item -> {
-            return new CheckBoxTreeCell<String>() {
-
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item != null) {
-                        this.editableProperty().unbind();
-                        CheckBoxTreeItem<String> value = (CheckBoxTreeItem<String>) treeItemProperty().getValue();
-                        this.disableProperty().bind(value.leafProperty());
-                    }
-                }
-            };
-        });*/
 
         int count = 0;
         for (Sample sample : loadedSamples) {
@@ -164,6 +168,7 @@ public class LoadedData {
             newSample.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 selectOrDeselectSample(newValue, oldValue, newSample);
             });
+            MenuItem addMenuItem = new MenuItem("delete");
 
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
                 newRoot = new TreeItem<>(taxonNode.getName());
@@ -171,7 +176,6 @@ public class LoadedData {
 
                 newRootID = new TreeItem<>("id: " + taxonNode.getTaxonId());
                 newRootCount = new TreeItem<>("count: " + sample.getTaxonCountRecursive(taxonNode));
-
                 newRoot.getChildren().addAll(newRootID, newRootCount);
             }
             treeViewFiles.getRoot().getChildren().add(newSample);
