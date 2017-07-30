@@ -503,6 +503,7 @@ public class MainStageController implements Initializable {
             LoadedData.closeProject(treeViewFiles);
             if (mainViewTab.getContent() != null) {
                 mainViewTab.setContent(null);
+                LoadedData.getGraphView().animationService.cancel();
             }
         }
     }
