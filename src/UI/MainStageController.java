@@ -214,6 +214,9 @@ public class MainStageController implements Initializable {
 
     @FXML
     private TextArea graphStatText, dataStatText;
+
+    @FXML TextField modularityText;
+
     /**
      * INFO PANE
      */
@@ -300,7 +303,7 @@ public class MainStageController implements Initializable {
 
             infoText = "Selected Taxon:\n" + selectedVertex.getTaxonName() + "\nID: " + selectedVertex.getTaxonNode().getTaxonId()
                     + "\nMax. Frequency: " + String.format("%.3f", AnalysisData.getMaximumRelativeFrequencies().get(selectedVertex.getTaxonNode()))
-            + "\nNo. of visible edges: " + analysis.getNodeDegrees().get(selectedVertex.getTaxonNode());
+            + "\nNo. of visible edges: " + analysis.calcNodeDegrees().get(selectedVertex.getTaxonNode());
         } else if(LoadedData.getGraphView() != null) {
             //TODO: Also redoing the entire analysis...
             GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
@@ -482,6 +485,13 @@ public class MainStageController implements Initializable {
             graphStatText.setText(graphStatText.getText() + entry.getKey().getName() + " (" + entry.getValue() + ")\n");
         }
 
+
+    }
+
+    public void displayMaximalModularity(){
+        GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
+        double maxModularity = analysis.findGlobalMaximumModularity();
+        modularityText.setText(String.format("%.3f", maxModularity));
 
     }
 
