@@ -6,6 +6,8 @@ import graph.MyVertex;
 import javafx.util.Pair;
 import model.TaxonNode;
 import org.apache.commons.math3.linear.OpenMapRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.SparseRealMatrix;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -100,7 +102,7 @@ public class GraphAnalysis {
     }
 
 
-    //The following methods are an implementation of the algorithm proposed by Clauset et al.
+    //*** The following methods are an implementation of the algorithm proposed by Clauset et al. ***
     //(Clauset A, Newman ME, Moore C (2004) Finding community structure in very large networks.
     // Phys Rev E Stat Nonlin Soft Matter Phys 70: 066111.)
     public double findGlobalMaximumModularity() {
@@ -123,7 +125,6 @@ public class GraphAnalysis {
         //Set initial values for the matrix, the priority Queues, the array and the community map as described in Equation (8) and (9)
         initializeModularityAlgorithmParameters(sparse_Q_ij_Matrix, rowsMap, a_i_array, communityMap);
 
-
         //We also want another priority queue that contains the largest element of each row
         PriorityQueue<Pair<Integer, Pair<Integer, Double>>> maxQueue = new PriorityQueue<>((o1, o2) -> {
             double value1 = o1.getValue().getValue();
@@ -137,12 +138,12 @@ public class GraphAnalysis {
 
         //Now the actual algorithm begins
         int numberOfCommunities = filteredGraph.getVertexCount();
-        int maxModularity = 0;
+        double maxModularity = 0;
         //Repeat until only one community is left
         while (numberOfCommunities > 1) {
             //Retrieve largest entry
             Pair<Integer, Pair<Integer, Double>> largestEntry = maxQueue.poll();
-            //Join the communities
+           //Join the communities
             joinCommunities(largestEntry.getKey(), largestEntry.getValue().getKey(), communityMap);
             //Update the sparse matrix, the priority queues and a[i]
             updateParameters(sparse_Q_ij_Matrix, rowsMap, maxQueue, a_i_array, largestEntry.getKey(), largestEntry.getValue().getKey(), communityMap);
@@ -150,10 +151,12 @@ public class GraphAnalysis {
             maxModularity += largestEntry.getValue().getValue();
             //Decrement community counter by 1
             numberOfCommunities--;
+
         }
         //Modularity is now maximized
         return maxModularity;
     }
+
 
     /**
      * Joins the two communities i and j by replacing every occurence of Max(i,j) with Min(i,j)
@@ -191,16 +194,16 @@ public class GraphAnalysis {
                                   HashMap<MyVertex, Integer> communityMap) {
         //First, update the matrix
         // 1. Make sure j is smaller than i, swap if necessary
-        if (j < i) {
+        if (j > i) {
             int tmp = j;
             j = i;
             i = tmp;
         }
 
-        // 2. Update j's row and column and set i's row and column to NaN
+        // 2. Update j's row and column and set i's row and column to -MAXVALUE
         for (int k = 0; k < sparse_Q_ij_Matrix.getColumnDimension(); k++) {
             //Check if k is still a valid community identifier
-            if (sparse_Q_ij_Matrix.getEntry(k, 0) == Double.NaN)
+            if (sparse_Q_ij_Matrix.getEntry(k, k) == -2)
                 continue;
             //Check if k is connected to both i and j or only to one of them
             double firstSummand, secondSummand;
@@ -217,20 +220,20 @@ public class GraphAnalysis {
             //Set Q(j,k) and Q(k,j) to the sum of these two
             sparse_Q_ij_Matrix.setEntry(j, k, firstSummand + secondSummand);
             sparse_Q_ij_Matrix.setEntry(k, j, firstSummand + secondSummand);
-            //Set Q(i,k) and Q(k,i) to Double.NaN so that they're ignored from now on
-            sparse_Q_ij_Matrix.setEntry(i, k, Double.NaN);
-            sparse_Q_ij_Matrix.setEntry(k, i, Double.NaN);
+            //Set Q(i,k) and Q(k,i) to -2 so that they're ignored from now on
+            sparse_Q_ij_Matrix.setEntry(i, k, -2);
+            sparse_Q_ij_Matrix.setEntry(k, i, -2);
         }
 
 
         //Update row queues
         Comparator<Pair<Integer, Double>> myComparator = (o1, o2) -> Double.compare(o2.getValue(), o1.getValue());
         for (int index_i = 0; index_i < sparse_Q_ij_Matrix.getRowDimension(); index_i++) {
-            if (sparse_Q_ij_Matrix.getEntry(index_i, 0) == Double.NaN)
+            if (sparse_Q_ij_Matrix.getEntry(index_i, 0) == -2)
                 continue;
             PriorityQueue<Pair<Integer, Double>> rowQueue = new PriorityQueue<>(myComparator);
             for (int index_j = 0; index_j < sparse_Q_ij_Matrix.getColumnDimension(); index_j++) {
-                if (sparse_Q_ij_Matrix.getEntry(index_i, index_j) == Double.NaN)
+                if (sparse_Q_ij_Matrix.getEntry(index_i, index_j) == -2)
                     continue;
                 rowQueue.add(new Pair<>(index_j, sparse_Q_ij_Matrix.getEntry(index_i, index_j)));
             }
@@ -247,12 +250,11 @@ public class GraphAnalysis {
 
         //Update a_i_array
         for (int index = 0; index < a_i_array.length; index++) {
-            if(sparse_Q_ij_Matrix.getEntry(index,0)!=Double.NaN)
+            if(sparse_Q_ij_Matrix.getEntry(index,0)!=-2)
                 a_i_array[index] = calcA_i(index, communityMap);
         }
 
     }
-
 
     /**
      * Initializes the values of the given parameters
@@ -303,20 +305,6 @@ public class GraphAnalysis {
 
     }
 
-    //Given communities i and j, calculates the fraction of edges that join vertices between these two communities
-//    private double calcE_ij(int i, int j, HashMap<MyVertex, Integer> communityMap) {
-//        double m = filteredGraph.getEdgeCount();
-//
-//        double edgesSum = 0;
-//        for (MyVertex v : filteredGraph.getVertices()) {
-//            for (MyVertex w : filteredGraph.getVertices()) {
-//                if (filteredGraph.findEdge(v, w) != null && communityMap.get(v) == i && communityMap.get(w) == j)
-//                    edgesSum++;
-//            }
-//        }
-//        return 1 / (2 * m) * edgesSum;
-//    }
-
     //Calculates the fraction of ends of edges that are attached to vertices in community i
     private double calcA_i(int i, HashMap<MyVertex, Integer> communityMap) {
         double m = filteredGraph.getEdgeCount();
@@ -330,6 +318,7 @@ public class GraphAnalysis {
         return 1 / (2 * m) * endsSum;
     }
 
+    //*** End of algorithm implementation
 
     //Getters
     public MyGraph<MyVertex, MyEdge> getFilteredGraph() {
@@ -389,5 +378,20 @@ public class GraphAnalysis {
         System.out.println(analysis.findGlobalMaximumModularity());
 
 
+    }
+
+    /**
+     * Helper method for printing a matrix to the console
+     *
+     * @param matrix
+     */
+    public static void printMatrix(SparseRealMatrix matrix) {
+        for (int rowIndex = 0; rowIndex < matrix.getRowDimension(); rowIndex++) {
+            for (int colIndex = 0; colIndex < matrix.getColumnDimension(); colIndex++) {
+                System.out.printf("%.3f", matrix.getEntry(rowIndex, colIndex));
+                System.out.print("\t");
+            }
+            System.out.println();
+        }
     }
 }
