@@ -150,6 +150,16 @@ public class LoadedData {
                                 //is not a CheckBoxTreeItem, remove the checkbox item
                             } else if (!(getTreeItem() instanceof CheckBoxTreeItem)) {
                                 setGraphic(null);
+                            } else if (getTreeItem() instanceof CheckBoxTreeItem) {
+                                MenuItem removeSample = new MenuItem("remove");
+                                removeSample.setOnAction(new javafx.event.EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        int indexOfTreeItem = treeViewFiles.getRoot().getChildren().indexOf(getTreeItem());
+                                        removeSampleFromDatabase(getTreeItem().getValue(), treeViewFiles, indexOfTreeItem);
+                                    }
+                                });
+                                setContextMenu(new ContextMenu(removeSample));
                             }
                         }
                     };
@@ -189,6 +199,12 @@ public class LoadedData {
         } else {
             selectedSamples.remove(sampleNameToSample.get(newSample.getValue()));
         }
+    }
+
+    private static void removeSampleFromDatabase(String sampleName, TreeView<String> treeViewFiles, int indexOfTreeItem) {
+        samples.remove(sampleNameToSample.get(sampleName));
+        sampleNameToSample.remove(sampleName);
+        treeViewFiles.getRoot().getChildren().remove(indexOfTreeItem, ++indexOfTreeItem);
     }
 
     public static ObservableList<Sample> getSamplesToAnalyze(){
