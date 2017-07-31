@@ -75,7 +75,7 @@ public class MainStageController implements Initializable {
     public MainStageController() {
     }
 
-    private enum FileType {taxonId2Count, readName2TaxonId, biomV1, biomV2}
+    private enum FileType {taxonId2Count, readName2TaxonId, biomV1, biomV2, qiime}
 
     public static boolean isMainViewMaximized = false;
 
@@ -624,6 +624,11 @@ public class MainStageController implements Initializable {
         openFiles(FileType.biomV1);
     }
 
+    @FXML
+    public void openQiimeFiles() {
+         openFiles(FileType.qiime);
+    }
+
     /**
      * Exits the program
      * quitButton
@@ -681,6 +686,9 @@ public class MainStageController implements Initializable {
                 break;
             case biomV2:
                 fileChooser.setTitle(fileChooserTitle + "biomV2 file");
+                break;
+            case qiime:
+                fileChooser.setTitle(fileChooserTitle + "qiime file");
         }
 
         //Choose the file / files
@@ -706,6 +714,9 @@ public class MainStageController implements Initializable {
                             break;
                         case biomV2:
                             addBiomV2FileToTreeView(file);
+                            break;
+                        case qiime:
+                            //TODO HANDLE METADATA PROVIDED BY QIIME
                             break;
                     }
                 }

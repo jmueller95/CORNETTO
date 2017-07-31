@@ -39,7 +39,7 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -49,6 +49,7 @@
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#openId2CountFiles" text="taxonId2Count" />
                                 <MenuItem mnemonicParsing="false" onAction="#openReadName2TaxonIdFiles" text="readName2TaxId" />
+                        <MenuItem mnemonicParsing="false" text="qiime" />
                                 <Menu mnemonicParsing="false" text="biom">
                                     <items>
                                         <MenuItem mnemonicParsing="false" onAction="#openBiomV1Files" text="biomV1" />
