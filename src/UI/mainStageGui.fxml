@@ -127,18 +127,18 @@
                         </Tab>
                         <Tab text="Analysis">
                             <content>
-                        <ScrollPane hvalue="0.84" minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0" vvalue="0.33">
+                        <ScrollPane hvalue="1.0" minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0" vvalue="1.0">
                            <content>
-                                      <AnchorPane fx:id="analysisPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1250.0" minWidth="1500.0" pickOnBounds="false">
+                                      <AnchorPane fx:id="analysisPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1250.0" minWidth="1250.0" pickOnBounds="false">
                                           <children>
-                                    <PieChart fx:id="frequencyChart" layoutX="125.0" layoutY="64.0" legendVisible="false" prefHeight="600.0" prefWidth="700.0" title="Frequency Distribution" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                    <PieChart fx:id="frequencyChart" legendVisible="false" prefHeight="600.0" prefWidth="700.0" title="Frequency Distribution" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <padding>
                                           <Insets bottom="10.0" />
                                        </padding>
                                     </PieChart>
-                                    <TextArea fx:id="dataStatText" editable="false" layoutX="938.0" layoutY="35.0" prefHeight="264.0" prefWidth="385.0" text="&#10;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0" />
-                                    <Button fx:id="showTableButton" layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onAction="#displayCorrelationTable" text="Show Correlation Table" />
-                                    <BarChart fx:id="degreeDistributionChart" layoutX="10.0" layoutY="400.0" legendVisible="false" prefHeight="500.0" prefWidth="700.0" title="Degree Distribution" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0">
+                                    <TextArea fx:id="dataStatText" editable="false" layoutX="938.0" prefHeight="264.0" prefWidth="385.0" text="&#10;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0" />
+                                    <Button fx:id="showTableButton" mnemonicParsing="false" onAction="#displayCorrelationTable" text="Show Correlation Table" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="14.0" />
+                                    <BarChart fx:id="degreeDistributionChart" legendVisible="false" prefHeight="500.0" prefWidth="700.0" title="Degree Distribution" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0">
                                       <xAxis>
                                         <CategoryAxis side="BOTTOM" />
                                       </xAxis>
@@ -146,9 +146,9 @@
                                         <NumberAxis side="LEFT" />
                                       </yAxis>
                                     </BarChart>
-                                    <TextArea fx:id="graphStatText" editable="false" layoutX="891.0" layoutY="766.0" prefHeight="306.0" prefWidth="324.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                    <Button layoutX="1167.0" layoutY="811.0" mnemonicParsing="false" onAction="#displayMaximalModularity" text="Calculate Maximal Modularity" />
-                                    <TextArea fx:id="modularityText" editable="false" layoutX="1166.0" layoutY="845.0" prefHeight="70.0" prefWidth="320.0" text="Maximal modularity for current graph:" />
+                                    <TextArea fx:id="graphStatText" editable="false" prefHeight="306.0" prefWidth="324.0" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="25.0" />
+                                    <Button mnemonicParsing="false" onAction="#displayMaximalModularity" text="Calculate Maximal Modularity" AnchorPane.bottomAnchor="430.0" AnchorPane.rightAnchor="25.0" />
+                                    <TextArea fx:id="modularityText" editable="false" prefHeight="70.0" prefWidth="320.0" text="Maximal modularity for current graph:" AnchorPane.bottomAnchor="350.0" AnchorPane.rightAnchor="25.0" />
                                           </children>
                                       </AnchorPane>
                            </content>
