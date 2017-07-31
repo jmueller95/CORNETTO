@@ -974,9 +974,10 @@ public class MainStageController implements Initializable {
         AnalysisData.maxFrequencyProperty().bind(frequencyRangeSlider.highValueProperty());
         AnalysisData.maxPValueProperty().bind(maxPValueSlider.valueProperty());
 
-        //The lower value of the negative slider can't be set to -1 via FXML for reasons beyond human understanding,
+        //The values of the negative slider can't be set to negative values via FXML for reasons beyond human understanding,
         // so we set it manually
         negCorrelationRangeSlider.setLowValue(-1);
+        negCorrelationRangeSlider.setHighValue(-0.5);
 
         //We want the graph to be redone if one of the following occurs:
         //1. Radio button switches between "Analyze All" and "Analyze Selected"
@@ -1075,11 +1076,11 @@ public class MainStageController implements Initializable {
 
     @FXML
     public void resetFilterSettings() {
-        posCorrelationRangeSlider.setLowValue(0);
+        posCorrelationRangeSlider.setLowValue(0.5);
         posCorrelationRangeSlider.setHighValue(1);
         negCorrelationRangeSlider.setLowValue(-1);
-        negCorrelationRangeSlider.setHighValue(0);
-        maxPValueSlider.setValue(1);
+        negCorrelationRangeSlider.setHighValue(-0.5);
+        maxPValueSlider.setValue(0.05);
         frequencyRangeSlider.setLowValue(0);
         frequencyRangeSlider.setHighValue(1);
     }

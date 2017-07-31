@@ -100,7 +100,7 @@
                             <children>
                         <TextArea fx:id="infoTextArea" editable="false" prefHeight="420.0" prefWidth="220.0" />
                                 <TextFlow fx:id="infoTextFlow" prefHeight="325.0" prefWidth="200.0" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                        <Button fx:id="abundancePlotButton" layoutX="37.0" layoutY="380.0" mnemonicParsing="false" onAction="#displayAbundancePlot" text="Show abundance plot" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
+                        <Button fx:id="abundancePlotButton" layoutX="37.0" layoutY="380.0" mnemonicParsing="false" onAction="#displayAbundancePlot" text="Show abundance plot" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="10.0" />
                             </children>
                         </AnchorPane>
                     </items>
@@ -201,7 +201,7 @@
                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal p-Value:" />
                                                         <HBox spacing="5.0">
                                                             <children>
-                                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" maxWidth="125.0" minorTickCount="0" showTickLabels="true" value="1.0" />
+                                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" maxWidth="125.0" minorTickCount="0" showTickLabels="true" value="0.05" />
                                                                 <TextField fx:id="maxPValueText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
                                                             </children>
                                                         </HBox>
@@ -211,7 +211,7 @@
                                     <VBox layoutX="10.0" layoutY="244.0" prefWidth="175.0">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Positive Correlation Range" />
-                                          <RangeSlider fx:id="posCorrelationRangeSlider" blockIncrement="0.1" highValue="1.0" lowValue="0.0" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
+                                          <RangeSlider fx:id="posCorrelationRangeSlider" blockIncrement="0.1" highValue="1.0" lowValue="0.5" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
                                           <HBox spacing="60.0">
                                              <children>
                                                                 <TextField fx:id="minPosCorrelationText" prefHeight="26.0" prefWidth="60.0" />
@@ -223,7 +223,7 @@
                                     <VBox layoutX="10.0" layoutY="344.0" prefWidth="175.0">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Negative Correlation Range" />
-                                          <RangeSlider fx:id="negCorrelationRangeSlider" blockIncrement="0.1" highValue="0.0" lowValue="-1.0" majorTickUnit="1.0" max="0.0" min="-1.0" minorTickCount="0" showTickLabels="true" />
+                                          <RangeSlider fx:id="negCorrelationRangeSlider" blockIncrement="0.1" highValue="-0.5" lowValue="-1.0" majorTickUnit="1.0" max="0.0" min="-1.0" minorTickCount="0" showTickLabels="true" />
                                           <HBox spacing="60.0">
                                              <children>
                                                 <TextField fx:id="minNegCorrelationText" />
