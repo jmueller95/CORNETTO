@@ -10,6 +10,7 @@ public class Sample {
     private HashMap<TaxonNode, Integer> taxa2CountMap;
     private static HashMap<String, String> metaDataMap;
     private String sampleId;
+    private String name;
 
     // Empty constructor needed in CSV Parsers
     public Sample() {
@@ -54,6 +55,10 @@ public class Sample {
         return sampleId;
     }
 
+    public String getName() {
+        return name;
+    }
+
     //Setters
     public void setTaxa2CountMap(HashMap<TaxonNode, Integer> taxa2CountMap) {
         this.taxa2CountMap = taxa2CountMap;
@@ -61,5 +66,9 @@ public class Sample {
 
     public void setSampleId(String id) {
         sampleId = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

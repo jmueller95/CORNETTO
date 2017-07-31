@@ -9,18 +9,20 @@ import javafx.application.Platform;
 import javafx.beans.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -231,6 +233,9 @@ public class MainStageController implements Initializable {
     @FXML
     private TextArea infoTextArea;
 
+    @FXML
+    private Button abundancePlotButton;
+
     /**
      * Initializes every needed service
      *
@@ -292,7 +297,7 @@ public class MainStageController implements Initializable {
 
     /**
      * chooses which text to display on the bottom left pane
-     * TODO: This isn't called everytime it should be, add some more listeners!
+     * TODO: This isn't called every time it should be, add some more listeners!
      */
     private void displayInfoText() {
         String infoText = "";
@@ -329,6 +334,42 @@ public class MainStageController implements Initializable {
     }
 
     /**
+     * Displays an abundance plot of the selected taxa
+     */
+    @FXML
+    private void displayAbundancePlot() {
+        ObservableList selectedItems = LoadedData.getGraphView().getSelectionModel().getSelectedItems();
+        List<TaxonNode> nodesList = new LinkedList<>();
+        for (Object selectedItem : selectedItems) {
+            nodesList.add(((MyVertex) selectedItem).getTaxonNode());
+        }
+        HashMap<Sample, HashMap<TaxonNode, Integer>> abundancesMap = SampleComparison.calcAbundances(nodesList);
+
+        final CategoryAxis xAxis = new CategoryAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Taxa");
+        yAxis.setLabel("Abundance");
+        BarChart<String, Number> abundancePlot = new BarChart<>(xAxis, yAxis);
+
+        for (Map.Entry<Sample, HashMap<TaxonNode, Integer>> entry : abundancesMap.entrySet()) {
+            XYChart.Series<String, Number> sampleSeries = new XYChart.Series<>();
+            sampleSeries.setName(entry.getKey().getName());
+            for (Map.Entry<TaxonNode, Integer> innerMapEntry : entry.getValue().entrySet()) {
+                sampleSeries.getData().add(new XYChart.Data<>(innerMapEntry.getKey().getName(), innerMapEntry.getValue()));
+            }
+            abundancePlot.getData().add(sampleSeries);
+        }
+
+
+        //Display chart on a new pane
+        Stage chartStage = new Stage();
+        chartStage.setTitle("Abundance Plot");
+        Scene chartScene = new Scene(abundancePlot);
+        chartStage.setScene(chartScene);
+        chartStage.show();
+    }
+
+    /**
      * shows the graph in the main view
      *
      * @param taxonGraph
@@ -351,8 +392,14 @@ public class MainStageController implements Initializable {
             vertexView.getVertexLabel().visibleProperty().bind(showLabelsCheckBox.selectedProperty());
         }
 
-        //call displayInfoText whenever the selection changes
-        LoadedData.getGraphView().getSelectionModel().getSelectedItems().addListener((InvalidationListener) e -> displayInfoText());
+        //call displayInfoText whenever the selection changes + decide whether or not to enable the abundancePlotButton
+        LoadedData.getGraphView().getSelectionModel().getSelectedItems().addListener((InvalidationListener) e -> {
+            displayInfoText();
+            if (LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() == 0)
+                abundancePlotButton.setDisable(true);
+            else
+                abundancePlotButton.setDisable(false);
+        });
 
 
     }
@@ -411,7 +458,7 @@ public class MainStageController implements Initializable {
             analysisTable.getItems().add(tableValues[i]);
         }
 
-        //Display table on a new pane
+        //Display table on a new stage
         Stage tableStage = new Stage();
         tableStage.setTitle("Correlation Table");
         Scene tableScene = new Scene(analysisTable);
@@ -888,6 +935,8 @@ public class MainStageController implements Initializable {
     private void initializeInfoPane() {
 //        LoadedData.getSamplesToAnalyze().addListener((InvalidationListener) e -> displayInfoText());
         rankChoiceBox.valueProperty().addListener(e -> displayInfoText());
+        abundancePlotButton.setDisable(true);
+
     }
 
     private void initializeBindings() {
@@ -986,7 +1035,7 @@ public class MainStageController implements Initializable {
         }
         // Bind Edge Width Slider to all Edges in Graph
         for (Node node : graphView.getMyEdgeViewGroup().getChildren()) {
-            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty().multiply(Math.abs(((MyEdgeView) node).getMyEdge().getCorrelation())+0.1));
+            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty().multiply(Math.abs(((MyEdgeView) node).getMyEdge().getCorrelation()) + 0.1));
         }
 
         /**buttonPauseAnimation.setOnAction(e -> {

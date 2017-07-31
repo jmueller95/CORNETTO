@@ -173,7 +173,7 @@ public class LoadedData {
             String[] fileNameSplit = fileName.split("\\.");
             String fileNameWithoutExtension = (String.join(".", Arrays.copyOfRange(fileNameSplit, 0, fileNameSplit.length - 1)));
             String sampleName = (loadedSamples.size() > 1 ? "[" + ++count + "] " + fileNameWithoutExtension : fileNameWithoutExtension);
-
+            sample.setName(sampleName);
             CheckBoxTreeItem<String> newSample = new CheckBoxTreeItem<>(sampleName);
             newSample.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 selectOrDeselectSample(newValue, oldValue, newSample);

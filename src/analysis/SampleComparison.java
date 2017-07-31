@@ -1,5 +1,8 @@
 package analysis;
 
+import javafx.collections.ObservableList;
+import javafx.util.Pair;
+import model.LoadedData;
 import model.Sample;
 import model.TaxonNode;
 import org.apache.commons.math3.linear.BlockRealMatrix;
@@ -98,7 +101,21 @@ public abstract class SampleComparison {
         }
 
 
+    }
 
+    public static HashMap<Sample, HashMap<TaxonNode, Integer>> calcAbundances(List<TaxonNode> selectedNodesList) {
+        HashMap<Sample, HashMap<TaxonNode, Integer>> abundancesMap = new HashMap<>();
+        ObservableList<Sample> samples = LoadedData.getSamplesToAnalyze();
+
+        for (Sample sample : samples) {
+            HashMap<TaxonNode, Integer> sampleAbundances = new HashMap<>();
+            for (TaxonNode taxonNode : selectedNodesList) {
+                sampleAbundances.put(taxonNode, sample.getTaxonCountRecursive(taxonNode));
+            }
+            abundancesMap.put(sample, sampleAbundances);
+        }
+
+        return abundancesMap;
     }
 
     public static RealMatrix getCorrelationMatrixOfSamples() {
