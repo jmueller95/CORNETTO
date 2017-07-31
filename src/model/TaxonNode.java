@@ -1,12 +1,13 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by jm on 15.05.17.
  * Represents a taxon in the phylogenetic tree
  */
-public class TaxonNode{
+public class TaxonNode implements Serializable {
     private String name;
     private int taxonId, parentId;
     private String rank; //e.g. "kingdom", "species"

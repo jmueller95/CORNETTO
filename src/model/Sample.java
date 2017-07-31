@@ -1,11 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Created by jm on 15.05.17.
  */
-public class Sample {
+public class Sample implements Serializable {
 
     private HashMap<TaxonNode, Integer> taxa2CountMap;
     private static HashMap<String, String> metaDataMap;

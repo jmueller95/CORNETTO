@@ -129,7 +129,7 @@ public class LoadedData {
      *
      * @param treeViewFiles Tree view fxml element to display the loaded samples
      */
-    private static void addSamplesToTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
+    public static void addSamplesToTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
         //If no samples have been loaded so far
         if (treeViewFiles.getRoot() == null) {
             treeViewFiles.setRoot(new TreeItem<>("root"));

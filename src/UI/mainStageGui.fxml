@@ -12,6 +12,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
@@ -38,7 +39,7 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -87,13 +88,21 @@
                     <items>
                         <AnchorPane fx:id="leftPane" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
                             <children>
-                                <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="5.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#c58112" wrapText="false">
+                                <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="3.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#c58112" wrapText="false">
                                     <font>
                                         <Font size="18.0" fx:id="x1" />
                                     </font>
                                 </Label>
                                 <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="-176.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
-                                <RadioButton fx:id="collapseAllButton" layoutX="88.0" layoutY="6.0" mnemonicParsing="false" onAction="#collapseAll" text="Collapse all" />
+                                <RadioButton fx:id="collapseAllButton" layoutX="198.0" layoutY="8.0" mnemonicParsing="false" onAction="#collapseAll" />
+                        <RadioButton fx:id="deselectAllButton" layoutX="177.0" layoutY="8.0" mnemonicParsing="false" onMouseClicked="#deselectAll" />
+                        <MenuButton layoutX="58.0" layoutY="3.0" mnemonicParsing="false" text="Show">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="All" />
+                            <MenuItem mnemonicParsing="false" text="Reverse" />
+                              <MenuItem mnemonicParsing="false" onAction="#showNoSamples" text="None" />
+                          </items>
+                        </MenuButton>
                             </children>
                         </AnchorPane>
                         <AnchorPane fx:id="infoBox" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">

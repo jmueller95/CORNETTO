@@ -103,7 +103,7 @@ public class MainStageController implements Initializable {
      * BUTTON ELEMENTS
      */
     @FXML
-    private RadioButton collapseAllButton;
+    private RadioButton collapseAllButton, deselectAllButton;
 
     /**
      * FILTER OPTION ELEMENTS
@@ -249,13 +249,13 @@ public class MainStageController implements Initializable {
 
         startTreePreloadService();
         initializeAccordion();
-        initializeCollapseAllButton();
         initializeRankChoiceBox();
         initializeGraphSettings();
         initializeAnalysisPane();
         initializeGraphAnalysis();
         initializeInfoPane();
         initializeBindings();
+        initializeButtonsOnLeftPane();
         //preload settings
         SaveAndLoadOptions.loadSettings();
 
@@ -292,6 +292,26 @@ public class MainStageController implements Initializable {
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
         }
+
+    }
+
+    @FXML
+    public void showAllSamples() {
+        if (treeViewFiles.getRoot() != null && treeViewFiles.getRoot().getChildren().isEmpty()) {
+            System.out.println("I will show every node.");
+        }
+    }
+
+    @FXML
+    public void showNoSamples() {
+        if (treeViewFiles.getRoot() != null && !treeViewFiles.getRoot().getChildren().isEmpty()) {
+            System.out.println("I will hide every node.");
+            treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
+        }
+    }
+
+    @FXML
+    public void showReverseSamples() {
 
     }
 
@@ -577,6 +597,8 @@ public class MainStageController implements Initializable {
             if (LoadedData.getGraphView().animationService.isRunning()) {
                 LoadedData.getGraphView().animationService.cancel();
             }
+            deselectAllButton.setDisable(true);
+            collapseAllButton.setDisable(true);
         }
         analysisPane.setVisible(false);
         rankChoiceBox.setValue(null);
@@ -732,7 +754,7 @@ public class MainStageController implements Initializable {
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
-        activateButtonsOnTheRightPane();
+        activateButtons();
     }
 
     /**
@@ -748,7 +770,7 @@ public class MainStageController implements Initializable {
         samples = biomV1Parser.parse(file.getAbsolutePath());
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
-        activateButtonsOnTheRightPane();
+        activateButtons();
     }
 
     /**
@@ -769,7 +791,7 @@ public class MainStageController implements Initializable {
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
-        activateButtonsOnTheRightPane();
+        activateButtons();
     }
 
     /**
@@ -790,7 +812,7 @@ public class MainStageController implements Initializable {
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
-        activateButtonsOnTheRightPane();
+        activateButtons();
     }
 
 
@@ -811,13 +833,19 @@ public class MainStageController implements Initializable {
         }
     }
 
+    public void initializeButtonsOnLeftPane() {
+        collapseAllButton.setDisable(true);
+        collapseAllButton.setTooltip(new Tooltip("collapse all"));
+        deselectAllButton.setDisable(true);
+        deselectAllButton.setTooltip(new Tooltip("deselect all"));
+    }
 
     @FXML
     /**
      * Collapses all nodes in the treeview element
      */
     public void collapseAll() {
-        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
+        if (treeViewFiles.getRoot() == null || treeViewFiles.getRoot().getChildren().isEmpty()) {
             collapseAllButton.disarm();
             collapseAllButton.setSelected(false);
         } else {
@@ -833,6 +861,23 @@ public class MainStageController implements Initializable {
                 }
                 collapseAllButton.setSelected(true);
                 collapseAllButton.arm();
+            }
+        }
+    }
+
+    @FXML
+    /**
+     * Deselects all nodes in the treeview element
+     */
+    public void deselectAll() {
+        if (treeViewFiles.getRoot() == null || treeViewFiles.getRoot().getChildren().isEmpty()) {
+            deselectAllButton.setSelected(false);
+            deselectAllButton.disarm();
+        } else {
+            if (deselectAllButton.isSelected()) {
+                System.out.println("I understand you");
+                treeViewFiles.getRoot().getChildren().stream()
+                        .map(child -> {child.setValue("Deselected"); return child;});
             }
         }
     }
@@ -859,15 +904,10 @@ public class MainStageController implements Initializable {
     /**
      * Activates the buttons on the right pane
      */
-    private void activateButtonsOnTheRightPane() {
+    private void activateButtons() {
         rankChoiceBox.setDisable(false);
-    }
-
-    /**
-     * Initializes the collapse all button on the left pane
-     */
-    private void initializeCollapseAllButton() {
-        collapseAllButton.setSelected(false);
+        collapseAllButton.setDisable(false);
+        deselectAllButton.setDisable(false);
     }
 
     /**
