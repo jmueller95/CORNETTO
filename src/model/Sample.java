@@ -71,4 +71,12 @@ public class Sample {
     public void setName(String name) {
         this.name = name;
     }
+
+    public static HashMap<String, String> getMetaDataMap() {
+        return metaDataMap;
+    }
+
+    public static void setMetaDataMap(HashMap<String, String> metaDataMap) {
+        Sample.metaDataMap = metaDataMap;
+    }
 }
