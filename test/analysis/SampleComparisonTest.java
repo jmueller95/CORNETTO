@@ -51,12 +51,12 @@ public class SampleComparisonTest {
         samples.addAll(csvParser.parse("./res/testFiles/megan_examples/core1_activelayer_frozen-ID2Count.txt"));
 
 
-        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, "class");
+        RealMatrix correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples();
         System.out.println("Correlation Matrix:");
         printMatrix(correlationMatrix);
         System.out.println();
 
-        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples(samples, "class");
+        RealMatrix correlationPValues = SampleComparison.getCorrelationPValuesOfSamples();
         System.out.println("P-Value matrix:");
         printMatrix(correlationPValues);
     }

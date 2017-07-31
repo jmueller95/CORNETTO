@@ -117,6 +117,9 @@ public class MainStageController implements Initializable {
     private RadioButton compareSelectedSamplesButton;
 
     @FXML
+    private RadioButton pearsonCorrelationButton, spearmanCorrelationButton, kendallCorrelationButton;
+
+    @FXML
     private TextField minPosCorrelationText, maxPosCorrelationText, minNegCorrelationText, maxNegCorrelationText;
 
     @FXML
@@ -262,7 +265,15 @@ public class MainStageController implements Initializable {
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
     public void startAnalysis() {
-        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(new ArrayList<>(LoadedData.getSamplesToAnalyze()));
+        String correlationType = "";
+        if (pearsonCorrelationButton.isSelected())
+            correlationType = "pearson";
+        else if (spearmanCorrelationButton.isSelected())
+            correlationType = "spearman";
+        else if (kendallCorrelationButton.isSelected())
+            correlationType = "kendall";
+
+        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(new ArrayList<>(LoadedData.getSamplesToAnalyze()), correlationType);
         if (isAnalysisSuccessful) {
             LoadedData.createGraph();
             LoadedData.getTaxonGraph().filterEdges();
@@ -520,6 +531,8 @@ public class MainStageController implements Initializable {
                 LoadedData.getGraphView().animationService.cancel();
             }
         }
+        analysisPane.setVisible(false);
+        rankChoiceBox.setValue(null);
     }
 
     @FXML
@@ -862,7 +875,7 @@ public class MainStageController implements Initializable {
         HashMap<TaxonNode, Integer> hubsList = AnalysisData.getAnalysis().getHubsList();
         HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap = LoadedData.getTaxonGraph().getTaxonNodeToVertexMap();
         for (Map.Entry<TaxonNode, MyVertex> entry : taxonNodeToVertexMap.entrySet()) {
-            if(hubsList.containsKey(entry.getKey()))
+            if (hubsList.containsKey(entry.getKey()))
                 entry.getValue().setIsHub(true);
             else
                 entry.getValue().setIsHub(false);
@@ -912,7 +925,8 @@ public class MainStageController implements Initializable {
         AnalysisData.maxFrequencyProperty().bind(frequencyRangeSlider.highValueProperty());
         AnalysisData.maxPValueProperty().bind(maxPValueSlider.valueProperty());
 
-        //The lower value of the negative slider can't be set to -1 from FXML for reasons beyond understanding, so we set it manually
+        //The lower value of the negative slider can't be set to -1 via FXML for reasons beyond human understanding,
+        // so we set it manually
         negCorrelationRangeSlider.setLowValue(-1);
 
         //We want the graph to be redone if one of the following occurs:
@@ -935,6 +949,10 @@ public class MainStageController implements Initializable {
                 startAnalysis();
             }
         });
+        //4. Correlation radio button is changed
+        pearsonCorrelationButton.selectedProperty().addListener(o -> startAnalysis());
+        spearmanCorrelationButton.selectedProperty().addListener(o -> startAnalysis());
+        kendallCorrelationButton.selectedProperty().addListener(o -> startAnalysis());
 
 
     }
@@ -968,7 +986,7 @@ public class MainStageController implements Initializable {
         }
         // Bind Edge Width Slider to all Edges in Graph
         for (Node node : graphView.getMyEdgeViewGroup().getChildren()) {
-            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty());
+            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty().multiply(Math.abs(((MyEdgeView) node).getMyEdge().getCorrelation())+0.1));
         }
 
         /**buttonPauseAnimation.setOnAction(e -> {

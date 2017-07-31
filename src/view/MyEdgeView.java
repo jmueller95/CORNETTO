@@ -39,7 +39,6 @@ public class MyEdgeView extends Group {
         //Bind to hidden property of myEdge object
         visibleProperty().bind(myEdge.isHiddenProperty().not());
 
-        edgeShape.setStrokeWidth(lineThickness);
         setColor();
 
         getChildren().add(edgeShape);
@@ -70,5 +69,9 @@ public class MyEdgeView extends Group {
 
     public Label getEdgelabel() {
         return edgelabel;
+    }
+
+    public MyEdge getMyEdge() {
+        return myEdge;
     }
 }

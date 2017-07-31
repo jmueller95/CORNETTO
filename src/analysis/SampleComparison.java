@@ -2,8 +2,11 @@ package analysis;
 
 import model.Sample;
 import model.TaxonNode;
+import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 
 import java.util.*;
 
@@ -12,7 +15,11 @@ import java.util.*;
  * Created by julian on 10.06.17.
  */
 public abstract class SampleComparison {
-    protected static PearsonsCorrelation sampleCorrelation;
+    private static PearsonsCorrelation pearsonsCorrelation;
+    private static SpearmansCorrelation spearmansCorrelation;
+    private static KendallsCorrelation kendallsCorrelation;
+    private static RealMatrix correlationMatrix;
+    private static RealMatrix pValueMatrix;
 
 
     /**
@@ -35,20 +42,13 @@ public abstract class SampleComparison {
         unifiedTaxonList.sort((tn1, tn2) -> {
             int id1 = tn1.getTaxonId();
             int id2 = tn2.getTaxonId();
-            return (id1 > id2 ? 1 : (id1 == id2 ? 0 : -1));
+            return (Integer.compare(id1, id2));
         });
 
         return unifiedTaxonList;
     }
 
-
-    /**
-     * Takes a list of samples and returns the PearsonCorrelation object based on their counts on the given rank
-     *
-     * @param samples
-     * @return
-     */
-    private static void createPearsonsCorrelationOfSamples(List<Sample> samples, String rank) {
+    public static void createCorrelationOfSamples(List<Sample> samples, String rank, String type) {
         //We need the unified map to make sure the counts are properly aligned
         LinkedList<TaxonNode> taxonNodeList = getUnifiedTaxonList(samples, rank);
 
@@ -62,14 +62,26 @@ public abstract class SampleComparison {
             taxaCounts[sampleIndex] = currentSampleCounts;
         }
 
-        //Now we can compute the correlation matrix
-        sampleCorrelation = new PearsonsCorrelation(taxaCounts);
-    }
 
+        switch (type) {
+            case "pearson":
+                pearsonsCorrelation = new PearsonsCorrelation(taxaCounts);
+                correlationMatrix = pearsonsCorrelation.getCorrelationMatrix();
+                pValueMatrix = pearsonsCorrelation.getCorrelationPValues();
+                break;
+            case "spearman":
+                spearmansCorrelation = new SpearmansCorrelation(new BlockRealMatrix(taxaCounts));
+                correlationMatrix = spearmansCorrelation.getCorrelationMatrix();
+                pValueMatrix = spearmansCorrelation.getRankCorrelation().getCorrelationPValues();
+                break;
+            case "kendall":
+                kendallsCorrelation = new KendallsCorrelation(taxaCounts);
+                correlationMatrix = kendallsCorrelation.getCorrelationMatrix();
+                pValueMatrix = new PearsonsCorrelation(taxaCounts).getCorrelationPValues(); //No p-values available for kendall's correlation!
+                break;
+        }
 
-    public static RealMatrix getCorrelationMatrixOfSamples(List<Sample> samples, String rank) {
-        createPearsonsCorrelationOfSamples(samples, rank);
-        RealMatrix correlationMatrix = sampleCorrelation.getCorrelationMatrix();
+        //Correct the NaNs to 0.0s
         for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
             for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
                 if (Double.isNaN(correlationMatrix.getEntry(i, j)))
@@ -77,20 +89,24 @@ public abstract class SampleComparison {
 
             }
         }
+
+        for (int i = 0; i < pValueMatrix.getRowDimension(); i++) {
+            for (int j = 0; j < pValueMatrix.getColumnDimension(); j++) {
+                if (Double.isNaN(pValueMatrix.getEntry(i, j)))
+                    pValueMatrix.setEntry(i, j, 1.0);
+            }
+        }
+
+
+
+    }
+
+    public static RealMatrix getCorrelationMatrixOfSamples() {
         return correlationMatrix;
     }
 
-    public static RealMatrix getCorrelationPValuesOfSamples(List<Sample> samples, String rank) {
-        createPearsonsCorrelationOfSamples(samples, rank);
-
-        RealMatrix correlationPValues = sampleCorrelation.getCorrelationPValues();
-        for (int i = 0; i < correlationPValues.getRowDimension(); i++) {
-            for (int j = 0; j < correlationPValues.getColumnDimension(); j++) {
-                if (Double.isNaN(correlationPValues.getEntry(i, j)))
-                    correlationPValues.setEntry(i, j, 1.0);
-            }
-        }
-        return correlationPValues;
+    public static RealMatrix getCorrelationPValuesOfSamples() {
+        return pValueMatrix;
     }
 
     /**
@@ -101,7 +117,7 @@ public abstract class SampleComparison {
      * @param rank
      * @return
      */
-    public static HashMap<TaxonNode, Double> getRelativeFrequenciesForSample(Sample sample, String rank) {
+    private static HashMap<TaxonNode, Double> getRelativeFrequenciesForSample(Sample sample, String rank) {
         //Get all taxa on the given rank
         LinkedList<TaxonNode> nodesOnRank = getUnifiedTaxonList(Collections.singletonList(sample), rank);
         int countSum = 0;
@@ -149,10 +165,11 @@ public abstract class SampleComparison {
 
     /**
      * Returns a map of average counts of every node in the given sample list on the given rank
+     *
      * @param samples
      * @return
      */
-    public static HashMap<TaxonNode, Double> calcAverageCounts(List<Sample> samples, String rank){
+    public static HashMap<TaxonNode, Double> calcAverageCounts(List<Sample> samples, String rank) {
         LinkedList<TaxonNode> taxonList = getUnifiedTaxonList(samples, rank);
         HashMap<TaxonNode, Double> averageCountMap = new HashMap<>();
         for (TaxonNode taxonNode : taxonList) {
@@ -160,7 +177,7 @@ public abstract class SampleComparison {
             for (Sample sample : samples) {
                 sum += sample.getTaxonCountRecursive(taxonNode);
             }
-            averageCountMap.put(taxonNode, sum/(double)samples.size());
+            averageCountMap.put(taxonNode, sum / (double) samples.size());
         }
         return averageCountMap;
     }

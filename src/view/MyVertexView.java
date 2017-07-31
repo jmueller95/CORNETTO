@@ -32,13 +32,13 @@ public class MyVertexView extends Group {
     Color fillColor = Color.BEIGE;
     Color strokeColor = Color.DARKBLUE;
     Color selectedFillColor = Color.DARKORANGE;
+    Color hubFillColor = Color.color(1.0f, 0.4f, 0.4f);
 
     public MyVertexView(MyVertex myVertex) {
         this.myVertex = myVertex;
         vertexShape = new Circle(vertexWeight);
         vertexShape.setFill(fillColor);
         vertexShape.setStroke(strokeColor);
-
 
 
         translateXProperty().bindBidirectional(myVertex.xCoordinatesProperty());
@@ -49,20 +49,22 @@ public class MyVertexView extends Group {
 
 
         tooltip = new Tooltip(myVertex.getTaxonNode().getName() + "\nID: " + myVertex.getTaxonNode().getTaxonId()
-        + "\nRelative Frequency: " + String.format("%.3f", AnalysisData.getMaximumRelativeFrequencies().get(myVertex.getTaxonNode())));
+                + "\nRelative Frequency: " + String.format("%.3f", AnalysisData.getMaximumRelativeFrequencies().get(myVertex.getTaxonNode())));
         tooltip.setFont(Font.font(14));
-        Tooltip.install(this,tooltip);
+        Tooltip.install(this, tooltip);
         getChildren().add(vertexShape);
 
         addLabel();
 
         //Listen to the isHub-Property of the MyVertex object, make vertexShape thicker if it's a hub
         myVertex.isHubProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue){
-                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth()*3);
-                vertexShape.setFill(Color.color(1.0f, 0.4f, 0.4f));
-            }else{
-                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth()/3);
+            if (newValue) {
+                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth() * 3);
+                vertexShape.setStroke(Color.BLACK);
+                vertexShape.setFill(hubFillColor);
+            } else {
+                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth() / 3);
+                vertexShape.setStroke(Color.DARKBLUE);
                 vertexShape.setFill(fillColor);
             }
         });
@@ -88,7 +90,10 @@ public class MyVertexView extends Group {
                 vertexShape.setFill(selectedFillColor);
                 System.out.println("node selected");
             } else {
-                vertexShape.setFill(fillColor);
+                if (myVertex.isHub())
+                    vertexShape.setFill(hubFillColor);
+                else
+                    vertexShape.setFill(fillColor);
                 System.out.println("node unselected");
 
             }

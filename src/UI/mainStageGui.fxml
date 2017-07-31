@@ -126,7 +126,7 @@
                         </Tab>
                         <Tab text="Analysis">
                             <content>
-                        <ScrollPane hvalue="1.0" minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0" vvalue="0.86">
+                        <ScrollPane hvalue="0.84" minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0" vvalue="0.33">
                            <content>
                                       <AnchorPane fx:id="analysisPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1250.0" minWidth="1500.0" pickOnBounds="false">
                                           <children>
@@ -147,7 +147,7 @@
                                     </BarChart>
                                     <TextArea fx:id="graphStatText" editable="false" layoutX="891.0" layoutY="766.0" prefHeight="306.0" prefWidth="324.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                                     <Button layoutX="1167.0" layoutY="811.0" mnemonicParsing="false" onAction="#displayMaximalModularity" text="Calculate Maximal Modularity" />
-                                    <TextArea fx:id="modularityText" editable="false" layoutX="1166.0" layoutY="845.0" prefHeight="70.0" prefWidth="320.0" text="Modularity comes here" />
+                                    <TextArea fx:id="modularityText" editable="false" layoutX="1166.0" layoutY="845.0" prefHeight="70.0" prefWidth="320.0" text="Maximal modularity for current graph:" />
                                           </children>
                                       </AnchorPane>
                            </content>
@@ -178,13 +178,24 @@
                                                         </RadioButton>
                                                     </children>
                                                 </VBox>
+                                    <VBox layoutX="7.0" layoutY="105.0" prefHeight="78.0" prefWidth="210.0" spacing="7.0">
+                                       <children>
+                                          <RadioButton fx:id="pearsonCorrelationButton" mnemonicParsing="false" selected="true" text="Use Pearson's Correlation">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="correlationButtonsGroup" />
+                                             </toggleGroup>
+                                          </RadioButton>
+                                          <RadioButton fx:id="spearmanCorrelationButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Use Spearman's Correlation" toggleGroup="$correlationButtonsGroup" />
+                                          <RadioButton fx:id="kendallCorrelationButton" layoutX="10.0" layoutY="28.0" mnemonicParsing="false" text="Use Kendall's Correlation" toggleGroup="$correlationButtonsGroup" />
+                                       </children>
+                                    </VBox>
                                                 <HBox layoutX="10.0" layoutY="55.0" spacing="5.0">
                                                     <children>
                                                         <Label text="Rank:" translateY="4.0" />
                                                         <ChoiceBox fx:id="rankChoiceBox" prefHeight="26.0" prefWidth="113.0" />
                                                     </children>
                                                 </HBox>
-                                                <VBox layoutX="5.0" layoutY="300.0" spacing="5.0">
+                                                <VBox layoutX="10.0" layoutY="444.0" spacing="5.0">
                                                     <children>
                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal p-Value:" />
                                                         <HBox spacing="5.0">
@@ -195,8 +206,8 @@
                                                         </HBox>
                                                     </children>
                                                 </VBox>
-                                                <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="500.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
-                                    <VBox layoutX="5.0" layoutY="100.0" prefWidth="175.0">
+                                                <Button fx:id="resetFilterSettingsButton" layoutX="15.0" layoutY="644.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
+                                    <VBox layoutX="10.0" layoutY="244.0" prefWidth="175.0">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Positive Correlation Range" />
                                           <RangeSlider fx:id="posCorrelationRangeSlider" blockIncrement="0.1" highValue="1.0" lowValue="0.0" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
@@ -208,7 +219,7 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <VBox layoutX="5.0" layoutY="200.0" prefWidth="175.0">
+                                    <VBox layoutX="10.0" layoutY="344.0" prefWidth="175.0">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Negative Correlation Range" />
                                           <RangeSlider fx:id="negCorrelationRangeSlider" blockIncrement="0.1" highValue="0.0" lowValue="-1.0" majorTickUnit="1.0" max="0.0" min="-1.0" minorTickCount="0" showTickLabels="true" />
@@ -220,7 +231,7 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <VBox layoutX="5.0" layoutY="375.0" prefWidth="175.0">
+                                    <VBox layoutX="10.0" layoutY="519.0" prefWidth="175.0">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Relative Frequency" />
                                           <RangeSlider fx:id="frequencyRangeSlider" highValue="1.0" lowValue="0.0" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" />
