@@ -126,7 +126,7 @@
                         </Tab>
                         <Tab text="Analysis">
                             <content>
-                        <ScrollPane hvalue="0.49" minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0" vvalue="0.75">
+                        <ScrollPane hvalue="1.0" minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0" vvalue="0.86">
                            <content>
                                       <AnchorPane fx:id="analysisPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1250.0" minWidth="1500.0" pickOnBounds="false">
                                           <children>
@@ -145,9 +145,9 @@
                                         <NumberAxis side="LEFT" />
                                       </yAxis>
                                     </BarChart>
-                                    <TextArea fx:id="graphStatText" editable="false" layoutX="891.0" layoutY="766.0" prefHeight="400.0" prefWidth="324.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                                    <Button layoutX="688.0" layoutY="703.0" mnemonicParsing="false" onAction="#displayMaximalModularity" text="Calculate Maximal Modularity" />
-                                    <TextField fx:id="modularityText" editable="false" layoutX="922.0" layoutY="703.0" text="Modularity comes here" />
+                                    <TextArea fx:id="graphStatText" editable="false" layoutX="891.0" layoutY="766.0" prefHeight="306.0" prefWidth="324.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                                    <Button layoutX="1167.0" layoutY="811.0" mnemonicParsing="false" onAction="#displayMaximalModularity" text="Calculate Maximal Modularity" />
+                                    <TextArea fx:id="modularityText" editable="false" layoutX="1166.0" layoutY="845.0" prefHeight="70.0" prefWidth="320.0" text="Modularity comes here" />
                                           </children>
                                       </AnchorPane>
                            </content>

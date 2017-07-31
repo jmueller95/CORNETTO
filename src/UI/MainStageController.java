@@ -215,7 +215,9 @@ public class MainStageController implements Initializable {
     @FXML
     private TextArea graphStatText, dataStatText;
 
-    @FXML TextField modularityText;
+    @FXML
+    private TextArea modularityText;
+
 
     /**
      * INFO PANE
@@ -267,6 +269,7 @@ public class MainStageController implements Initializable {
             LoadedData.getTaxonGraph().filterVertices();
             displayGraph(LoadedData.getTaxonGraph());
             displayAnalysisTextsAndGraphs();
+            performGraphAnalysis();
             displayGraphAnalysis();
             displayInfoText();
         } else {//The analysis couldn't be done because of insufficient data
@@ -280,7 +283,7 @@ public class MainStageController implements Initializable {
      * TODO: This isn't called everytime it should be, add some more listeners!
      */
     private void displayInfoText() {
-        String infoText="";
+        String infoText = "";
         if (LoadedData.getSamplesToAnalyze() == null || LoadedData.getSamples().size() < 3) {
             infoText = "Please import at least 3 samples to begin correlation analysis!";
         } else if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() <= 3) {
@@ -298,19 +301,16 @@ public class MainStageController implements Initializable {
             infoText = builder.toString();
         } else if (LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() == 1) {
             MyVertex selectedVertex = (MyVertex) LoadedData.getGraphView().getSelectionModel().getSelectedItems().get(0);
-            //TODO: Redoing the entire analysis - not good!
-            GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
-
+            GraphAnalysis analysis = AnalysisData.getAnalysis();
             infoText = "Selected Taxon:\n" + selectedVertex.getTaxonName() + "\nID: " + selectedVertex.getTaxonNode().getTaxonId()
-                    + "\nMax. Frequency: " + String.format("%.3f", AnalysisData.getMaximumRelativeFrequencies().get(selectedVertex.getTaxonNode()))
-            + "\nNo. of visible edges: " + analysis.calcNodeDegrees().get(selectedVertex.getTaxonNode());
-        } else if(LoadedData.getGraphView() != null) {
-            //TODO: Also redoing the entire analysis...
-            GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
+                    + "\nFrequency: " + String.format("%.3f", AnalysisData.getMaximumRelativeFrequencies().get(selectedVertex.getTaxonNode()))
+                    + "\nNo. of visible edges: " + analysis.getNodeDegrees().get(selectedVertex.getTaxonNode());
+        } else if (LoadedData.getGraphView() != null) {
+            GraphAnalysis analysis = AnalysisData.getAnalysis();
             ;
             infoText = "Network Overview: \nNo. of visible taxa: " + analysis.getFilteredGraph().getVertices().size()
-            + "\nNo. of visible edges: " + analysis.getFilteredGraph().getEdges().size()
-            + "\nAverage Degree: " + String.format("%.2f", analysis.getMeanDegree());
+                    + "\nNo. of visible edges: " + analysis.getFilteredGraph().getEdges().size()
+                    + "\nAverage Degree: " + String.format("%.2f", analysis.getMeanDegree());
         }
 
         infoTextArea.setText(infoText);
@@ -453,9 +453,13 @@ public class MainStageController implements Initializable {
 
     }
 
+    public void performGraphAnalysis(){
+        AnalysisData.setAnalysis(new GraphAnalysis(LoadedData.getTaxonGraph()));
+    }
+
     public void displayGraphAnalysis() {
         //Generate Data for the BarChart
-        GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
+        GraphAnalysis analysis = AnalysisData.getAnalysis();
         HashMap<Integer, Double> degreeDistribution = analysis.getDegreeDistribution();
         XYChart.Series<String, Double> degreeSeries = new XYChart.Series<>();
 
@@ -466,7 +470,7 @@ public class MainStageController implements Initializable {
         degreeDistributionChart.getData().add(degreeSeries);
 
         //Generate Graph Statistics to display in the TextArea
-        HashMap<TaxonNode, Integer> hubs = analysis.getHubs();
+        HashMap<TaxonNode, Integer> hubs = analysis.getHubsList();
         graphStatText.setText("List of Hubs:\n\n");
 
         //Sort hubs by descending values
@@ -488,10 +492,10 @@ public class MainStageController implements Initializable {
 
     }
 
-    public void displayMaximalModularity(){
-        GraphAnalysis analysis = new GraphAnalysis(LoadedData.getTaxonGraph());
+    public void displayMaximalModularity() {
+        GraphAnalysis analysis = AnalysisData.getAnalysis();
         double maxModularity = analysis.findGlobalMaximumModularity();
-        modularityText.setText(String.format("%.3f", maxModularity));
+        modularityText.setText("Maximal modularity for current graph:\n" + String.format("%.3f", maxModularity));
 
     }
 
@@ -834,6 +838,7 @@ public class MainStageController implements Initializable {
         posCorrelationLowerFilterProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
+                performGraphAnalysis();
                 displayGraphAnalysis();
                 displayInfoText();
             }
@@ -841,6 +846,7 @@ public class MainStageController implements Initializable {
         posCorrelationUpperFilterProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
+                performGraphAnalysis();
                 displayGraphAnalysis();
                 displayInfoText();
             }
@@ -848,6 +854,7 @@ public class MainStageController implements Initializable {
         negCorrelationLowerFilterProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
+                performGraphAnalysis();
                 displayGraphAnalysis();
                 displayInfoText();
             }
@@ -855,6 +862,7 @@ public class MainStageController implements Initializable {
         negCorrelationUpperFilterProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
+                performGraphAnalysis();
                 displayGraphAnalysis();
                 displayInfoText();
             }
@@ -863,6 +871,7 @@ public class MainStageController implements Initializable {
         maxPValueProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterEdges();
+                performGraphAnalysis();
                 displayGraphAnalysis();
                 displayInfoText();
             }
@@ -870,6 +879,7 @@ public class MainStageController implements Initializable {
         minFrequencyProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterVertices();
+                performGraphAnalysis();
                 displayGraphAnalysis();
                 displayInfoText();
             }
@@ -877,6 +887,7 @@ public class MainStageController implements Initializable {
         maxFrequencyProperty().addListener(observable -> {
             if (LoadedData.getTaxonGraph() != null) {
                 LoadedData.getTaxonGraph().filterVertices();
+                performGraphAnalysis();
                 displayGraphAnalysis();
                 displayInfoText();
             }

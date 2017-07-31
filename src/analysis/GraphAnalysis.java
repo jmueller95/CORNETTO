@@ -6,7 +6,6 @@ import graph.MyVertex;
 import javafx.util.Pair;
 import model.TaxonNode;
 import org.apache.commons.math3.linear.OpenMapRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.SparseRealMatrix;
 
 import java.util.*;
@@ -17,17 +16,21 @@ public class GraphAnalysis {
 
     private MyGraph<MyVertex, MyEdge> filteredGraph;
     private HashMap<TaxonNode, Integer> nodeDegrees;
+    private HashMap<Integer, Double> degreeDistribution;
+    private HashMap<TaxonNode, Integer> hubsList;
 
 
     public GraphAnalysis(MyGraph<MyVertex, MyEdge> completeGraph) {
         filteredGraph = createFilteredGraph(completeGraph);
         nodeDegrees = calcNodeDegrees();
+        degreeDistribution = calcDegreeDistribution();
+        hubsList = calcHubs();
     }
 
     /**
      * @param completeGraph
      */
-    public MyGraph<MyVertex, MyEdge> createFilteredGraph(MyGraph<MyVertex, MyEdge> completeGraph) {
+    private MyGraph<MyVertex, MyEdge> createFilteredGraph(MyGraph<MyVertex, MyEdge> completeGraph) {
         MyGraph<MyVertex, MyEdge> filteredGraph = new MyGraph<>();
         for (MyVertex myVertex : completeGraph.getVertices()) {
             if (!myVertex.isHidden())
@@ -43,7 +46,7 @@ public class GraphAnalysis {
     }
 
 
-    public HashMap<TaxonNode, Integer> calcNodeDegrees() {
+    private HashMap<TaxonNode, Integer> calcNodeDegrees() {
         HashMap<TaxonNode, Integer> degreesMap = new HashMap<>();
         for (MyVertex vertex : filteredGraph.getVertices()) {
             degreesMap.put(vertex.getTaxonNode(), filteredGraph.degree(vertex));
@@ -51,7 +54,7 @@ public class GraphAnalysis {
         return degreesMap;
     }
 
-    public HashMap<Integer, Double> getDegreeDistribution() {
+    private HashMap<Integer, Double> calcDegreeDistribution() {
         HashMap<TaxonNode, Integer> nodeDegrees = calcNodeDegrees();
         Map<Integer, Long> degreeCounts = nodeDegrees.values().stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
         HashMap<Integer, Double> degreeDistribution = new HashMap<>();
@@ -63,11 +66,11 @@ public class GraphAnalysis {
 
     /**
      * Returns a list of Hubs.
-     * We define a node as a hub if its degree is at least 1 standard deviation higher than the average degree
+     * We define a node as a hub if its degree is at least 1.5 standard deviations higher than the average degree
      *
      * @return
      */
-    public HashMap<TaxonNode, Integer> getHubs() {
+    private HashMap<TaxonNode, Integer> calcHubs() {
         HashMap<TaxonNode, Integer> nodeDegrees = calcNodeDegrees();
 
         //Calculate Mean: 1/n*sum(nodeDegrees)
@@ -82,7 +85,7 @@ public class GraphAnalysis {
 
         HashMap<TaxonNode, Integer> hubsMap = new HashMap<>();
         for (Map.Entry<TaxonNode, Integer> entry : nodeDegrees.entrySet()) {
-            if (entry.getValue() > meanDegree + 1 * standardDeviation)
+            if (entry.getValue() > meanDegree + 1.5 * standardDeviation)
                 hubsMap.put(entry.getKey(), entry.getValue());
         }
         return hubsMap;
@@ -105,6 +108,12 @@ public class GraphAnalysis {
     //*** The following methods are an implementation of the algorithm proposed by Clauset et al. ***
     //(Clauset A, Newman ME, Moore C (2004) Finding community structure in very large networks.
     // Phys Rev E Stat Nonlin Soft Matter Phys 70: 066111.)
+
+    /**
+     * The main algorithm, returns the maximum modularity as a double
+     *
+     * @return
+     */
     public double findGlobalMaximumModularity() {
 
         //Store the community of each vertex as an integer
@@ -143,7 +152,7 @@ public class GraphAnalysis {
         while (numberOfCommunities > 1) {
             //Retrieve largest entry
             Pair<Integer, Pair<Integer, Double>> largestEntry = maxQueue.poll();
-           //Join the communities
+            //Join the communities
             joinCommunities(largestEntry.getKey(), largestEntry.getValue().getKey(), communityMap);
             //Update the sparse matrix, the priority queues and a[i]
             updateParameters(sparse_Q_ij_Matrix, rowsMap, maxQueue, a_i_array, largestEntry.getKey(), largestEntry.getValue().getKey(), communityMap);
@@ -155,6 +164,55 @@ public class GraphAnalysis {
         }
         //Modularity is now maximized
         return maxModularity;
+    }
+
+    /**
+     * Initializes the values of the given parameters
+     *
+     * @param sparse_Q_ij_Matrix
+     * @param rowsMap
+     * @param a_i_array
+     * @param communityMap
+     */
+    private void initializeModularityAlgorithmParameters(OpenMapRealMatrix sparse_Q_ij_Matrix,
+                                                         HashMap<Integer, PriorityQueue<Pair<Integer, Double>>> rowsMap,
+                                                         double[] a_i_array,
+                                                         HashMap<MyVertex, Integer> communityMap) {
+        //Both of these measures will be needed below
+        double m = filteredGraph.getEdgeCount();
+        HashMap<TaxonNode, Integer> nodeDegrees = getNodeDegrees();
+
+
+        //Initialize community map
+        //Initially, every vertex has its own community
+        int communityCounter = 0;
+        for (MyVertex vertex : filteredGraph.getVertices()) {
+            communityMap.put(vertex, communityCounter);
+            communityCounter++;
+        }
+
+
+        //Define a comparator for the priority queues
+        Comparator<Pair<Integer, Double>> myComparator = (o1, o2) -> Double.compare(o2.getValue(), o1.getValue());
+
+        //In these loops, the initial values for the array of a_i, the row-PriorityQueues and the sparse matrix are set
+        for (Map.Entry<MyVertex, Integer> entry_i : communityMap.entrySet()) {
+            a_i_array[entry_i.getValue()] = nodeDegrees.get(entry_i.getKey().getTaxonNode()) / (2 * m);
+            PriorityQueue<Pair<Integer, Double>> rowQueue = new PriorityQueue<>(myComparator);
+            for (Map.Entry<MyVertex, Integer> entry_j : communityMap.entrySet()) {
+                double q_value;
+                if (filteredGraph.findEdge(entry_i.getKey(), entry_j.getKey()) != null) {
+                    q_value = 1 / (2 * m) - (nodeDegrees.get(entry_i.getKey().getTaxonNode()) * nodeDegrees.get(entry_j.getKey().getTaxonNode()))
+                            / Math.pow(2 * m, 2);
+                } else
+                    q_value = 0;
+                sparse_Q_ij_Matrix.setEntry(entry_i.getValue(), entry_j.getValue(), q_value);
+                rowQueue.add(new Pair<>(entry_j.getValue(), q_value));
+
+            }
+            rowsMap.put(entry_i.getValue(), rowQueue);
+        }
+
     }
 
 
@@ -250,60 +308,12 @@ public class GraphAnalysis {
 
         //Update a_i_array
         for (int index = 0; index < a_i_array.length; index++) {
-            if(sparse_Q_ij_Matrix.getEntry(index,0)!=-2)
+            if (sparse_Q_ij_Matrix.getEntry(index, 0) != -2)
                 a_i_array[index] = calcA_i(index, communityMap);
         }
 
     }
 
-    /**
-     * Initializes the values of the given parameters
-     *
-     * @param sparse_Q_ij_Matrix
-     * @param rowsMap
-     * @param a_i_array
-     * @param communityMap
-     */
-    private void initializeModularityAlgorithmParameters(OpenMapRealMatrix sparse_Q_ij_Matrix,
-                                                         HashMap<Integer, PriorityQueue<Pair<Integer, Double>>> rowsMap,
-                                                         double[] a_i_array,
-                                                         HashMap<MyVertex, Integer> communityMap) {
-        //Both of these measures will be needed below
-        double m = filteredGraph.getEdgeCount();
-        HashMap<TaxonNode, Integer> nodeDegrees = getNodeDegrees();
-
-
-        //Initialize community map
-        //Initially, every vertex has its own community
-        int communityCounter = 0;
-        for (MyVertex vertex : filteredGraph.getVertices()) {
-            communityMap.put(vertex, communityCounter);
-            communityCounter++;
-        }
-
-
-        //Define a comparator for the priority queues
-        Comparator<Pair<Integer, Double>> myComparator = (o1, o2) -> Double.compare(o2.getValue(), o1.getValue());
-
-        //In these loops, the initial values for the array of a_i, the row-PriorityQueues and the sparse matrix are set
-        for (Map.Entry<MyVertex, Integer> entry_i : communityMap.entrySet()) {
-            a_i_array[entry_i.getValue()] = nodeDegrees.get(entry_i.getKey().getTaxonNode()) / (2 * m);
-            PriorityQueue<Pair<Integer, Double>> rowQueue = new PriorityQueue<>(myComparator);
-            for (Map.Entry<MyVertex, Integer> entry_j : communityMap.entrySet()) {
-                double q_value;
-                if (filteredGraph.findEdge(entry_i.getKey(), entry_j.getKey()) != null) {
-                    q_value = 1 / (2 * m) - (nodeDegrees.get(entry_i.getKey().getTaxonNode()) * nodeDegrees.get(entry_j.getKey().getTaxonNode()))
-                            / Math.pow(2 * m, 2);
-                } else
-                    q_value = 0;
-                sparse_Q_ij_Matrix.setEntry(entry_i.getValue(), entry_j.getValue(), q_value);
-                rowQueue.add(new Pair<>(entry_j.getValue(), q_value));
-
-            }
-            rowsMap.put(entry_i.getValue(), rowQueue);
-        }
-
-    }
 
     //Calculates the fraction of ends of edges that are attached to vertices in community i
     private double calcA_i(int i, HashMap<MyVertex, Integer> communityMap) {
@@ -327,6 +337,14 @@ public class GraphAnalysis {
 
     public HashMap<TaxonNode, Integer> getNodeDegrees() {
         return nodeDegrees;
+    }
+
+    public HashMap<Integer, Double> getDegreeDistribution() {
+        return degreeDistribution;
+    }
+
+    public HashMap<TaxonNode, Integer> getHubsList() {
+        return hubsList;
     }
 
     //Main for debugging
@@ -370,12 +388,12 @@ public class GraphAnalysis {
 
 
         System.out.println("Degree distribution:");
-        Map<Integer, Double> degreeDistribution = analysis.getDegreeDistribution();
+        Map<Integer, Double> degreeDistribution = analysis.calcDegreeDistribution();
         for (Map.Entry<Integer, Double> entry : degreeDistribution.entrySet()) {
             System.out.println(entry.getKey() + " --> " + entry.getValue());
         }
 
-        System.out.println(analysis.findGlobalMaximumModularity());
+        System.out.println("Maximum Modularity: " + analysis.findGlobalMaximumModularity());
 
 
     }

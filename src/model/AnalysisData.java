@@ -1,5 +1,6 @@
 package model;
 
+import analysis.GraphAnalysis;
 import analysis.SampleComparison;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -25,6 +26,9 @@ public class AnalysisData {
     private static DoubleProperty maxPValueFilter = new SimpleDoubleProperty();
     private static DoubleProperty minFrequencyFilter = new SimpleDoubleProperty();
     private static DoubleProperty maxFrequencyFilter = new SimpleDoubleProperty();
+
+    //Graph analysis object
+    private static GraphAnalysis analysis;
 
     /**
      * Receives a list of samples, calculates correlationMatrix and pValueMatrix for it
@@ -191,6 +195,14 @@ public class AnalysisData {
         return nodeWithHighestFrequency;
     }
 
+    public static GraphAnalysis getAnalysis() {
+        return analysis;
+    }
+
+    public static void setAnalysis(GraphAnalysis newAnalysis) {
+        analysis = newAnalysis;
+    }
+
     /**
      * Helper method for printing a matrix to the console
      *
@@ -205,4 +217,6 @@ public class AnalysisData {
             System.out.println();
         }
     }
+
+
 }
