@@ -272,6 +272,7 @@ public class MainStageController implements Initializable {
             performGraphAnalysis();
             displayGraphAnalysis();
             displayInfoText();
+            setHubsInView();
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
         }
@@ -325,7 +326,6 @@ public class MainStageController implements Initializable {
         MyGraphView graphView = new MyGraphView(taxonGraph);
         LoadedData.setGraphView(graphView);
         ViewPane viewPane = new ViewPane(graphView);
-        viewPane = new ViewPane(graphView);
         // Bind node hover status text
         statusRightLabel.textProperty().bind(viewPane.hoverInfo);
 
@@ -352,8 +352,6 @@ public class MainStageController implements Initializable {
     @FXML
     private void displayCorrelationTable() {
         //Delete whatever's been in the table before
-//        analysisTable.getItems().clear();
-//        analysisTable.getColumns().clear();
         TableView<String[]> analysisTable = new TableView<>();
 
         //We want to display correlations and p-Values of every node combination
@@ -453,7 +451,7 @@ public class MainStageController implements Initializable {
 
     }
 
-    public void performGraphAnalysis(){
+    public void performGraphAnalysis() {
         AnalysisData.setAnalysis(new GraphAnalysis(LoadedData.getTaxonGraph()));
     }
 
@@ -835,64 +833,40 @@ public class MainStageController implements Initializable {
     private void initializeGraphAnalysis() {
         degreeDistributionChart.getXAxis().setLabel("Degree");
         degreeDistributionChart.getYAxis().setLabel("Node Fraction");
-        posCorrelationLowerFilterProperty().addListener(observable -> {
-            if (LoadedData.getTaxonGraph() != null) {
-                LoadedData.getTaxonGraph().filterEdges();
-                performGraphAnalysis();
-                displayGraphAnalysis();
-                displayInfoText();
-            }
-        });
-        posCorrelationUpperFilterProperty().addListener(observable -> {
-            if (LoadedData.getTaxonGraph() != null) {
-                LoadedData.getTaxonGraph().filterEdges();
-                performGraphAnalysis();
-                displayGraphAnalysis();
-                displayInfoText();
-            }
-        });
-        negCorrelationLowerFilterProperty().addListener(observable -> {
-            if (LoadedData.getTaxonGraph() != null) {
-                LoadedData.getTaxonGraph().filterEdges();
-                performGraphAnalysis();
-                displayGraphAnalysis();
-                displayInfoText();
-            }
-        });
-        negCorrelationUpperFilterProperty().addListener(observable -> {
-            if (LoadedData.getTaxonGraph() != null) {
-                LoadedData.getTaxonGraph().filterEdges();
-                performGraphAnalysis();
-                displayGraphAnalysis();
-                displayInfoText();
-            }
-        });
 
-        maxPValueProperty().addListener(observable -> {
-            if (LoadedData.getTaxonGraph() != null) {
-                LoadedData.getTaxonGraph().filterEdges();
-                performGraphAnalysis();
-                displayGraphAnalysis();
-                displayInfoText();
-            }
-        });
-        minFrequencyProperty().addListener(observable -> {
-            if (LoadedData.getTaxonGraph() != null) {
-                LoadedData.getTaxonGraph().filterVertices();
-                performGraphAnalysis();
-                displayGraphAnalysis();
-                displayInfoText();
-            }
-        });
-        maxFrequencyProperty().addListener(observable -> {
-            if (LoadedData.getTaxonGraph() != null) {
-                LoadedData.getTaxonGraph().filterVertices();
-                performGraphAnalysis();
-                displayGraphAnalysis();
-                displayInfoText();
-            }
-        });
+        posCorrelationLowerFilterProperty().addListener(observable -> updateView());
+        posCorrelationUpperFilterProperty().addListener(observable -> updateView());
+        negCorrelationLowerFilterProperty().addListener(observable -> updateView());
+        negCorrelationUpperFilterProperty().addListener(observable -> updateView());
+        maxPValueProperty().addListener(observable -> updateView());
+        minFrequencyProperty().addListener(observable -> updateView());
+        maxFrequencyProperty().addListener(observable -> updateView());
 
+    }
+
+    private void updateView() {
+        if (LoadedData.getTaxonGraph() == null) {
+            return;
+        }
+
+        LoadedData.getTaxonGraph().filterEdges();
+        LoadedData.getTaxonGraph().filterVertices();
+        performGraphAnalysis();
+        displayGraphAnalysis();
+        displayInfoText();
+        setHubsInView();
+
+    }
+
+    private void setHubsInView() {
+        HashMap<TaxonNode, Integer> hubsList = AnalysisData.getAnalysis().getHubsList();
+        HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap = LoadedData.getTaxonGraph().getTaxonNodeToVertexMap();
+        for (Map.Entry<TaxonNode, MyVertex> entry : taxonNodeToVertexMap.entrySet()) {
+            if(hubsList.containsKey(entry.getKey()))
+                entry.getValue().setIsHub(true);
+            else
+                entry.getValue().setIsHub(false);
+        }
     }
 
     /**

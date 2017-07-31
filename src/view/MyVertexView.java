@@ -56,6 +56,17 @@ public class MyVertexView extends Group {
 
         addLabel();
 
+        //Listen to the isHub-Property of the MyVertex object, make vertexShape thicker if it's a hub
+        myVertex.isHubProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue){
+                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth()*3);
+                vertexShape.setFill(Color.color(1.0f, 0.4f, 0.4f));
+            }else{
+                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth()/3);
+                vertexShape.setFill(fillColor);
+            }
+        });
+
     }
 
     private void addLabel() {
