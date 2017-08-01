@@ -321,7 +321,6 @@ public class MainStageController implements Initializable {
         SaveAndLoadOptions.loadSettings();
 
 
-        System.err.close();
         //Display the info text in the bottom left pane
         displayInfoText();
     }
@@ -386,7 +385,6 @@ public class MainStageController implements Initializable {
      * TODO: This isn't called every time it should be, add some more listeners!
      */
     public void displayInfoText() {
-        System.out.println("Here I am!");
         String infoText = "";
         if (LoadedData.getSamplesToAnalyze() == null || LoadedData.getSamples().size() < 3) {
             infoText = "Please import at least 3 samples \nto begin correlation analysis!";
