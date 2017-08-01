@@ -6,7 +6,7 @@ import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.application.Platform;
-import javafx.beans.*;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -22,10 +22,6 @@ import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
@@ -1432,16 +1428,21 @@ public class MainStageController implements Initializable {
      *
      * Shows information about the software.
      */ private void showAboutAlert() {
-        String information = String.format("Cornetto is a modern tool to visualize and calculate correlations between" +
-                " samples. It was created in 2017 by students of the group of Professor Huson in Tübingen. The group " +
-                "was supervised by Caner Bagci" +
-                " ");
-        Text text = new Text(information);
+        Hyperlink hyperlink = new Hyperlink();
+        hyperlink.setText("https://github.com/jmueller95/CORNETTO");
+        Text text = new Text("Cornetto is a modern tool to visualize and calculate correlations between" +
+                "samples.\nIt was created in 2017 by students of the group of Professor Huson in Tübingen.\nThe group" +
+                "was supervised by Caner Bagci.\n\n" +
+                "This project is licensed under the MIT License.\n\n" +
+                "For more information go to: ");
+
+        TextFlow textFlow = new TextFlow(text, hyperlink);
+
         text.setWrappingWidth(500);
         aboutAlert = new Alert(Alert.AlertType.INFORMATION);
         aboutAlert.setTitle("About " + GlobalConstants.NAME_OF_PROGRAM);
         aboutAlert.setHeaderText("What is " + GlobalConstants.NAME_OF_PROGRAM);
-        aboutAlert.getDialogPane().setContent(text);
+        aboutAlert.getDialogPane().setContent(textFlow);
         aboutAlert.show();
     }
 
