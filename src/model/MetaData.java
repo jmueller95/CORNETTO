@@ -8,6 +8,12 @@ public class MetaData {
     private String treatment;
     private int DOB;
 
+    /**
+     * Constructor
+     * @param sampleID
+     * @param treatment
+     * @param DOB
+     */
     public MetaData(String sampleID, String treatment, int DOB) {
         this.sampleID = sampleID;
         this.treatment = treatment;

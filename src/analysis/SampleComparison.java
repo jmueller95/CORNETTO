@@ -51,6 +51,12 @@ public abstract class SampleComparison {
         return unifiedTaxonList;
     }
 
+    /**
+     *  creates the correlation of Samples useing Pearson's,Kendall's and Spearman's correlation coefficient
+     * @param samples
+     * @param rank
+     * @param type
+     */
     public static void createCorrelationOfSamples(List<Sample> samples, String rank, String type) {
         //We need the unified map to make sure the counts are properly aligned
         LinkedList<TaxonNode> taxonNodeList = getUnifiedTaxonList(samples, rank);
@@ -103,6 +109,11 @@ public abstract class SampleComparison {
 
     }
 
+    /**
+     * computes the abundances
+     * @param selectedNodesList
+     * @return
+     */
     public static HashMap<Sample, HashMap<TaxonNode, Integer>> calcAbundances(List<TaxonNode> selectedNodesList) {
         HashMap<Sample, HashMap<TaxonNode, Integer>> abundancesMap = new HashMap<>();
         ObservableList<Sample> samples = LoadedData.getSamplesToAnalyze();

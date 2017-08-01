@@ -13,6 +13,11 @@ import java.util.HashMap;
 public class MetadataMapping extends Sample {
     //we need to get the metadata from the samples
     //we need to map the metadata to the quiime file format
+
+    /**
+     * gets the Metadata from the Samples
+     * @param listOfCurrentlyLoadedSamples
+     */
     private void getMetaDataFromSamples(ArrayList<Sample> listOfCurrentlyLoadedSamples) {
         ArrayList<HashMap<String, String>> listOfMetaData = new ArrayList<>();
         for (Sample sample : listOfCurrentlyLoadedSamples) {
