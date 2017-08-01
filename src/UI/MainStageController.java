@@ -111,7 +111,7 @@ public class MainStageController implements Initializable {
 
     @FXML
     private Accordion preferencesAccordion;
-    
+
     /**
      * BUTTON ELEMENTS
      */
@@ -320,6 +320,8 @@ public class MainStageController implements Initializable {
         //preload settings
         SaveAndLoadOptions.loadSettings();
 
+
+        System.err.close();
         //Display the info text in the bottom left pane
         displayInfoText();
     }
@@ -383,12 +385,13 @@ public class MainStageController implements Initializable {
      * chooses which text to display on the bottom left pane
      * TODO: This isn't called every time it should be, add some more listeners!
      */
-    private void displayInfoText() {
+    public void displayInfoText() {
+        System.out.println("Here I am!");
         String infoText = "";
         if (LoadedData.getSamplesToAnalyze() == null || LoadedData.getSamples().size() < 3) {
-            infoText = "Please import at least 3 samples to begin correlation analysis!";
-        } else if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() <= 3) {
-            infoText = "If you want to analyse selected samples only, please select at least 3 samples!";
+            infoText = "Please import at least 3 samples \nto begin correlation analysis!";
+        } else if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() < 3) {
+            infoText = "If you want to analyse selected \nsamples only, please select \nat least 3 samples!";
         } else if (rankChoiceBox.getValue() == null) {
             infoText = "Choose a rank to display the graph!";
         } else if (LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() > 1) {
@@ -472,7 +475,6 @@ public class MainStageController implements Initializable {
         bindColourSettings(graphView);
 
         mainViewTab.setContent(viewPane);
-
 
         //Bind the showLabels-Checkbox to the visibility properties of the MyVertexView labels
         for (Node node : LoadedData.getGraphView().getMyVertexViewGroup().getChildren()) {
@@ -864,6 +866,8 @@ public class MainStageController implements Initializable {
                 showFileAlreadyLoadedAlert(namesOfAlreadyLoadedFiles);
             }
         }
+
+
     }
 
     /**
@@ -1082,6 +1086,7 @@ public class MainStageController implements Initializable {
     private void activateButtons() {
         rankChoiceBox.setDisable(false);
         collapseAllButton.setDisable(false);
+        LoadedData.getSelectedSamples().addListener((InvalidationListener) e -> displayInfoText());
     }
 
     /**
@@ -1152,8 +1157,8 @@ public class MainStageController implements Initializable {
      * Sets up listeners to call displayInfoText() whenever it is necessary
      */
     private void initializeInfoPane() {
-//        LoadedData.getSamplesToAnalyze().addListener((InvalidationListener) e -> displayInfoText());
         rankChoiceBox.valueProperty().addListener(e -> displayInfoText());
+        compareSelectedSamplesButton.selectedProperty().addListener(e -> displayInfoText());
         abundancePlotButton.setDisable(true);
 
     }
@@ -1295,8 +1300,8 @@ public class MainStageController implements Initializable {
             graphView.animationService.setFrameRate(fr.intValue());
         });
 
-//        buttonPauseAnimation.selectedProperty().bindBidirectional(graphView.pausedProperty);
-        graphView.pausedProperty.bind(buttonPauseAnimation.selectedProperty());
+        buttonPauseAnimation.selectedProperty().bindBidirectional(graphView.pausedProperty);
+
 
     }
 
