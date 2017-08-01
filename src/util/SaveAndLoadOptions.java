@@ -76,6 +76,11 @@ public class SaveAndLoadOptions {
         }
     }
 
+    /**
+     * trims the user settings Strings to enable uniformly saved
+     *
+     * @param stringArrayToTrim
+     */
     private static void trimStrings(String[] stringArrayToTrim) {
        for (int i = 0; i < stringArrayToTrim.length; i++){
            stringArrayToTrim[i] = stringArrayToTrim[i].trim();

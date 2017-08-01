@@ -9,3 +9,7 @@
 -fx-font-size: 14px;
 }
 
+.menu-bar{
+    -fx-text-fill: #f99d40;
+}
+
