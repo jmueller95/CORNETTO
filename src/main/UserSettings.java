@@ -20,6 +20,7 @@ public class UserSettings {
     //contains all userSettings
     public static HashMap<String, Object> userSettings = new HashMap<>();
 
+
     public static void addUserSettings(){
         File dummyFile = new File("./res/userSettings.txt");
         boolean isFileCreated = false;
@@ -39,6 +40,10 @@ public class UserSettings {
         userSettings.put("isUnconnectedEdgesHiddenOnStartup", isUnconnectedEdgesHiddenOnStartup);
     }
 
+    /**
+     * @param theme
+     * @return
+     */
     public static String whatTheme(boolean theme){
         if (theme){
             return GlobalConstants.DARKTHEME;

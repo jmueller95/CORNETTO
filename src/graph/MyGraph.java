@@ -36,6 +36,7 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         nodeIdsToEdgesMap = new HashMap<>();
     }
 
+
     @Override
     public boolean addEdge(E edge, Pair<? extends V> endpoints, EdgeType edgeType) {
         this.validateEdgeType(edgeType);
@@ -145,6 +146,7 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
     public int getVertexCount() {
         return vertices.size();
     }
+
 
     public Collection<V> getNeighbors(V vertex) {
         if (!containsVertex(vertex))
