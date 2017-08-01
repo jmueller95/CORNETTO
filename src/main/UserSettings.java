@@ -25,7 +25,7 @@ public class UserSettings {
      * creates a dummy file if there's no file yet
      */
     public static void addUserSettings(){
-        File dummyFile = new File("./res/userSettings.txt");
+        File dummyFile = new File(GlobalConstants.USER_SETTINGS_FILEPATH);
         boolean isFileCreated = false;
         try {
             isFileCreated = dummyFile.createNewFile();
