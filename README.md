@@ -18,7 +18,7 @@ Furthermore git is our version control software of choice - hey we're on Github 
 There is no installing required besides running the Jar file (see above @Getting started). 
 Some example data can be downloaded here: "link". 
 
-Simply start the program, click "File" -> "Load from" -> choose your file format and select your file. The graph building will start immediately. On the right one can find the sliders for 
+Simply start the program, click "File" -> "Load from" -> choose your file format and select your file. The graph building will start immediately. On the right one can find the sliders for changing the statistical values and changing how the graph is created and visualized.
 
 ## Authors
 
