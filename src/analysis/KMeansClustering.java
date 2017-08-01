@@ -23,10 +23,12 @@ public class KMeansClustering {
 
         for (MyVertex vertex : graph.getVertices())
         {
+
             int neighborCount = graph.getNeighborCount(vertex);
             if (neighborCount < 2)
                 coefficients.put(vertex, new Double(0));
             else
+
             {
                 // how many of vertices' neighbors are connected to each other?
                 ArrayList<MyVertex> neighbors = new ArrayList<MyVertex>(graph.getNeighbors(vertex));
