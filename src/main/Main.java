@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 /**
  * Created by Zeth on 08.06.2017.
  * launches the Main method
+ * launches the main scene view which also launches the tree parser
  */
 public class Main extends Application {
     private static Stage pStage;
