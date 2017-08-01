@@ -13,6 +13,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <h1>Class that stores data associated with the anylysis of the samples</h1>
+ * <p>
+ * <b>Note:</b> This class is not intended to store methods or data
+ * that is connected with the TreeView or to simply stored data.
+ * The LoadedData class has been created for this purpose.
+ * </p>
+ * @see LoadedData
+ */
 public class AnalysisData {
     private static RealMatrix correlationMatrix, pValueMatrix;
     private static HashMap<TaxonNode, Double> maximumRelativeFrequencies;

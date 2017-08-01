@@ -713,8 +713,8 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    /**
-     * Closes the current project and empties the tree view
+    /**<h1>Closes the current project and empties the tree view</h1>
+     * Empties every data structure that holds something sample related.
      */ public void closeProject() {
         if (treeViewFiles.getRoot() != null) {
             LoadedData.closeProject(treeViewFiles);
@@ -764,20 +764,6 @@ public class MainStageController implements Initializable {
         confirmQuit();
     }
 
-    @FXML
-    /**
-     * called when the toggle main view button is clicked - toggles the main stage
-     */
-    public void toggleMainView() {
-        if (!isMainViewMaximized) {
-            setPanesWidth(0);
-            isMainViewMaximized = true;
-        } else {
-            setPanesWidth(MAX_WIDTH_OF_SIDEPANES);
-            isMainViewMaximized = false;
-        }
-    }
-
     /**
      * sets the panes width to the passed value
      *
@@ -791,10 +777,10 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * sets the openFileChooser directory
-     * opens a file to load from
-     *
-     * @param fileType
+     * <h1>Lets the user choose a file / files to load.</h1>
+     * Distinguishes which filetype is about to be loaded by the user
+     * and calls the associated methods.
+     * @param fileType Enum to differentiate which type of file is loaded by the user.
      */
     private void openFiles(FileType fileType) {
         FileChooser fileChooser = new FileChooser();
@@ -883,9 +869,9 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * adds opening readNameToTaxId files to the treeview
-     *
-     * @param file
+     * <h1>Parses a given readName2TaxId file</h1>
+     * Passes the parsed samples to the LoadedData class.
+     * @param file The file the user choses to load
      */
     private void addReadName2TaxonIdFileToTreeView(File file) {
         ReadName2TaxIdCSVParser readName2TaxIdCSVParser = new ReadName2TaxIdCSVParser(TreePreloadService.taxonTree);
@@ -907,9 +893,9 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * adds opening biom files to the treeview
-     *
-     * @param file
+     * <h1>Parses a given biomV1 file</h1>
+     * Passes the parsed samples to the LoadedData class.
+     * @param file The file the user choses to load
      */
     private void addBiomV1FileToTreeView(File file) {
         BiomV1Parser biomV1Parser = new BiomV1Parser(TreePreloadService.taxonTree);
@@ -923,9 +909,9 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * adds opening biom files to the treeview
-     *
-     * @param file
+     * <h1>Parses a given biomV2 file</h1>
+     * Passes the parsed samples to the LoadedData class.
+     * @param file The file the user choses to load
      */
     private void addBiomV2FileToTreeView(File file) {
         BiomV2Parser biomV2Parser = new BiomV2Parser(TreePreloadService.taxonTree);
@@ -947,9 +933,9 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * adds openings taxIdToCountFiles to the tree view
-     *
-     * @param file
+     * <h1>Parses a given id2Count file</h1>
+     * Passes the parsed samples to the LoadedData class.
+     * @param file The file the user choses to load
      */
     private void addId2CountFileToTreeView(File file) {
         TaxonId2CountCSVParser taxonId2CountCSVParser = new TaxonId2CountCSVParser(TreePreloadService.taxonTree);
@@ -998,7 +984,8 @@ public class MainStageController implements Initializable {
 
     @FXML
     /**
-     * Collapses all nodes in the treeview element
+     * <h1>Collapses all nodes in the treeview element</h1>
+     * Does not effect the current extended state of the treeitems
      */
     public void collapseAll() {
         if (treeViewFiles.getRoot() == null || treeViewFiles.getRoot().getChildren().isEmpty()) {

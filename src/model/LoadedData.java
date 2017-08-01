@@ -117,7 +117,9 @@ public class LoadedData {
 
 
     /**
-     * Empties the openFiles ArrayList and updates the tree view fxml element
+     * <h1>Closes all open files and empties associated data structures</h1>
+     * Empties the openFiles ArrayList and updates the tree view fxml element.
+     * Empties openFiles and samples.
      * <p>
      * <b>Note: </b> Project must be saved / alert for saving must be prompted beforehand.
      * <b>Every progress / filtering is lost after this point!</b>
@@ -136,9 +138,12 @@ public class LoadedData {
     }
 
     /**
-     * <h1>Initializes the visible samples / taxa listing</h1>
-     * Overwrites the treeView fxml element in the mainStageController with all elements of the samples ArrayList
-     *
+     * <h1>Adds samples to the visible samples / taxa listing</h1>
+     * Initializes the treeview in case it is null
+     * <p>
+     * <p>Note:</p> In case of loading a file that inherits samples that have been
+     * deleted before it completely removes those samples and replaces them with the
+     * ones in the given file.
      * @param treeViewFiles Tree view fxml element to display the loaded samples
      */
     private static void addSamplesToTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
@@ -183,6 +188,12 @@ public class LoadedData {
         }
     }
 
+    /**
+     * <h1>Initializes the TreeView FXML element.</h1>
+     * The TreeView is divided into CheckBoxTreeItems as representation of samples
+     * and TreeItems as representation of Taxa and information concerning those Taxa
+     * @param treeViewFiles
+     */
     private static void generateTreeViewStructure(TreeView<String> treeViewFiles) {
         treeViewFiles.setRoot(new TreeItem<>("root"));
         //The classic treeview only has one root item, but you can work around this by just setting it to invisible
@@ -216,6 +227,12 @@ public class LoadedData {
         });
     }
 
+    /**
+     * <h1>Decides based on the given values whether a CheckBoxTreeItem has been selected or deselected.</h1>
+     * @param newValue Boolean -> Is CheckBox selected?
+     * @param oldValue Boolean -> Is CheckBox selected?
+     * @param newSample CheckBoxTreeItem associated with the above values.
+     */
     private static void selectOrDeselectSample(boolean newValue, boolean oldValue, CheckBoxTreeItem<String> newSample) {
         if (newValue && !oldValue) {
             selectedSamples.add(sampleNameToSample.get(newSample.getValue()));
@@ -224,18 +241,29 @@ public class LoadedData {
         }
     }
 
+    /**
+     * <h1>Completely erases any information stored about a sample</h1>
+     * @param sampleName Name of the sample that is about to be removed
+     * @param treeViewFiles TreeView FXML element that is placed on the left pane
+     * @param indexOfTreeItem Index of the sample that is about to be removed inside the TreeView
+     */
     private static void removeSampleFromDatabase(String sampleName, TreeView<String> treeViewFiles, int indexOfTreeItem) {
         String pathToFileOfDeletedSample = getSampleNameToSample().get(sampleName).getPathToFile();
         openFiles.remove(getSampleNameToSample().get(sampleName).getPathToFile());
-        System.out.println("I removed " + getSampleNameToSample().get(sampleName).getPathToFile());
-        System.out.println("Now opened: ");
-        openFiles
-                .forEach(System.out::println);
         samples.remove(sampleNameToSample.get(sampleName));
         sampleNameToSample.remove(sampleName);
         treeViewFiles.getRoot().getChildren().remove(indexOfTreeItem, ++indexOfTreeItem);
     }
 
+    /**
+     * <h1>Removes the file extension from the file name.</h1>
+     * <p>
+     * <p>Note:</p> In case of multiple samples in one file a number is placed in front of the samples to ease the differentiation
+     * between them.
+     * @param fileName Name of the file.
+     * @param loadedSamples The samples that have been loaded recently. (Only > 1 in case of multiple samples in one file)
+     * @return Name of file without file extension.
+     */
     private static String getNameWithoutExtension(String fileName, ArrayList<Sample> loadedSamples) {
         String[] fileNameSplit = fileName.split("\\.");
         String fileNameWithoutExtension = (String.join(".", Arrays.copyOfRange(fileNameSplit, 0, fileNameSplit.length - 1)));

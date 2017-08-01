@@ -51,7 +51,7 @@
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#openId2CountFiles" text="taxonId2Count" />
                                 <MenuItem mnemonicParsing="false" onAction="#openReadName2TaxonIdFiles" text="readName2TaxId" />
-                        <MenuItem mnemonicParsing="false" text="qiime" />
+                        <MenuItem disable="true" mnemonicParsing="false" text="qiime" />
                                 <Menu mnemonicParsing="false" text="biom">
                                     <items>
                                         <MenuItem mnemonicParsing="false" onAction="#openBiomV1Files" text="biomV1" />
@@ -101,14 +101,14 @@
                                 <items>
                                     <Menu mnemonicParsing="false" text="sex">
                                        <items>
-                                          <MenuItem mnemonicParsing="false" text="male" />
-                                          <MenuItem mnemonicParsing="false" text="female" />
+                                          <MenuItem disable="true" mnemonicParsing="false" text="male" />
+                                          <MenuItem disable="true" mnemonicParsing="false" text="female" />
                                        </items>
                                     </Menu>
                                     <Menu mnemonicParsing="false" text="by group">
                                        <items>
-                                          <MenuItem mnemonicParsing="false" text="treatment" />
-                                          <MenuItem mnemonicParsing="false" text="control" />
+                                          <MenuItem disable="true" mnemonicParsing="false" text="treatment" />
+                                          <MenuItem disable="true" mnemonicParsing="false" text="control" />
                                        </items>
                                     </Menu>
                                 </items>
