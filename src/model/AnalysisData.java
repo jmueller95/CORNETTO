@@ -137,7 +137,7 @@ public class AnalysisData {
         nodeWithHighestFrequency = argMax;
     }
 
-    public static String getLevel_of_analysis() {
+    public static String getLevelOfAnalysis() {
         return level_of_analysis;
     }
 

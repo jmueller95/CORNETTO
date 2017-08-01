@@ -43,7 +43,7 @@ public class Main extends Application {
         primaryStage.setTitle(GlobalConstants.NAME_OF_PROGRAM);
         setXEvent(primaryStage);
         mainScene = new Scene(content, 1200, 900);
-        mainScene.getStylesheets().add(UserSettings.whatTheme((Boolean) UserSettings.userSettings.get("theme")));
+        mainScene.getStylesheets().add(UserSettings.determineLightOrDarkTheme((Boolean) UserSettings.userSettings.get("theme")));
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(GlobalConstants.ICON));
         primaryStage.show();

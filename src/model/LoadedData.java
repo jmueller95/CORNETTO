@@ -5,10 +5,7 @@ import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,7 +15,6 @@ import javafx.util.Callback;
 import org.apache.commons.math3.linear.RealMatrix;
 import view.MyGraphView;
 
-import java.beans.EventHandler;
 import java.util.*;
 
 /**
@@ -65,7 +61,7 @@ public class LoadedData {
      * This method must be called AFTER analysis is performed, since it needs the correlations and p-values
      */
     public static void createGraph() {
-        LinkedList<TaxonNode> nodeList = SampleComparison.getUnifiedTaxonList(samples, AnalysisData.getLevel_of_analysis());
+        LinkedList<TaxonNode> nodeList = SampleComparison.getUnifiedTaxonList(samples, AnalysisData.getLevelOfAnalysis());
         taxonGraph = new MyGraph<>();
 
         //Create a vertex for each taxonNode

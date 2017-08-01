@@ -64,7 +64,6 @@ public class Sample implements Serializable {
 
     }
 
-
     //Getters
     public HashMap<TaxonNode, Integer> getTaxa2CountMap() {
         return taxa2CountMap;
