@@ -66,11 +66,18 @@ public class ExportImageController implements Initializable {
     File imgFile;
     ViewPane vP;
 
+    /**
+     * Constructor, takes the ViewPane which can later be saved
+     * @param vp
+     */
     public ExportImageController(ViewPane vp) {
         this.vP = vp;
 
     }
 
+    /**
+     * GUI controller, sets up basic stuff
+     */
     private void initializeElements() {
 
         fullPathString.bindBidirectional(imgTextPath.textProperty());
@@ -105,6 +112,9 @@ public class ExportImageController implements Initializable {
         imgButtonSave.setOnAction(e -> exportImage());
     }
 
+    /**
+     * Writes the image to the Output Stream
+     */
     public void exportImage() {
 
         WritableImage wim = new WritableImage((int) vP.getWidth(),(int) vP.getHeight());
@@ -120,6 +130,9 @@ public class ExportImageController implements Initializable {
 
     }
 
+    /**
+     * Opens the FileChooser (hopefully) at the previous saved locations - else at home directory
+     */
     private void openFileChooser() {
         try {
             imgFile = new File((String)UserSettings.userSettings.get("imageExportFile"));
@@ -175,15 +188,21 @@ public class ExportImageController implements Initializable {
     }
 
 
+    /**
+     * Controller method, calls other initialize method
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         initializeElements();
-
-
-
     }
 
+    /**
+     * sets ViewPane from external call
+     * @param vP
+     */
     public void setViewPane(ViewPane vP) {
         this.vP = vP;
     }

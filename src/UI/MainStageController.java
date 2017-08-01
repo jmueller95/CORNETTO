@@ -8,6 +8,8 @@ import javafx.application.Platform;
 import javafx.beans.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -197,9 +199,43 @@ public class MainStageController implements Initializable {
     /**
      * COLOUR SETTINGS ELEMENTS
      */
+    @FXML
+    private RadioButton colourRadioNodeFix;
+
+    @FXML
+    private RadioButton colourRadioNodeSample;
+
+    @FXML
+    private RadioButton colourRadioNodeAlpha;
+
+    @FXML
+    private RadioButton colourRadioNodeModularity;
+
+    @FXML
+    private ToggleGroup colourToggleNodes;
 
     @FXML
     private StackPane colourNodeComboContainer;
+
+    ComboBox<Palette> nodeColourCombo = new ComboBox<>();
+
+
+    @FXML
+    private RadioButton colourRadioEdgeCorrelation;
+
+    @FXML
+    private RadioButton colourRadioEdgeDistance;
+
+    @FXML
+    private RadioButton colourRadioEdgePvalue;
+
+    @FXML
+    private ToggleGroup colourToggleEdges;
+
+    @FXML
+    private StackPane colourEdgeComboContainer;
+
+    ComboBox<Palette> edgeColourCombo = new ComboBox<>();
 
 
     /**
@@ -312,11 +348,14 @@ public class MainStageController implements Initializable {
         LoadedData.setGraphView(graphView);
         ViewPane viewPane = new ViewPane(graphView);
         viewPane = new ViewPane(graphView);
+
         // Bind node hover status text
         statusRightLabel.textProperty().bind(viewPane.hoverInfo);
 
         // Settings need to be initialized with graphView
         bindGraphSettings(graphView);
+        bindColourSettings(graphView);
+
         mainViewTab.setContent(viewPane);
 
 
@@ -904,13 +943,68 @@ public class MainStageController implements Initializable {
     }
 
     /**
+     * Initializes the radio buttons for the colour selection
+     */
+    private void bindColourSettings(MyGraphView graphView) {
+        //Node settings
+        colourRadioNodeFix.setOnAction( e -> {
+            setPalette(nodeColourCombo, Palette.CATEGORICAL);
+            graphView.setNodeColourAttributes("fix", nodeColourCombo.getValue());
+        });
+
+       colourRadioNodeSample.setOnAction( e -> {
+           setPalette(nodeColourCombo, Palette.CATEGORICAL);
+           graphView.setNodeColourAttributes("sample", nodeColourCombo.getValue());
+       });
+
+       colourRadioNodeAlpha.setOnAction( e -> {
+           setPalette(nodeColourCombo, Palette.DIV);
+           graphView.setNodeColourAttributes("alpha", nodeColourCombo.getValue());
+
+       });
+
+       colourRadioNodeModularity.setOnAction( e -> {
+           setPalette(nodeColourCombo, Palette.DIV);
+           graphView.setNodeColourAttributes("modularity", nodeColourCombo.getValue());
+
+       });
+        // Edge settings
+       colourRadioEdgeCorrelation.setOnAction( e -> {
+           setPalette(edgeColourCombo, Palette.DIV);
+       });
+
+       colourRadioEdgeDistance.setOnAction( e-> {
+           setPalette(edgeColourCombo, Palette.DIV);
+       });
+
+      colourRadioEdgePvalue.setOnAction( e -> {
+          setPalette(edgeColourCombo, Palette.SEQ);
+      });
+    }
+
+    /**
+     * Helper function to set new Palette Spetrum in ComboBox
+     * @param cb ComboBox which should be adapted
+     * @param p EnumSet of Palette values to be displayed
+     */
+    private void setPalette(ComboBox cb, EnumSet p) {
+        cb.getItems().setAll(p);
+        cb.getSelectionModel().selectFirst();
+    }
+
+    /**
      * Initializes custom Combo selection Box for color gradient choosers
      */
     private void initializeColorComboBox() {
-
-        ComboBox<Palette> edgeColourCombo = new ComboBox<>();
+        // Node Parameters
+        edgeColourCombo.setPrefWidth(200);
         edgeColourCombo.getItems().setAll(Palette.DIV);
+        edgeColourCombo.getSelectionModel().selectFirst();
         colourNodeComboContainer.getChildren().add(edgeColourCombo);
+
+        // Edge parameters
+        nodeColourCombo.setPrefWidth(200);
+
     }
 
     //ALERTS
@@ -954,7 +1048,6 @@ public class MainStageController implements Initializable {
 
         // Set expandable Exception into the dialog pane.
         fileNotFoundAlert.getDialogPane().setExpandableContent(expContent);
-
         fileNotFoundAlert.showAndWait();
     }
 

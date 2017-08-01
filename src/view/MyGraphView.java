@@ -6,13 +6,17 @@ import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import model.VertexSelectionModel;
 
 
 import javax.annotation.Nullable;
+import java.util.EnumSet;
+
 /**
  * Created by caspar on 19.06.17.
  */
@@ -23,9 +27,12 @@ public class MyGraphView extends Group {
     private MyGraph<MyVertex, MyEdge> graph;
     public SpringAnimationService animationService;
     private VertexSelectionModel selectionModel;
+
+    // Properties changed by GUI, influencing the graph Display
     public BooleanProperty pausedProperty;
 
     protected Function<MyEdge, Integer> myEdgeLengthFunction;
+
 
 
     public MyGraphView(MyGraph<MyVertex, MyEdge> graph) {
@@ -91,6 +98,23 @@ public class MyGraphView extends Group {
 
     }
 
+    /**
+     * Sets Colour Attribute and Palette in the MyVertexView classes when called on User Input
+     * @param attribute in String Format, should be in AttributeMap of the MyVertex class
+     * @param palette Pakette item used for the colouring
+     */
+    public void setNodeColourAttributes(String attribute, Palette palette) {
+        for (Node n : myVertexViewGroup.getChildren()) {
+
+            MyVertexView vW = (MyVertexView) n;
+            vW.colourAttribute.setValue(attribute);
+            vW.colourProperty.setValue(palette);
+
+        }
+
+    }
+
+
     public void addPausedListener() {
         pausedProperty.addListener(e -> {
             if (pausedProperty.get()) {
@@ -134,5 +158,6 @@ public class MyGraphView extends Group {
     public VertexSelectionModel getSelectionModel() {
         return selectionModel;
     }
+
 
 }
