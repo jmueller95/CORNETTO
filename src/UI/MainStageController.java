@@ -1215,7 +1215,7 @@ public class MainStageController implements Initializable {
         });
         //2. Rank selection changes
         rankChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
+            if (newValue != null && LoadedData.getSamplesToAnalyze().size()>=3) {
                 AnalysisData.setLevel_of_analysis(newValue.toLowerCase());
                 startAnalysis();
             }
