@@ -24,7 +24,14 @@ import java.util.HashMap;
 
 
 /**
- * Created by caspar on 26.06.17.
+ * <h1>Class which contains the View Pane for the graph</h1>
+ * <p>
+ * The class contains the method for the selection and transformation of
+ * selected items such as nodes. The class contains the methods for the mouse interactions.
+ * </p>
+ *
+ * @see MySpringLayout
+ * @see SpringAnimationService
  */
 public class ViewPane extends AnchorPane {
 
@@ -85,6 +92,9 @@ public class ViewPane extends AnchorPane {
         addMouseInteractions();
     }
 
+    /**
+     * sets up transforming of selections
+     */
     private void setupTransforms() {
         viewTransformProperty = new SimpleObjectProperty<>(new Transform() {
             @Override
@@ -148,7 +158,6 @@ public class ViewPane extends AnchorPane {
 
             });
 
-
             // Left Mouse Drag: Move Node
             o.setOnMouseDragged(me -> {
                 if (me.getButton() == MouseButton.PRIMARY) {
@@ -195,7 +204,6 @@ public class ViewPane extends AnchorPane {
             }
         });
 
-
         bottomPane.setOnMouseDragged((me) -> {
 
             double deltaX = me.getSceneX() - mousePressedX;
@@ -239,7 +247,6 @@ public class ViewPane extends AnchorPane {
                 }
             }
 
-
             // Drag selected Nodes with Left MB + Shift
             if (me.getTarget().equals(bottomPane) && me.getButton() == MouseButton.PRIMARY && me.isShiftDown()) {
 
@@ -253,12 +260,9 @@ public class ViewPane extends AnchorPane {
                             double y = groupNodeInitLocation.get(vW)[1];
                             vW.translateXProperty().set(x + deltaX);
                             vW.translateYProperty().set(y + deltaY);
-
-
                         }
                 }
                 //me.consume();
-
             }
         });
 
@@ -309,8 +313,6 @@ public class ViewPane extends AnchorPane {
 
             Scale scale = new Scale(scaleFactor, scaleFactor, pivotX, pivotY);
             viewTransformProperty.setValue(scale.createConcatenation(viewTransformProperty.getValue()));
-
-
         }));
 
         // Deselect all nodes when clicked on Background without dragging

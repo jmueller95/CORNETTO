@@ -5,21 +5,15 @@ import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.util.Callback;
 import org.apache.commons.math3.linear.RealMatrix;
-import sun.management.counter.Units;
 import view.MyGraphView;
 
-import java.beans.EventHandler;
 import java.io.File;
 import java.util.*;
 
@@ -33,6 +27,7 @@ import java.util.*;
  * <b>Note:</b> This class is not intended to store methods or data
  * that is connected with analysis. The AnalysisData class has been
  * created for this purpose.
+ * </p>
  *
  * @see AnalysisData
  */
@@ -146,7 +141,7 @@ public class LoadedData {
      *
      * @param treeViewFiles Tree view fxml element to display the loaded samples
      */
-    public static void addSamplesToTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
+    private static void addSamplesToTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
         //If no samples have been loaded so far
         if (treeViewFiles.getRoot() == null) {
             generateTreeViewStructure(treeViewFiles);
@@ -172,9 +167,7 @@ public class LoadedData {
             String sampleName = getNameWithoutExtension(fileName, loadedSamples);
             sample.setName(sampleName);
             CheckBoxTreeItem<String> newSample = new CheckBoxTreeItem<>(sampleName);
-            newSample.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                selectOrDeselectSample(newValue, oldValue, newSample);
-            });
+            newSample.selectedProperty().addListener((observable, oldValue, newValue) -> selectOrDeselectSample(newValue, oldValue, newSample));
             MenuItem addMenuItem = new MenuItem("delete");
 
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
@@ -211,12 +204,9 @@ public class LoadedData {
                             setGraphic(null);
                         } else if (getTreeItem() instanceof CheckBoxTreeItem) {
                             MenuItem removeSample = new MenuItem("remove");
-                            removeSample.setOnAction(new javafx.event.EventHandler<ActionEvent>() {
-                                @Override
-                                public void handle(ActionEvent event) {
-                                    int indexOfTreeItem = treeViewFiles.getRoot().getChildren().indexOf(getTreeItem());
-                                    removeSampleFromDatabase(getTreeItem().getValue(), treeViewFiles, indexOfTreeItem);
-                                }
+                            removeSample.setOnAction(event -> {
+                                int indexOfTreeItem = treeViewFiles.getRoot().getChildren().indexOf(getTreeItem());
+                                removeSampleFromDatabase(getTreeItem().getValue(), treeViewFiles, indexOfTreeItem);
                             });
                             setContextMenu(new ContextMenu(removeSample));
                         }
@@ -240,7 +230,6 @@ public class LoadedData {
         System.out.println("I removed " + getSampleNameToSample().get(sampleName).getPathToFile());
         System.out.println("Now opened: ");
         openFiles
-                .stream()
                 .forEach(System.out::println);
         samples.remove(sampleNameToSample.get(sampleName));
         sampleNameToSample.remove(sampleName);
@@ -250,8 +239,7 @@ public class LoadedData {
     private static String getNameWithoutExtension(String fileName, ArrayList<Sample> loadedSamples) {
         String[] fileNameSplit = fileName.split("\\.");
         String fileNameWithoutExtension = (String.join(".", Arrays.copyOfRange(fileNameSplit, 0, fileNameSplit.length - 1)));
-        String sampleName = (loadedSamples.size() > 1 ? "[" + ++countOfSamplesFromEqualPaths + "] " + fileNameWithoutExtension : fileNameWithoutExtension);
-        return sampleName;
+        return (loadedSamples.size() > 1 ? "[" + ++countOfSamplesFromEqualPaths + "] " + fileNameWithoutExtension : fileNameWithoutExtension);
     }
 
     public static ObservableList<Sample> getSamplesToAnalyze() {

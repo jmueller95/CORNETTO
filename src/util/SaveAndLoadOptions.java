@@ -5,6 +5,19 @@ import main.UserSettings;
 
 import java.io.*;
 
+/**
+ * <h1>The class hosts saving and loading the settings in the options menu</h1>
+ * <p>
+ * The userSettings hashmap contains all Settings at all times. You always have to know the String value when
+ * fetching specific settings.
+ * The userSettings are currently saved in GlobalConstants.USER_SETTINGS_FILEPATH
+ * A dummy file is created of no settings exist yet.
+ * </p>
+ *
+ * @version This class should be heavily refactored. Also the save path of the settings should change since a jar
+ * file cannot save in the res folder.
+ *
+ */
 public class SaveAndLoadOptions {
 
     private static final String SEPARATOR = System.getProperty("line.separator");

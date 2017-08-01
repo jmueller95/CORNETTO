@@ -18,7 +18,14 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 
 /**
- * Created by caspar on 19.06.17.
+ * <h1>The class is the general class for the graph view</h1>
+ * <p>
+ * The class contains methods for drawing the vertices and it also hosts the listeners for any changes of them.
+ * Furthermore it hosts methods for pausing the animations and coloring the vertices.
+ * </p>
+ *
+ * @see MyVertex
+ * @see MyVertexView
  */
 public class MyGraphView extends Group {
 
@@ -32,7 +39,6 @@ public class MyGraphView extends Group {
     public BooleanProperty pausedProperty;
 
     protected Function<MyEdge, Integer> myEdgeLengthFunction;
-
 
 
     public MyGraphView(MyGraph<MyVertex, MyEdge> graph) {
@@ -55,7 +61,6 @@ public class MyGraphView extends Group {
         addPausedListener();
 
         startLayout();
-
     }
 
 
@@ -109,9 +114,7 @@ public class MyGraphView extends Group {
             MyVertexView vW = (MyVertexView) n;
             vW.colourAttribute.setValue(attribute);
             vW.colourProperty.setValue(palette);
-
         }
-
     }
 
 
@@ -158,6 +161,4 @@ public class MyGraphView extends Group {
     public VertexSelectionModel getSelectionModel() {
         return selectionModel;
     }
-
-
 }

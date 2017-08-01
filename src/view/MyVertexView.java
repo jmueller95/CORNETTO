@@ -12,11 +12,19 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import model.AnalysisData;
 
+
 /**
- * Creates a Node in the View area for each Node
- * Handles Selection, Radius change, and Colour Scheme settings
- * Created by caspar on 19.06.17.
+ * <h1>The class implements methods for showing the vertices</h1>
+ * <p>
+ * Depending on if the vertices are selected or not they may be calculated differently
+ * The vertices can also be dragged and moved. Furthermore the class handles changing the radiuses and generally
+ * color scheme settings
+ * </p>
+ *
+ * @see MyColours
+ * @see Palette
  */
+
 public class MyVertexView extends Group {
 
     // Style constants
@@ -83,7 +91,7 @@ public class MyVertexView extends Group {
     }
 
     /**
-     * Refresehs NodeColour based on the Palette set in colourProperty and the Attribute value of MyVertex
+     * Refreshes NodeColour based on the Palette set in colourProperty and the Attribute value of MyVertex
      * defined in colourAttribute Porperty
      */
     private void refreshColour() {

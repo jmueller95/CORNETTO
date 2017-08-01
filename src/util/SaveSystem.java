@@ -6,11 +6,13 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by Zeth on 15.07.2017.
- *
- * implements the load and savesystem
- * classes that want to use this need to implement serializable!
- *
+ * <h1>The class implements a save and load feature for various Collections</h1>
+ * <p>
+ * This should be used for saving and loading the current view of the graph.
+ * Saving objects saves them AS OBJECTS in a file. Therefore when loading them they have to be casted from an object
+ * to the object that one wants to return.
+ * </p>
+ * @version THIS IS NOT YET WORKING AND IS NOT YET FINISHED
  *
  */
 public class SaveSystem {

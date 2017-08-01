@@ -14,7 +14,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Created by Zeth on 27.05.2017.
+ * <h1>The class </h1>
+ * <p>
+ * If internet is available the zip file from the NCBI database is downloaded and unzipped. It contains besides
+ * others the follwing two very important files:
+ * names.dmp
+ * nodes.dmp
+ * Those are then parsed and used for the tree construction.
+ * </p>
+ *
+ * @see InternetAvailabilityChecker
+ * @see treeParser.TreeParser
  */
 public class DownloadNodesAndNameDMPFiles {
 

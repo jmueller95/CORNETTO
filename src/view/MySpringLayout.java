@@ -21,14 +21,15 @@ import java.awt.geom.Point2D;
 import java.util.ConcurrentModificationException;
 
 /**
- * Created by caspar on 25.07.17.
+ * <h1>The class contains mostly of methods of the JUNG package - our own implementation of the spring layout</h1>
+ * <p>
  * Merged SpringLayout and SpringLayout2 from the JUNG Package.
- * Changes:
- *
+ * The following changes were done by us:
  * 1) Lowered sensitivity of done conditions
  * 2) Node positions are directly updated in the MyGraph class after each step
+ * </p>
  *
- **/
+ */
 
 public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements IterativeContext {
 

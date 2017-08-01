@@ -5,6 +5,14 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * <h1>The class is used for checking for internet availability</h1>
+ * <p>
+ * The class pings 4 common websites, google, amazon, apple and facebook. One of them should always be reachable. If
+ * none of them are reachable it is extremly likely that internet is not available.
+ * </p>
+ *
+ */
 public class InternetAvailabilityChecker {
     /**
      * checks 4 common websites, at least one of them should always be online

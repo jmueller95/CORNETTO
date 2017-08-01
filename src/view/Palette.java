@@ -4,9 +4,15 @@ import javafx.scene.paint.Color;
 import java.util.EnumSet;
 
 /**
- * This class provdides ColourBREWER colours as hexColors and JavaFX Colours.
- * Colour values are taken from the JavaScript library D3 https://github.com/d3/d3-scale-chromatic
- * Created by caspar on 29.07.17.
+ * <h1>This class provides ColourBREWER colours as hexColors and JavaFX Colours.</h1>
+ * <p>
+ * Colour values are taken from the JavaScript library D3 https://github.com/d3/d3-scale-chromatic.
+ * There are currently three color sets:
+ * DIV
+ * CATEGORICAL
+ * SEQ
+ * </p>
+ *
  */
 
 public enum Palette {
@@ -83,5 +89,4 @@ public enum Palette {
         }
         return colours;
     }
-
 }

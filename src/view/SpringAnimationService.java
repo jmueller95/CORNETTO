@@ -13,6 +13,16 @@ import java.awt.Dimension;
 import java.lang.Thread;
 
 
+/**
+ * <h1>Class which hosts the SpringAnimation as a service</h1>
+ * <p>
+ * The class creates a JavaFX Service for Layout calculations in a separate thread.
+ * This makes sure that the animations are always able to be calculated.
+ * </p>
+ *
+ * @see ViewPane
+ * @see MySpringLayout
+ */
 
 /**
  * Created by caspar on 16.07.17.

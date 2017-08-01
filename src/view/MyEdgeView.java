@@ -17,7 +17,12 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 
 /**
- * Created by caspar on 19.06.17.
+ * <h1>The class is our implementation of the edges of the graph</h1>
+ * <p>
+ * There are methods for setting the colors of the edges.
+ *
+ * </p>
+ *
  */
 public class MyEdgeView extends Group {
 

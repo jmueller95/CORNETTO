@@ -3,7 +3,17 @@ package view;
 
 import javafx.scene.paint.Color;
 
-
+/**
+ * <h1>The class is our implementation for the colors.</h1>
+ * <p>
+ * The class calculates B-Spline with a factor of 4.
+ * The code is adapted from the the D3.interpolate package:
+ * https://github.com/d3/d3-interpolate/blob/master/src/basis.js
+ * </p>
+ *
+ * @see Palette
+ *
+ */
 public class MyColours {
 
     /**
@@ -18,7 +28,6 @@ public class MyColours {
      * @return
      */
     private static double basis (double t1, double v0, double v1, double v2, double v3) {
-
         double t2 = t1 * t1;
         double t3 = t1 * t1 * t1;
 
@@ -36,7 +45,6 @@ public class MyColours {
      * @return
      */
     private  static int calculateSpline(int[] values, double t) {
-
         int n = values.length - 1;
         int v0;
         int v1;
@@ -85,7 +93,6 @@ public class MyColours {
      * @return
      */
     public static Color interpolate(Palette palette, double t) {
-
         String[] colors = palette.get();
 
         int n = colors.length;
@@ -97,7 +104,6 @@ public class MyColours {
             r[i] = Integer.valueOf(colors[i].substring(1, 3), 16);
             g[i] = Integer.valueOf(colors[i].substring(3, 5), 16);
             b[i] = Integer.valueOf(colors[i].substring(5, 7), 16);
-
         }
 
         int smoothR = Math.min(calculateSpline(r, t), 255);
@@ -106,7 +112,6 @@ public class MyColours {
 
         return Color.rgb(smoothR, smoothG, smoothB);
     }
-
 }
 
 
