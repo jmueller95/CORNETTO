@@ -38,7 +38,7 @@ public class SaveSystem {
      * @return
      * @throws IOException
      */
-    public <T> List<T> loadObjects(String filePathToLoadFrom, Class<T> classToLoadTo) throws IOException{
+    public <T> List<T>  loadObjects(String filePathToLoadFrom, Class<T> classToLoadTo) throws IOException{
         File fileToLoadFrom = new File(filePathToLoadFrom);
         ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(fileToLoadFrom));
         List<T> listOfReadObjects = new ArrayList<>();

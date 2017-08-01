@@ -1,5 +1,6 @@
 package model;
 
+import analysis.GraphAnalysis;
 import analysis.SampleComparison;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -27,22 +28,27 @@ public class AnalysisData {
     private static DoubleProperty minFrequencyFilter = new SimpleDoubleProperty();
     private static DoubleProperty maxFrequencyFilter = new SimpleDoubleProperty();
 
+    //Graph analysis object
+    private static GraphAnalysis analysis;
+
     /**
      * Receives a list of samples, calculates correlationMatrix and pValueMatrix for it
+     *
      * @param samples
      */
-    public static boolean performCorrelationAnalysis(ArrayList<Sample> samples){
+    public static boolean performCorrelationAnalysis(ArrayList<Sample> samples, String type) {
         //Check if data is sufficient for analysis performing (check if there are at least two taxa)
-        if(SampleComparison.getUnifiedTaxonList(samples, level_of_analysis).size()>1) {
-            correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples(samples, level_of_analysis);
-            pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples(samples, level_of_analysis);
+        if (SampleComparison.getUnifiedTaxonList(samples, level_of_analysis).size() > 1) {
+            SampleComparison.createCorrelationOfSamples(samples, level_of_analysis, type);
+            correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples();
+            pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples();
             maximumRelativeFrequencies = SampleComparison.calcMaximumRelativeFrequencies(samples, level_of_analysis);
             calcHighestFrequency();
             highestPositiveCorrelationCoordinates = calcHighestPositiveCorrelationCoordinates();
             highestNegativeCorrelationCoordinates = calcHighestNegativeCorrelationCoordinates();
             return true;
-        }else{
-           return false;
+        } else {
+            return false;
         }
     }
 
@@ -73,15 +79,16 @@ public class AnalysisData {
 
     /**
      * Returns the coordinates in the correlation matrix with the highest positive value in the shape {x,y}
+     *
      * @return
      */
     private static int[] calcHighestPositiveCorrelationCoordinates() {
         double max = -1;
-        int[] maxCoordinates = {0,0};
+        int[] maxCoordinates = {0, 0};
         for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
             for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
-                if(i!=j && correlationMatrix.getEntry(i,j)>max){
-                    max = correlationMatrix.getEntry(i,j);
+                if (i != j && correlationMatrix.getEntry(i, j) > max) {
+                    max = correlationMatrix.getEntry(i, j);
                     maxCoordinates[0] = i;
                     maxCoordinates[1] = j;
                 }
@@ -92,15 +99,16 @@ public class AnalysisData {
 
     /**
      * Returns the coordinates in the correlation matrix with the highest negative value in the shape {x,y}
+     *
      * @return
      */
     private static int[] calcHighestNegativeCorrelationCoordinates() {
         double min = 1;
-        int[] minCoordinates = {0,0};
+        int[] minCoordinates = {0, 0};
         for (int i = 0; i < correlationMatrix.getRowDimension(); i++) {
             for (int j = 0; j < correlationMatrix.getColumnDimension(); j++) {
-                if(i!=j && correlationMatrix.getEntry(i,j)<min){
-                    min = correlationMatrix.getEntry(i,j);
+                if (i != j && correlationMatrix.getEntry(i, j) < min) {
+                    min = correlationMatrix.getEntry(i, j);
                     minCoordinates[0] = i;
                     minCoordinates[1] = j;
                 }
@@ -110,11 +118,11 @@ public class AnalysisData {
 
     }
 
-    private static void calcHighestFrequency(){
+    private static void calcHighestFrequency() {
         double max = 0;
         TaxonNode argMax = null;
         for (TaxonNode taxonNode : maximumRelativeFrequencies.keySet()) {
-            if(maximumRelativeFrequencies.get(taxonNode)>max){
+            if (maximumRelativeFrequencies.get(taxonNode) > max) {
                 max = maximumRelativeFrequencies.get(taxonNode);
                 argMax = taxonNode;
             }
@@ -127,7 +135,9 @@ public class AnalysisData {
         return level_of_analysis;
     }
 
-    public static void setLevel_of_analysis(String level_of_analysis) { AnalysisData.level_of_analysis = level_of_analysis; }
+    public static void setLevel_of_analysis(String level_of_analysis) {
+        AnalysisData.level_of_analysis = level_of_analysis;
+    }
 
 
     public static double getNegCorrelationLowerFilter() {
@@ -206,6 +216,14 @@ public class AnalysisData {
         return nodeWithHighestFrequency;
     }
 
+    public static GraphAnalysis getAnalysis() {
+        return analysis;
+    }
+
+    public static void setAnalysis(GraphAnalysis newAnalysis) {
+        analysis = newAnalysis;
+    }
+
     /**
      * Helper method for printing a matrix to the console
      *
@@ -220,4 +238,6 @@ public class AnalysisData {
             System.out.println();
         }
     }
+
+
 }

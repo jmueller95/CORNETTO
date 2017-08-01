@@ -6,15 +6,17 @@ import graph.MyGraph;
 import graph.MyVertex;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.CheckBoxTreeItem;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
+import javafx.util.Callback;
 import org.apache.commons.math3.linear.RealMatrix;
 import view.MyGraphView;
 
+import java.beans.EventHandler;
 import java.util.*;
 
 /**
@@ -37,7 +39,7 @@ public class LoadedData {
     private static MyGraph<MyVertex, MyEdge> taxonGraph;
     private static MyGraphView graphView;
     private static HashMap<String, Sample> sampleNameToSample = new HashMap<>();
-   private static ObservableList<Sample> selectedSamples = FXCollections.observableArrayList();
+    private static ObservableList<Sample> selectedSamples = FXCollections.observableArrayList();
     private static BooleanProperty analyzeSelected = new SimpleBooleanProperty(false);
 
 
@@ -47,7 +49,11 @@ public class LoadedData {
         } else {
             samples.addAll(loadedSamples);
         }
-        initializeTreeView(treeViewFiles, loadedSamples, fileName);
+        if (openFiles == null) {
+            openFiles = new ArrayList<>();
+        }
+        openFiles.add(fileName);
+        addSamplesToTreeView(treeViewFiles, loadedSamples, fileName);
     }
 
     /**
@@ -119,8 +125,7 @@ public class LoadedData {
         samples.clear();
         if (!treeViewFiles.getRoot().getChildren().isEmpty()) {
             treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
-            //TODO: Add open files feature
-            //openFiles.clear();
+            LoadedData.getOpenFiles().clear();
             samples.clear();
             selectedSamples.clear();
             //TODO:: Kill graph view when Project is closed
@@ -133,43 +138,56 @@ public class LoadedData {
      *
      * @param treeViewFiles Tree view fxml element to display the loaded samples
      */
-    private static void initializeTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
+    public static void addSamplesToTreeView(TreeView<String> treeViewFiles, ArrayList<Sample> loadedSamples, String fileName) {
         //If no samples have been loaded so far
         if (treeViewFiles.getRoot() == null) {
             treeViewFiles.setRoot(new TreeItem<>("root"));
             //The classic treeview only has one root item, but you can work around this by just setting it to invisible
             treeViewFiles.setShowRoot(false);
-            treeViewFiles.setCellFactory(CheckBoxTreeCell.<String>forTreeView());
+            treeViewFiles.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
+                @Override
+                public TreeCell<String> call(TreeView<String> param) {
+                    return new CheckBoxTreeCell<String>() {
+                        @Override
+                        public void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            //If there is no information for the Cell, make it empty
+                            if (empty) {
+                                setGraphic(null);
+                                setText(null);
+                                //Otherwise if it's not representation as an item of the tree
+                                //is not a CheckBoxTreeItem, remove the checkbox item
+                            } else if (!(getTreeItem() instanceof CheckBoxTreeItem)) {
+                                setGraphic(null);
+                            } else if (getTreeItem() instanceof CheckBoxTreeItem) {
+                                MenuItem removeSample = new MenuItem("remove");
+                                removeSample.setOnAction(new javafx.event.EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        int indexOfTreeItem = treeViewFiles.getRoot().getChildren().indexOf(getTreeItem());
+                                        removeSampleFromDatabase(getTreeItem().getValue(), treeViewFiles, indexOfTreeItem);
+                                    }
+                                });
+                                setContextMenu(new ContextMenu(removeSample));
+                            }
+                        }
+                    };
+                }
+            });
         }
         TreeItem<String> newRoot, newRootID, newRootCount;
-
-        //TODO: Need to exchange the CheckBoxTreeItems with TreeItems for the 'not-sample' Items
-        /*treeViewFiles.setCellFactory(item -> {
-            return new CheckBoxTreeCell<String>() {
-
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item != null) {
-                        this.editableProperty().unbind();
-                        CheckBoxTreeItem<String> value = (CheckBoxTreeItem<String>) treeItemProperty().getValue();
-                        this.disableProperty().bind(value.leafProperty());
-                    }
-                }
-            };
-        });*/
 
         int count = 0;
         for (Sample sample : loadedSamples) {
             String[] fileNameSplit = fileName.split("\\.");
             String fileNameWithoutExtension = (String.join(".", Arrays.copyOfRange(fileNameSplit, 0, fileNameSplit.length - 1)));
             String sampleName = (loadedSamples.size() > 1 ? "[" + ++count + "] " + fileNameWithoutExtension : fileNameWithoutExtension);
-
+            sample.setName(sampleName);
             CheckBoxTreeItem<String> newSample = new CheckBoxTreeItem<>(sampleName);
             newSample.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 selectOrDeselectSample(newValue, oldValue, newSample);
             });
+            MenuItem addMenuItem = new MenuItem("delete");
 
             for (TaxonNode taxonNode : sample.getTaxa2CountMap().keySet()) {
                 newRoot = new TreeItem<>(taxonNode.getName());
@@ -177,7 +195,6 @@ public class LoadedData {
 
                 newRootID = new TreeItem<>("id: " + taxonNode.getTaxonId());
                 newRootCount = new TreeItem<>("count: " + sample.getTaxonCountRecursive(taxonNode));
-
                 newRoot.getChildren().addAll(newRootID, newRootCount);
             }
             treeViewFiles.getRoot().getChildren().add(newSample);
@@ -191,6 +208,12 @@ public class LoadedData {
         } else {
             selectedSamples.remove(sampleNameToSample.get(newSample.getValue()));
         }
+    }
+
+    private static void removeSampleFromDatabase(String sampleName, TreeView<String> treeViewFiles, int indexOfTreeItem) {
+        samples.remove(sampleNameToSample.get(sampleName));
+        sampleNameToSample.remove(sampleName);
+        treeViewFiles.getRoot().getChildren().remove(indexOfTreeItem, ++indexOfTreeItem);
     }
 
     public static ObservableList<Sample> getSamplesToAnalyze(){
@@ -222,6 +245,10 @@ public class LoadedData {
 
     public static MyGraphView getGraphView() {
         return graphView;
+    }
+
+    public static ArrayList<String> getOpenFiles() {
+        return openFiles;
     }
 
     // SETTERS

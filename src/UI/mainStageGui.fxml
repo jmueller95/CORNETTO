@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
@@ -9,15 +12,18 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
@@ -37,18 +43,17 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="New" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
                         <Menu mnemonicParsing="false" text="Load from...">
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#openId2CountFiles" text="taxonId2Count" />
                                 <MenuItem mnemonicParsing="false" onAction="#openReadName2TaxonIdFiles" text="readName2TaxId" />
+                        <MenuItem mnemonicParsing="false" text="qiime" />
                                 <Menu mnemonicParsing="false" text="biom">
                                     <items>
                                         <MenuItem mnemonicParsing="false" onAction="#openBiomV1Files" text="biomV1" />
@@ -58,7 +63,9 @@
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" onAction="#openRecentFile" text="Open Recent" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#closeProject" text="Close" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" text="Save" />
                         <MenuItem mnemonicParsing="false" text="Save As…" />
                         <MenuItem mnemonicParsing="false" onAction="#exportImages" text="Export" />
@@ -68,33 +75,14 @@
                         <MenuItem fx:id="buttonExit" mnemonicParsing="false" onAction="#quit" text="Quit" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Cut" />
-                        <MenuItem mnemonicParsing="false" text="Copy" />
-                        <MenuItem mnemonicParsing="false" text="Paste" />
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Select All" />
-                        <MenuItem mnemonicParsing="false" text="Unselect All" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Create Screenshot" />
-                    </items>
-                </Menu>
                 <Menu mnemonicParsing="false" text="View">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#toggleMainView" text="Toggle Main View" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Settings">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Open Settings" />
-                    </items>
-                </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#showAboutAlert" text="About Network Analysis Tool" />
-                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                        <MenuItem mnemonicParsing="false" onAction="#showAboutAlert" text="About Cornetto" />
                     </items>
                 </Menu>
             </menus>
@@ -105,18 +93,28 @@
                     <items>
                         <AnchorPane fx:id="leftPane" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
                             <children>
-                                <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="5.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#c58112" wrapText="false">
+                                <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="3.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#c58112" wrapText="false">
                                     <font>
                                         <Font size="18.0" fx:id="x1" />
                                     </font>
                                 </Label>
                                 <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="-176.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
-                                <RadioButton fx:id="collapseAllButton" layoutX="88.0" layoutY="6.0" mnemonicParsing="false" onAction="#collapseAll" text="Collapse all" />
+                                <RadioButton fx:id="collapseAllButton" layoutX="198.0" layoutY="8.0" mnemonicParsing="false" onAction="#collapseAll" />
+                        <RadioButton fx:id="deselectAllButton" layoutX="177.0" layoutY="8.0" mnemonicParsing="false" onMouseClicked="#deselectAll" />
+                        <MenuButton layoutX="58.0" layoutY="3.0" mnemonicParsing="false" text="Show">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="All" />
+                            <MenuItem mnemonicParsing="false" text="Reverse" />
+                              <MenuItem mnemonicParsing="false" onAction="#showNoSamples" text="None" />
+                          </items>
+                        </MenuButton>
                             </children>
                         </AnchorPane>
                         <AnchorPane fx:id="infoBox" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
                             <children>
-                                <TextFlow fx:id="infoTextFlow" prefHeight="420.0" prefWidth="220.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <TextArea fx:id="infoTextArea" editable="false" prefHeight="420.0" prefWidth="220.0" />
+                                <TextFlow fx:id="infoTextFlow" prefHeight="325.0" prefWidth="200.0" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <Button fx:id="abundancePlotButton" layoutX="37.0" layoutY="380.0" mnemonicParsing="false" onAction="#displayAbundancePlot" text="Show abundance plot" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="10.0" />
                             </children>
                         </AnchorPane>
                     </items>
@@ -148,27 +146,32 @@
                         </Tab>
                         <Tab text="Analysis">
                             <content>
-                                <AnchorPane fx:id="analysisPane" minHeight="0.0" minWidth="0.0" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0">
-                                    <children>
-                              <PieChart fx:id="frequencyChart" layoutX="125.0" layoutY="64.0" title="Frequency Distribution" AnchorPane.bottomAnchor="350.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="125.0" AnchorPane.topAnchor="50.0" />
-                              <Text fx:id="dataText" strokeType="OUTSIDE" strokeWidth="0.0" text="Data Analysis" AnchorPane.bottomAnchor="310.0" AnchorPane.leftAnchor="100.0">
-                                 <font>
-                                    <Font name="System Italic" size="13.0" />
-                                 </font></Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Frequency:" AnchorPane.bottomAnchor="275.0" AnchorPane.leftAnchor="10.0" />
-                              <Text fx:id="highestFrequencyText" layoutX="150.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="50.0" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Positive Correlation:" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="10.0" />
-                              <Text fx:id="highestPositiveCorrelationText" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.bottomAnchor="175.0" AnchorPane.leftAnchor="50.0" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highest Negative Correlation:" AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="10.0" />
-                              <Text fx:id="highestNegativeCorrelationText" strokeType="OUTSIDE" strokeWidth="0.0" text="fxtext" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="50.0" />
-                              <Button fx:id="showTableButton" layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onAction="#displayCorrelationTable" text="Show Correlation Table" />
-                              <Text fx:id="graphText" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Graph Analysis" AnchorPane.bottomAnchor="310.0" AnchorPane.rightAnchor="100.0">
-                                 <font>
-                                    <Font name="System Italic" size="13.0" />
-                                 </font></Text>
-                              <Text fx:id="graphStatDummy" strokeType="OUTSIDE" strokeWidth="0.0" text="Dummy" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="200.0" />
-                                    </children>
-                                </AnchorPane>
+                        <ScrollPane hvalue="1.0" minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0" vvalue="1.0">
+                           <content>
+                                      <AnchorPane fx:id="analysisPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1250.0" minWidth="1250.0" pickOnBounds="false">
+                                          <children>
+                                    <PieChart fx:id="frequencyChart" legendVisible="false" prefHeight="600.0" prefWidth="700.0" title="Frequency Distribution" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                       <padding>
+                                          <Insets bottom="10.0" />
+                                       </padding>
+                                    </PieChart>
+                                    <TextArea fx:id="dataStatText" editable="false" layoutX="938.0" prefHeight="264.0" prefWidth="385.0" text="&#10;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0" />
+                                    <Button fx:id="showTableButton" mnemonicParsing="false" onAction="#displayCorrelationTable" text="Show Correlation Table" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="14.0" />
+                                    <BarChart fx:id="degreeDistributionChart" legendVisible="false" prefHeight="500.0" prefWidth="700.0" title="Degree Distribution" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0">
+                                      <xAxis>
+                                        <CategoryAxis side="BOTTOM" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis side="LEFT" />
+                                      </yAxis>
+                                    </BarChart>
+                                    <TextArea fx:id="graphStatText" editable="false" prefHeight="306.0" prefWidth="324.0" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="25.0" />
+                                    <Button mnemonicParsing="false" onAction="#displayMaximalModularity" text="Calculate Maximal Modularity" AnchorPane.bottomAnchor="430.0" AnchorPane.rightAnchor="25.0" />
+                                    <TextArea fx:id="modularityText" editable="false" prefHeight="70.0" prefWidth="320.0" text="Maximal modularity for current graph:" AnchorPane.bottomAnchor="350.0" AnchorPane.rightAnchor="25.0" />
+                                          </children>
+                                      </AnchorPane>
+                           </content>
+                        </ScrollPane>
                             </content>
                         </Tab>
                     </tabs>
@@ -195,28 +198,39 @@
                                                         </RadioButton>
                                                     </children>
                                                 </VBox>
+                                    <VBox layoutX="7.0" layoutY="105.0" prefHeight="78.0" prefWidth="210.0" spacing="7.0">
+                                       <children>
+                                          <RadioButton fx:id="pearsonCorrelationButton" mnemonicParsing="false" selected="true" text="Use Pearson's Correlation">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="correlationButtonsGroup" />
+                                             </toggleGroup>
+                                          </RadioButton>
+                                          <RadioButton fx:id="spearmanCorrelationButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Use Spearman's Correlation" toggleGroup="$correlationButtonsGroup" />
+                                          <RadioButton fx:id="kendallCorrelationButton" layoutX="10.0" layoutY="28.0" mnemonicParsing="false" text="Use Kendall's Correlation" toggleGroup="$correlationButtonsGroup" />
+                                       </children>
+                                    </VBox>
                                                 <HBox layoutX="10.0" layoutY="55.0" spacing="5.0">
                                                     <children>
                                                         <Label text="Rank:" translateY="4.0" />
                                                         <ChoiceBox fx:id="rankChoiceBox" prefHeight="26.0" prefWidth="113.0" />
                                                     </children>
                                                 </HBox>
-                                                <VBox layoutX="5.0" layoutY="300.0" spacing="5.0">
+                                                <VBox layoutX="10.0" layoutY="444.0" spacing="5.0">
                                                     <children>
                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal p-Value:" />
                                                         <HBox spacing="5.0">
                                                             <children>
-                                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" maxWidth="125.0" minorTickCount="0" showTickLabels="true" value="1.0" />
+                                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" maxWidth="125.0" minorTickCount="0" showTickLabels="true" value="0.05" />
                                                                 <TextField fx:id="maxPValueText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
                                                             </children>
                                                         </HBox>
                                                     </children>
                                                 </VBox>
-                                                <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="500.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
-                                    <VBox layoutX="5.0" layoutY="100.0" prefWidth="175.0">
+                                                <Button fx:id="resetFilterSettingsButton" layoutX="15.0" layoutY="644.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
+                                    <VBox layoutX="10.0" layoutY="244.0" prefWidth="175.0">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Positive Correlation Range" />
-                                          <RangeSlider fx:id="posCorrelationRangeSlider" blockIncrement="0.1" highValue="1.0" lowValue="0.0" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
+                                          <RangeSlider fx:id="posCorrelationRangeSlider" blockIncrement="0.1" highValue="1.0" lowValue="0.5" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
                                           <HBox spacing="60.0">
                                              <children>
                                                                 <TextField fx:id="minPosCorrelationText" prefHeight="26.0" prefWidth="60.0" />
@@ -225,10 +239,10 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <VBox layoutX="5.0" layoutY="200.0" prefWidth="175.0">
+                                    <VBox layoutX="10.0" layoutY="344.0" prefWidth="175.0">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Negative Correlation Range" />
-                                          <RangeSlider fx:id="negCorrelationRangeSlider" blockIncrement="0.1" highValue="0.0" lowValue="-1.0" majorTickUnit="1.0" max="0.0" min="-1.0" minorTickCount="0" showTickLabels="true" />
+                                          <RangeSlider fx:id="negCorrelationRangeSlider" blockIncrement="0.1" highValue="-0.5" lowValue="-1.0" majorTickUnit="1.0" max="0.0" min="-1.0" minorTickCount="0" showTickLabels="true" />
                                           <HBox spacing="60.0">
                                              <children>
                                                 <TextField fx:id="minNegCorrelationText" />
@@ -237,7 +251,7 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <VBox layoutX="5.0" layoutY="375.0" prefWidth="175.0">
+                                    <VBox layoutX="10.0" layoutY="519.0" prefWidth="175.0">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Relative Frequency" />
                                           <RangeSlider fx:id="frequencyRangeSlider" highValue="1.0" lowValue="0.0" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" />
@@ -338,7 +352,7 @@
                 </AnchorPane>
             </items>
         </SplitPane>
-        <HBox id="HBox" alignment="CENTER_LEFT" fillHeight="false" spacing="5.0" VBox.vgrow="NEVER">
+        <HBox id="HBox" alignment="CENTER_LEFT" fillHeight="false" spacing="5.0">
             <children>
                 <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
                 <Label fx:id="statusRightLabel" maxWidth="-1.0" text="Running" HBox.hgrow="NEVER">

@@ -20,7 +20,6 @@ import static model.AnalysisData.*;
 public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         implements UndirectedGraph<V, E> {
 
-
     private HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap;
     private HashMap<Integer, HashMap<Integer, MyEdge>> nodeIdsToEdgesMap;
     private Map<V, Map<V, E>> vertices; // Map of vertices to adjacency maps of vertices to incident edges
@@ -35,18 +34,6 @@ public class MyGraph<V, E> extends AbstractTypedGraph<V, E>
         edges = new HashMap<>();
         taxonNodeToVertexMap = new HashMap<>();
         nodeIdsToEdgesMap = new HashMap<>();
-        setupFilterListeners();
-    }
-
-    private void setupFilterListeners() {
-        posCorrelationLowerFilterProperty().addListener(observable -> filterEdges());
-        posCorrelationUpperFilterProperty().addListener(observable -> filterEdges());
-        negCorrelationLowerFilterProperty().addListener(observable -> filterEdges());
-        negCorrelationUpperFilterProperty().addListener(observable -> filterEdges());
-
-        maxPValueProperty().addListener(observable -> filterEdges());
-        minFrequencyProperty().addListener(observable -> filterVertices());
-        maxFrequencyProperty().addListener(observable -> filterVertices());
     }
 
     @Override

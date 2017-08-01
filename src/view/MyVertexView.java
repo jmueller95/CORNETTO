@@ -19,11 +19,13 @@ import model.AnalysisData;
  */
 public class MyVertexView extends Group {
 
-    // Layout constants
+    // Style constants
     private static final Double NODE_RADIUS = 10.0;
     private static final Color FILL = Color.BEIGE;
     private static final Color STROKE = Color.DARKBLUE;
     private static final Color SELECT = Color.DARKORANGE;
+    private static final Color HUBFILL = Color.color(1.0f, 0.4f, 0.4f);
+
 
     // Basic variables
     MyVertex myVertex;
@@ -65,6 +67,19 @@ public class MyVertexView extends Group {
         addLabel();
 
         getChildren().add(vertexShape);
+        //Listen to the isHub-Property of the MyVertex object, make vertexShape thicker if it's a hub
+        myVertex.isHubProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth() * 3);
+                vertexShape.setStroke(Color.BLACK);
+                vertexShape.setFill(HUBFILL);
+            } else {
+                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth() / 3);
+                vertexShape.setStroke(Color.DARKBLUE);
+                vertexShape.setFill(HUBFILL);
+            }
+        });
+
     }
 
     /**
@@ -126,7 +141,10 @@ public class MyVertexView extends Group {
                 vertexShape.setFill(SELECT);
                 System.out.println("node selected");
             } else {
-                vertexShape.setFill(FILL);
+                if (myVertex.isHub())
+                    vertexShape.setFill(HUBFILL);
+                else
+                    vertexShape.setFill(FILL);
                 System.out.println("node unselected");
 
             }

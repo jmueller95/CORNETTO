@@ -1,5 +1,6 @@
 package UI;
 
+import analysis.GraphAnalysis;
 import analysis.SampleComparison;
 import graph.MyEdge;
 import graph.MyGraph;
@@ -16,10 +17,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -53,8 +56,10 @@ import view.*;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static main.Main.getPrimaryStage;
+import static model.AnalysisData.*;
 
 public class MainStageController implements Initializable {
 
@@ -68,9 +73,7 @@ public class MainStageController implements Initializable {
     public MainStageController() {
     }
 
-    private enum FileType {taxonId2Count, readName2TaxonId, biomV1, biomV2}
-
-    private ArrayList<String> openFiles;
+    private enum FileType {taxonId2Count, readName2TaxonId, biomV1, biomV2, qiime}
 
     public static boolean isMainViewMaximized = false;
 
@@ -98,7 +101,7 @@ public class MainStageController implements Initializable {
      * BUTTON ELEMENTS
      */
     @FXML
-    private RadioButton collapseAllButton;
+    private RadioButton collapseAllButton, deselectAllButton;
 
     /**
      * FILTER OPTION ELEMENTS
@@ -112,6 +115,9 @@ public class MainStageController implements Initializable {
 
     @FXML
     private RadioButton compareSelectedSamplesButton;
+
+    @FXML
+    private RadioButton pearsonCorrelationButton, spearmanCorrelationButton, kendallCorrelationButton;
 
     @FXML
     private TextField minPosCorrelationText, maxPosCorrelationText, minNegCorrelationText, maxNegCorrelationText;
@@ -245,25 +251,30 @@ public class MainStageController implements Initializable {
     @FXML
     private AnchorPane analysisPane;
 
-    private TableView<String[]> analysisTable;
-
     @FXML
     private PieChart frequencyChart;
 
     @FXML
-    private Button showTableButton;
+    private BarChart<String, Double> degreeDistributionChart;
 
     @FXML
-    private Text highestFrequencyText, highestPositiveCorrelationText, highestNegativeCorrelationText;
+    private TextArea graphStatText, dataStatText;
 
     @FXML
-    private Text graphStatDummy;
+    private TextArea modularityText;
+
 
     /**
      * INFO PANE
      */
     @FXML
     private TextFlow infoTextFlow;
+
+    @FXML
+    private TextArea infoTextArea;
+
+    @FXML
+    private Button abundancePlotButton;
 
     /**
      * Initializes every needed service
@@ -278,13 +289,14 @@ public class MainStageController implements Initializable {
 
         startTreePreloadService();
         initializeAccordion();
-        initializeCollapseAllButton();
         initializeRankChoiceBox();
         initializeGraphSettings();
         initializeAnalysisPane();
+        initializeGraphAnalysis();
         initializeInfoPane();
         initializeBindings();
         initializeColorComboBox();
+        initializeButtonsOnLeftPane();
         //preload settings
         SaveAndLoadOptions.loadSettings();
 
@@ -301,41 +313,123 @@ public class MainStageController implements Initializable {
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
     public void startAnalysis() {
-        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(new ArrayList<>(LoadedData.getSamplesToAnalyze()));
+        String correlationType = "";
+        if (pearsonCorrelationButton.isSelected())
+            correlationType = "pearson";
+        else if (spearmanCorrelationButton.isSelected())
+            correlationType = "spearman";
+        else if (kendallCorrelationButton.isSelected())
+            correlationType = "kendall";
+
+        boolean isAnalysisSuccessful = AnalysisData.performCorrelationAnalysis(new ArrayList<>(LoadedData.getSamplesToAnalyze()), correlationType);
         if (isAnalysisSuccessful) {
             LoadedData.createGraph();
             LoadedData.getTaxonGraph().filterEdges();
             LoadedData.getTaxonGraph().filterVertices();
             displayGraph(LoadedData.getTaxonGraph());
-            displayAnalysisTexts();
+            displayAnalysisTextsAndGraphs();
+            performGraphAnalysis();
+            displayGraphAnalysis();
+            displayInfoText();
+            setHubsInView();
         } else {//The analysis couldn't be done because of insufficient data
             showInsufficientDataAlert();
         }
 
     }
 
+    @FXML
+    public void showAllSamples() {
+        if (treeViewFiles.getRoot() != null && treeViewFiles.getRoot().getChildren().isEmpty()) {
+            System.out.println("I will show every node.");
+        }
+    }
+
+    @FXML
+    public void showNoSamples() {
+        if (treeViewFiles.getRoot() != null && !treeViewFiles.getRoot().getChildren().isEmpty()) {
+            System.out.println("I will hide every node.");
+            treeViewFiles.getRoot().getChildren().remove(0, treeViewFiles.getRoot().getChildren().size());
+        }
+    }
+
+    @FXML
+    public void showReverseSamples() {
+
+    }
+
     /**
      * chooses which text to display on the bottom left pane
-     * TODO: This isn't called everytime it should be, add some more listeners!
+     * TODO: This isn't called every time it should be, add some more listeners!
      */
     private void displayInfoText() {
-        Text infoText = new Text();
+        String infoText = "";
         if (LoadedData.getSamplesToAnalyze() == null || LoadedData.getSamples().size() < 3) {
-            infoText.setText("Please import at least 3 samples to begin correlation analysis!");
+            infoText = "Please import at least 3 samples to begin correlation analysis!";
         } else if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() <= 3) {
-            infoText.setText("If you want to analyse selected samples only, please select at least 3 samples!");
+            infoText = "If you want to analyse selected samples only, please select at least 3 samples!";
         } else if (rankChoiceBox.getValue() == null) {
-            infoText.setText("Choose a rank to display the graph!");
+            infoText = "Choose a rank to display the graph!";
         } else if (LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() > 1) {
-            infoText.setText("TODO: Display list of chosen nodes");
+            StringBuilder builder = new StringBuilder("Selected Taxa:\n");
+            ObservableList selectedItems = LoadedData.getGraphView().getSelectionModel().getSelectedItems();
+            for (Object selectedItem : selectedItems) {
+                MyVertex vertex = (MyVertex) selectedItem;
+                builder.append(vertex.getTaxonName());
+                builder.append("\n");
+            }
+            infoText = builder.toString();
         } else if (LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() == 1) {
-            infoText.setText("TODO: Display stats for chosen node");
-        } else {
-            infoText.setText("TODO: Show general graph information (e.g. number of visible nodes & edges");
+            MyVertex selectedVertex = (MyVertex) LoadedData.getGraphView().getSelectionModel().getSelectedItems().get(0);
+            GraphAnalysis analysis = AnalysisData.getAnalysis();
+            infoText = "Selected Taxon:\n" + selectedVertex.getTaxonName() + "\nID: " + selectedVertex.getTaxonNode().getTaxonId()
+                    + "\nFrequency: " + String.format("%.3f", AnalysisData.getMaximumRelativeFrequencies().get(selectedVertex.getTaxonNode()))
+                    + "\nNo. of visible edges: " + analysis.getNodeDegrees().get(selectedVertex.getTaxonNode());
+        } else if (LoadedData.getGraphView() != null) {
+            GraphAnalysis analysis = AnalysisData.getAnalysis();
+            ;
+            infoText = "Network Overview: \nNo. of visible taxa: " + analysis.getFilteredGraph().getVertices().size()
+                    + "\nNo. of visible edges: " + analysis.getFilteredGraph().getEdges().size()
+                    + "\nAverage Degree: " + String.format("%.2f", analysis.getMeanDegree());
         }
 
-        infoTextFlow.getChildren().clear();
-        infoTextFlow.getChildren().add(infoText);
+        infoTextArea.setText(infoText);
+    }
+
+    /**
+     * Displays an abundance plot of the selected taxa
+     */
+    @FXML
+    private void displayAbundancePlot() {
+        ObservableList selectedItems = LoadedData.getGraphView().getSelectionModel().getSelectedItems();
+        List<TaxonNode> nodesList = new LinkedList<>();
+        for (Object selectedItem : selectedItems) {
+            nodesList.add(((MyVertex) selectedItem).getTaxonNode());
+        }
+        HashMap<Sample, HashMap<TaxonNode, Integer>> abundancesMap = SampleComparison.calcAbundances(nodesList);
+
+        final CategoryAxis xAxis = new CategoryAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Taxa");
+        yAxis.setLabel("Abundance");
+        BarChart<String, Number> abundancePlot = new BarChart<>(xAxis, yAxis);
+
+        for (Map.Entry<Sample, HashMap<TaxonNode, Integer>> entry : abundancesMap.entrySet()) {
+            XYChart.Series<String, Number> sampleSeries = new XYChart.Series<>();
+            sampleSeries.setName(entry.getKey().getName());
+            for (Map.Entry<TaxonNode, Integer> innerMapEntry : entry.getValue().entrySet()) {
+                sampleSeries.getData().add(new XYChart.Data<>(innerMapEntry.getKey().getName(), innerMapEntry.getValue()));
+            }
+            abundancePlot.getData().add(sampleSeries);
+        }
+
+
+        //Display chart on a new pane
+        Stage chartStage = new Stage();
+        chartStage.setTitle("Abundance Plot");
+        Scene chartScene = new Scene(abundancePlot);
+        chartStage.setScene(chartScene);
+        chartStage.show();
     }
 
     /**
@@ -365,8 +459,14 @@ public class MainStageController implements Initializable {
             vertexView.getVertexLabel().visibleProperty().bind(showLabelsCheckBox.selectedProperty());
         }
 
-        //call displayInfoText whenever the selection changes
-        LoadedData.getGraphView().getSelectionModel().getSelectedItems().addListener((InvalidationListener) e -> displayInfoText());
+        //call displayInfoText whenever the selection changes + decide whether or not to enable the abundancePlotButton
+        LoadedData.getGraphView().getSelectionModel().getSelectedItems().addListener((InvalidationListener) e -> {
+            displayInfoText();
+            if (LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() == 0)
+                abundancePlotButton.setDisable(true);
+            else
+                abundancePlotButton.setDisable(false);
+        });
 
 
     }
@@ -377,9 +477,7 @@ public class MainStageController implements Initializable {
     @FXML
     private void displayCorrelationTable() {
         //Delete whatever's been in the table before
-//        analysisTable.getItems().clear();
-//        analysisTable.getColumns().clear();
-        analysisTable = new TableView<>();
+        TableView<String[]> analysisTable = new TableView<>();
 
         //We want to display correlations and p-Values of every node combination
         double[][] correlationMatrix = AnalysisData.getCorrelationMatrix().getData();
@@ -427,7 +525,7 @@ public class MainStageController implements Initializable {
             analysisTable.getItems().add(tableValues[i]);
         }
 
-        //Display table on a new pane
+        //Display table on a new stage
         Stage tableStage = new Stage();
         tableStage.setTitle("Correlation Table");
         Scene tableScene = new Scene(analysisTable);
@@ -437,11 +535,13 @@ public class MainStageController implements Initializable {
 
     }
 
-    private void displayAnalysisTexts() {
+    private void displayAnalysisTextsAndGraphs() {
+
         //Display node with highest frequency
         double highestFrequency = AnalysisData.getHighestFrequency();
         TaxonNode nodeWithHighestFrequency = AnalysisData.getNodeWithHighestFrequency();
-        highestFrequencyText.setText(nodeWithHighestFrequency.getName() + " (" + String.format("%.3f", highestFrequency) + ")");
+        dataStatText.setText("Highest Frequency:\n"
+                + nodeWithHighestFrequency.getName() + " (" + String.format("%.3f", highestFrequency) + ")\n");
 
         //Display nodes with highest positive/negative correlation
         RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
@@ -452,13 +552,15 @@ public class MainStageController implements Initializable {
         TaxonNode hPCNode2 = taxonList.get(highestPositiveCorrelationCoordinates[1]);
         TaxonNode hNCNode1 = taxonList.get(highestNegativeCorrelationCoordinates[0]);
         TaxonNode hNCNode2 = taxonList.get(highestNegativeCorrelationCoordinates[1]);
-        highestPositiveCorrelationText.setText(hPCNode1.getName() + " - " + hPCNode2.getName()
+
+        dataStatText.setText(dataStatText.getText() + "\nHighest Positive Correlation:\n"
+                + hPCNode1.getName() + " - " + hPCNode2.getName()
                 + " (" + String.format("%.3f", correlationMatrix.getEntry(highestPositiveCorrelationCoordinates[0], highestPositiveCorrelationCoordinates[1]))
-                + ")");
-        highestNegativeCorrelationText.setText(hNCNode1.getName() + " - " + hNCNode2.getName()
+                + ")\n");
+        dataStatText.setText(dataStatText.getText() + "\nHighest Negative Correlation:\n"
+                + hNCNode1.getName() + " - " + hNCNode2.getName()
                 + " (" + String.format("%.3f", correlationMatrix.getEntry(highestNegativeCorrelationCoordinates[0], highestNegativeCorrelationCoordinates[1]))
                 + ")");
-        graphStatDummy.setText("dummy dummy dummy");
 
         //Generate Data for the pie chart
         frequencyChart.getData().clear();
@@ -467,8 +569,59 @@ public class MainStageController implements Initializable {
             PieChart.Data data = new PieChart.Data(taxonNode.getName(), averageCounts.get(taxonNode));
             frequencyChart.getData().add(data);
         }
+
+
         analysisPane.setVisible(true);
+
+
     }
+
+    public void performGraphAnalysis() {
+        AnalysisData.setAnalysis(new GraphAnalysis(LoadedData.getTaxonGraph()));
+    }
+
+    public void displayGraphAnalysis() {
+        //Generate Data for the BarChart
+        GraphAnalysis analysis = AnalysisData.getAnalysis();
+        HashMap<Integer, Double> degreeDistribution = analysis.getDegreeDistribution();
+        XYChart.Series<String, Double> degreeSeries = new XYChart.Series<>();
+
+        for (Map.Entry<Integer, Double> entry : degreeDistribution.entrySet()) {
+            degreeSeries.getData().add(new XYChart.Data<>(entry.getKey().toString(), entry.getValue()));
+        }
+        degreeDistributionChart.getData().clear();
+        degreeDistributionChart.getData().add(degreeSeries);
+
+        //Generate Graph Statistics to display in the TextArea
+        HashMap<TaxonNode, Integer> hubs = analysis.getHubsList();
+        graphStatText.setText("List of Hubs:\n\n");
+
+        //Sort hubs by descending values
+        Map<TaxonNode, Integer> hubsSorted = hubs.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+
+
+        for (Map.Entry<TaxonNode, Integer> entry : hubsSorted.entrySet()) {
+            graphStatText.setText(graphStatText.getText() + entry.getKey().getName() + " (" + entry.getValue() + ")\n");
+        }
+
+
+    }
+
+    public void displayMaximalModularity() {
+        GraphAnalysis analysis = AnalysisData.getAnalysis();
+        double maxModularity = analysis.findGlobalMaximumModularity();
+        modularityText.setText("Maximal modularity for current graph:\n" + String.format("%.3f", maxModularity));
+
+    }
+
 
     //FILE methods
     @FXML
@@ -488,7 +641,14 @@ public class MainStageController implements Initializable {
             if (mainViewTab.getContent() != null) {
                 mainViewTab.setContent(null);
             }
+            if (LoadedData.getGraphView().animationService.isRunning()) {
+                LoadedData.getGraphView().animationService.cancel();
+            }
+            deselectAllButton.setDisable(true);
+            collapseAllButton.setDisable(true);
         }
+        analysisPane.setVisible(false);
+        rankChoiceBox.setValue(null);
     }
 
     @FXML
@@ -509,6 +669,11 @@ public class MainStageController implements Initializable {
     @FXML
     public void openBiomV2Files() {
         openFiles(FileType.biomV1);
+    }
+
+    @FXML
+    public void openQiimeFiles() {
+         openFiles(FileType.qiime);
     }
 
     /**
@@ -568,6 +733,9 @@ public class MainStageController implements Initializable {
                 break;
             case biomV2:
                 fileChooser.setTitle(fileChooserTitle + "biomV2 file");
+                break;
+            case qiime:
+                fileChooser.setTitle(fileChooserTitle + "qiime file");
         }
 
         //Choose the file / files
@@ -578,7 +746,7 @@ public class MainStageController implements Initializable {
             ArrayList<String> namesOfAlreadyLoadedFiles = new ArrayList<>();
             for (File file : selectedFiles) {
                 String foundFileName = file.getName();
-                if (openFiles != null && openFiles.contains(foundFileName)) {
+                if (LoadedData.getOpenFiles() != null && LoadedData.getOpenFiles().contains(foundFileName)) {
                     namesOfAlreadyLoadedFiles.add(foundFileName);
                 } else {
                     switch (fileType) {
@@ -593,6 +761,9 @@ public class MainStageController implements Initializable {
                             break;
                         case biomV2:
                             addBiomV2FileToTreeView(file);
+                            break;
+                        case qiime:
+                            //TODO HANDLE METADATA PROVIDED BY QIIME
                             break;
                     }
                 }
@@ -638,10 +809,13 @@ public class MainStageController implements Initializable {
         } catch (IOException e) {
             showWrongFileAlert();
             return;
+        } catch (NumberFormatException e) {
+            showWrongFileAlert();
+            return;
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
-        activateButtonsOnTheRightPane();
+        activateButtons();
     }
 
     /**
@@ -657,7 +831,7 @@ public class MainStageController implements Initializable {
         samples = biomV1Parser.parse(file.getAbsolutePath());
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
-        activateButtonsOnTheRightPane();
+        activateButtons();
     }
 
     /**
@@ -675,10 +849,13 @@ public class MainStageController implements Initializable {
         } catch (IOException e) {
             showWrongFileAlert();
             return;
+        } catch (NumberFormatException e) {
+            showWrongFileAlert();
+            return;
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
-        activateButtonsOnTheRightPane();
+        activateButtons();
     }
 
     /**
@@ -696,11 +873,15 @@ public class MainStageController implements Initializable {
         } catch (IOException e) {
             showWrongFileAlert();
             return;
+        } catch (NumberFormatException e) {
+            showWrongFileAlert();
+            return;
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
-        activateButtonsOnTheRightPane();
+        activateButtons();
     }
+
 
     /**
      * verifies the opened file
@@ -719,13 +900,19 @@ public class MainStageController implements Initializable {
         }
     }
 
+    public void initializeButtonsOnLeftPane() {
+        collapseAllButton.setDisable(true);
+        collapseAllButton.setTooltip(new Tooltip("collapse all"));
+        deselectAllButton.setDisable(true);
+        deselectAllButton.setTooltip(new Tooltip("deselect all"));
+    }
 
     @FXML
     /**
      * Collapses all nodes in the treeview element
      */
     public void collapseAll() {
-        if (treeViewFiles.getRoot().getChildren().isEmpty()) {
+        if (treeViewFiles.getRoot() == null || treeViewFiles.getRoot().getChildren().isEmpty()) {
             collapseAllButton.disarm();
             collapseAllButton.setSelected(false);
         } else {
@@ -741,6 +928,23 @@ public class MainStageController implements Initializable {
                 }
                 collapseAllButton.setSelected(true);
                 collapseAllButton.arm();
+            }
+        }
+    }
+
+    @FXML
+    /**
+     * Deselects all nodes in the treeview element
+     */
+    public void deselectAll() {
+        if (treeViewFiles.getRoot() == null || treeViewFiles.getRoot().getChildren().isEmpty()) {
+            deselectAllButton.setSelected(false);
+            deselectAllButton.disarm();
+        } else {
+            if (deselectAllButton.isSelected()) {
+                System.out.println("I understand you");
+                treeViewFiles.getRoot().getChildren().stream()
+                        .map(child -> {child.setValue("Deselected"); return child;});
             }
         }
     }
@@ -767,15 +971,10 @@ public class MainStageController implements Initializable {
     /**
      * Activates the buttons on the right pane
      */
-    private void activateButtonsOnTheRightPane() {
+    private void activateButtons() {
         rankChoiceBox.setDisable(false);
-    }
-
-    /**
-     * Initializes the collapse all button on the left pane
-     */
-    private void initializeCollapseAllButton() {
-        collapseAllButton.setSelected(false);
+        collapseAllButton.setDisable(false);
+        deselectAllButton.setDisable(false);
     }
 
     /**
@@ -792,6 +991,49 @@ public class MainStageController implements Initializable {
      */
     private void initializeAnalysisPane() {
         analysisPane.setVisible(false);
+
+    }
+
+    /**
+     * Sets up listeners that update graph everytime the graph changes
+     */
+    private void initializeGraphAnalysis() {
+        degreeDistributionChart.getXAxis().setLabel("Degree");
+        degreeDistributionChart.getYAxis().setLabel("Node Fraction");
+
+        posCorrelationLowerFilterProperty().addListener(observable -> updateView());
+        posCorrelationUpperFilterProperty().addListener(observable -> updateView());
+        negCorrelationLowerFilterProperty().addListener(observable -> updateView());
+        negCorrelationUpperFilterProperty().addListener(observable -> updateView());
+        maxPValueProperty().addListener(observable -> updateView());
+        minFrequencyProperty().addListener(observable -> updateView());
+        maxFrequencyProperty().addListener(observable -> updateView());
+
+    }
+
+    private void updateView() {
+        if (LoadedData.getTaxonGraph() == null) {
+            return;
+        }
+
+        LoadedData.getTaxonGraph().filterEdges();
+        LoadedData.getTaxonGraph().filterVertices();
+        performGraphAnalysis();
+        displayGraphAnalysis();
+        displayInfoText();
+        setHubsInView();
+
+    }
+
+    private void setHubsInView() {
+        HashMap<TaxonNode, Integer> hubsList = AnalysisData.getAnalysis().getHubsList();
+        HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap = LoadedData.getTaxonGraph().getTaxonNodeToVertexMap();
+        for (Map.Entry<TaxonNode, MyVertex> entry : taxonNodeToVertexMap.entrySet()) {
+            if (hubsList.containsKey(entry.getKey()))
+                entry.getValue().setIsHub(true);
+            else
+                entry.getValue().setIsHub(false);
+        }
     }
 
     /**
@@ -800,6 +1042,8 @@ public class MainStageController implements Initializable {
     private void initializeInfoPane() {
 //        LoadedData.getSamplesToAnalyze().addListener((InvalidationListener) e -> displayInfoText());
         rankChoiceBox.valueProperty().addListener(e -> displayInfoText());
+        abundancePlotButton.setDisable(true);
+
     }
 
     private void initializeBindings() {
@@ -837,8 +1081,10 @@ public class MainStageController implements Initializable {
         AnalysisData.maxFrequencyProperty().bind(frequencyRangeSlider.highValueProperty());
         AnalysisData.maxPValueProperty().bind(maxPValueSlider.valueProperty());
 
-        //The lower value of the negative slider can't be set to -1 from FXML for reasons beyond understanding, so we set it manually
+        //The values of the negative slider can't be set to negative values via FXML for reasons beyond human understanding,
+        // so we set it manually
         negCorrelationRangeSlider.setLowValue(-1);
+        negCorrelationRangeSlider.setHighValue(-0.5);
 
         //We want the graph to be redone if one of the following occurs:
         //1. Radio button switches between "Analyze All" and "Analyze Selected"
@@ -860,6 +1106,10 @@ public class MainStageController implements Initializable {
                 startAnalysis();
             }
         });
+        //4. Correlation radio button is changed
+        pearsonCorrelationButton.selectedProperty().addListener(o -> startAnalysis());
+        spearmanCorrelationButton.selectedProperty().addListener(o -> startAnalysis());
+        kendallCorrelationButton.selectedProperty().addListener(o -> startAnalysis());
 
 
     }
@@ -893,14 +1143,14 @@ public class MainStageController implements Initializable {
         }
         // Bind Edge Width Slider to all Edges in Graph
         for (Node node : graphView.getMyEdgeViewGroup().getChildren()) {
-            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty());
+            ((MyEdgeView) node).getWidthProperty().bind(sliderEdgeWidth.valueProperty().multiply(Math.abs(((MyEdgeView) node).getMyEdge().getCorrelation()) + 0.1));
         }
 
         /**buttonPauseAnimation.setOnAction(e -> {
-            boolean isRunning = graphView.animationService.isRunning();
-            if (isRunning) graphView.animationService.cancel();
-            if (!isRunning) graphView.animationService.restart();
-        }); **/
+         boolean isRunning = graphView.animationService.isRunning();
+         if (isRunning) graphView.animationService.cancel();
+         if (!isRunning) graphView.animationService.restart();
+         }); **/
 
         sliderEdgeLength.lowValueProperty().addListener((o, e, n) -> {
             graphView.animationService.setEdgeLengthLow(n.doubleValue());
@@ -933,11 +1183,11 @@ public class MainStageController implements Initializable {
 
     @FXML
     public void resetFilterSettings() {
-        posCorrelationRangeSlider.setLowValue(0);
+        posCorrelationRangeSlider.setLowValue(0.5);
         posCorrelationRangeSlider.setHighValue(1);
         negCorrelationRangeSlider.setLowValue(-1);
-        negCorrelationRangeSlider.setHighValue(0);
-        maxPValueSlider.setValue(1);
+        negCorrelationRangeSlider.setHighValue(-0.5);
+        maxPValueSlider.setValue(0.05);
         frequencyRangeSlider.setLowValue(0);
         frequencyRangeSlider.setHighValue(1);
     }
@@ -1077,23 +1327,27 @@ public class MainStageController implements Initializable {
         wrongFileAlert = new Alert(Alert.AlertType.ERROR);
         wrongFileAlert.setTitle("File not loaded");
         wrongFileAlert.setHeaderText("Invalid file.");
-        aboutAlert.show();
+        wrongFileAlert.setContentText("You tried to load a file with a wrong file type.");
+        wrongFileAlert.show();
     }
 
     /**
      * Prompts an alert that the selected file is already part of the current project.
      */
     private void showFileAlreadyLoadedAlert(ArrayList<String> fileNames) {
-        StringBuilder namesOfFileAlreadyLoaded = new StringBuilder();
-
-        for (String name : fileNames) {
-            namesOfFileAlreadyLoaded.append(name).append(fileNames.size() == 1 || fileNames.get(fileNames.size()).equals(name) ? "" : ", ");
+        if (fileNames.size() > 1) {
+            fileNames = fileNames
+                    .stream()
+                    .map(string -> "'" + string + "'")
+                    .collect(Collectors.toCollection(ArrayList::new));
         }
+        String name = String.join(",\n", fileNames);
 
-        String fileAlreadyLoaded = "The files '" + namesOfFileAlreadyLoaded + "' is already loaded in your project.";
+        String oneFileAlreadyLoaded = "The file '" + name + "' is already loaded in your project.";
+        String multipleFilesAlreadyLoaded = "The files\n" + name + "\n are already loaded in your project.";
         fileAlreadyLoadedAlert = new Alert(Alert.AlertType.ERROR);
         fileAlreadyLoadedAlert.setTitle("File not loaded.");
-        fileAlreadyLoadedAlert.setContentText(fileAlreadyLoaded);
+        fileAlreadyLoadedAlert.setContentText(fileNames.size() == 1 ? oneFileAlreadyLoaded : multipleFilesAlreadyLoaded);
         fileAlreadyLoadedAlert.show();
     }
 

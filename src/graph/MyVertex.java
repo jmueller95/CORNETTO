@@ -14,6 +14,7 @@ public class MyVertex {
     private TaxonNode taxonNode;
     private BooleanProperty isHidden = new SimpleBooleanProperty(false);
     private BooleanProperty isSelected = new SimpleBooleanProperty(false);
+    private BooleanProperty isHub = new SimpleBooleanProperty(false);
 
     private DoubleProperty xCoordinates;
     private DoubleProperty yCoordinates;
@@ -104,5 +105,17 @@ public class MyVertex {
 
     public List<MyEdge> getEdgesList() {
         return edgesList;
+    }
+
+    public boolean isHub() {
+        return isHub.get();
+    }
+
+    public BooleanProperty isHubProperty() {
+        return isHub;
+    }
+
+    public void setIsHub(boolean isHub) {
+        this.isHub.set(isHub);
     }
 }
