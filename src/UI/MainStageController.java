@@ -762,6 +762,9 @@ public class MainStageController implements Initializable {
         } catch (IOException e) {
             showWrongFileAlert();
             return;
+        } catch (NumberFormatException e) {
+            showWrongFileAlert();
+            return;
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
@@ -799,6 +802,9 @@ public class MainStageController implements Initializable {
         } catch (IOException e) {
             showWrongFileAlert();
             return;
+        } catch (NumberFormatException e) {
+            showWrongFileAlert();
+            return;
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
@@ -818,6 +824,9 @@ public class MainStageController implements Initializable {
         try {
             samples = taxonId2CountCSVParser.parse(file.getAbsolutePath());
         } catch (IOException e) {
+            showWrongFileAlert();
+            return;
+        } catch (NumberFormatException e) {
             showWrongFileAlert();
             return;
         }
@@ -1205,7 +1214,8 @@ public class MainStageController implements Initializable {
         wrongFileAlert = new Alert(Alert.AlertType.ERROR);
         wrongFileAlert.setTitle("File not loaded");
         wrongFileAlert.setHeaderText("Invalid file.");
-        aboutAlert.show();
+        wrongFileAlert.setContentText("You tried to load a file with a wrong file type.");
+        wrongFileAlert.show();
     }
 
     /**
