@@ -641,7 +641,7 @@ public class MainStageController implements Initializable {
             if (mainViewTab.getContent() != null) {
                 mainViewTab.setContent(null);
             }
-            if (LoadedData.getGraphView().animationService.isRunning()) {
+            if (LoadedData.getGraphView() != null && LoadedData.getGraphView().animationService.isRunning()) {
                 LoadedData.getGraphView().animationService.cancel();
             }
             deselectAllButton.setDisable(true);
@@ -956,7 +956,7 @@ public class MainStageController implements Initializable {
      */
     private void startTreePreloadService() {
         TreePreloadService treePreloadService = new TreePreloadService();
-        treePreloadService.setOnSucceeded(e -> startupSpinner.setProgress(100));
+        treePreloadService.setOnSucceeded(e -> mainViewTab.setContent(null));
         startupLabel.textProperty().bind(treePreloadService.messageProperty());
         treePreloadService.start();
     }
