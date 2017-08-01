@@ -29,8 +29,6 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.TreeView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -62,22 +60,17 @@
                                 </Menu>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" onAction="#openRecentFile" text="Open Recent" />
+                        <Menu disable="true" mnemonicParsing="false" onAction="#openRecentFile" text="Open Recent" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#closeProject" text="Close" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Save" />
-                        <MenuItem mnemonicParsing="false" text="Save As…" />
+                        <MenuItem disable="true" mnemonicParsing="false" text="Save" />
+                        <MenuItem disable="true" mnemonicParsing="false" text="Save As…" />
                         <MenuItem mnemonicParsing="false" onAction="#exportImages" text="Export" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Settings" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="buttonExit" mnemonicParsing="false" onAction="#quit" text="Quit" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="View">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#toggleMainView" text="Toggle Main View" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
@@ -145,11 +138,6 @@
                                                     <children>
                                                         <ProgressIndicator fx:id="startupSpinner" />
                                                         <Label fx:id="startupLabel" nodeOrientation="LEFT_TO_RIGHT" text="Label" textAlignment="CENTER" />
-                                          <ImageView fitHeight="200.0" fitWidth="200.0">
-                                             <image>
-                                                <Image url="@../../res/images/rotated_croissant1600.png" />
-                                             </image>
-                                          </ImageView>
                                                     </children>
                                                 </VBox>
                                             </children>

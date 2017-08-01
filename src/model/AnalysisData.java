@@ -81,8 +81,6 @@ public class AnalysisData {
         return mdsj;
     }
 
-
-
     /**
      * Returns the coordinates in the correlation matrix with the highest positive value in the shape {x,y}
      *

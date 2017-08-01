@@ -6,7 +6,7 @@ import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.application.Platform;
-import javafx.beans.*;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -22,10 +22,6 @@ import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
@@ -111,7 +107,7 @@ public class MainStageController implements Initializable {
 
     @FXML
     private Accordion preferencesAccordion;
-    
+
     /**
      * BUTTON ELEMENTS
      */
@@ -320,6 +316,7 @@ public class MainStageController implements Initializable {
         //preload settings
         SaveAndLoadOptions.loadSettings();
 
+
         //Display the info text in the bottom left pane
         displayInfoText();
     }
@@ -383,12 +380,12 @@ public class MainStageController implements Initializable {
      * chooses which text to display on the bottom left pane
      * TODO: This isn't called every time it should be, add some more listeners!
      */
-    private void displayInfoText() {
+    public void displayInfoText() {
         String infoText = "";
         if (LoadedData.getSamplesToAnalyze() == null || LoadedData.getSamples().size() < 3) {
-            infoText = "Please import at least 3 samples to begin correlation analysis!";
-        } else if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() <= 3) {
-            infoText = "If you want to analyse selected samples only, please select at least 3 samples!";
+            infoText = "Please import at least 3 samples \nto begin correlation analysis!";
+        } else if (compareSelectedSamplesButton.isSelected() && LoadedData.getSelectedSamples().size() < 3) {
+            infoText = "If you want to analyse selected \nsamples only, please select \nat least 3 samples!";
         } else if (rankChoiceBox.getValue() == null) {
             infoText = "Choose a rank to display the graph!";
         } else if (LoadedData.getGraphView() != null && LoadedData.getGraphView().getSelectionModel().getSelectedItems().size() > 1) {
@@ -472,7 +469,6 @@ public class MainStageController implements Initializable {
         bindColourSettings(graphView);
 
         mainViewTab.setContent(viewPane);
-
 
         //Bind the showLabels-Checkbox to the visibility properties of the MyVertexView labels
         for (Node node : LoadedData.getGraphView().getMyVertexViewGroup().getChildren()) {
@@ -864,6 +860,8 @@ public class MainStageController implements Initializable {
                 showFileAlreadyLoadedAlert(namesOfAlreadyLoadedFiles);
             }
         }
+
+
     }
 
     /**
@@ -1082,6 +1080,7 @@ public class MainStageController implements Initializable {
     private void activateButtons() {
         rankChoiceBox.setDisable(false);
         collapseAllButton.setDisable(false);
+        LoadedData.getSelectedSamples().addListener((InvalidationListener) e -> displayInfoText());
     }
 
     /**
@@ -1152,8 +1151,8 @@ public class MainStageController implements Initializable {
      * Sets up listeners to call displayInfoText() whenever it is necessary
      */
     private void initializeInfoPane() {
-//        LoadedData.getSamplesToAnalyze().addListener((InvalidationListener) e -> displayInfoText());
         rankChoiceBox.valueProperty().addListener(e -> displayInfoText());
+        compareSelectedSamplesButton.selectedProperty().addListener(e -> displayInfoText());
         abundancePlotButton.setDisable(true);
 
     }
@@ -1212,7 +1211,7 @@ public class MainStageController implements Initializable {
         });
         //2. Rank selection changes
         rankChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
+            if (newValue != null && LoadedData.getSamplesToAnalyze().size()>=3) {
                 AnalysisData.setLevel_of_analysis(newValue.toLowerCase());
                 startAnalysis();
             }
@@ -1295,8 +1294,8 @@ public class MainStageController implements Initializable {
             graphView.animationService.setFrameRate(fr.intValue());
         });
 
-//        buttonPauseAnimation.selectedProperty().bindBidirectional(graphView.pausedProperty);
-        graphView.pausedProperty.bind(buttonPauseAnimation.selectedProperty());
+        buttonPauseAnimation.selectedProperty().bindBidirectional(graphView.pausedProperty);
+
 
     }
 
@@ -1429,16 +1428,21 @@ public class MainStageController implements Initializable {
      *
      * Shows information about the software.
      */ private void showAboutAlert() {
-        String information = String.format("Cornetto is a modern tool to visualize and calculate correlations between" +
-                " samples. It was created in 2017 by students of the group of Professor Huson in Tübingen. The group " +
-                "was supervised by Caner Bagci" +
-                " ");
-        Text text = new Text(information);
+        Hyperlink hyperlink = new Hyperlink();
+        hyperlink.setText("https://github.com/jmueller95/CORNETTO");
+        Text text = new Text("Cornetto is a modern tool to visualize and calculate correlations between" +
+                "samples.\nIt was created in 2017 by students of the group of Professor Huson in Tübingen.\nThe group" +
+                "was supervised by Caner Bagci.\n\n" +
+                "This project is licensed under the MIT License.\n\n" +
+                "For more information go to: ");
+
+        TextFlow textFlow = new TextFlow(text, hyperlink);
+
         text.setWrappingWidth(500);
         aboutAlert = new Alert(Alert.AlertType.INFORMATION);
         aboutAlert.setTitle("About " + GlobalConstants.NAME_OF_PROGRAM);
         aboutAlert.setHeaderText("What is " + GlobalConstants.NAME_OF_PROGRAM);
-        aboutAlert.getDialogPane().setContent(text);
+        aboutAlert.getDialogPane().setContent(textFlow);
         aboutAlert.show();
     }
 

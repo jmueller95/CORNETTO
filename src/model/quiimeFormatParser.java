@@ -13,7 +13,6 @@ import java.util.ArrayList;
  * everything that follows in the header of the metadata format is the name of that metadata field
  */
 public class quiimeFormatParser {
-
     /**
      * parses the quiime file format
      * we only require sampleID, Treatment and DOB
@@ -37,4 +36,5 @@ public class quiimeFormatParser {
         }
         return listOfMetaData;
     }
+
 }
