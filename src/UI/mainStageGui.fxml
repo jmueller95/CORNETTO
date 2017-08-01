@@ -43,7 +43,7 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -146,7 +146,7 @@
                         </Tab>
                         <Tab text="Analysis">
                             <content>
-                        <ScrollPane hvalue="1.0" minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0" vvalue="1.0">
+                        <ScrollPane minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0">
                            <content>
                                       <AnchorPane fx:id="analysisPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1250.0" minWidth="1250.0" pickOnBounds="false">
                                           <children>
@@ -178,7 +178,7 @@
                 </TabPane>
                 <AnchorPane fx:id="rightPane" maxWidth="220.0" minWidth="0.0">
                     <children>
-                        <Accordion fx:id="preferencesAccordion" prefHeight="471.0" prefWidth="220.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Accordion fx:id="preferencesAccordion" prefHeight="471.0" prefWidth="220.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <panes>
                                 <TitledPane animated="false" text="Filter">
                                     <content>
@@ -226,7 +226,7 @@
                                                         </HBox>
                                                     </children>
                                                 </VBox>
-                                                <Button fx:id="resetFilterSettingsButton" layoutX="15.0" layoutY="644.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
+                                                <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="611.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
                                     <VBox layoutX="10.0" layoutY="244.0" prefWidth="175.0">
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Positive Correlation Range" />
@@ -279,16 +279,7 @@
                                           <Slider fx:id="sliderEdgeWidth" max="12" min="0" value="5.0" />
                                           <Label text="Edge length:" />
                                           <RangeSlider fx:id="sliderEdgeLength" highValue="500" lowValue="150" max="1000" min="1.0" />
-                                          <Label text="Animation:" />
-                                          <HBox alignment="CENTER" VBox.vgrow="NEVER">
-                                             <children>
-                                                <ToggleButton fx:id="buttonPauseAnimation" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Pause/Resume" HBox.hgrow="NEVER">
-                                                    <Label>
-                                                    <Glyph fontFamily="FontAwesome" icon="PAUSE" />
-                                                    </Label>
-                                                </ToggleButton>
-                                             </children>
-                                          </HBox>
+                                          <HBox alignment="CENTER" VBox.vgrow="NEVER" />
                                           <Label />
                                           <CheckBox fx:id="showLabelsCheckBox" mnemonicParsing="false" text="Show Labels" />
                                           <Label />
@@ -348,6 +339,26 @@
                                 </TitledPane>
                             </panes>
                         </Accordion>
+                  <VBox layoutX="1.0" layoutY="785.0" prefHeight="47.0" prefWidth="220.0" spacing="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Exclude frequencies below..." />
+                        <HBox>
+                           <children>
+                              <Slider fx:id="excludeFrequencySlider" max="0.1" showTickLabels="true">
+                                 <padding>
+                                    <Insets top="2.0" />
+                                 </padding>
+                              </Slider>
+                              <TextField fx:id="excludeFrequencyText" prefHeight="26.0" prefWidth="86.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <ToggleButton fx:id="buttonPauseAnimation" layoutX="4.0" layoutY="749.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Pause/Resume Animation">
+                      <Label>
+                      <Glyph fontFamily="FontAwesome" icon="PAUSE" />
+                      </Label>
+                  </ToggleButton>
                     </children>
                 </AnchorPane>
             </items>

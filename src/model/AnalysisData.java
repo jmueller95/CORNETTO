@@ -5,10 +5,13 @@ import analysis.SampleComparison;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import mdsj.*;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AnalysisData {
     private static RealMatrix correlationMatrix, pValueMatrix;
@@ -28,6 +31,9 @@ public class AnalysisData {
     private static DoubleProperty minFrequencyFilter = new SimpleDoubleProperty();
     private static DoubleProperty maxFrequencyFilter = new SimpleDoubleProperty();
 
+    private static DoubleProperty excludeFrequencyThreshold = new SimpleDoubleProperty();
+
+
     //Graph analysis object
     private static GraphAnalysis analysis;
 
@@ -39,10 +45,10 @@ public class AnalysisData {
     public static boolean performCorrelationAnalysis(ArrayList<Sample> samples, String type) {
         //Check if data is sufficient for analysis performing (check if there are at least two taxa)
         if (SampleComparison.getUnifiedTaxonList(samples, level_of_analysis).size() > 1) {
+            maximumRelativeFrequencies = SampleComparison.calcMaximumRelativeFrequencies(samples, level_of_analysis);
             SampleComparison.createCorrelationOfSamples(samples, level_of_analysis, type);
             correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples();
             pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples();
-            maximumRelativeFrequencies = SampleComparison.calcMaximumRelativeFrequencies(samples, level_of_analysis);
             calcHighestFrequency();
             highestPositiveCorrelationCoordinates = calcHighestPositiveCorrelationCoordinates();
             highestNegativeCorrelationCoordinates = calcHighestNegativeCorrelationCoordinates();
@@ -222,6 +228,14 @@ public class AnalysisData {
 
     public static void setAnalysis(GraphAnalysis newAnalysis) {
         analysis = newAnalysis;
+    }
+
+    public static DoubleProperty excludeFrequencyThresholdProperty() {
+        return excludeFrequencyThreshold;
+    }
+
+    public static double getExcludeFrequencyThreshold() {
+        return excludeFrequencyThreshold.get();
     }
 
     /**

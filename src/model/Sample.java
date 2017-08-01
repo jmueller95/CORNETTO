@@ -2,12 +2,14 @@ package model;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by jm on 15.05.17.
  */
 public class Sample implements Serializable {
 
+    private HashMap<TaxonNode, Integer> fullTaxa2CountMap;
     private HashMap<TaxonNode, Integer> taxa2CountMap;
     private static HashMap<String, String> metaDataMap;
     private String sampleId;
@@ -40,6 +42,26 @@ public class Sample implements Serializable {
             recursiveSum += getTaxonCountRecursive(child);
         }
         return recursiveSum;
+    }
+
+    /**
+     * Deletes every taxa from the sample whose frequency is below the threshold
+     */
+    public void filterTaxaPrimary() {
+        int countSum = 0;
+        for (Integer integer : taxa2CountMap.values()) {
+            countSum += integer;
+        }
+        if (fullTaxa2CountMap == null) {
+            fullTaxa2CountMap = (HashMap<TaxonNode, Integer>) taxa2CountMap.clone();
+        }
+        HashMap<TaxonNode, Integer> filteredMap = new HashMap<>();
+        for (Map.Entry<TaxonNode, Integer> entry : fullTaxa2CountMap.entrySet()) {
+            if (entry.getValue() / (double) countSum > AnalysisData.getExcludeFrequencyThreshold())
+                filteredMap.put(entry.getKey(), entry.getValue());
+        }
+        taxa2CountMap = filteredMap;
+
     }
 
 

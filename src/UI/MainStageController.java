@@ -18,12 +18,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -244,6 +246,12 @@ public class MainStageController implements Initializable {
     ComboBox<Palette> edgeColourCombo = new ComboBox<>();
 
 
+    @FXML
+    private Slider excludeFrequencySlider;
+
+    @FXML
+    private TextField excludeFrequencyText;
+
     /**
      * ANALYSIS PANE ELEMENTS
      */
@@ -313,6 +321,10 @@ public class MainStageController implements Initializable {
      * Creates correlation data, creates the internal graph, applies default filter, displays the graph
      */
     public void startAnalysis() {
+        for (Sample sample : LoadedData.getSamplesToAnalyze()) {
+            sample.filterTaxaPrimary();
+        }
+
         String correlationType = "";
         if (pearsonCorrelationButton.isSelected())
             correlationType = "pearson";
@@ -485,9 +497,6 @@ public class MainStageController implements Initializable {
         LinkedList<TaxonNode> taxonList = SampleComparison.getUnifiedTaxonList(
                 LoadedData.getSamplesToAnalyze(), AnalysisData.getLevel_of_analysis());
 
-        //We also want to color the two cells with the highest positive/negative correlation
-        int[] highestPositiveCorrelationCoordinates = AnalysisData.getHighestPositiveCorrelationCoordinates();
-        int[] highestNegativeCorrelationCoordinates = AnalysisData.getHighestNegativeCorrelationCoordinates();
 
         //Table will consist of strings
         String[][] tableValues = new String[correlationMatrix.length][correlationMatrix[0].length + 1];
@@ -496,8 +505,8 @@ public class MainStageController implements Initializable {
         for (int i = 0; i < tableValues.length; i++) {
             tableValues[i][0] = taxonList.get(i).getName();
             for (int j = 1; j < tableValues[0].length; j++) {
-                tableValues[i][j] = String.format("%.3f", correlationMatrix[i][j - 1])
-                        + "\n(" + String.format("%.2f", pValueMatrix[i][j - 1]) + ")";
+                tableValues[i][j] = String.format("%.3f", correlationMatrix[i][j - 1]).replace(",", ".")
+                        + "\n(" + String.format("%.2f", pValueMatrix[i][j - 1]).replace(",", ".") + ")";
             }
         }
 
@@ -528,12 +537,69 @@ public class MainStageController implements Initializable {
         //Display table on a new stage
         Stage tableStage = new Stage();
         tableStage.setTitle("Correlation Table");
-        Scene tableScene = new Scene(analysisTable);
+        BorderPane tablePane = new BorderPane();
+        Button exportCorrelationsButton = new Button("Save correlation table to CSV");
+        Button exportPValuesButton = new Button("Save p-value table to CSV");
+        exportCorrelationsButton.setOnAction(e -> exportTableToCSV(tableValues, false));
+        exportPValuesButton.setOnAction(e -> exportTableToCSV(tableValues, true));
+        HBox exportBox = new HBox(exportCorrelationsButton, exportPValuesButton);
+        exportBox.setPadding(new Insets(10));
+        exportCorrelationsButton.setPadding(new Insets(0,10,0,0));
+        tablePane.setTop(exportBox);
+        tablePane.setCenter(analysisTable);
+        Scene tableScene = new Scene(tablePane);
         tableStage.setScene(tableScene);
         tableStage.show();
 
 
     }
+
+    private void exportTableToCSV(String[][] tableValues, boolean isPValue) {
+        //We'll split up the table values into two parts - if we need correlations, we take the 0th one,
+        // if we want p values, we take the 1st
+        int splitNumber;
+        splitNumber = isPValue ? 1 : 0;
+
+
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialDirectory(new File((String) UserSettings.userSettings.get("defaultFileChooserLocation")));
+        File outputFile = chooser.showSaveDialog(getPrimaryStage());
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+
+            //Write names into first row
+            writer.write(",");
+            for (int i = 0; i < tableValues.length; i++) {
+                writer.write(tableValues[i][0] + ",");
+            }
+            writer.write("\n");
+
+
+            for (String[] tableRow : tableValues) {
+                for (String s : tableRow) {
+                    String[] split = s.split("\n");
+
+//                    System.out.println(s + split.length);
+//                    for (String s1 : split) {
+//                        System.out.println(s1);
+//                    }
+                    if (split.length > 1)
+                        writer.write(split[splitNumber] + ",");
+                    else
+                        writer.write(split[0] + ",");
+                }
+                writer.write("\n");
+            }
+
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
 
     private void displayAnalysisTextsAndGraphs() {
 
@@ -673,7 +739,7 @@ public class MainStageController implements Initializable {
 
     @FXML
     public void openQiimeFiles() {
-         openFiles(FileType.qiime);
+        openFiles(FileType.qiime);
     }
 
     /**
@@ -944,7 +1010,10 @@ public class MainStageController implements Initializable {
             if (deselectAllButton.isSelected()) {
                 System.out.println("I understand you");
                 treeViewFiles.getRoot().getChildren().stream()
-                        .map(child -> {child.setValue("Deselected"); return child;});
+                        .map(child -> {
+                            child.setValue("Deselected");
+                            return child;
+                        });
             }
         }
     }
@@ -1071,6 +1140,7 @@ public class MainStageController implements Initializable {
         Bindings.bindBidirectional(maxPValueText.textProperty(), maxPValueSlider.valueProperty(), converter);
         Bindings.bindBidirectional(minFrequencyText.textProperty(), frequencyRangeSlider.lowValueProperty(), converter);
         Bindings.bindBidirectional(maxFrequencyText.textProperty(), frequencyRangeSlider.highValueProperty(), converter);
+        Bindings.bindBidirectional(excludeFrequencyText.textProperty(), excludeFrequencySlider.valueProperty(), converter);
 
         //Bind the internal filter properties to the slider values
         AnalysisData.posCorrelationLowerFilterProperty().bind(posCorrelationRangeSlider.lowValueProperty());
@@ -1080,9 +1150,10 @@ public class MainStageController implements Initializable {
         AnalysisData.minFrequencyProperty().bind(frequencyRangeSlider.lowValueProperty());
         AnalysisData.maxFrequencyProperty().bind(frequencyRangeSlider.highValueProperty());
         AnalysisData.maxPValueProperty().bind(maxPValueSlider.valueProperty());
+        AnalysisData.excludeFrequencyThresholdProperty().bind(excludeFrequencySlider.valueProperty());
 
-        //The values of the negative slider can't be set to negative values via FXML for reasons beyond human understanding,
-        // so we set it manually
+        //The values of the negative slider can't be set to values below 0 via FXML for reasons beyond human understanding,
+        // so we set them manually
         negCorrelationRangeSlider.setLowValue(-1);
         negCorrelationRangeSlider.setHighValue(-0.5);
 
@@ -1110,6 +1181,8 @@ public class MainStageController implements Initializable {
         pearsonCorrelationButton.selectedProperty().addListener(o -> startAnalysis());
         spearmanCorrelationButton.selectedProperty().addListener(o -> startAnalysis());
         kendallCorrelationButton.selectedProperty().addListener(o -> startAnalysis());
+        //5. Global frequency threshold is changed
+        excludeFrequencySlider.valueProperty().addListener(o -> startAnalysis());
 
 
     }
@@ -1132,7 +1205,7 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * Bind graph setting controls to MyGraphView isntance.
+     * Bind graph setting controls to MyGraphView instance.
      *
      * @param graphView instance to which controls are bound
      */
@@ -1178,7 +1251,9 @@ public class MainStageController implements Initializable {
             graphView.animationService.setFrameRate(fr.intValue());
         });
 
-        buttonPauseAnimation.selectedProperty().bindBidirectional(graphView.pausedProperty);
+//        buttonPauseAnimation.selectedProperty().bindBidirectional(graphView.pausedProperty);
+        graphView.pausedProperty.bind(buttonPauseAnimation.selectedProperty());
+
     }
 
     @FXML
@@ -1482,7 +1557,6 @@ public class MainStageController implements Initializable {
         sliderEdgeWidth.setValue(5);
         sliderEdgeLength.setLowValue(10);
         sliderEdgeLength.setHighValue(500);
-        buttonPauseAnimation.setSelected(false);
 
     }
 

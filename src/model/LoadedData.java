@@ -5,7 +5,9 @@ import graph.MyEdge;
 import graph.MyGraph;
 import graph.MyVertex;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -43,6 +45,8 @@ public class LoadedData {
     private static BooleanProperty analyzeSelected = new SimpleBooleanProperty(false);
 
 
+
+
     public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles, String fileName) {
         if (samples == null) {
             samples = FXCollections.observableArrayList(loadedSamples);
@@ -59,7 +63,6 @@ public class LoadedData {
     /**
      * Builds a fully connected graph of all taxa contained in the sample list.
      * This method must be called AFTER analysis is performed, since it needs the correlations and p-values
-     * TODO: Test this, and especially test if the hashmaps are added correctly!
      */
     public static void createGraph() {
         LinkedList<TaxonNode> nodeList = SampleComparison.getUnifiedTaxonList(samples, AnalysisData.getLevel_of_analysis());
@@ -219,6 +222,7 @@ public class LoadedData {
     public static ObservableList<Sample> getSamplesToAnalyze(){
         return analyzeSelected.get() ? selectedSamples : samples;
     }
+
 
     // GETTERS
     public static ObservableList<Sample> getSamples() {
