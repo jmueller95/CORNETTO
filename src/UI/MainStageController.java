@@ -103,7 +103,7 @@ public class MainStageController implements Initializable {
      * BUTTON ELEMENTS
      */
     @FXML
-    private RadioButton collapseAllButton, deselectAllButton;
+    private RadioButton collapseAllButton;
 
     /**
      * FILTER OPTION ELEMENTS
@@ -710,7 +710,6 @@ public class MainStageController implements Initializable {
             if (LoadedData.getGraphView() != null && LoadedData.getGraphView().animationService.isRunning()) {
                 LoadedData.getGraphView().animationService.cancel();
             }
-            deselectAllButton.setDisable(true);
             collapseAllButton.setDisable(true);
         }
         analysisPane.setVisible(false);
@@ -802,6 +801,7 @@ public class MainStageController implements Initializable {
                 break;
             case qiime:
                 fileChooser.setTitle(fileChooserTitle + "qiime file");
+                break;
         }
 
         //Choose the file / files
@@ -811,9 +811,9 @@ public class MainStageController implements Initializable {
         if (selectedFiles != null) {
             ArrayList<String> namesOfAlreadyLoadedFiles = new ArrayList<>();
             for (File file : selectedFiles) {
-                String foundFileName = file.getName();
-                if (LoadedData.getOpenFiles() != null && LoadedData.getOpenFiles().contains(foundFileName)) {
-                    namesOfAlreadyLoadedFiles.add(foundFileName);
+                String foundFilePath = file.getAbsolutePath();
+                if (LoadedData.getOpenFiles() != null && LoadedData.getOpenFiles().contains(foundFilePath)) {
+                    namesOfAlreadyLoadedFiles.add(file.getName());
                 } else {
                     switch (fileType) {
                         case taxonId2Count:
@@ -880,7 +880,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file);
         activateButtons();
     }
 
@@ -896,7 +896,7 @@ public class MainStageController implements Initializable {
 
         samples = biomV1Parser.parse(file.getAbsolutePath());
 
-        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file);
         activateButtons();
     }
 
@@ -920,7 +920,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file);
         activateButtons();
     }
 
@@ -944,7 +944,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file.getName());
+        LoadedData.addSamplesToDatabase(samples, treeViewFiles, file);
         activateButtons();
     }
 
@@ -969,8 +969,6 @@ public class MainStageController implements Initializable {
     public void initializeButtonsOnLeftPane() {
         collapseAllButton.setDisable(true);
         collapseAllButton.setTooltip(new Tooltip("collapse all"));
-        deselectAllButton.setDisable(true);
-        deselectAllButton.setTooltip(new Tooltip("deselect all"));
     }
 
     @FXML
@@ -1003,18 +1001,34 @@ public class MainStageController implements Initializable {
      * Deselects all nodes in the treeview element
      */
     public void deselectAll() {
-        if (treeViewFiles.getRoot() == null || treeViewFiles.getRoot().getChildren().isEmpty()) {
-            deselectAllButton.setSelected(false);
-            deselectAllButton.disarm();
-        } else {
-            if (deselectAllButton.isSelected()) {
-                System.out.println("I understand you");
-                treeViewFiles.getRoot().getChildren().stream()
-                        .map(child -> {
-                            child.setValue("Deselected");
-                            return child;
-                        });
-            }
+        changeSelectionForAll(true);
+        System.out.println("Deselection toggled");
+    }
+
+    @FXML
+    /**
+     * Selects all nodes in the treeview element
+     */
+    public void selectAll() {
+        changeSelectionForAll(false);
+        System.out.println("Selection toggled");
+    }
+
+    /**
+     * Deselects all nodes in the treeview element
+     */
+    private void changeSelectionForAll(boolean isDeselectAll) {
+        if (treeViewFiles.getRoot() != null && !treeViewFiles.getRoot().getChildren().isEmpty()) {
+            treeViewFiles.getRoot().getChildren()
+                    .stream()
+                    .map(treeItem -> {
+                        CheckBoxTreeItem<String> checkBoxTreeItem = new CheckBoxTreeItem<>();
+                        checkBoxTreeItem.setValue(treeItem.getValue());
+                        checkBoxTreeItem.getChildren().addAll(treeItem.getChildren());
+                        checkBoxTreeItem.setSelected(isDeselectAll ? true : false);
+                        return checkBoxTreeItem;
+                    })
+                    .forEach(treeItem -> System.out.println(treeItem.getValue()));
         }
     }
 
@@ -1043,7 +1057,6 @@ public class MainStageController implements Initializable {
     private void activateButtons() {
         rankChoiceBox.setDisable(false);
         collapseAllButton.setDisable(false);
-        deselectAllButton.setDisable(false);
     }
 
     /**
@@ -1418,7 +1431,7 @@ public class MainStageController implements Initializable {
         }
         String name = String.join(",\n", fileNames);
 
-        String oneFileAlreadyLoaded = "The file '" + name + "' is already loaded in your project.";
+        String oneFileAlreadyLoaded = "The file \n'" + name + "'\nis already loaded in your project.";
         String multipleFilesAlreadyLoaded = "The files\n" + name + "\n are already loaded in your project.";
         fileAlreadyLoadedAlert = new Alert(Alert.AlertType.ERROR);
         fileAlreadyLoadedAlert.setTitle("File not loaded.");

@@ -14,6 +14,7 @@ public class Sample implements Serializable {
     private static HashMap<String, String> metaDataMap;
     private String sampleId;
     private String name;
+    private String pathToFile;
 
     // Empty constructor needed in CSV Parsers
     public Sample() {
@@ -82,6 +83,10 @@ public class Sample implements Serializable {
         return name;
     }
 
+    public String getPathToFile() {
+        return pathToFile;
+    }
+
     //Setters
     public void setTaxa2CountMap(HashMap<TaxonNode, Integer> taxa2CountMap) {
         this.taxa2CountMap = taxa2CountMap;
@@ -101,5 +106,9 @@ public class Sample implements Serializable {
 
     public static void setMetaDataMap(HashMap<String, String> metaDataMap) {
         Sample.metaDataMap = metaDataMap;
+    }
+
+    public void setPathToFile(String pathToFile) {
+        this.pathToFile = pathToFile;
     }
 }
