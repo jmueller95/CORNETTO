@@ -20,6 +20,11 @@ public class MyEdge {
     private BooleanProperty correlationAndPValueInRange;
     private BooleanProperty frequencyInRange;
 
+    /**
+     * Constructor
+     * @param source
+     * @param target
+     */
     public MyEdge(MyVertex source, MyVertex target) {
         this.source = source;
         this.target = target;
@@ -29,6 +34,12 @@ public class MyEdge {
         setupListeners();
     }
 
+    /**
+     * defines an Edge with the attributes : source, target, weight
+     * @param source
+     * @param target
+     * @param weight
+     */
     public MyEdge(MyVertex source, MyVertex target, double weight) {
         this.source = source;
         this.target = target;

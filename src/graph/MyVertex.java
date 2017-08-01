@@ -23,6 +23,11 @@ public class MyVertex {
     private List<MyEdge> edgesList;
     private HashMap<String, Object> attributesMap;
 
+    /**
+     * defines a vertex
+     * @param taxonNode
+     * @param numberOfEdges
+     */
     public MyVertex(TaxonNode taxonNode, int numberOfEdges) {
         this.taxonNode = taxonNode;
         xCoordinates = new SimpleDoubleProperty(0);
