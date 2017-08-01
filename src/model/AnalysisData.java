@@ -3,6 +3,7 @@ package model;
 import analysis.SampleComparison;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import mdsj.*;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.ArrayList;
@@ -52,6 +53,20 @@ public class AnalysisData {
 
     public static RealMatrix getPValueMatrix() {
         return pValueMatrix;
+    }
+
+
+    /**
+     * Calculates Multi Dimensional Scaling matrix of the correlations.
+     * @return
+     */
+    public static double[][] getMDSMatrix() {
+
+        System.out.println("Start MDS Matrix calculation");
+        long now = System.currentTimeMillis();
+        double[][] mdsj =  MDSJ.classicalScaling(correlationMatrix.getData());
+        System.out.println("Finished. Duration: " + (now - System.currentTimeMillis()) + "ms" );
+        return mdsj;
     }
 
 

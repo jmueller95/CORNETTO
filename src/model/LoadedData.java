@@ -71,12 +71,21 @@ public class LoadedData {
         final HashMap<TaxonNode, MyVertex> taxonNodeToVertexMap = taxonGraph.getTaxonNodeToVertexMap();
         final RealMatrix correlationMatrix = AnalysisData.getCorrelationMatrix();
         final RealMatrix pValueMatrix = AnalysisData.getPValueMatrix();
+        final double[][] mdsMatrix = AnalysisData.getMDSMatrix();
+
         for (int i = 0; i < nodeList.size(); i++) {
             //Create Hashmap for this index, or access it if it's already there
             HashMap<Integer, MyEdge> currentEdgeMap =
                     taxonGraph.getNodeIdsToEdgesMap().getOrDefault(nodeList.get(i).getTaxonId(), new HashMap<>());
+
+            // Set inital coordinates from MDS
+            MyVertex sourceVertex = taxonNodeToVertexMap.get(nodeList.get(i));
+            //sourceVertex.xCoordinatesProperty().setValue(mdsMatrix[i][0]*10);
+            //sourceVertex.yCoordinatesProperty().setValue(mdsMatrix[i][1]*10);
+
+
             for (int j = 0; j < i; j++) {
-                MyVertex sourceVertex = taxonNodeToVertexMap.get(nodeList.get(i));
+
                 MyVertex targetVertex = taxonNodeToVertexMap.get(nodeList.get(j));
                 MyEdge edge = new MyEdge(sourceVertex, targetVertex);
                 edge.setCorrelation(correlationMatrix.getEntry(i, j));

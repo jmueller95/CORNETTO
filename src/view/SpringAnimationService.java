@@ -55,7 +55,7 @@ public class SpringAnimationService extends Service {
      */
     private Function<MyEdge, Integer> getMyEdgeLengthFunction() {
 
-        Function<MyEdge, Integer> foo = myEdge -> {
+        Function<MyEdge, Integer> foo = (MyEdge myEdge) -> {
             Double corr = myEdge.getCorrelation();
 
             // Corr = -1 --> Edgelength = minLength

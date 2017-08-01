@@ -12,6 +12,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
@@ -19,11 +20,15 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
@@ -32,8 +37,7 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
-<?import javafx.scene.control.ToggleButton?>
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -129,6 +133,11 @@
                                                     <children>
                                                         <ProgressIndicator fx:id="startupSpinner" />
                                                         <Label fx:id="startupLabel" nodeOrientation="LEFT_TO_RIGHT" text="Label" textAlignment="CENTER" />
+                                          <ImageView fitHeight="200.0" fitWidth="200.0">
+                                             <image>
+                                                <Image url="@../../res/images/rotated_croissant1600.png" />
+                                             </image>
+                                          </ImageView>
                                                     </children>
                                                 </VBox>
                                             </children>
@@ -286,7 +295,55 @@
                                 </TitledPane>
                                 <TitledPane animated="false" prefHeight="415.0" prefWidth="220.0" text="Colouring">
                                     <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <Label text="Colour nodes by:" />
+                                          <CheckBox mnemonicParsing="false" text="Sample" />
+                                          <CheckBox mnemonicParsing="false" text="alpha Diversity" />
+                                          <CheckBox mnemonicParsing="false" text="Modularity" />
+                                           <!--><ComboBox fx:id="edgePaletteCombo" layoutX="15.0" layoutY="33.0" prefWidth="150.0" promptText="select colour scheme">
+                                               <items>
+                                                   <FXCollections fx:factory="observableArrayList">
+                                                       <Label text = "PuOr">
+                                                           <graphic>
+                                                               <StackPane prefWidth = "100">
+                                                                   <ImageView fx:id="colDivPuOr" fitHeight="20.0">
+                                                                       <image>
+                                                                           <Image preserveRatio="false" smooth="false" url="@../../res/images/PuOr.png" />
+                                                                       </image>
+                                                                   </ImageView>
+                                                               </StackPane>
+                                                           </graphic>
+                                                       </Label>
+                                                       <Label text = "BrBG">
+                                                           <graphic>
+                                                               <StackPane prefWidth = "100">
+                                                                   <ImageView fx:id="colDivBrBG" fitHeight="20.0">
+                                                                       <image>
+                                                                           <Image preserveRatio="false" smooth="false" url="@../../res/images/science-icon.png" />
+                                                                       </image>
+                                                                   </ImageView>
+                                                               </StackPane>
+                                                           </graphic>
+                                                       </Label>
+                                                   </FXCollections>
+                                               </items>
+                                           </ComboBox> <-->
+
+                                          <StackPane fx:id="colourNodeComboContainer" alignment="TOP_LEFT" minHeight="20.0" minWidth="180" prefHeight="25.0" prefWidth="200.0">
+                                              <!--> ComboBox will be added in Controller <-->
+
+                                          </StackPane>
+                                          <Separator prefWidth="200.0" />
+                                          <Label text="Colour edges by:" />
+                                          <CheckBox mnemonicParsing="false" text="Correlation" />
+                                          <CheckBox mnemonicParsing="false" text="P-Value" />
+                                          <CheckBox mnemonicParsing="false" text="Distance (Bray-Curtis)" />
+                                       </children>
+                                    </VBox>
+                                 </children></AnchorPane>
                                     </content>
                                 </TitledPane>
                             </panes>

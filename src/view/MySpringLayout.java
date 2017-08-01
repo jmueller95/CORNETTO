@@ -90,7 +90,8 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
     @Override
     public void setSize(Dimension size) {
         if(initialized == false)
-            setInitializer(new RandomLocationTransformer<V>(size));
+             setInitializer(new RandomLocationTransformer<V>(size));
+             //setInitializer((Function<V, Point2D>) mdsInitializer);
         super.setSize(size);
     }
 
@@ -390,6 +391,15 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
      */
     public void reset() {
     }
+
+    // TODO include function to resize MDS positions to the viewable are
+    private Function<MyVertex, Point2D> mdsInitializer = (MyVertex myVertex) -> {
+
+        double x = 0;
+        double y = 0;
+
+        return new Point2D.Double(x, y);
+    };
 
 
 }

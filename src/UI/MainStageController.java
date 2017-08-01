@@ -22,6 +22,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
@@ -45,10 +46,7 @@ import sampleParser.BiomV2Parser;
 import sampleParser.ReadName2TaxIdCSVParser;
 import sampleParser.TaxonId2CountCSVParser;
 import util.SaveAndLoadOptions;
-import view.MyEdgeView;
-import view.MyGraphView;
-import view.MyVertexView;
-import view.ViewPane;
+import view.*;
 
 import java.io.*;
 import java.net.URL;
@@ -197,6 +195,14 @@ public class MainStageController implements Initializable {
     private CheckBox showLabelsCheckBox;
 
     /**
+     * COLOUR SETTINGS ELEMENTS
+     */
+
+    @FXML
+    private StackPane colourNodeComboContainer;
+
+
+    /**
      * ANALYSIS PANE ELEMENTS
      */
 
@@ -242,12 +248,15 @@ public class MainStageController implements Initializable {
         initializeAnalysisPane();
         initializeInfoPane();
         initializeBindings();
+        initializeColorComboBox();
         //preload settings
         SaveAndLoadOptions.loadSettings();
 
         //Display the info text in the bottom left pane
         displayInfoText();
     }
+
+
 
 
     @FXML
@@ -894,6 +903,16 @@ public class MainStageController implements Initializable {
         frequencyRangeSlider.setHighValue(1);
     }
 
+    /**
+     * Initializes custom Combo selection Box for color gradient choosers
+     */
+    private void initializeColorComboBox() {
+
+        ComboBox<Palette> edgeColourCombo = new ComboBox<>();
+        edgeColourCombo.getItems().setAll(Palette.DIV);
+        colourNodeComboContainer.getChildren().add(edgeColourCombo);
+    }
+
     //ALERTS
 
     /**
@@ -938,6 +957,8 @@ public class MainStageController implements Initializable {
 
         fileNotFoundAlert.showAndWait();
     }
+
+
 
     @FXML
     /**

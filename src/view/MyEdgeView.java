@@ -60,8 +60,9 @@ public class MyEdgeView extends Group {
 
     public void setColor() {
         // set interactively and/or based on attributes
-        if (myEdge.getCorrelation() >= 0) edgeShape.setStroke(Color.DARKGREEN);
-        else edgeShape.setStroke(Color.DARKRED);
+        double t = (myEdge.getCorrelation() + 1)/2;
+        edgeShape.setStroke(MyColours.interpolate(Palette.RdBu, t));
+
     }
 
     public DoubleProperty getWidthProperty() {
