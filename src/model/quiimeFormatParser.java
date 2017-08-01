@@ -17,6 +17,8 @@ public class quiimeFormatParser {
     /**
      * parses the quiime file format
      * we only require sampleID, Treatment and DOB
+     * @param file
+     * @return
      */
     private ArrayList<MetaData> parseQuiime(String file){
         ArrayList<MetaData> listOfMetaData = new ArrayList<>();
