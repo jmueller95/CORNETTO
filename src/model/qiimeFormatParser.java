@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * parses the metadata provided in the quiime format
+ * parses the metadata provided in the qiime format
  * sampleID has to be the same as the filename
  * multi-sample csv files can have sampleIDs as a header (start with a #)
  * everything that follows in the header of the metadata format is the name of that metadata field
  */
-public class quiimeFormatParser {
+public class qiimeFormatParser {
     /**
      * parses the quiime file format
      * we only require sampleID, Treatment and DOB
