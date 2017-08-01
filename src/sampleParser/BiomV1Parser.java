@@ -52,47 +52,65 @@ public class BiomV1Parser implements InputFile {
             //System.out.println("Matrix sparse? : " + matrixTypeIsSparse);
             int sparseMatrixIndex = 0;
 
+            // ROW = OBSERVATIONS
+            // COLUMNS = SAMPLES
+            int nrow = ((JSONArray) obj.get("rows")).size();
+            int ncol = ((JSONArray) obj.get("columns")).size();
+
             // Loop over all samples in the file (columns)
-            for (int col = 0; col < ((JSONArray) obj.get("columns")).size(); col++) {
+            for (int col = 0; col < ncol; col++) {
                 System.out.println("Loading sample " + col);
                 HashMap<TaxonNode, Integer> currentTaxCount = new HashMap<>();
                 HashMap<String, String> metaData = new HashMap<>();
 
                 // Access metadata. What is needed? What do we want to include?
-                //metaData.put("sampleID", (String)((JSONObject)obj.get("columns")).get("id"));
+                metaData.put("sample", (String)((JSONObject)obj.get("columns")).get("id"));
+                for (Object o: (JSONArray)((JSONObject) obj.get("columns")).get("metadata")){
+                    String metaKey = (String) o;
+                    String metaValue = (String)((JSONObject)((JSONObject)obj.get("columns")).get("metadata")).get(metaKey);
+
+                    metaData.put(metaKey, metaValue);
+                }
+
 
                 // Loop over rows (data)
-                for (int row = 0; row < ((JSONArray) obj.get("rows")).size(); row++) {
-                    JSONObject currentRow =  (JSONObject)((JSONArray) obj.get("rows")).get(row);
 
-                    // Extract observation counts for this taxon
-                    int count = 0;
-                    if (matrixTypeIsSparse) {
+                    for (int row = 0; row < nrow; row++) {
+                        JSONObject currentRow =  (JSONObject)((JSONArray) obj.get("rows")).get(row);
+                        // Extract observation counts for this taxon
+                        int count = 0;
 
-                        int rowValue = ((Double)((JSONArray)((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(0)).intValue();
-                        int colValue = ((Double)((JSONArray)((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(1)).intValue();
-                        int countValue = ((Double)((JSONArray)((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(2)).intValue();
+                        if (matrixTypeIsSparse) {
+                            int rowValue = ((Double) ((JSONArray) ((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(0)).intValue();
+                            int colValue = ((Double) ((JSONArray) ((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(1)).intValue();
+                            int countValue = ((Double) ((JSONArray) ((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(2)).intValue();
 
-                        if (rowValue == row && colValue == col) {
-                            count = countValue;
-                            sparseMatrixIndex++;
+                            if (rowValue == row && colValue == col) {
+                                count = countValue;
+                                sparseMatrixIndex++;
+                            }
+
+                        } else {
+
+                            count = ((Double) ((JSONArray) ((JSONArray) obj.get("data")).get(col)).get(row)).intValue();
+                            if (count > 0) {
+
+                                int id = Integer.parseInt(currentRow.get("id").toString());
+                                currentTaxCount.put(taxonTree.getNodeForID(id), count);
+                            }
                         }
-                    } else {
-                        // Dense Matrix
-                        count = ((Double)((JSONArray)((JSONArray) obj.get("data")).get(row)).get(col)).intValue();
-                    }
 
-                    // Extract sampleID and TaxonNode
-                    int id = Integer.parseInt(currentRow.get("id").toString());
-                    try{
-                        // Add observation to sample if taxonomy is found in tree
-                        currentTaxCount.put(taxonTree.getNodeForID(id), count);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Taxonomy identifier " + id + " was not found in the tree");
-                        System.out.println(e.getMessage());
-                    }
+                        // Extract sampleID and TaxonNode
+                        int id = Integer.parseInt(currentRow.get("id").toString());
+                        try{
+                            // Add observation to sample if taxonomy is found in tree
+                            currentTaxCount.put(taxonTree.getNodeForID(id), count);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Taxonomy identifier " + id + " was not found in the tree");
+                            System.out.println(e.getMessage());
+                        }
 
-                }
+                    }
 
                 sampleList.add(new Sample(currentTaxCount, metaData));
             }
