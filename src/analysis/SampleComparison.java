@@ -1,7 +1,7 @@
 package analysis;
 
+
 import javafx.collections.ObservableList;
-import javafx.util.Pair;
 import model.LoadedData;
 import model.Sample;
 import model.TaxonNode;
@@ -50,7 +50,6 @@ public abstract class SampleComparison {
 
         return unifiedTaxonList;
     }
-
     /**
      *  creates the correlation of Samples useing Pearson's,Kendall's and Spearman's correlation coefficient
      * @param samples
