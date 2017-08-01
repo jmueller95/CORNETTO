@@ -77,6 +77,7 @@ public class SaveAndLoadOptions {
     }
 
     /**
+     * trims the user settings Strings to enable uniformly saved
      *
      * @param stringArrayToTrim
      */

@@ -52,6 +52,13 @@ public class TaxonTree {
         }
     }
 
+    /**
+     * returns the ancestor of a node given a rank, only one not all!
+     *
+     * @param taxonNode
+     * @param rank
+     * @return
+     */
     public TaxonNode getAncestorOfNode(TaxonNode taxonNode, String rank) {
         int currentNodeId = taxonNode.getTaxonId();
         TaxonNode currentNode = getNodeForID(currentNodeId);

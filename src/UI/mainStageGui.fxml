@@ -16,8 +16,8 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
@@ -43,7 +43,7 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -93,19 +93,33 @@
                     <items>
                         <AnchorPane fx:id="leftPane" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
                             <children>
-                                <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="3.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#c58112" wrapText="false">
+                                <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="5.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#ffaf2d" wrapText="false">
                                     <font>
                                         <Font size="18.0" fx:id="x1" />
                                     </font>
                                 </Label>
                                 <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="-176.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
                                 <RadioButton fx:id="collapseAllButton" layoutX="198.0" layoutY="8.0" mnemonicParsing="false" onAction="#collapseAll" />
-                        <RadioButton fx:id="deselectAllButton" layoutX="177.0" layoutY="8.0" mnemonicParsing="false" onMouseClicked="#deselectAll" />
-                        <MenuButton layoutX="58.0" layoutY="3.0" mnemonicParsing="false" text="Show">
+                        <MenuButton layoutX="111.0" layoutY="3.0" mnemonicParsing="false" text="Select" textFill="#ffaf2d">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="All" />
-                            <MenuItem mnemonicParsing="false" text="Reverse" />
-                              <MenuItem mnemonicParsing="false" onAction="#showNoSamples" text="None" />
+                            <MenuItem mnemonicParsing="false" onAction="#selectAll" text="All" />
+                              <MenuItem mnemonicParsing="false" onAction="#deselectAll" text="None" />
+                              <Menu mnemonicParsing="false" text="by metadata">
+                                <items>
+                                    <Menu mnemonicParsing="false" text="sex">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" text="male" />
+                                          <MenuItem mnemonicParsing="false" text="female" />
+                                       </items>
+                                    </Menu>
+                                    <Menu mnemonicParsing="false" text="by group">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" text="treatment" />
+                                          <MenuItem mnemonicParsing="false" text="control" />
+                                       </items>
+                                    </Menu>
+                                </items>
+                              </Menu>
                           </items>
                         </MenuButton>
                             </children>
@@ -306,12 +320,15 @@
                                        <children>
                                           <Label text="Colour nodes by:" />
                                            <fx:define>
-                                               <ToggleGroup fx:id="colourToggleNodes"/>
+                                               <ToggleGroup fx:id="colourToggleNodes" />
                                            </fx:define>
-                                           <RadioButton fx:id="colourRadioNodeFix" mnemonicParsing="false" text="Uniform" toggleGroup= "$colourToggleNodes"/>
-                                           <RadioButton fx:id="colourRadioNodeSample" mnemonicParsing="false" text="Sample" toggleGroup= "$colourToggleNodes"/>
-                                           <RadioButton fx:id="colourRadioNodeAlpha" mnemonicParsing="false" text="alpha Diversity" toggleGroup= "$colourToggleNodes" />
-                                           <RadioButton fx:id="colourRadioNodeModularity" mnemonicParsing="false" text="Modularity" toggleGroup= "$colourToggleNodes"/>
+                                           <RadioButton fx:id="colourRadioNodeFix" mnemonicParsing="false" text="Uniform">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="colourToggleNodes" />
+                                             </toggleGroup></RadioButton>
+                                           <RadioButton fx:id="colourRadioNodeSample" mnemonicParsing="false" text="Sample" toggleGroup="$colourToggleNodes" />
+                                           <RadioButton fx:id="colourRadioNodeAlpha" mnemonicParsing="false" text="alpha Diversity" toggleGroup="$colourToggleNodes" />
+                                           <RadioButton fx:id="colourRadioNodeModularity" mnemonicParsing="false" text="Modularity" toggleGroup="$colourToggleNodes" />
                                            <Label text="Colour scheme:" />
 
                                            <StackPane fx:id="colourNodeComboContainer" alignment="TOP_LEFT" minHeight="20.0" minWidth="180" prefHeight="25.0" prefWidth="200.0">
@@ -321,11 +338,14 @@
                                            <Separator prefWidth="200.0" />
                                            <Label text="Colour edges by:" />
                                             <fx:define>
-                                               <ToggleGroup fx:id="colourToggleEdges"/>
+                                               <ToggleGroup fx:id="colourToggleEdges" />
                                             </fx:define>
-                                           <RadioButton fx:id="colourRadioEdgeCorrelation" mnemonicParsing="false" text="Correlation" toggleGroup= "$colourToggleEdges"/>
-                                           <RadioButton fx:id="colourRadioEdgePvalue" mnemonicParsing="false" text="P-Value" toggleGroup= "$colourToggleEdges"/>
-                                           <RadioButton fx:id="colourRadioEdgeDistance" mnemonicParsing="false" text="Distance (Bray-Curtis)" toggleGroup= "$colourToggleEdges"/>
+                                           <RadioButton fx:id="colourRadioEdgeCorrelation" mnemonicParsing="false" text="Correlation">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="colourToggleEdges" />
+                                             </toggleGroup></RadioButton>
+                                           <RadioButton fx:id="colourRadioEdgePvalue" mnemonicParsing="false" text="P-Value" toggleGroup="$colourToggleEdges" />
+                                           <RadioButton fx:id="colourRadioEdgeDistance" mnemonicParsing="false" text="Distance (Bray-Curtis)" toggleGroup="$colourToggleEdges" />
 
                                            <Label text="Colour scheme" />
                                            <StackPane fx:id="colourEdgeComboContainer" alignment="TOP_LEFT" minHeight="20.0" minWidth="180" prefHeight="25.0" prefWidth="200.0">

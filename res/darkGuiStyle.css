@@ -1,11 +1,37 @@
 .menu-bar {
     -fx-background-color: linear-gradient(to bottom, #766C6C 0%, #766C6C 100%);
     -fx-background-insets:0 0 1 0;
+    -fx-text-fill: #ffaf2d;
 }
 .split-pane {-fx-background-color: #766C6C;}
 
 .menu-button {
 -fx-background-color: #766C6C;
 -fx-font-size: 14px;
+}
+
+.menu-item .label {
+    -fx-text-fill: #ffaf2d;
+}
+
+.menu .label {
+    -fx-text-fill: #ffaf2d;
+}
+
+.menu-item:focused {
+    -fx-background-color: ffaf2d;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: ffaf2d;
+}
+
+.context-menu {
+    -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+    -fx-background-color: black;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
+    -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
+    -fx-text-fill: #f99d40;
 }
 

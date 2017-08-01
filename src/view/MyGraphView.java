@@ -41,7 +41,7 @@ public class MyGraphView extends Group {
         this.myEdgeViewGroup = new Group();
         this.animationService = new SpringAnimationService(graph);
 
-        this.pausedProperty = new SimpleBooleanProperty();
+        this.pausedProperty = new SimpleBooleanProperty(false);
 
         drawNodes();
         drawEdges();

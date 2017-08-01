@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 /**
  * Created by Zeth on 08.06.2017.
  * launches the Main method
+ * launches the main scene view which also launches the tree parser
  */
 public class Main extends Application {
     private static Stage pStage;
@@ -43,7 +44,7 @@ public class Main extends Application {
         primaryStage.setTitle(GlobalConstants.NAME_OF_PROGRAM);
         setXEvent(primaryStage);
         mainScene = new Scene(content, 1200, 900);
-        mainScene.getStylesheets().add(UserSettings.whatTheme((Boolean) UserSettings.userSettings.get("theme")));
+        mainScene.getStylesheets().add(UserSettings.determineLightOrDarkTheme((Boolean) UserSettings.userSettings.get("theme")));
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(GlobalConstants.ICON));
         primaryStage.show();

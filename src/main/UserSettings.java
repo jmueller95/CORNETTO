@@ -20,9 +20,12 @@ public class UserSettings {
     //contains all userSettings
     public static HashMap<String, Object> userSettings = new HashMap<>();
 
-
+    /**
+     * adds the user settings to the userSettings.txt file
+     * creates a dummy file if there's no file yet
+     */
     public static void addUserSettings(){
-        File dummyFile = new File("./res/userSettings.txt");
+        File dummyFile = new File(GlobalConstants.USER_SETTINGS_FILEPATH);
         boolean isFileCreated = false;
         try {
             isFileCreated = dummyFile.createNewFile();
@@ -41,10 +44,12 @@ public class UserSettings {
     }
 
     /**
+     * toggles between the light and the dark theme
+     *
      * @param theme
      * @return
      */
-    public static String whatTheme(boolean theme){
+    public static String determineLightOrDarkTheme(boolean theme){
         if (theme){
             return GlobalConstants.DARKTHEME;
         } else {

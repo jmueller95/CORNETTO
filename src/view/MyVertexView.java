@@ -75,8 +75,8 @@ public class MyVertexView extends Group {
                 vertexShape.setFill(HUBFILL);
             } else {
                 vertexShape.setStrokeWidth(vertexShape.getStrokeWidth() / 3);
-                vertexShape.setStroke(Color.DARKBLUE);
-                vertexShape.setFill(HUBFILL);
+                vertexShape.setStroke(STROKE);
+                vertexShape.setFill(FILL);
             }
         });
 
