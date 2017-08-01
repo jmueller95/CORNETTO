@@ -20,6 +20,10 @@ public class GraphAnalysis {
     private HashMap<TaxonNode, Integer> hubsList;
 
 
+    /**
+     *
+     * @param completeGraph
+     */
     public GraphAnalysis(MyGraph<MyVertex, MyEdge> completeGraph) {
         filteredGraph = createFilteredGraph(completeGraph);
         nodeDegrees = calcNodeDegrees();
@@ -45,6 +49,10 @@ public class GraphAnalysis {
         return filteredGraph;
     }
 
+    /**
+     * calculates the node degrees
+     * @return
+     */
 
     private HashMap<TaxonNode, Integer> calcNodeDegrees() {
         HashMap<TaxonNode, Integer> degreesMap = new HashMap<>();
@@ -54,6 +62,10 @@ public class GraphAnalysis {
         return degreesMap;
     }
 
+    /**
+     * calculates the degree distribution and gives it back
+     * @return
+     */
     private HashMap<Integer, Double> calcDegreeDistribution() {
         HashMap<TaxonNode, Integer> nodeDegrees = calcNodeDegrees();
         Map<Integer, Long> degreeCounts = nodeDegrees.values().stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
@@ -314,8 +326,13 @@ public class GraphAnalysis {
 
     }
 
+    /**
+     * Calculates the fraction of ends of edges that are attached to vertices in community i
+     * @param i
+     * @param communityMap
+     * @return
+     */
 
-    //Calculates the fraction of ends of edges that are attached to vertices in community i
     private double calcA_i(int i, HashMap<MyVertex, Integer> communityMap) {
         double m = filteredGraph.getEdgeCount();
         HashMap<TaxonNode, Integer> nodeDegrees = getNodeDegrees();
@@ -347,6 +364,10 @@ public class GraphAnalysis {
         return hubsList;
     }
 
+    /**
+     *
+     * @param args
+     */
     //Main for debugging
     public static void main(String[] args) {
 
