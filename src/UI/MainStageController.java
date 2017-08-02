@@ -926,14 +926,13 @@ public class MainStageController implements Initializable {
 
         try {
             samples = biomV1Parser.parse(file.getAbsolutePath());
-            //TODO: Caspar uncomment the catch below after biom is working
-        /*} catch (IOException e) {
-            showWrongFileAlert();
-            return;*/
-            //In case the user chose to load a file with a wrong file type
         } catch (NumberFormatException e) {
             showWrongFileAlert();
             return;
+        } catch (Exception e) {
+            showWrongFileAlert();
+            return;
+            //In case the user chose to load a file with a wrong file type
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file);

@@ -46,7 +46,7 @@ public class BiomV1ParserTest {
 
     @Test
     public void testDenseExample() throws Exception {
-        ArrayList<Sample> samples = biomV1Parser.parse("./res/testFiles/biomFiles/exV1Sparse.biom");
+        ArrayList<Sample> samples = biomV1Parser.parse("./res/testFiles/megan_examples/core1_activelayer_day2-Taxonomy.biom");
 
 
     }

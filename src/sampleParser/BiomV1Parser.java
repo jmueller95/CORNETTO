@@ -46,8 +46,6 @@ public class BiomV1Parser implements InputFile {
 
         File inputFile = new File(filepath);
         System.out.println("File found? " + inputFile.exists());
-        // TODO Add file not found / file not valid handling
-
         try {
             // Open file and read as JSONObject
             JSONParser parser = new JSONParser();
@@ -64,32 +62,32 @@ public class BiomV1Parser implements InputFile {
             int ncol = ((JSONArray) obj.get("columns")).size();
 
             // Loop over all samples in the file (columns)
-            for (int col = 0; col < ncol; col++) {
+           for (int col = 0; col < ncol; col++) {
                 System.out.println("Loading sample " + col);
                 HashMap<TaxonNode, Integer> currentTaxCount = new HashMap<>();
                 HashMap<String, String> metaData = new HashMap<>();
 
                 // Access metadata. What is needed? What do we want to include?
                 metaData.put("sample", (String)((JSONObject)((JSONArray)obj.get("columns")).get(0)).get("id"));
-                for (Object o: (JSONArray)((JSONObject)((JSONArray)obj.get("columns")).get(0)).get("metadata")){
+                for (Object o: ((JSONObject)((JSONObject)((JSONArray)obj.get("columns")).get(0)).get("metadata")).keySet()){
                     String metaKey = o.toString();
-                    String metaValue = (String)((JSONObject)((JSONObject)obj.get("columns")).get("metadata")).get(metaKey);
+                    String metaValue = (String)((JSONObject)((JSONObject)((JSONArray)obj.get("columns")).get(0)).get("metadata")).get(metaKey);
 
                     metaData.put(metaKey, metaValue);
                 }
 
 
                 // Loop over rows (data)
-
                     for (int row = 0; row < nrow; row++) {
                         JSONObject currentRow =  (JSONObject)((JSONArray) obj.get("rows")).get(row);
                         // Extract observation counts for this taxon
                         int count = 0;
 
                         if (matrixTypeIsSparse) {
-                            int rowValue = ((Double) ((JSONArray) ((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(0)).intValue();
-                            int colValue = ((Double) ((JSONArray) ((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(1)).intValue();
-                            int countValue = ((Double) ((JSONArray) ((JSONArray) obj.get("data")).get(sparseMatrixIndex)).get(2)).intValue();
+                        // SPARSE MATRIX
+                            int rowValue = ((Long)((JSONArray)((JSONArray)obj.get("data")).get(sparseMatrixIndex)).get(0)).intValue();
+                            int colValue = ((Long)((JSONArray)((JSONArray)obj.get("data")).get(sparseMatrixIndex)).get(1)).intValue();
+                            int countValue = ((Long)((JSONArray)((JSONArray)obj.get("data")).get(sparseMatrixIndex)).get(2)).intValue();
 
                             if (rowValue == row && colValue == col) {
                                 count = countValue;
@@ -97,12 +95,11 @@ public class BiomV1Parser implements InputFile {
                             }
 
                         } else {
-
-                            count = ((Double) ((JSONArray) ((JSONArray) obj.get("data")).get(col)).get(row)).intValue();
-                            if (count > 0) {
-
-                                int id = Integer.parseInt(currentRow.get("id").toString());
-                                currentTaxCount.put(taxonTree.getNodeForID(id), count);
+                             //  DENSE MATRIX
+                            count = ((Double) ((JSONArray) ((JSONArray) obj.get("data")).get(row)).get(col)).intValue();
+                            if (count == 0) {
+                                // Only assign node if count > 0
+                                continue;
                             }
                         }
 
