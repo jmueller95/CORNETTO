@@ -31,6 +31,7 @@ import javafx.stage.WindowEvent;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import main.GlobalConstants;
+import main.Main;
 import main.UserSettings;
 import model.AnalysisData;
 import model.LoadedData;
@@ -55,6 +56,22 @@ import java.util.stream.Collectors;
 import static main.Main.getPrimaryStage;
 import static model.AnalysisData.*;
 
+/**
+ * <h1>This is the main GUI class. It implements most methods for the main stage.</h1>
+ * <p>
+ * Most of the functionality is channeled in this class. This is the class where all of the functionality comes
+ * together. It contains the method for initializing all required Services and it implements all buttons in the main
+ * stage.
+ * </p>
+ *
+ * @see SpringAnimationService
+ * @see ViewPane
+ * @see MySpringLayout
+ * @see MyColours
+ * @see Palette
+ *
+ * @version This class should be divided into more classes which separate behaviour.
+ */
 public class MainStageController implements Initializable {
     //Default constants for the analysis sliders
     public static final double DEFAULT_POSITIVE_CORRELATION_LOW = 0.5;
@@ -316,7 +333,6 @@ public class MainStageController implements Initializable {
         //preload settings
         SaveAndLoadOptions.loadSettings();
 
-
         //Display the info text in the bottom left pane
         displayInfoText();
     }
@@ -549,7 +565,7 @@ public class MainStageController implements Initializable {
         exportPValuesButton.setOnAction(e -> exportTableToCSV(tableValues, true));
         HBox exportBox = new HBox(exportCorrelationsButton, exportPValuesButton);
         exportBox.setPadding(new Insets(10));
-        exportCorrelationsButton.setPadding(new Insets(0,10,0,0));
+        exportBox.setSpacing(10);
         tablePane.setTop(exportBox);
         tablePane.setCenter(analysisTable);
         Scene tableScene = new Scene(tablePane);
@@ -1553,19 +1569,27 @@ public class MainStageController implements Initializable {
      * opens the Options stage
      *
      */ private void optionsButtonClicked() {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        Parent root = null;
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
-            Parent root = fxmlLoader.load();
-            this.optionsStage = new Stage();
-            optionsStage.setTitle("Options");
-            Scene optionsScene = new Scene(root, 1000, 700);
-            optionsStage.setScene(optionsScene);
-            optionsScene.getStylesheets().add(GlobalConstants.DARKTHEME);
-            optionsStage.show();
+            fxmlLoader.setLocation(Main.class.getClassLoader().getResource("UI/optionsGui.fxml"));
+            root = fxmlLoader.load();
+
         } catch (Exception e) {
-            e.printStackTrace();
+            try{
+                fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("src/UI/optionsGui.fxml")));
+                root = fxmlLoader.load();
+            }catch (Exception e2){
+                System.err.println("ERROR: Couldn't find optionsGui.fxml!");
+            }
         }
+
+        this.optionsStage = new Stage();
+        optionsStage.setTitle("Options");
+        Scene optionsScene = new Scene(root, 1000, 700);
+        optionsStage.setScene(optionsScene);
+        optionsScene.getStylesheets().add(GlobalConstants.LIGHTTHEME);
+        optionsStage.show();
     }
 
     /**

@@ -14,7 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * <h1>The class </h1>
+ * <h1>The class downloads the required nodes.dmp and names.dmp from the NCBI database</h1>
  * <p>
  * If internet is available the zip file from the NCBI database is downloaded and unzipped. It contains besides
  * others the follwing two very important files:

@@ -7,10 +7,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Created by julian on 15.05.17.
+ * <h1>This is an interfance for the input file parsers</h1>
+ * <p>
+ * The class is dependant on a TaxonTree to be available!
+ * When done parsing the file a list of samples is returned.
+ * </p>
+ *
+ * @see BiomV1Parser
+ * @see BiomV2Parser
+ * @see TaxonId2CountCSVParser
+ * @see ReadName2TaxIdCSVParser
  */
-
 public interface InputFile {
     ArrayList<Sample> parse(String filepath) throws IOException, ParseException;
-    //TODO: What other methods might be useful?
 }

@@ -41,7 +41,8 @@
 <?import org.controlsfx.control.RangeSlider?>
 <?import org.controlsfx.glyphfont.Glyph?>
 
-<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MainStageController">
+<VBox prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="UI.MainStageController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -49,79 +50,98 @@
                     <items>
                         <Menu mnemonicParsing="false" text="Load from...">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#openId2CountFiles" text="taxonId2Count" />
-                                <MenuItem mnemonicParsing="false" onAction="#openReadName2TaxonIdFiles" text="readName2TaxId" />
-                        <MenuItem disable="true" mnemonicParsing="false" text="qiime" />
+                                <MenuItem mnemonicParsing="false" onAction="#openId2CountFiles" text="taxonId2Count"/>
+                                <MenuItem mnemonicParsing="false" onAction="#openReadName2TaxonIdFiles"
+                                          text="readName2TaxId"/>
+                                <MenuItem disable="true" mnemonicParsing="false" text="qiime"/>
                                 <Menu mnemonicParsing="false" text="biom">
                                     <items>
-                                        <MenuItem mnemonicParsing="false" onAction="#openBiomV1Files" text="biomV1" />
-                                        <MenuItem mnemonicParsing="false" onAction="#openBiomV2Files" text="biomV2" />
+                                        <MenuItem mnemonicParsing="false" onAction="#openBiomV1Files" text="biomV1"/>
+                                        <MenuItem mnemonicParsing="false" onAction="#openBiomV2Files" text="biomV2"/>
                                     </items>
                                 </Menu>
                             </items>
                         </Menu>
-                        <Menu disable="true" mnemonicParsing="false" onAction="#openRecentFile" text="Open Recent" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#closeProject" text="Close" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem disable="true" mnemonicParsing="false" text="Save" />
-                        <MenuItem disable="true" mnemonicParsing="false" text="Save As…" />
-                        <MenuItem mnemonicParsing="false" onAction="#exportImages" text="Export" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Settings" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="buttonExit" mnemonicParsing="false" onAction="#quit" text="Quit" />
+                        <Menu disable="true" mnemonicParsing="false" onAction="#openRecentFile" text="Open Recent"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" onAction="#closeProject" text="Close"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem disable="true" mnemonicParsing="false" text="Save"/>
+                        <MenuItem disable="true" mnemonicParsing="false" text="Save As…"/>
+                        <MenuItem mnemonicParsing="false" onAction="#exportImages" text="Export"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" onAction="#optionsButtonClicked" text="Settings"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem fx:id="buttonExit" mnemonicParsing="false" onAction="#quit" text="Quit"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#showAboutAlert" text="About Cornetto" />
+                        <MenuItem mnemonicParsing="false" onAction="#showAboutAlert" text="About Cornetto"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <SplitPane dividerPositions="0.24721603563474387, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+        <SplitPane dividerPositions="0.24721603563474387, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0"
+                   prefWidth="-1.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
             <items>
-                <SplitPane dividerPositions="0.5" focusTraversable="true" maxWidth="220.0" minWidth="0.0" nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefWidth="220.0" VBox.vgrow="ALWAYS">
+                <SplitPane dividerPositions="0.5" focusTraversable="true" maxWidth="220.0" minWidth="0.0"
+                           nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefWidth="220.0" VBox.vgrow="ALWAYS">
                     <items>
-                        <AnchorPane fx:id="leftPane" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
+                        <AnchorPane fx:id="leftPane" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0"
+                                    prefHeight="604.0" prefWidth="200.0">
                             <children>
-                                <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="5.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER" textFill="#ffaf2d" wrapText="false">
+                                <Label fx:id="leftLabel" alignment="CENTER" layoutX="-2.0" layoutY="5.0" minWidth="60.0"
+                                       prefWidth="-1.0" style="&#10;" text="Data" textAlignment="CENTER"
+                                       textFill="#ffaf2d" wrapText="false">
                                     <font>
-                                        <Font size="18.0" fx:id="x1" />
+                                        <Font size="18.0" fx:id="x1"/>
                                     </font>
                                 </Label>
-                                <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="-176.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
-                                <RadioButton fx:id="collapseAllButton" layoutX="198.0" layoutY="8.0" mnemonicParsing="false" onAction="#collapseAll" />
-                        <MenuButton layoutX="111.0" layoutY="3.0" mnemonicParsing="false" text="Select" textFill="#ffaf2d">
-                          <items>
-                            <MenuItem mnemonicParsing="false" onAction="#selectAll" text="All" />
-                              <MenuItem mnemonicParsing="false" onAction="#deselectAll" text="None" />
-                              <Menu mnemonicParsing="false" text="by metadata">
-                                <items>
-                                    <Menu mnemonicParsing="false" text="sex">
-                                       <items>
-                                          <MenuItem disable="true" mnemonicParsing="false" text="male" />
-                                          <MenuItem disable="true" mnemonicParsing="false" text="female" />
-                                       </items>
-                                    </Menu>
-                                    <Menu mnemonicParsing="false" text="by group">
-                                       <items>
-                                          <MenuItem disable="true" mnemonicParsing="false" text="treatment" />
-                                          <MenuItem disable="true" mnemonicParsing="false" text="control" />
-                                       </items>
-                                    </Menu>
-                                </items>
-                              </Menu>
-                          </items>
-                        </MenuButton>
+                                <TreeView fx:id="treeViewFiles" layoutX="-1.0" layoutY="-176.0"
+                                          maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                          prefWidth="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0"/>
+                                <RadioButton fx:id="collapseAllButton" layoutX="198.0" layoutY="8.0"
+                                             mnemonicParsing="false" onAction="#collapseAll"/>
+                                <MenuButton layoutX="111.0" layoutY="3.0" mnemonicParsing="false" text="Select"
+                                            textFill="#ffaf2d">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" onAction="#selectAll" text="All"/>
+                                        <MenuItem mnemonicParsing="false" onAction="#deselectAll" text="None"/>
+                                        <Menu mnemonicParsing="false" text="by metadata">
+                                            <items>
+                                                <Menu mnemonicParsing="false" text="sex">
+                                                    <items>
+                                                        <MenuItem disable="true" mnemonicParsing="false" text="male"/>
+                                                        <MenuItem disable="true" mnemonicParsing="false" text="female"/>
+                                                    </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="by group">
+                                                    <items>
+                                                        <MenuItem disable="true" mnemonicParsing="false"
+                                                                  text="treatment"/>
+                                                        <MenuItem disable="true" mnemonicParsing="false"
+                                                                  text="control"/>
+                                                    </items>
+                                                </Menu>
+                                            </items>
+                                        </Menu>
+                                    </items>
+                                </MenuButton>
                             </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="infoBox" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0" prefHeight="604.0" prefWidth="200.0">
+                        <AnchorPane fx:id="infoBox" maxHeight="1.7976931348623157E308" maxWidth="220.0" minWidth="0.0"
+                                    prefHeight="604.0" prefWidth="200.0">
                             <children>
-                        <TextArea fx:id="infoTextArea" editable="false" prefHeight="420.0" prefWidth="220.0" />
-                                <TextFlow fx:id="infoTextFlow" prefHeight="325.0" prefWidth="200.0" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                        <Button fx:id="abundancePlotButton" layoutX="37.0" layoutY="380.0" mnemonicParsing="false" onAction="#displayAbundancePlot" text="Show abundance plot" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="10.0" />
+                                <TextArea fx:id="infoTextArea" editable="false" prefHeight="420.0" prefWidth="220.0"/>
+                                <TextFlow fx:id="infoTextFlow" prefHeight="325.0" prefWidth="200.0"
+                                          AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="10.0"
+                                          AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0"/>
+                                <Button fx:id="abundancePlotButton" layoutX="37.0" layoutY="380.0"
+                                        mnemonicParsing="false" onAction="#displayAbundancePlot"
+                                        text="Show abundance plot" AnchorPane.bottomAnchor="25.0"
+                                        AnchorPane.leftAnchor="10.0"/>
                             </children>
                         </AnchorPane>
                     </items>
@@ -132,12 +152,16 @@
                             <content>
                                 <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                     <children>
-                                        <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <children>
-                                                <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="816.0" prefWidth="742.0">
+                                                <VBox alignment="CENTER" maxHeight="1.7976931348623157E308"
+                                                      maxWidth="1.7976931348623157E308" prefHeight="816.0"
+                                                      prefWidth="742.0">
                                                     <children>
-                                                        <ProgressIndicator fx:id="startupSpinner" />
-                                                        <Label fx:id="startupLabel" nodeOrientation="LEFT_TO_RIGHT" text="Label" textAlignment="CENTER" />
+                                                        <ProgressIndicator fx:id="startupSpinner"/>
+                                                        <Label fx:id="startupLabel" nodeOrientation="LEFT_TO_RIGHT"
+                                                               text="Label" textAlignment="CENTER"/>
                                                     </children>
                                                 </VBox>
                                             </children>
@@ -148,39 +172,62 @@
                         </Tab>
                         <Tab text="Analysis">
                             <content>
-                        <ScrollPane minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0">
-                           <content>
-                                      <AnchorPane fx:id="analysisPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="1250.0" minWidth="1250.0" pickOnBounds="false">
-                                          <children>
-                                    <PieChart fx:id="frequencyChart" legendVisible="false" prefHeight="600.0" prefWidth="700.0" title="Frequency Distribution" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0">
-                                       <padding>
-                                          <Insets bottom="10.0" />
-                                       </padding>
-                                    </PieChart>
-                                    <TextArea fx:id="dataStatText" editable="false" layoutX="938.0" prefHeight="264.0" prefWidth="385.0" text="&#10;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0" />
-                                    <Button fx:id="showTableButton" mnemonicParsing="false" onAction="#displayCorrelationTable" text="Show Correlation Table" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="14.0" />
-                                    <BarChart fx:id="degreeDistributionChart" legendVisible="false" prefHeight="500.0" prefWidth="700.0" title="Degree Distribution" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0">
-                                      <xAxis>
-                                        <CategoryAxis side="BOTTOM" />
-                                      </xAxis>
-                                      <yAxis>
-                                        <NumberAxis side="LEFT" />
-                                      </yAxis>
-                                    </BarChart>
-                                    <TextArea fx:id="graphStatText" editable="false" prefHeight="306.0" prefWidth="324.0" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="25.0" />
-                                    <Button mnemonicParsing="false" onAction="#displayMaximalModularity" text="Calculate Maximal Modularity" AnchorPane.bottomAnchor="430.0" AnchorPane.rightAnchor="25.0" />
-                                    <TextArea fx:id="modularityText" editable="false" prefHeight="70.0" prefWidth="320.0" text="Maximal modularity for current graph:" AnchorPane.bottomAnchor="350.0" AnchorPane.rightAnchor="25.0" />
-                                          </children>
-                                      </AnchorPane>
-                           </content>
-                        </ScrollPane>
+                                <ScrollPane minHeight="0.0" minViewportHeight="500.0" minViewportWidth="500.0"
+                                            minWidth="0.0" prefViewportHeight="500.0" prefViewportWidth="500.0">
+                                    <content>
+                                        <AnchorPane fx:id="analysisPane" maxHeight="1.7976931348623157E308"
+                                                    maxWidth="1.7976931348623157E308" minHeight="1250.0"
+                                                    minWidth="1250.0" pickOnBounds="false">
+                                            <children>
+                                                <PieChart fx:id="frequencyChart" legendVisible="false"
+                                                          prefHeight="600.0" prefWidth="700.0"
+                                                          title="Frequency Distribution" AnchorPane.leftAnchor="10.0"
+                                                          AnchorPane.topAnchor="50.0">
+                                                    <padding>
+                                                        <Insets bottom="10.0"/>
+                                                    </padding>
+                                                </PieChart>
+                                                <TextArea fx:id="dataStatText" editable="false" layoutX="938.0"
+                                                          prefHeight="264.0" prefWidth="385.0" text="&#10;"
+                                                          AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0"/>
+                                                <Button fx:id="showTableButton" mnemonicParsing="false"
+                                                        onAction="#displayCorrelationTable"
+                                                        text="Show Correlation Table" AnchorPane.leftAnchor="22.0"
+                                                        AnchorPane.topAnchor="14.0"/>
+                                                <BarChart fx:id="degreeDistributionChart" legendVisible="false"
+                                                          prefHeight="500.0" prefWidth="700.0"
+                                                          title="Degree Distribution" AnchorPane.bottomAnchor="5.0"
+                                                          AnchorPane.leftAnchor="10.0">
+                                                    <xAxis>
+                                                        <CategoryAxis side="BOTTOM"/>
+                                                    </xAxis>
+                                                    <yAxis>
+                                                        <NumberAxis side="LEFT"/>
+                                                    </yAxis>
+                                                </BarChart>
+                                                <TextArea fx:id="graphStatText" editable="false" prefHeight="306.0"
+                                                          prefWidth="324.0" AnchorPane.bottomAnchor="25.0"
+                                                          AnchorPane.rightAnchor="25.0"/>
+                                                <Button mnemonicParsing="false" onAction="#displayMaximalModularity"
+                                                        text="Calculate Maximal Modularity"
+                                                        AnchorPane.bottomAnchor="430.0" AnchorPane.rightAnchor="25.0"/>
+                                                <TextArea fx:id="modularityText" editable="false" prefHeight="70.0"
+                                                          prefWidth="320.0" text="Maximal modularity for current graph:"
+                                                          AnchorPane.bottomAnchor="350.0"
+                                                          AnchorPane.rightAnchor="25.0"/>
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                </ScrollPane>
                             </content>
                         </Tab>
                     </tabs>
                 </TabPane>
                 <AnchorPane fx:id="rightPane" maxWidth="220.0" minWidth="0.0">
                     <children>
-                        <Accordion fx:id="preferencesAccordion" prefHeight="471.0" prefWidth="220.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Accordion fx:id="preferencesAccordion" prefHeight="571.0" prefWidth="220.0"
+                                   AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0"
+                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <panes>
                                 <TitledPane animated="false" text="Filter">
                                     <content>
@@ -189,82 +236,147 @@
                                                 <VBox layoutX="10.0" layoutY="5.0" spacing="5.0">
                                                     <children>
                                                         <fx:define>
-                                                            <ToggleGroup fx:id="allOrSelectedToggleGroup" />
+                                                            <ToggleGroup fx:id="allOrSelectedToggleGroup"/>
                                                         </fx:define>
-                                                        <RadioButton mnemonicParsing="false" selected="true" text="Compare all Samples">
+                                                        <RadioButton mnemonicParsing="false" selected="true"
+                                                                     text="Compare all Samples">
                                                             <toggleGroup>
-                                                                <ToggleGroup fx:id="allOrSelectedToggleGroup" />
+                                                                <ToggleGroup fx:id="allOrSelectedToggleGroup"/>
                                                             </toggleGroup>
                                                         </RadioButton>
-                                                        <RadioButton fx:id="compareSelectedSamplesButton" mnemonicParsing="false" text="Compare selected Samples" toggleGroup="$allOrSelectedToggleGroup">
+                                                        <RadioButton fx:id="compareSelectedSamplesButton"
+                                                                     mnemonicParsing="false"
+                                                                     text="Compare selected Samples"
+                                                                     toggleGroup="$allOrSelectedToggleGroup">
                                                         </RadioButton>
                                                     </children>
                                                 </VBox>
-                                    <VBox layoutX="7.0" layoutY="105.0" prefHeight="78.0" prefWidth="210.0" spacing="7.0">
-                                       <children>
-                                          <RadioButton fx:id="pearsonCorrelationButton" mnemonicParsing="false" selected="true" text="Use Pearson's Correlation">
-                                             <toggleGroup>
-                                                <ToggleGroup fx:id="correlationButtonsGroup" />
-                                             </toggleGroup>
-                                          </RadioButton>
-                                          <RadioButton fx:id="spearmanCorrelationButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Use Spearman's Correlation" toggleGroup="$correlationButtonsGroup" />
-                                          <RadioButton fx:id="kendallCorrelationButton" layoutX="10.0" layoutY="28.0" mnemonicParsing="false" text="Use Kendall's Correlation" toggleGroup="$correlationButtonsGroup" />
-                                       </children>
-                                    </VBox>
                                                 <HBox layoutX="10.0" layoutY="55.0" spacing="5.0">
                                                     <children>
-                                                        <Label text="Rank:" translateY="4.0" />
-                                                        <ChoiceBox fx:id="rankChoiceBox" prefHeight="26.0" prefWidth="113.0" />
+                                                        <Label text="Rank:" translateY="4.0"/>
+                                                        <ChoiceBox fx:id="rankChoiceBox" prefHeight="26.0"
+                                                                   prefWidth="113.0"/>
                                                     </children>
                                                 </HBox>
-                                                <VBox layoutX="10.0" layoutY="444.0" spacing="5.0">
+                                                <VBox layoutX="7.0" layoutY="105.0" prefHeight="78.0" prefWidth="210.0"
+                                                      spacing="7.0">
                                                     <children>
-                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Maximal p-Value:" />
-                                                        <HBox spacing="5.0">
+                                                        <RadioButton fx:id="pearsonCorrelationButton"
+                                                                     mnemonicParsing="false" selected="true"
+                                                                     text="Use Pearson's Correlation">
+                                                            <toggleGroup>
+                                                                <ToggleGroup fx:id="correlationButtonsGroup"/>
+                                                            </toggleGroup>
+                                                        </RadioButton>
+                                                        <RadioButton fx:id="spearmanCorrelationButton" layoutX="10.0"
+                                                                     layoutY="10.0" mnemonicParsing="false"
+                                                                     text="Use Spearman's Correlation"
+                                                                     toggleGroup="$correlationButtonsGroup"/>
+                                                        <RadioButton fx:id="kendallCorrelationButton" layoutX="10.0"
+                                                                     layoutY="28.0" mnemonicParsing="false"
+                                                                     text="Use Kendall's Correlation"
+                                                                     toggleGroup="$correlationButtonsGroup"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox layoutX="10.0" layoutY="200.0" prefWidth="175.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Positive Correlation Range"/>
+                                                        <RangeSlider fx:id="posCorrelationRangeSlider"
+                                                                     blockIncrement="0.1" highValue="1.0" lowValue="0.5"
+                                                                     majorTickUnit="1.0" minorTickCount="0"
+                                                                     showTickLabels="true" showTickMarks="true"/>
+                                                        <HBox spacing="60.0">
                                                             <children>
-                                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1" majorTickUnit="1.0" max="1.0" maxWidth="125.0" minorTickCount="0" showTickLabels="true" value="0.05" />
-                                                                <TextField fx:id="maxPValueText" prefHeight="26.0" prefWidth="60.0" translateY="-5.0" />
+                                                                <TextField fx:id="minPosCorrelationText"
+                                                                           prefHeight="26.0" prefWidth="60.0"/>
+                                                                <TextField fx:id="maxPosCorrelationText"
+                                                                           prefHeight="26.0" prefWidth="60.0"/>
                                                             </children>
                                                         </HBox>
                                                     </children>
                                                 </VBox>
-                                                <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="611.0" mnemonicParsing="false" onAction="#resetFilterSettings" text="Reset To Default" />
-                                    <VBox layoutX="10.0" layoutY="244.0" prefWidth="175.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Positive Correlation Range" />
-                                          <RangeSlider fx:id="posCorrelationRangeSlider" blockIncrement="0.1" highValue="1.0" lowValue="0.5" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
-                                          <HBox spacing="60.0">
-                                             <children>
-                                                                <TextField fx:id="minPosCorrelationText" prefHeight="26.0" prefWidth="60.0" />
-                                                                <TextField fx:id="maxPosCorrelationText" prefHeight="26.0" prefWidth="60.0" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                    <VBox layoutX="10.0" layoutY="344.0" prefWidth="175.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Negative Correlation Range" />
-                                          <RangeSlider fx:id="negCorrelationRangeSlider" blockIncrement="0.1" highValue="-0.5" lowValue="-1.0" majorTickUnit="1.0" max="0.0" min="-1.0" minorTickCount="0" showTickLabels="true" />
-                                          <HBox spacing="60.0">
-                                             <children>
-                                                <TextField fx:id="minNegCorrelationText" />
-                                                <TextField fx:id="maxNegCorrelationText" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                    <VBox layoutX="10.0" layoutY="519.0" prefWidth="175.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Relative Frequency" />
-                                          <RangeSlider fx:id="frequencyRangeSlider" highValue="1.0" lowValue="0.0" majorTickUnit="1.0" minorTickCount="0" showTickLabels="true" />
-                                          <HBox spacing="60.0">
-                                             <children>
-                                                                <TextField fx:id="minFrequencyText" prefHeight="26.0" prefWidth="60.0" />
-                                                                <TextField fx:id="maxFrequencyText" prefHeight="26.0" prefWidth="60.0" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
+                                                <VBox layoutX="10.0" layoutY="300.0" prefWidth="175.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Negative Correlation Range"/>
+                                                        <RangeSlider fx:id="negCorrelationRangeSlider"
+                                                                     blockIncrement="0.1" highValue="-0.5"
+                                                                     lowValue="-1.0" majorTickUnit="1.0" max="0.0"
+                                                                     min="-1.0" minorTickCount="0"
+                                                                     showTickLabels="true"/>
+                                                        <HBox spacing="60.0">
+                                                            <children>
+                                                                <TextField fx:id="minNegCorrelationText"/>
+                                                                <TextField fx:id="maxNegCorrelationText"/>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                                <VBox layoutX="10.0" layoutY="400.0" spacing="5.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Maximal p-Value:"/>
+                                                        <HBox spacing="5.0">
+                                                            <children>
+                                                                <Slider fx:id="maxPValueSlider" blockIncrement="0.1"
+                                                                        majorTickUnit="1.0" max="1.0" maxWidth="125.0"
+                                                                        minorTickCount="0" showTickLabels="true"
+                                                                        value="0.05"/>
+                                                                <TextField fx:id="maxPValueText" prefHeight="26.0"
+                                                                           prefWidth="60.0" translateY="-5.0"/>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                                <VBox layoutX="10.0" layoutY="475.0" prefWidth="175.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Relative Frequency"/>
+                                                        <RangeSlider fx:id="frequencyRangeSlider" highValue="1.0"
+                                                                     lowValue="0.0" majorTickUnit="1.0"
+                                                                     minorTickCount="0" showTickLabels="true"/>
+                                                        <HBox spacing="60.0">
+                                                            <children>
+                                                                <TextField fx:id="minFrequencyText" prefHeight="26.0"
+                                                                           prefWidth="60.0"/>
+                                                                <TextField fx:id="maxFrequencyText" prefHeight="26.0"
+                                                                           prefWidth="60.0"/>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                                <Button fx:id="resetFilterSettingsButton" layoutX="10.0" layoutY="575.0"
+                                                        mnemonicParsing="false" onAction="#resetFilterSettings"
+                                                        text="Reset To Default"/>
+                                                <ToggleButton fx:id="buttonPauseAnimation" layoutX="10.0"
+                                                              layoutY="665.0" maxWidth="1.7976931348623157E308"
+                                                              mnemonicParsing="false" text="Pause/Resume Animation">
+                                                    <Label>
+                                                        <Glyph fontFamily="FontAwesome" icon="PAUSE"/>
+                                                    </Label>
+                                                </ToggleButton>
+
+                                                <VBox layoutX="10.0" layoutY="700.0" prefHeight="47.0" prefWidth="220.0"
+                                                      spacing="5.0" AnchorPane.leftAnchor="5.0"
+                                                      AnchorPane.rightAnchor="5.0">
+                                                    <children>
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Exclude frequencies below..."/>
+                                                        <HBox>
+                                                            <children>
+                                                                <Slider fx:id="excludeFrequencySlider" max="0.1"
+                                                                        showTickLabels="true">
+                                                                    <padding>
+                                                                        <Insets top="2.0"/>
+                                                                    </padding>
+                                                                </Slider>
+                                                                <TextField fx:id="excludeFrequencyText"
+                                                                           prefHeight="26.0" prefWidth="86.0"/>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
                                             </children>
                                         </AnchorPane>
                                     </content>
@@ -272,119 +384,129 @@
                                 <TitledPane animated="false" text="Graph settings">
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <children>
-                                          <Label text="Node radius:" />
-                                          <Slider fx:id="sliderNodeRadius" max="50" min="1.0" value="15" />
-                                          <Label text="Edge width:" />
-                                          <Slider fx:id="sliderEdgeWidth" max="12" min="0" value="5.0" />
-                                          <Label text="Edge length:" />
-                                          <RangeSlider fx:id="sliderEdgeLength" highValue="500" lowValue="150" max="1000" min="1.0" />
-                                          <HBox alignment="CENTER" VBox.vgrow="NEVER" />
-                                          <Label />
-                                          <CheckBox fx:id="showLabelsCheckBox" mnemonicParsing="false" text="Show Labels" />
-                                          <Label />
-                                          <CheckBox fx:id="checkAdvancedGraphSettings" mnemonicParsing="false" text="show advanced settings" />
-                                          <Label fx:id="labelNodeRepulsion" text="Node repulsion" />
-                                          <Slider fx:id="sliderNodeRepulsion" max="200" min="1.0" />
-                                          <Label fx:id="labelEdgeForce" text="Edge force" />
-                                          <Slider fx:id="sliderEdgeForce" max="5" min="0" />
-                                          <Label fx:id="labelStretchParameter" text="Stretch parameter" />
-                                          <Slider fx:id="sliderStretchParameter" max="1.4" min="0.5" />
-                                          <Label fx:id="labelAnimationSpeed" text="Animation speed" />
-                                          <Slider fx:id="sliderAnimationSpeed" max="100" min="0" />
-                                          <Button fx:id="buttonResetGraphDefaults" mnemonicParsing="false" text="Reset defaults" />
-                                       </children>
-                                    </VBox>
-                                 </children></AnchorPane>
+                                            <children>
+                                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0"
+                                                      AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <children>
+                                                        <Label text="Node radius:"/>
+                                                        <Slider fx:id="sliderNodeRadius" max="50" min="1.0" value="15"/>
+                                                        <Label text="Edge width:"/>
+                                                        <Slider fx:id="sliderEdgeWidth" max="12" min="0" value="5.0"/>
+                                                        <Label text="Edge length:"/>
+                                                        <RangeSlider fx:id="sliderEdgeLength" highValue="500"
+                                                                     lowValue="150" max="1000" min="1.0"/>
+                                                        <HBox alignment="CENTER" VBox.vgrow="NEVER"/>
+                                                        <Label/>
+                                                        <CheckBox fx:id="showLabelsCheckBox" mnemonicParsing="false"
+                                                                  text="Show Labels"/>
+                                                        <Label/>
+                                                        <CheckBox fx:id="checkAdvancedGraphSettings"
+                                                                  mnemonicParsing="false"
+                                                                  text="show advanced settings"/>
+                                                        <Label fx:id="labelNodeRepulsion" text="Node repulsion"/>
+                                                        <Slider fx:id="sliderNodeRepulsion" max="200" min="1.0"/>
+                                                        <Label fx:id="labelEdgeForce" text="Edge force"/>
+                                                        <Slider fx:id="sliderEdgeForce" max="5" min="0"/>
+                                                        <Label fx:id="labelStretchParameter" text="Stretch parameter"/>
+                                                        <Slider fx:id="sliderStretchParameter" max="1.4" min="0.5"/>
+                                                        <Label fx:id="labelAnimationSpeed" text="Animation speed"/>
+                                                        <Slider fx:id="sliderAnimationSpeed" max="100" min="0"/>
+                                                        <Button fx:id="buttonResetGraphDefaults" mnemonicParsing="false"
+                                                                text="Reset defaults"/>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </AnchorPane>
                                     </content>
                                 </TitledPane>
                                 <TitledPane animated="false" prefHeight="415.0" prefWidth="220.0" text="Colouring">
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <children>
-                                          <Label text="Colour nodes by:" />
-                                           <fx:define>
-                                               <ToggleGroup fx:id="colourToggleNodes" />
-                                           </fx:define>
-                                           <RadioButton fx:id="colourRadioNodeFix" mnemonicParsing="false" text="Uniform">
-                                             <toggleGroup>
-                                                <ToggleGroup fx:id="colourToggleNodes" />
-                                             </toggleGroup></RadioButton>
-                                           <RadioButton fx:id="colourRadioNodeParent" mnemonicParsing="false" text="Parent taxonomy" toggleGroup="$colourToggleNodes" />
-                                           <RadioButton fx:id="colourRadioNodeAlpha" mnemonicParsing="false" text="alpha Diversity" toggleGroup="$colourToggleNodes" />
-                                           <RadioButton fx:id="colourRadioNodeFrequency" mnemonicParsing="false" text="Abundance" toggleGroup="$colourToggleNodes" />
-                                           <Label text="Colour scheme:" />
+                                            <children>
+                                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0"
+                                                      AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <children>
+                                                        <Label text="Colour nodes by:"/>
+                                                        <fx:define>
+                                                            <ToggleGroup fx:id="colourToggleNodes"/>
+                                                        </fx:define>
+                                                        <RadioButton fx:id="colourRadioNodeFix" mnemonicParsing="false"
+                                                                     text="Uniform">
+                                                            <toggleGroup>
+                                                                <ToggleGroup fx:id="colourToggleNodes"/>
+                                                            </toggleGroup>
+                                                        </RadioButton>
+                                                        <RadioButton fx:id="colourRadioNodeParent"
+                                                                     mnemonicParsing="false" text="Parent taxonomy"
+                                                                     toggleGroup="$colourToggleNodes"/>
+                                                        <RadioButton fx:id="colourRadioNodeAlpha"
+                                                                     mnemonicParsing="false" text="alpha Diversity"
+                                                                     toggleGroup="$colourToggleNodes"/>
+                                                        <RadioButton fx:id="colourRadioNodeFrequency"
+                                                                     mnemonicParsing="false" text="Abundance"
+                                                                     toggleGroup="$colourToggleNodes"/>
+                                                        <Label text="Colour scheme:"/>
 
-                                           <StackPane fx:id="colourNodeComboContainer" alignment="TOP_LEFT" minHeight="20.0" minWidth="180" prefHeight="25.0" prefWidth="200.0">
-                                              <!--> ComboBox will be added in Controller <-->
+                                                        <StackPane fx:id="colourNodeComboContainer" alignment="TOP_LEFT"
+                                                                   minHeight="20.0" minWidth="180" prefHeight="25.0"
+                                                                   prefWidth="200.0">
+                                                            <!--> ComboBox will be added in Controller <-->
 
-                                           </StackPane>
-                                           <Separator prefWidth="200.0" />
-                                           <Label text="Colour edges by:" />
-                                            <fx:define>
-                                               <ToggleGroup fx:id="colourToggleEdges" />
-                                            </fx:define>
-                                           <RadioButton fx:id="colourRadioEdgeCorrelation" mnemonicParsing="false" text="Correlation">
-                                             <toggleGroup>
-                                                <ToggleGroup fx:id="colourToggleEdges" />
-                                             </toggleGroup></RadioButton>
-                                           <RadioButton fx:id="colourRadioEdgePvalue" mnemonicParsing="false" text="P-Value" toggleGroup="$colourToggleEdges" />
-                                           <RadioButton fx:id="colourRadioEdgeDistance" mnemonicParsing="false" text="Distance (Bray-Curtis)" toggleGroup="$colourToggleEdges" />
+                                                        </StackPane>
+                                                        <Separator prefWidth="200.0"/>
+                                                        <Label text="Colour edges by:"/>
+                                                        <fx:define>
+                                                            <ToggleGroup fx:id="colourToggleEdges"/>
+                                                        </fx:define>
+                                                        <RadioButton fx:id="colourRadioEdgeCorrelation"
+                                                                     mnemonicParsing="false" text="Correlation">
+                                                            <toggleGroup>
+                                                                <ToggleGroup fx:id="colourToggleEdges"/>
+                                                            </toggleGroup>
+                                                        </RadioButton>
+                                                        <RadioButton fx:id="colourRadioEdgePvalue"
+                                                                     mnemonicParsing="false" text="P-Value"
+                                                                     toggleGroup="$colourToggleEdges"/>
+                                                        <RadioButton fx:id="colourRadioEdgeDistance"
+                                                                     mnemonicParsing="false"
+                                                                     text="Distance (Bray-Curtis)"
+                                                                     toggleGroup="$colourToggleEdges"/>
 
-                                           <Label text="Colour scheme" />
-                                           <StackPane fx:id="colourEdgeComboContainer" alignment="TOP_LEFT" minHeight="20.0" minWidth="180" prefHeight="25.0" prefWidth="200.0">
-                                           <!--> ComboBox will be added in Controller <-->
+                                                        <Label text="Colour scheme"/>
+                                                        <StackPane fx:id="colourEdgeComboContainer" alignment="TOP_LEFT"
+                                                                   minHeight="20.0" minWidth="180" prefHeight="25.0"
+                                                                   prefWidth="200.0">
+                                                            <!--> ComboBox will be added in Controller <-->
 
-                                          </StackPane>
-                                       </children>
-                                    </VBox>
-                                 </children></AnchorPane>
+                                                        </StackPane>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </AnchorPane>
                                     </content>
                                 </TitledPane>
                             </panes>
                         </Accordion>
-                  <VBox layoutX="1.0" layoutY="785.0" prefHeight="47.0" prefWidth="220.0" spacing="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Exclude frequencies below..." />
-                        <HBox>
-                           <children>
-                              <Slider fx:id="excludeFrequencySlider" max="0.1" showTickLabels="true">
-                                 <padding>
-                                    <Insets top="2.0" />
-                                 </padding>
-                              </Slider>
-                              <TextField fx:id="excludeFrequencyText" prefHeight="26.0" prefWidth="86.0" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-                  <ToggleButton fx:id="buttonPauseAnimation" layoutX="4.0" layoutY="749.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Pause/Resume Animation">
-                      <Label>
-                      <Glyph fontFamily="FontAwesome" icon="PAUSE" />
-                      </Label>
-                  </ToggleButton>
                     </children>
                 </AnchorPane>
             </items>
         </SplitPane>
         <HBox id="HBox" alignment="CENTER_LEFT" fillHeight="false" spacing="5.0">
             <children>
-                <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+                <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS"/>
                 <Label fx:id="statusRightLabel" maxWidth="-1.0" text="Running" HBox.hgrow="NEVER">
                     <font>
-                        <Font size="11.0" fx:id="x3" />
+                        <Font size="11.0" fx:id="x3"/>
                     </font>
                     <textFill>
-                        <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
+                        <Color blue="0.625" green="0.625" red="0.625" fx:id="x4"/>
                     </textFill>
                 </Label>
             </children>
             <padding>
-                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
             </padding>
         </HBox>
     </children>

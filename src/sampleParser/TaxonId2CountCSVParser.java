@@ -11,7 +11,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by julian on 15.05.17.
+ * <h1>The class implements the parser for TaxonID2count files</h1>
+ * <p>
+ * The class is dependant on a TaxonTree to be available!
+ * When done parsing the file a list of samples is returned.
+ * </p>
+ *
+ * @see treeParser.TreeParser
+ * @see Sample
  */
 public class TaxonId2CountCSVParser implements InputFile {
     private ArrayList<Sample> sampleList;
@@ -23,8 +30,6 @@ public class TaxonId2CountCSVParser implements InputFile {
     }
 
     //So far, every column is read and the corresponding number of sample objects is created.
-    //TODO: In the final program, the user should be allowed to choose which columns are read
-    //TODO: Add metadata!?
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException {
         sampleList = new ArrayList<>();
@@ -55,7 +60,6 @@ public class TaxonId2CountCSVParser implements InputFile {
             }
             line = reader.readLine();
         }
-
 
         return sampleList;
     }

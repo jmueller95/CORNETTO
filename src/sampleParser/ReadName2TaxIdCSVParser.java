@@ -11,7 +11,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by julian on 15.05.17.
+ * <h1>The class implements the parser for ReadName2ID files</h1>
+ * <p>
+ * The class is dependant on a TaxonTree to be available!
+ * When done parsing the file a list of samples is returned.
+ * </p>
+ *
+ * @see treeParser.TreeParser
+ * @see Sample
  */
 public class ReadName2TaxIdCSVParser implements InputFile {
     private ArrayList<Sample> sampleList;
@@ -23,11 +30,11 @@ public class ReadName2TaxIdCSVParser implements InputFile {
     }
 
     /**
+     *
      * @param filepath
      * @return
      * @throws IOException
      */
-    //TODO: Add metadata!?
     @Override
     public ArrayList<Sample> parse(String filepath) throws IOException {
         //Get Mapping of IDs to TaxonNodes from the TaxonTree

@@ -10,7 +10,13 @@ import util.SaveAndLoadOptions;
 import java.io.File;
 
 /**
- * Created by Zeth on 22.06.2017.
+ * <h1>This is the controller for the options/settings menu</h1>
+ * <p>
+ * Implements all methods required for the buttons for the settings menu.
+ * Also accesses the userSettings
+ * </p>
+ *
+ * @see UserSettings
  */
 public class OptionsController {
 

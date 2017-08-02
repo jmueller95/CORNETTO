@@ -3,7 +3,12 @@ package main;
 import java.util.Random;
 
 /**
- * Created by Zeth on 17.07.2017.
+ * <h1>The class defines heavily used constants - no specific usage cases</h1>
+ * <p>
+ * This class contains constants that are used throughout the program. The constants do not have a specific usage domain,
+ * therefore any constant which is not local to a class can be defined here.
+ * </p>
+ *
  */
 public class GlobalConstants {
 

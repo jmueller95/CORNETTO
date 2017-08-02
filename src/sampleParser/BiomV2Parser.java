@@ -11,11 +11,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * File Parser for BIOM V2.0 and V2.1 Files based on the hdf5 format
- * Created by caspar on 24.05.17.
+ * <h1>The class implements the parser for BiomV2 files</h1>
+ * <p>
+ * The class is dependant on a TaxonTree to be available!
+ * There are two different versions of the biom files. This ons only works for the version 2!
+ * When done parsing the file a list of samples is returned.
+ * </p>
+ *
+ * @see treeParser.TreeParser
+ * @see Sample
  */
 public class BiomV2Parser implements InputFile{
-
     private TaxonTree taxonTree;
 
     /**

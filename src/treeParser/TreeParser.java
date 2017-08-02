@@ -12,7 +12,14 @@ import java.io.IOException;
 
 
 /**
- * Created by julian on 15.05.17.
+ * <h1>The class parses the NCBI tree</h1>
+ * <p>
+ * It is required that the nodes.dmp and names.dmp files are present!
+ * nodes.dmp should always be read before names.dmp (it is implemented this way).
+ * </p>
+ *
+ * @see util.DownloadNodesAndNameDMPFiles
+ *
  */
 public class TreeParser {
     //Tree to be created
@@ -45,7 +52,6 @@ public class TreeParser {
      */
     public void parseTree(){
         parseTree("./res/nodes.dmp", "./res/names.dmp");
-
     }
 
 

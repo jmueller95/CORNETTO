@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * multi-sample csv files can have sampleIDs as a header (start with a #)
  * everything that follows in the header of the metadata format is the name of that metadata field
  */
-public class qiimeFormatParser {
+public class QiimeFormatParser {
     /**
      * parses the quiime file format
      * we only require sampleID, Treatment and DOB

@@ -1,6 +1,5 @@
 package UI;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.embed.swing.SwingFXUtils;
@@ -20,15 +19,22 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
+
 /**
- * Created by caspar on 26.07.17.
+ * <h1>This is the controller class for exporting the graph as an image.</h1>
+ * <p>
+ * The class implements methods for exporting the graph/view pane into the following currently supported formats:
+ * gif
+ * jpg
+ * png
+ * </p>
  *
- * TODO:
- * Fix image boundaries. CHeck if viewPane does exist. Implement visible region/whole graph. Add legend/info/stats
- * */
+ * @see ViewPane
+ *
+ * @version Image boundaries should be fixed. Possibly a legend should be added.
+ */
 public class ExportImageController implements Initializable {
 
     @FXML
@@ -59,12 +65,11 @@ public class ExportImageController implements Initializable {
     private Button imgButtonSave;
 
 
-
-    StringProperty fullPathString = new SimpleStringProperty();
-    String fileName;
-    File imgFolder;
-    File imgFile;
-    ViewPane vP;
+    private StringProperty fullPathString = new SimpleStringProperty();
+    private String fileName;
+    private File imgFolder;
+    private File imgFile;
+    private ViewPane vP;
 
     /**
      * Constructor, takes the ViewPane which can later be saved
@@ -79,7 +84,6 @@ public class ExportImageController implements Initializable {
      * GUI controller, sets up basic stuff
      */
     private void initializeElements() {
-
         fullPathString.bindBidirectional(imgTextPath.textProperty());
 
         try {
@@ -116,7 +120,6 @@ public class ExportImageController implements Initializable {
      * Writes the image to the Output Stream
      */
     public void exportImage() {
-
         WritableImage wim = new WritableImage((int) vP.getWidth(),(int) vP.getHeight());
 
         vP.snapshot(null, wim);

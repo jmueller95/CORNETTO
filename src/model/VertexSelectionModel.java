@@ -15,7 +15,6 @@ import java.util.Arrays;
  */
 
 public class VertexSelectionModel<T> extends MultipleSelectionModel<T> {
-
     public final ObservableSet<Integer> selectedIndices; // the set of selected indices
 
     private T[] items; // need a copy of this array to map indices to objects, when required
