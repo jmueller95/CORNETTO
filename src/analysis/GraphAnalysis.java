@@ -11,7 +11,14 @@ import org.apache.commons.math3.linear.SparseRealMatrix;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+/**
+ * <h1>The class implements methods for the graph analysis</h1>
+ * <p>
+ * Every analysis that we do on the graph is defined here.
+ * After every analysis a Hashmap of the results is returned.
+ * </p>
+ *
+ */
 public class GraphAnalysis {
 
     private MyGraph<MyVertex, MyEdge> filteredGraph;
@@ -53,7 +60,6 @@ public class GraphAnalysis {
      * calculates the node degrees
      * @return
      */
-
     private HashMap<TaxonNode, Integer> calcNodeDegrees() {
         HashMap<TaxonNode, Integer> degreesMap = new HashMap<>();
         for (MyVertex vertex : filteredGraph.getVertices()) {
@@ -127,7 +133,6 @@ public class GraphAnalysis {
      * @return
      */
     public double findGlobalMaximumModularity() {
-
         //Store the community of each vertex as an integer
         HashMap<MyVertex, Integer> communityMap = new HashMap<>();
 
@@ -332,7 +337,6 @@ public class GraphAnalysis {
      * @param communityMap
      * @return
      */
-
     private double calcA_i(int i, HashMap<MyVertex, Integer> communityMap) {
         double m = filteredGraph.getEdgeCount();
         HashMap<TaxonNode, Integer> nodeDegrees = getNodeDegrees();
@@ -344,8 +348,6 @@ public class GraphAnalysis {
         }
         return 1 / (2 * m) * endsSum;
     }
-
-    //*** End of algorithm implementation
 
     //Getters
     public MyGraph<MyVertex, MyEdge> getFilteredGraph() {
@@ -419,18 +421,4 @@ public class GraphAnalysis {
 
     }
 
-    /**
-     * Helper method for printing a matrix to the console
-     *
-     * @param matrix
-     */
-    public static void printMatrix(SparseRealMatrix matrix) {
-        for (int rowIndex = 0; rowIndex < matrix.getRowDimension(); rowIndex++) {
-            for (int colIndex = 0; colIndex < matrix.getColumnDimension(); colIndex++) {
-                System.out.printf("%.3f", matrix.getEntry(rowIndex, colIndex));
-                System.out.print("\t");
-            }
-            System.out.println();
-        }
-    }
 }

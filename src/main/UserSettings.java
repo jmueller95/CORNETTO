@@ -4,7 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-
+/**
+ * <h1>This defines the UserSettjngs class</h1>
+ * <p>
+ * The userSettings hashmap contains all userSettings at all times. Every setting that is supposed to be included into the
+ * UserSettings should be defined here and also added to the addUserSettings.
+ * This makes sure that when a dummy file is required that all settings are always present.
+ * </p>
+ *
+ * @see util.SaveAndLoadOptions
+ *
+ */
 public class UserSettings {
 
     //Strings
