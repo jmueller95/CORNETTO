@@ -51,6 +51,7 @@ import view.*;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static main.Main.getPrimaryStage;
@@ -64,13 +65,12 @@ import static model.AnalysisData.*;
  * stage.
  * </p>
  *
+ * @version This class should be divided into more classes which separate behaviour.
  * @see SpringAnimationService
  * @see ViewPane
  * @see MySpringLayout
  * @see MyColours
  * @see Palette
- *
- * @version This class should be divided into more classes which separate behaviour.
  */
 public class MainStageController implements Initializable {
     //Default constants for the analysis sliders
@@ -421,7 +421,6 @@ public class MainStageController implements Initializable {
                     + "\nNo. of visible edges: " + analysis.getNodeDegrees().get(selectedVertex.getTaxonNode());
         } else if (LoadedData.getGraphView() != null) {
             GraphAnalysis analysis = AnalysisData.getAnalysis();
-            ;
             infoText = "Network Overview: \nNo. of visible taxa: " + analysis.getFilteredGraph().getVertices().size()
                     + "\nNo. of visible edges: " + analysis.getFilteredGraph().getEdges().size()
                     + "\nAverage Degree: " + String.format("%.2f", analysis.getMeanDegree());
@@ -722,8 +721,9 @@ public class MainStageController implements Initializable {
 
     @FXML
     /**
-     * opens a file chooser and gives the user the possibility to select a file
-     * file chooser default location is where save states are
+     * <p>Opens recent project files</p>
+     * Opens a file chooser and give the user the option to open recently used project files
+     * @version Not yet implemented
      */ public void openRecentFile() {
         /*openFileWindow();*/
     }
@@ -796,6 +796,7 @@ public class MainStageController implements Initializable {
      * <h1>Lets the user choose a file / files to load.</h1>
      * Distinguishes which filetype is about to be loaded by the user
      * and calls the associated methods.
+     *
      * @param fileType Enum to differentiate which type of file is loaded by the user.
      */
     private void openFiles(FileType fileType) {
@@ -831,6 +832,8 @@ public class MainStageController implements Initializable {
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(getPrimaryStage());
 
         if (selectedFiles != null) {
+            //Keeps every file that has been loaded before in a list to show only one alert
+            //for multiple files
             ArrayList<String> namesOfAlreadyLoadedFiles = new ArrayList<>();
             for (File file : selectedFiles) {
                 String foundFilePath = file.getAbsolutePath();
@@ -855,9 +858,9 @@ public class MainStageController implements Initializable {
                             break;
                     }
                 }
-                //Maybe multiple at once?
-                //verifyOpenedFile(selectedFile);
             }
+            //Shows an alert if the user chose to load one or multiple files
+            //that have already been loaded before.
             if (namesOfAlreadyLoadedFiles.size() != 0) {
                 showFileAlreadyLoadedAlert(namesOfAlreadyLoadedFiles);
             }
@@ -887,6 +890,7 @@ public class MainStageController implements Initializable {
     /**
      * <h1>Parses a given readName2TaxId file</h1>
      * Passes the parsed samples to the LoadedData class.
+     *
      * @param file The file the user choses to load
      */
     private void addReadName2TaxonIdFileToTreeView(File file) {
@@ -899,6 +903,7 @@ public class MainStageController implements Initializable {
         } catch (IOException e) {
             showWrongFileAlert();
             return;
+            //In case the user chose to load a file with a wrong file type
         } catch (NumberFormatException e) {
             showWrongFileAlert();
             return;
@@ -911,6 +916,7 @@ public class MainStageController implements Initializable {
     /**
      * <h1>Parses a given biomV1 file</h1>
      * Passes the parsed samples to the LoadedData class.
+     *
      * @param file The file the user choses to load
      */
     private void addBiomV1FileToTreeView(File file) {
@@ -918,7 +924,17 @@ public class MainStageController implements Initializable {
 
         ArrayList<Sample> samples;
 
-        samples = biomV1Parser.parse(file.getAbsolutePath());
+        try {
+            samples = biomV1Parser.parse(file.getAbsolutePath());
+            //TODO: Caspar uncomment the catch below after biom is working
+        /*} catch (IOException e) {
+            showWrongFileAlert();
+            return;*/
+            //In case the user chose to load a file with a wrong file type
+        } catch (NumberFormatException e) {
+            showWrongFileAlert();
+            return;
+        }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file);
         activateButtons();
@@ -939,6 +955,7 @@ public class MainStageController implements Initializable {
         } catch (IOException e) {
             showWrongFileAlert();
             return;
+            //In case the user chose to load a file with a wrong file type
         } catch (NumberFormatException e) {
             showWrongFileAlert();
             return;
@@ -951,6 +968,7 @@ public class MainStageController implements Initializable {
     /**
      * <h1>Parses a given id2Count file</h1>
      * Passes the parsed samples to the LoadedData class.
+     *
      * @param file The file the user choses to load
      */
     private void addId2CountFileToTreeView(File file) {
@@ -963,6 +981,7 @@ public class MainStageController implements Initializable {
         } catch (IOException e) {
             showWrongFileAlert();
             return;
+            //In case the user chose to load a file with a wrong file type
         } catch (NumberFormatException e) {
             showWrongFileAlert();
             return;
@@ -991,7 +1010,7 @@ public class MainStageController implements Initializable {
     }
 
     /**
-     * helper method for setting up the Buttons on the left pane
+     * Helper method for setting up the buttons on the left pane
      */
     public void initializeButtonsOnLeftPane() {
         collapseAllButton.setDisable(true);
@@ -1004,6 +1023,7 @@ public class MainStageController implements Initializable {
      * Does not effect the current extended state of the treeitems
      */
     public void collapseAll() {
+        //If no sample has been loaded yet
         if (treeViewFiles.getRoot() == null || treeViewFiles.getRoot().getChildren().isEmpty()) {
             collapseAllButton.disarm();
             collapseAllButton.setSelected(false);
@@ -1029,8 +1049,7 @@ public class MainStageController implements Initializable {
      * Deselects all nodes in the treeview element
      */
     public void deselectAll() {
-        changeSelectionForAll(true);
-        System.out.println("Deselection toggled");
+        changeSelectionForSamples(true);
     }
 
     @FXML
@@ -1038,25 +1057,28 @@ public class MainStageController implements Initializable {
      * Selects all nodes in the treeview element
      */
     public void selectAll() {
-        changeSelectionForAll(false);
-        System.out.println("Selection toggled");
+        changeSelectionForSamples(false);
     }
 
     /**
-     * Deselects all nodes in the treeview element
+     * <h1>Changes the selection of every treeitem representating a sample</h1>
+     * <p>
+     * <p>Note: </p>May not be used for selection by metadata because it changes every treeitem
+     * independent of any characteristics of the represented samples
+     * </p>
+     * @param isDeselectAll Boolean whether every treeitem should be selected or deselected
      */
-    private void changeSelectionForAll(boolean isDeselectAll) {
+    private void changeSelectionForSamples(boolean isDeselectAll) {
         if (treeViewFiles.getRoot() != null && !treeViewFiles.getRoot().getChildren().isEmpty()) {
-            treeViewFiles.getRoot().getChildren()
-                    .stream()
-                    .map(treeItem -> {
-                        CheckBoxTreeItem<String> checkBoxTreeItem = new CheckBoxTreeItem<>();
-                        checkBoxTreeItem.setValue(treeItem.getValue());
-                        checkBoxTreeItem.getChildren().addAll(treeItem.getChildren());
-                        checkBoxTreeItem.setSelected(isDeselectAll ? true : false);
-                        return checkBoxTreeItem;
-                    })
-                    .forEach(treeItem -> System.out.println(treeItem.getValue()));
+            for (int i = 0; i < treeViewFiles.getRoot().getChildren().size(); i++) {
+                //Replaces the found tree item with a CheckBoxTreeItem -> Actually the found tree item
+                //is already a CheckBoxTreeItem but the TreeView does not now anythin from its CellFactory
+                //at this point.
+              TreeItem<String> foundTreeItem = treeViewFiles.getRoot().getChildren().get(i);
+              CheckBoxTreeItem<String> checkBoxTreeItemRepresentation = (CheckBoxTreeItem<String>) foundTreeItem;
+              checkBoxTreeItemRepresentation.setSelected(!isDeselectAll);
+              treeViewFiles.getRoot().getChildren().set(i, checkBoxTreeItemRepresentation);
+            }
         }
     }
 

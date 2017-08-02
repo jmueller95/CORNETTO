@@ -30,6 +30,7 @@ import java.util.*;
  * </p>
  *
  * @see AnalysisData
+ * @see UI.MainStageController
  */
 public class LoadedData {
 
@@ -42,12 +43,20 @@ public class LoadedData {
     private static BooleanProperty analyzeSelected = new SimpleBooleanProperty(false);
     private static int countOfSamplesFromEqualPaths = 0;
 
+    /**
+     * <h1>Adds samples to the every connected database</h1>
+     * Also calls a method to represent every sample inside of the TreeView FXML element
+     * @param loadedSamples New samples parsed from the loaded files
+     * @param treeViewFiles TreeView FXML element
+     * @param file File where the samples have been parsed from
+     */
     public static void addSamplesToDatabase(ArrayList<Sample> loadedSamples, TreeView<String> treeViewFiles, File file) {
         //Add file path to every sample. (Multiple samples from the same file do have the same file path)
         loadedSamples
                 .stream()
                 .forEach(sample -> sample.setPathToFile(file.getAbsolutePath()));
 
+        //If these samples are the first samples to be loaded mark them as default
         if (samples == null) {
             samples = FXCollections.observableArrayList(loadedSamples);
         } else {
@@ -56,6 +65,7 @@ public class LoadedData {
         if (openFiles == null) {
             openFiles = new ArrayList<>();
         }
+        //The file is 'recorded' so that it may not be opened twice.
         openFiles.add(file.getAbsolutePath());
         addSamplesToTreeView(treeViewFiles, loadedSamples, file.getName());
     }
@@ -159,11 +169,9 @@ public class LoadedData {
 
         countOfSamplesFromEqualPaths = 0;
         for (Sample sample : loadedSamples) {
-            if (!isLookedForLoadedSamples && treeViewFiles.getRoot().getChildren() != null && !treeViewFiles.getRoot().getChildren().isEmpty()) {
+            /*if (!isLookedForLoadedSamples && treeViewFiles.getRoot().getChildren() != null && !treeViewFiles.getRoot().getChildren().isEmpty()) {
 
-                String pathToNewSample = sample.getPathToFile();
-
-                /*String pathToSample = sample.getPathToFile();
+                String pathToSample = sample.getPathToFile();
 
                 for (int i = 0; i < treeViewFiles.getRoot().getChildren().size(); i++) {
                     Sample alreadyLoadedSample = samples.get(i);
@@ -176,8 +184,8 @@ public class LoadedData {
                     }
                 }
 
-                isLookedForLoadedSamples = true;*/
-            }
+                isLookedForLoadedSamples = true;
+            }*/
             String sampleName = getNameWithoutExtension(fileName, loadedSamples);
             sample.setName(sampleName);
             CheckBoxTreeItem<String> newSample = new CheckBoxTreeItem<>(sampleName);
@@ -222,6 +230,8 @@ public class LoadedData {
                             //is not a CheckBoxTreeItem, remove the checkbox item
                         } else if (!(getTreeItem() instanceof CheckBoxTreeItem)) {
                             setGraphic(null);
+                            //If the TreeItem is a CheckBoxItem (that is the case for every TreeItem representing a sample)
+                            //add the function that the user is able to delete the entire TreeItem with all its children
                         } else if (getTreeItem() instanceof CheckBoxTreeItem) {
                             MenuItem removeSample = new MenuItem("remove");
                             removeSample.setOnAction(event -> {
