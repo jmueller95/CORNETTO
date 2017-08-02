@@ -13,7 +13,7 @@ public class UserSettings {
     private static String nodesColor;
 
     //booleans
-    private static boolean isDarkTheme = true;
+    private static boolean isDarkTheme = false;
     private static boolean isDefaultDirectoryLocation = true;
     private static boolean isUnconnectedEdgesHiddenOnStartup = false;
 

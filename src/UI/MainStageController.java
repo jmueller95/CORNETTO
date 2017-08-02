@@ -31,6 +31,7 @@ import javafx.stage.WindowEvent;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import main.GlobalConstants;
+import main.Main;
 import main.UserSettings;
 import model.AnalysisData;
 import model.LoadedData;
@@ -1568,19 +1569,27 @@ public class MainStageController implements Initializable {
      * opens the Options stage
      *
      */ private void optionsButtonClicked() {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        Parent root = null;
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("/src/UI/optionsGui.fxml")));
-            Parent root = fxmlLoader.load();
-            this.optionsStage = new Stage();
-            optionsStage.setTitle("Options");
-            Scene optionsScene = new Scene(root, 1000, 700);
-            optionsStage.setScene(optionsScene);
-            optionsScene.getStylesheets().add(GlobalConstants.DARKTHEME);
-            optionsStage.show();
+            fxmlLoader.setLocation(Main.class.getClassLoader().getResource("UI/optionsGui.fxml"));
+            root = fxmlLoader.load();
+
         } catch (Exception e) {
-            e.printStackTrace();
+            try{
+                fxmlLoader.setLocation(new URL("file:" + new File("").getCanonicalPath().concat("src/UI/optionsGui.fxml")));
+                root = fxmlLoader.load();
+            }catch (Exception e2){
+                System.err.println("ERROR: Couldn't find optionsGui.fxml!");
+            }
         }
+
+        this.optionsStage = new Stage();
+        optionsStage.setTitle("Options");
+        Scene optionsScene = new Scene(root, 1000, 700);
+        optionsStage.setScene(optionsScene);
+        optionsScene.getStylesheets().add(GlobalConstants.LIGHTTHEME);
+        optionsStage.show();
     }
 
     /**
