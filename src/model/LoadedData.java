@@ -89,6 +89,8 @@ public class LoadedData {
 
             // Set inital coordinates from MDS
             MyVertex sourceVertex = taxonNodeToVertexMap.get(nodeList.get(i));
+            // Add relative Frequency to Node Map
+            sourceVertex.getAttributesMap().put("frequency", AnalysisData.getMaximumRelativeFrequencies().get(sourceVertex.getTaxonNode()));
             //sourceVertex.xCoordinatesProperty().setValue(mdsMatrix[i][0]*10);
             //sourceVertex.yCoordinatesProperty().setValue(mdsMatrix[i][1]*10);
 

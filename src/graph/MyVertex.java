@@ -45,6 +45,9 @@ public class MyVertex {
                 showVertex();
             }
         });
+
+        // Add TaxonName of Parent to the attributesMap
+        attributesMap.put("parentName", taxonNode.getParentNode().getName());
     }
 
 

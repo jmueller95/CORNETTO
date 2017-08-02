@@ -7,9 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import main.GlobalConstants;
 import model.AnalysisData;
 
 
@@ -30,14 +32,14 @@ public class MyVertexView extends Group {
     // Style constants
     private static final Double NODE_RADIUS = 10.0;
     private static final Color FILL = Color.BEIGE;
-    private static final Color STROKE = Color.DARKBLUE;
-    private static final Color SELECT = Color.DARKORANGE;
-    private static final Color HUBFILL = Color.color(1.0f, 0.4f, 0.4f);
-
+    private static final Color STROKE =  Color.color(0.2, 0.2, 0.2);
+    private static final Color SELECT = Color.BLUE;
+    private static final Color HUBSTROKE = Color.color(0.9f, 0.3f, 0.2f);
 
     // Basic variables
     MyVertex myVertex;
     Circle vertexShape;
+    Circle selectionShape;
     Label vertexLabel;
     private Tooltip tooltip;
 
@@ -55,6 +57,11 @@ public class MyVertexView extends Group {
         // Initialize stuff
         vertexShape = new Circle(NODE_RADIUS);
         vertexShape.setStroke(STROKE);
+        selectionShape = new Circle(NODE_RADIUS+4);
+        selectionShape.setStroke(STROKE);
+        selectionShape.setFill(SELECT);
+        selectionShape.setVisible(false);
+        selectionShape.radiusProperty().bind(vertexShape.radiusProperty().add(4));
 
         colourProperty = new SimpleObjectProperty<>(Palette.BrBG);
         colourAttribute = new SimpleStringProperty("fix");
@@ -74,15 +81,16 @@ public class MyVertexView extends Group {
         addToolTip();
         addLabel();
 
-        getChildren().add(vertexShape);
+        getChildren().addAll(selectionShape, vertexShape);
         //Listen to the isHub-Property of the MyVertex object, make vertexShape thicker if it's a hub
         myVertex.isHubProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth() * 3);
-                vertexShape.setStroke(Color.BLACK);
-                vertexShape.setFill(HUBFILL);
+                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth() * 4);
+                vertexShape.getStrokeDashArray().addAll(3.0,7.0,3.0,7.0);
+                vertexShape.setStroke(HUBSTROKE);
             } else {
-                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth() / 3);
+                vertexShape.setStrokeWidth(vertexShape.getStrokeWidth() / 4);
+                vertexShape.getStrokeDashArray().clear();
                 vertexShape.setStroke(STROKE);
                 vertexShape.setFill(FILL);
             }
@@ -103,18 +111,21 @@ public class MyVertexView extends Group {
                 vertexShape.setFill(FILL);
                 break;
 
-            case "sample":
-                //TODO
-                vertexShape.setFill(Color.CADETBLUE);
+            case "parentName":
+                //
+                long seed = stringToSeed((String)myVertex.getAttributesMap().get("parentName"));
+                GlobalConstants.globalRandomInstance.setSeed(seed);
+                double t1 = GlobalConstants.globalRandomInstance.nextDouble();
+                vertexShape.setFill(MyColours.interpolate(colourProperty.get(), t1));
                 break;
 
             case "alpha":
                 vertexShape.setFill(MyColours.interpolate(colourProperty.get(), (double)myVertex.getAttributesMap().get("alpha")));
                 break;
 
-            case "modularity":
-                double t = (double)myVertex.getAttributesMap().get("modularity");
-                vertexShape.setFill(MyColours.interpolate(colourProperty.get(), (t+1)/2));
+            case "frequency":
+                double t2 = (double)myVertex.getAttributesMap().get("frequency");
+                vertexShape.setFill(MyColours.interpolate(colourProperty.get(), t2));
         }
     }
 
@@ -144,20 +155,25 @@ public class MyVertexView extends Group {
      * Bidirectional bind also updates coordinates in node class
      */
     public void addSelectionMarker() {
-        myVertex.isSelectedProperty().addListener(((observable, oldValue, newValue) -> {
-            if (newValue) {
-                vertexShape.setFill(SELECT);
-                System.out.println("node selected");
-            } else {
-                if (myVertex.isHub())
-                    vertexShape.setFill(HUBFILL);
-                else
-                    vertexShape.setFill(FILL);
-                System.out.println("node unselected");
-
-            }
-        }));
+        selectionShape.visibleProperty().bind(myVertex.isSelectedProperty());
     }
+
+    /**
+     * Helper function to convert String into long for Random seed
+     * @param s String used as input
+     * @return long
+     */
+    private long stringToSeed(String s) {
+        if (s == null) {
+            return 0;
+        }
+        long hash = 0;
+        for (char c : s.toCharArray()) {
+            hash = 31L*hash + c;
+        }
+        return hash;
+    }
+
 
     public DoubleProperty getRadiusProperty() {
         return vertexShape.radiusProperty();

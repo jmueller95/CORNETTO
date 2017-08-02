@@ -104,19 +104,60 @@ public class MyGraphView extends Group {
     }
 
     /**
-     * Sets Colour Attribute and Palette in the MyVertexView classes when called on User Input
-     * @param attribute in String Format, should be in AttributeMap of the MyVertex class
+     * Sets Colour Palette in the MyVertexView classes when called on User Input
      * @param palette Pakette item used for the colouring
      */
-    public void setNodeColourAttributes(String attribute, Palette palette) {
+    public void setNodeColour(Palette palette) {
+        for (Node n : myVertexViewGroup.getChildren()) {
+
+            MyVertexView vW = (MyVertexView) n;
+            vW.colourProperty.setValue(palette);
+
+        }
+    }
+
+    /**
+     * Sets Attribute in the MyVertexView classes when called on User Input
+     * @param attribute in String Format, should be in AttributeMap of the MyVertex class
+
+     */
+    public void setNodeAttribute(String attribute) {
         for (Node n : myVertexViewGroup.getChildren()) {
 
             MyVertexView vW = (MyVertexView) n;
             vW.colourAttribute.setValue(attribute);
-            vW.colourProperty.setValue(palette);
+
+        }
+
+    }
+
+    /**
+     * Sets Colour Palette in the MyEdgeView classes when called on User Input
+     * @param palette Pakette item used for the colouring
+     */
+    public void setEdgeColour(Palette palette) {
+        for (Node n : myEdgeViewGroup.getChildren()) {
+
+            MyEdgeView eW = (MyEdgeView) n;
+            eW.colourProperty.setValue(palette);
+
         }
     }
 
+    /**
+     * Sets Attribute in the MyEdgeView classes when called on User Input
+     * @param attribute in String Format, should be in AttributeMap of the MyVertex class
+
+     */
+    public void setEdgeAttribute(String attribute) {
+        for (Node n : myEdgeViewGroup.getChildren()) {
+
+            MyEdgeView eW = (MyEdgeView) n;
+            eW.colourAttribute.setValue(attribute);
+
+        }
+
+    }
 
     public void addPausedListener() {
         pausedProperty.addListener(e -> {

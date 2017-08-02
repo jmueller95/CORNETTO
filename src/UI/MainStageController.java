@@ -84,11 +84,11 @@ public class MainStageController implements Initializable {
     //Default constants for the Graph settings
     public static final int DEFAULT_ANIMATION_SPEED = 25;
     public static final double DEFAULT_SLIDER_EDGE_FORCE = 1.5;
-    public static final int DEFAULT_NODE_REPULSION = 10;
+    public static final int DEFAULT_NODE_REPULSION = 30;
     public static final double DEFAULT_SLIDER_STRECH_PARAMETER = 0.9;
     public static final int DEFAULT_SLIDER_NODE_RADIUS = 15;
     public static final int DEFAULT_SLIDER_EDGE_WIDTH = 5;
-    public static final int DEFAULT_SLIDER_EDGE_LENGTH_LOW = 10;
+    public static final int DEFAULT_SLIDER_EDGE_LENGTH_LOW = 50;
     public static final int DEFAULT_SLIDER_EDGE_LENGTH_HIGH = 500;
 
     private static Stage optionsStage;
@@ -236,13 +236,13 @@ public class MainStageController implements Initializable {
     private RadioButton colourRadioNodeFix;
 
     @FXML
-    private RadioButton colourRadioNodeSample;
+    private RadioButton colourRadioNodeParent;
 
     @FXML
     private RadioButton colourRadioNodeAlpha;
 
     @FXML
-    private RadioButton colourRadioNodeModularity;
+    private RadioButton colourRadioNodeFrequency;
 
     @FXML
     private ToggleGroup colourToggleNodes;
@@ -1322,36 +1322,54 @@ public class MainStageController implements Initializable {
         //Node settings
         colourRadioNodeFix.setOnAction( e -> {
             setPalette(nodeColourCombo, Palette.CATEGORICAL);
-            graphView.setNodeColourAttributes("fix", nodeColourCombo.getValue());
+            graphView.setNodeAttribute("fix");
+            graphView.setNodeColour(nodeColourCombo.getValue());
         });
 
-       colourRadioNodeSample.setOnAction( e -> {
+       colourRadioNodeParent.setOnAction(e -> {
            setPalette(nodeColourCombo, Palette.CATEGORICAL);
-           graphView.setNodeColourAttributes("sample", nodeColourCombo.getValue());
+           graphView.setNodeAttribute("parentName");
+           graphView.setNodeColour(nodeColourCombo.getValue());
        });
 
        colourRadioNodeAlpha.setOnAction( e -> {
            setPalette(nodeColourCombo, Palette.DIV);
-           graphView.setNodeColourAttributes("alpha", nodeColourCombo.getValue());
+           graphView.setNodeAttribute("alpha");
+           graphView.setNodeColour(nodeColourCombo.getValue());
 
        });
 
-       colourRadioNodeModularity.setOnAction( e -> {
-           setPalette(nodeColourCombo, Palette.DIV);
-           graphView.setNodeColourAttributes("modularity", nodeColourCombo.getValue());
-
+       colourRadioNodeFrequency.setOnAction(e -> {
+           setPalette(nodeColourCombo, Palette.SEQ);
+           graphView.setNodeAttribute("frequency");
+           graphView.setNodeColour(nodeColourCombo.getValue());
        });
+
+        nodeColourCombo.setOnAction( e -> {
+            graphView.setNodeColour(nodeColourCombo.getValue());
+        });
+
+
         // Edge settings
        colourRadioEdgeCorrelation.setOnAction( e -> {
            setPalette(edgeColourCombo, Palette.DIV);
+           graphView.setEdgeAttribute("correlation");
+           graphView.setEdgeColour(edgeColourCombo.getValue());
        });
 
-       colourRadioEdgeDistance.setOnAction( e-> {
+       /**colourRadioEdgeDistance.setOnAction( e-> {
            setPalette(edgeColourCombo, Palette.DIV);
-       });
+           graphView.set
+       }); **/
 
       colourRadioEdgePvalue.setOnAction( e -> {
           setPalette(edgeColourCombo, Palette.SEQ);
+          graphView.setEdgeAttribute("pValue");
+          graphView.setEdgeColour(edgeColourCombo.getValue());
+      });
+
+      edgeColourCombo.setOnAction( e -> {
+          graphView.setEdgeColour(edgeColourCombo.getValue());
       });
     }
 
@@ -1361,7 +1379,7 @@ public class MainStageController implements Initializable {
      * @param p EnumSet of Palette values to be displayed
      */
     private void setPalette(ComboBox cb, EnumSet p) {
-        cb.getItems().setAll(p);
+        cb.setItems(FXCollections.observableArrayList(p));
         cb.getSelectionModel().selectFirst();
     }
 
@@ -1370,14 +1388,12 @@ public class MainStageController implements Initializable {
      */
     private void initializeColorComboBox() {
         // Node Parameters
-        edgeColourCombo.setPrefWidth(200);
-        edgeColourCombo.getItems().setAll(Palette.DIV);
-        edgeColourCombo.getSelectionModel().selectFirst();
-        colourNodeComboContainer.getChildren().add(edgeColourCombo);
+        nodeColourCombo.setPrefWidth(200);
+        colourNodeComboContainer.getChildren().add(nodeColourCombo);
 
         // Edge parameters
-        nodeColourCombo.setPrefWidth(200);
-
+        edgeColourCombo.setPrefWidth(200);
+        colourEdgeComboContainer.getChildren().add(edgeColourCombo);
     }
 
     //ALERTS

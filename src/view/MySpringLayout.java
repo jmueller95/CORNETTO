@@ -192,7 +192,7 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
         calculateRepulsion();
         moveNodes();
         currentIteration++;
-        testAverageDeltas();
+        //testAverageDeltas();
     }
 
     protected void relaxEdges() {
