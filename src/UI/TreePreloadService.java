@@ -11,9 +11,15 @@ import java.io.File;
 
 
 /**
- * Created by Zeth on 26.06.2017.
+ * <h1>This class is a Service class - it starts building the taxon tree</h1>
+ * <p>
+ * The class requires the names.dmp and nodes.dmp files from the NCBI database.
+ * The tree is build as a Service in the background. While the wheel is spinning in the main view the process has not
+ * yet finished.
+ * </p>
  *
- * service which preloads the tree
+ * @see util.InternetAvailabilityChecker
+ * @see DownloadNodesAndNameDMPFiles
  */
 public class TreePreloadService extends Service<Void> {
     public static TaxonTree taxonTree;

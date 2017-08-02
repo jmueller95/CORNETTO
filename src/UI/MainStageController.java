@@ -55,6 +55,22 @@ import java.util.stream.Collectors;
 import static main.Main.getPrimaryStage;
 import static model.AnalysisData.*;
 
+/**
+ * <h1>This is the main GUI class. It implements most methods for the main stage.</h1>
+ * <p>
+ * Most of the functionality is channeled in this class. This is the class where all of the functionality comes
+ * together. It contains the method for initializing all required Services and it implements all buttons in the main
+ * stage.
+ * </p>
+ *
+ * @see SpringAnimationService
+ * @see ViewPane
+ * @see MySpringLayout
+ * @see MyColours
+ * @see Palette
+ *
+ * @version This class should be divided into more classes which separate behaviour.
+ */
 public class MainStageController implements Initializable {
     //Default constants for the analysis sliders
     public static final double DEFAULT_POSITIVE_CORRELATION_LOW = 0.5;
@@ -315,7 +331,6 @@ public class MainStageController implements Initializable {
         initializeButtonsOnLeftPane();
         //preload settings
         SaveAndLoadOptions.loadSettings();
-
 
         //Display the info text in the bottom left pane
         displayInfoText();

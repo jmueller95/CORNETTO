@@ -14,10 +14,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * File parser vor BIOM v1.0 files based on the JSON format
- * Creates a sample object with metadata and taxonID entry.
- * Automatically identifies sparse and rich formats
+ * <h1>The class implements the parser for BiomV1 files</h1>
+ * <p>
+ * The class is dependant on a TaxonTree to be available!
+ * There are two different versions of the biom files. This ons only works for the version 1!
+ * BiomV1 files are always provided in JSON format. There are sparse and rich formats, both work.
+ * When done parsing the file a list of samples is returned.
+ * </p>
  *
+ * @see treeParser.TreeParser
+ * @see Sample
  */
 public class BiomV1Parser implements InputFile {
 
