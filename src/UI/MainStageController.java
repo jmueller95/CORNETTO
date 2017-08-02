@@ -564,7 +564,7 @@ public class MainStageController implements Initializable {
         exportPValuesButton.setOnAction(e -> exportTableToCSV(tableValues, true));
         HBox exportBox = new HBox(exportCorrelationsButton, exportPValuesButton);
         exportBox.setPadding(new Insets(10));
-        exportCorrelationsButton.setPadding(new Insets(0,10,0,0));
+        exportBox.setSpacing(10);
         tablePane.setTop(exportBox);
         tablePane.setCenter(analysisTable);
         Scene tableScene = new Scene(tablePane);
