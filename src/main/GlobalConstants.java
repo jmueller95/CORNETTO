@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Random;
+
 /**
  * Created by Zeth on 17.07.2017.
  */
@@ -14,4 +16,8 @@ public class GlobalConstants {
 
     public static final String NODES_DMP_SRC = "./res/nodes.dmp";
     public static final String NAMES_DMP_SRC = "./res/names.dmp";
+
+    // Shared Random number generator, used for creating consistent numbers with user defined seeds
+    public static Random globalRandomInstance = new Random();
+
 }

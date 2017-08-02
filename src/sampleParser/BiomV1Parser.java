@@ -64,9 +64,9 @@ public class BiomV1Parser implements InputFile {
                 HashMap<String, String> metaData = new HashMap<>();
 
                 // Access metadata. What is needed? What do we want to include?
-                metaData.put("sample", (String)((JSONObject)obj.get("columns")).get("id"));
-                for (Object o: (JSONArray)((JSONObject) obj.get("columns")).get("metadata")){
-                    String metaKey = (String) o;
+                metaData.put("sample", (String)((JSONObject)((JSONArray)obj.get("columns")).get(0)).get("id"));
+                for (Object o: (JSONArray)((JSONObject)((JSONArray)obj.get("columns")).get(0)).get("metadata")){
+                    String metaKey = o.toString();
                     String metaValue = (String)((JSONObject)((JSONObject)obj.get("columns")).get("metadata")).get(metaKey);
 
                     metaData.put(metaKey, metaValue);

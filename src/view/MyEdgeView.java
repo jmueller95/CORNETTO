@@ -2,9 +2,7 @@ package view;
 
 import graph.MyEdge;
 import graph.MyVertex;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -15,6 +13,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
+import main.GlobalConstants;
 
 /**
  * <h1>The class is our implementation of the edges of the graph</h1>
@@ -26,12 +25,17 @@ import javafx.scene.text.Font;
  */
 public class MyEdgeView extends Group {
 
-    MyEdge myEdge;
-    double lineThickness = 10;
-    Line edgeShape;
-    Label edgelabel;
-    Tooltip tooltip;
+    private MyEdge myEdge;
+    private Line edgeShape;
 
+    // Display Properties
+    ObjectProperty<Palette> colourProperty;
+    StringProperty colourAttribute;
+
+    /**
+     * Constructor for EdgeView, takes reference to MyEdge object in the main Graph
+     * @param myEdge
+     */
     public MyEdgeView(MyEdge myEdge) {
         this.myEdge = myEdge;
         //lineThickness = myEdge.getWeight();
@@ -43,40 +47,55 @@ public class MyEdgeView extends Group {
 
         //Bind to hidden property of myEdge object
         visibleProperty().bind(myEdge.isHiddenProperty().not());
+        colourProperty = new SimpleObjectProperty<>(Palette.RdBu);
+        colourAttribute = new SimpleStringProperty("correlation");
+        colourAttribute.addListener((e, o, n) -> refreshColour());
+        colourProperty.addListener((e, o, n) -> refreshColour());
 
-        setColor();
+        refreshColour();
 
         getChildren().add(edgeShape);
-        tooltip = new Tooltip(myEdge.getSource().getTaxonName() + " --- " + myEdge.getTarget().getTaxonName()
+        Tooltip tooltip = new Tooltip(myEdge.getSource().getTaxonName() + " --- " + myEdge.getTarget().getTaxonName()
                 + "\nCorrelation: " + String.format("%.3f", myEdge.getCorrelation())
                 + "\np-Value: " + String.format("%.3f", myEdge.getPValue()));
         tooltip.setFont(Font.font(14));
         Tooltip.install(this, tooltip);
 
-        addLabel();
-
-
     }
 
-    public void addLabel() {
+    /**
+     * Refreshes NodeColour based on the Palette set in colourProperty and the Attribute value of MyVertex
+     * defined in colourAttribute Porperty
+     */
+    private void refreshColour() {
 
+        switch (colourAttribute.get()) {
+
+            // Fixed colours --> set to predefined standard
+            case "pValue":
+                edgeShape.setStroke(MyColours.interpolate(colourProperty.get(), myEdge.getPValue()));
+                break;
+
+            case "correlation":
+                double t = (myEdge.getCorrelation() + 1)/2;
+                edgeShape.setStroke(MyColours.interpolate(colourProperty.get(), t));
+                break;
+
+        }
     }
 
-    public void setColor() {
-        // set interactively and/or based on attributes
-        double t = (myEdge.getCorrelation() + 1)/2;
-        edgeShape.setStroke(MyColours.interpolate(Palette.RdBu, t));
-
-    }
-
+    /**
+     * Returns Width Property
+     * @return
+     */
     public DoubleProperty getWidthProperty() {
         return edgeShape.strokeWidthProperty();
     }
 
-    public Label getEdgelabel() {
-        return edgelabel;
-    }
-
+    /**
+     * Returns MyEdge object
+     * @return
+     */
     public MyEdge getMyEdge() {
         return myEdge;
     }

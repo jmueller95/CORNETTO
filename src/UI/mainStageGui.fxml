@@ -314,9 +314,9 @@
                                              <toggleGroup>
                                                 <ToggleGroup fx:id="colourToggleNodes" />
                                              </toggleGroup></RadioButton>
-                                           <RadioButton fx:id="colourRadioNodeSample" mnemonicParsing="false" text="Sample" toggleGroup="$colourToggleNodes" />
+                                           <RadioButton fx:id="colourRadioNodeParent" mnemonicParsing="false" text="Parent taxonomy" toggleGroup="$colourToggleNodes" />
                                            <RadioButton fx:id="colourRadioNodeAlpha" mnemonicParsing="false" text="alpha Diversity" toggleGroup="$colourToggleNodes" />
-                                           <RadioButton fx:id="colourRadioNodeModularity" mnemonicParsing="false" text="Modularity" toggleGroup="$colourToggleNodes" />
+                                           <RadioButton fx:id="colourRadioNodeFrequency" mnemonicParsing="false" text="Abundance" toggleGroup="$colourToggleNodes" />
                                            <Label text="Colour scheme:" />
 
                                            <StackPane fx:id="colourNodeComboContainer" alignment="TOP_LEFT" minHeight="20.0" minWidth="180" prefHeight="25.0" prefWidth="200.0">
