@@ -23,7 +23,7 @@ import java.util.Map;
  * @see LoadedData
  */
 public class AnalysisData {
-    private static RealMatrix correlationMatrix, pValueMatrix;
+    private static RealMatrix correlationMatrix, pValueMatrix, distanceMatrix;
     private static HashMap<TaxonNode, Double> maximumRelativeFrequencies;
     private static double highestFrequency;
     private static TaxonNode nodeWithHighestFrequency;
@@ -57,6 +57,7 @@ public class AnalysisData {
             maximumRelativeFrequencies = SampleComparison.calcMaximumRelativeFrequencies(samples, level_of_analysis);
             SampleComparison.createCorrelationOfSamples(samples, level_of_analysis, type);
             correlationMatrix = SampleComparison.getCorrelationMatrixOfSamples();
+            distanceMatrix = correlation2Distance(correlationMatrix);
             pValueMatrix = SampleComparison.getCorrelationPValuesOfSamples();
             calcHighestFrequency();
             highestPositiveCorrelationCoordinates = calcHighestPositiveCorrelationCoordinates();
@@ -65,6 +66,25 @@ public class AnalysisData {
         } else {
             return false;
         }
+    }
+
+    public static RealMatrix correlation2Distance(RealMatrix rMat) {
+
+        // Copy to retain Dimensions
+        RealMatrix dMat = rMat.copy();
+
+        for (int row = 0; row < rMat.getRowDimension(); row++) {
+            for (int col = 0; col < rMat.getColumnDimension(); col++) {
+                double r = rMat.getEntry(row, col);
+
+                //Apply cosine theorem:
+                //https://stats.stackexchange.com/questions/165194/using-correlation-as-distance-metric-for-hierarchical-clustering
+                double d = Math.sqrt(2*(1-r));
+                dMat.setEntry(row, col, d);
+            }
+        }
+
+        return dMat;
     }
 
     public static RealMatrix getCorrelationMatrix() {
@@ -85,8 +105,8 @@ public class AnalysisData {
 
         System.out.println("Start MDS Matrix calculation");
         long now = System.currentTimeMillis();
-        double[][] mdsj =  MDSJ.classicalScaling(correlationMatrix.getData());
-        System.out.println("Finished. Duration: " + (now - System.currentTimeMillis()) + "ms" );
+        double[][] mdsj =  MDSJ.classicalScaling(distanceMatrix.getData());
+        System.out.println("Finished. Duration: " + (System.currentTimeMillis() - now) + "ms" );
         return mdsj;
     }
 

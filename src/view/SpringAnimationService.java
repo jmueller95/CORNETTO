@@ -91,14 +91,14 @@ public class SpringAnimationService extends Service {
                 /* Workload goes here */
 
                 // Check for prerelax
-                if (!prerelaxDone) {
+                /**if (!prerelaxDone) {
                     long timeNow = System.currentTimeMillis();
                     while (System.currentTimeMillis() - timeNow < 500 && !springLayout.done()) {
                         springLayout.step();
                     }
                     springLayout.setDone(false);
                     prerelaxDone = true;
-                }
+                } **/
 
                 while (!springLayout.done()) {
 

@@ -91,8 +91,8 @@ public class LoadedData {
             MyVertex sourceVertex = taxonNodeToVertexMap.get(nodeList.get(i));
             // Add relative Frequency to Node Map
             sourceVertex.getAttributesMap().put("frequency", AnalysisData.getMaximumRelativeFrequencies().get(sourceVertex.getTaxonNode()));
-            //sourceVertex.xCoordinatesProperty().setValue(mdsMatrix[i][0]*10);
-            //sourceVertex.yCoordinatesProperty().setValue(mdsMatrix[i][1]*10);
+            sourceVertex.xCoordinatesProperty().setValue((mdsMatrix[0][i]));
+            sourceVertex.yCoordinatesProperty().setValue((mdsMatrix[1][i]));
 
 
             for (int j = 0; j < i; j++) {

@@ -1610,6 +1610,7 @@ public class MainStageController implements Initializable {
         sliderEdgeWidth.setValue(DEFAULT_SLIDER_EDGE_WIDTH);
         sliderEdgeLength.setLowValue(DEFAULT_SLIDER_EDGE_LENGTH_LOW);
         sliderEdgeLength.setHighValue(DEFAULT_SLIDER_EDGE_LENGTH_HIGH);
+        buttonPauseAnimation.setSelected(true);
     }
 
     public static Stage getOptionsStage() {

@@ -33,12 +33,13 @@ import java.util.ConcurrentModificationException;
 
 public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements IterativeContext {
 
-    protected double stretch = 0.90;
-    protected Function<? super E, Integer> lengthFunction;
-    protected int repulsion_range_sq = 20 * 20;
-    protected double force_multiplier = 2.0;
+    private double stretch = 0.90;
+    private Function<? super E, Integer> lengthFunction;
+    private int repulsion_range_sq = 20 * 20;
+    private double force_multiplier = 2.0;
+    static final double INIT_FACTOR = 0.2;
 
-    protected LoadingCache<V, MySpringLayout.SpringVertexData> springVertexData =
+    private LoadingCache<V, MySpringLayout.SpringVertexData> springVertexData =
             CacheBuilder.newBuilder().build(new CacheLoader<V, SpringVertexData>() {
                 public SpringVertexData load(V vertex) {
                     return new MySpringLayout.SpringVertexData();
@@ -91,8 +92,8 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
     @Override
     public void setSize(Dimension size) {
         if(initialized == false)
-             setInitializer(new RandomLocationTransformer<V>(size));
-             //setInitializer((Function<V, Point2D>) mdsInitializer);
+             //setInitializer(new RandomLocationTransformer<V>(size));
+             setInitializer((Function<V, Point2D>) mdsInitializer);
         super.setSize(size);
     }
 
@@ -396,8 +397,8 @@ public class MySpringLayout<V, E> extends AbstractLayout<V,E> implements Iterati
     // TODO include function to resize MDS positions to the viewable are
     private Function<MyVertex, Point2D> mdsInitializer = (MyVertex myVertex) -> {
 
-        double x = 0;
-        double y = 0;
+        double x = (myVertex.getXCoordinates() * size.getWidth())  * INIT_FACTOR + size.getWidth()/2;
+        double y = myVertex.getYCoordinates() * size.getHeight() + INIT_FACTOR +  size.getHeight()/2;
 
         return new Point2D.Double(x, y);
     };
