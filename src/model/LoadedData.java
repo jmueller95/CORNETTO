@@ -153,21 +153,28 @@ public class LoadedData {
         }
         TreeItem<String> newRoot, newRootID, newRootCount;
 
+        boolean isLookedForLoadedSamples = false;
+
         countOfSamplesFromEqualPaths = 0;
         for (Sample sample : loadedSamples) {
-            if (treeViewFiles.getRoot().getChildren() != null && !treeViewFiles.getRoot().getChildren().isEmpty()) {
+            if (!isLookedForLoadedSamples && treeViewFiles.getRoot().getChildren() != null && !treeViewFiles.getRoot().getChildren().isEmpty()) {
+
+                String pathToNewSample = sample.getPathToFile();
 
                 /*String pathToSample = sample.getPathToFile();
-                samples
-                        .stream()
-                        .map(foundSample -> foundSample.getPathToFile())
-                        .forEach(pathToFoundSample -> {
-                            if (pathToSample.equals(pathToFoundSample)) {
-                                samples.remove(sample);
-                                System.out.println("Removed " + pathToSample);
-                            }
-                        });*/
 
+                for (int i = 0; i < treeViewFiles.getRoot().getChildren().size(); i++) {
+                    Sample alreadyLoadedSample = samples.get(i);
+                    String pathToFileOfAlreadyLoadedSample = alreadyLoadedSample.getPathToFile();
+                    if (pathToFileOfAlreadyLoadedSample.equals(pathToSample)) {
+                        String pathToFileOfAlreadyLoadedSampleWithoutExtension = getNameWithoutExtension(pathToFileOfAlreadyLoadedSample, new ArrayList<>());
+                        samples.remove(alreadyLoadedSample);
+                        sampleNameToSample.remove(pathToFileOfAlreadyLoadedSampleWithoutExtension);
+                        treeViewFiles.getRoot().getChildren().remove(i, ++i);
+                    }
+                }
+
+                isLookedForLoadedSamples = true;*/
             }
             String sampleName = getNameWithoutExtension(fileName, loadedSamples);
             sample.setName(sampleName);
@@ -249,8 +256,15 @@ public class LoadedData {
      */
     private static void removeSampleFromDatabase(String sampleName, TreeView<String> treeViewFiles, int indexOfTreeItem) {
         String pathToFileOfDeletedSample = getSampleNameToSample().get(sampleName).getPathToFile();
-        openFiles.remove(getSampleNameToSample().get(sampleName).getPathToFile());
         samples.remove(sampleNameToSample.get(sampleName));
+        String totalPathToFile = getSampleNameToSample().get(sampleName).getPathToFile();
+        boolean isOnlyLeft =
+                samples
+                .stream()
+                .noneMatch(sample -> sample.getPathToFile().equals(totalPathToFile));
+        if (isOnlyLeft) {
+            openFiles.remove(getSampleNameToSample().get(sampleName).getPathToFile());
+        }
         sampleNameToSample.remove(sampleName);
         treeViewFiles.getRoot().getChildren().remove(indexOfTreeItem, ++indexOfTreeItem);
     }
