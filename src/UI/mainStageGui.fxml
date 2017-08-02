@@ -441,9 +441,7 @@
                                                         <RadioButton fx:id="colourRadioNodeParent"
                                                                      mnemonicParsing="false" text="Parent taxonomy"
                                                                      toggleGroup="$colourToggleNodes"/>
-                                                        <RadioButton fx:id="colourRadioNodeAlpha"
-                                                                     mnemonicParsing="false" text="alpha Diversity"
-                                                                     toggleGroup="$colourToggleNodes"/>
+
                                                         <RadioButton fx:id="colourRadioNodeFrequency"
                                                                      mnemonicParsing="false" text="Abundance"
                                                                      toggleGroup="$colourToggleNodes"/>
@@ -469,10 +467,7 @@
                                                         <RadioButton fx:id="colourRadioEdgePvalue"
                                                                      mnemonicParsing="false" text="P-Value"
                                                                      toggleGroup="$colourToggleEdges"/>
-                                                        <RadioButton fx:id="colourRadioEdgeDistance"
-                                                                     mnemonicParsing="false"
-                                                                     text="Distance (Bray-Curtis)"
-                                                                     toggleGroup="$colourToggleEdges"/>
+
 
                                                         <Label text="Colour scheme"/>
                                                         <StackPane fx:id="colourEdgeComboContainer" alignment="TOP_LEFT"

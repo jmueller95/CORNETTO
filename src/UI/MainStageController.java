@@ -253,7 +253,6 @@ public class MainStageController implements Initializable {
 
     ComboBox<Palette> nodeColourCombo = new ComboBox<>();
 
-
     @FXML
     private RadioButton colourRadioEdgeCorrelation;
 
@@ -418,6 +417,7 @@ public class MainStageController implements Initializable {
             GraphAnalysis analysis = AnalysisData.getAnalysis();
             infoText = "Selected Taxon:\n" + selectedVertex.getTaxonName() + "\nID: " + selectedVertex.getTaxonNode().getTaxonId()
                     + "\nFrequency: " + String.format("%.3f", AnalysisData.getMaximumRelativeFrequencies().get(selectedVertex.getTaxonNode()))
+                    + "\nParent Taxon: " + selectedVertex.getAttributesMap().get("parentName")
                     + "\nNo. of visible edges: " + analysis.getNodeDegrees().get(selectedVertex.getTaxonNode());
         } else if (LoadedData.getGraphView() != null) {
             GraphAnalysis analysis = AnalysisData.getAnalysis();
@@ -932,7 +932,7 @@ public class MainStageController implements Initializable {
         } catch (Exception e) {
             showWrongFileAlert();
             return;
-            //In case the user chose to load a file with a wrong file type
+             //In case the user chose to load a file with a wrong file type
         }
 
         LoadedData.addSamplesToDatabase(samples, treeViewFiles, file);
@@ -1354,12 +1354,7 @@ public class MainStageController implements Initializable {
            graphView.setNodeColour(nodeColourCombo.getValue());
        });
 
-       colourRadioNodeAlpha.setOnAction( e -> {
-           setPalette(nodeColourCombo, Palette.DIV);
-           graphView.setNodeAttribute("alpha");
-           graphView.setNodeColour(nodeColourCombo.getValue());
 
-       });
 
        colourRadioNodeFrequency.setOnAction(e -> {
            setPalette(nodeColourCombo, Palette.SEQ);

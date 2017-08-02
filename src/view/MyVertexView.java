@@ -120,7 +120,7 @@ public class MyVertexView extends Group {
                 break;
 
             case "alpha":
-                vertexShape.setFill(MyColours.interpolate(colourProperty.get(), (double)myVertex.getAttributesMap().get("alpha")));
+                vertexShape.setFill(MyColours.interpolate(colourProperty.get(), 1 - (double)myVertex.getAttributesMap().get("alpha")));
                 break;
 
             case "frequency":
